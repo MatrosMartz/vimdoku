@@ -1,0 +1,13 @@
+{
+	"arrowParens": "avoid",
+	"endOfLine": "lf",
+	"plugins": ["prettier-plugin-svelte"],
+	"overrides": [{ "files": "*.svelte", "options": { "parser": "svelte" } }],
+	"printWidth": 120,
+	"semi": false,
+	"singleQuote": true,
+	"tabWidth": 2,
+	"trailingComma": "es5",
+	"useTabs": true,
+	"htmlWhitespaceSensitivity": "ignore"
+}
