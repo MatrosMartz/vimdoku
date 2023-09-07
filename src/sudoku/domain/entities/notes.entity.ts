@@ -15,6 +15,10 @@ export class Notes {
 				}
 	}
 
+	get value() {
+		return this.#value
+	}
+
 	add(num: NoteNumbers) {
 		this.#value[num - 1] = num
 	}
