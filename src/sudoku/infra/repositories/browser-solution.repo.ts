@@ -1,5 +1,5 @@
 import type { BrowserStorage } from '~/utils'
-import { Solution } from '$sudoku/domain/entities/solution.entity'
+import { Solution } from '$sudoku/domain/entities'
 import type { SolutionRepo } from '$sudoku/domain/repositories'
 
 export class BrowserSolutionRepo implements SolutionRepo {

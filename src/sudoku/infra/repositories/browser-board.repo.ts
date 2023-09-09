@@ -1,5 +1,5 @@
-import { Board, type BoardOpts } from '~/sudoku/domain/entities'
 import type { BrowserStorage } from '~/utils'
+import { Board, type BoardOpts } from '$sudoku/domain/entities'
 import type { BoardRepo } from '$sudoku/domain/repositories'
 
 export class BrowserBoardRepo implements BoardRepo {

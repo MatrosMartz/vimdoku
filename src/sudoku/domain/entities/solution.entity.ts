@@ -1,5 +1,4 @@
-import { box, createMatrix, iterateMatrix, randomNumbers } from '~/utils'
-import { InvalidLikeError, InvalidSolutionError } from '~/utils/errors.util'
+import { box, createMatrix, InvalidLikeError, InvalidSolutionError, iterateMatrix, randomNumbers } from '~/utils'
 
 import type { Position, SolutionValue } from '../models'
 
