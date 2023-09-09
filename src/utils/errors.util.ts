@@ -10,6 +10,12 @@ export class InvalidSolutionError extends Error {
 
 export class InvalidNoteError extends Error {
 	constructor(note: unknown) {
-		super(`"${JSON.stringify(note)}" Is Invalid for note`)
+		super(`"${String(note)}" Is Invalid for note`)
+	}
+}
+
+export class InvalidLikeError extends Error {
+	constructor(like: string, type: unknown) {
+		super(`"type: ${String(type)}" Is invalid for ${like} like`)
 	}
 }

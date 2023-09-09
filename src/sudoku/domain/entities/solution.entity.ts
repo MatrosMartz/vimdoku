@@ -1,18 +1,18 @@
 import { box, createMatrix, iterateMatrix, randomNumbers } from '~/utils'
-import { InvalidSolutionError } from '~/utils/errors.util'
+import { InvalidLikeError, InvalidSolutionError } from '~/utils/errors.util'
 
 import type { Position, SolutionValue } from '../models'
 
 export class Solution {
-	#value: SolutionValue
+	#value
 
-	constructor({ initValue }: { initValue?: SolutionValue } = {}) {
-		if (initValue != null && Solution.check(initValue)) this.#value = initValue
+	constructor({ initSolution }: { initSolution?: SolutionValue } = {}) {
+		if (initSolution != null && Solution.check(initSolution)) this.#value = initSolution
 		else this.#value = this.#fillSudoku()
 	}
 
 	get value() {
-		return this.#value
+		return structuredClone(this.#value)
 	}
 
 	static check(solution: SolutionValue) {
@@ -28,6 +28,22 @@ export class Solution {
 		}
 
 		return true
+	}
+
+	static from(solutionLike: unknown) {
+		if (typeof solutionLike === 'string') {
+			const initSolution = JSON.parse(solutionLike)
+			return new Solution({ initSolution })
+		}
+		throw new InvalidLikeError('solution', solutionLike)
+	}
+
+	toJSON() {
+		return this.value
+	}
+
+	toString() {
+		return JSON.stringify(this.#value)
 	}
 
 	#fillSudoku() {

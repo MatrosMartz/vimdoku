@@ -1,1 +1,1 @@
-export type SolutionValue = ReadonlyArray<readonly number[]>
+export type SolutionValue = number[][]

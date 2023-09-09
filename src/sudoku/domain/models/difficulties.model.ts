@@ -1,9 +1,9 @@
 export enum DifficultyKinds {
-	Beginner = 1.1,
-	Basic = 1.4,
-	Easy = 2,
-	Medium = 2.4,
-	Advanced = 3,
-	Hard = 4.1,
-	Expert = 4.5,
+	Beginner = 77,
+	Basic = 65,
+	Easy = 52,
+	Medium = 47,
+	Advanced = 39,
+	Hard = 31,
+	Expert = 23,
 }

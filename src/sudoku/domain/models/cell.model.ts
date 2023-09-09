@@ -9,6 +9,7 @@ export enum CellKinds {
 }
 
 export interface Cell {
+	kind: CellKinds
 	notes: Notes
 	value: number
 }
