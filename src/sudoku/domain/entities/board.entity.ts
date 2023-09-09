@@ -1,6 +1,6 @@
 import { createMatrix, InvalidLikeError } from '~/utils'
 
-import { type BoardValue, type Cell, CellKinds, DifficultyKinds, type Position } from '../models'
+import { type BoardValue, type Cell, CellKinds, DifficultyKinds, type NoteValue, type Position } from '../models'
 import { Notes } from './notes.entity'
 import { Solution } from './solution.entity'
 
@@ -9,31 +9,17 @@ export interface BoardOpts {
 	solution?: Solution
 }
 
-function fillBoard({ difficulty = DifficultyKinds.Beginner, solution = new Solution() }: BoardOpts = {}) {
-	let initials = 0
-	const createBox = ({ row, col }: Position): Cell => {
-		const isInitial = Boolean(Math.random() * 2) && initials < difficulty
-		if (!isInitial)
-			return {
-				kind: CellKinds.Empty,
-				value: 0,
-				notes: new Notes(),
-			}
-		initials++
-		return {
-			kind: CellKinds.Initial,
-			value: solution.value[row][col],
-			notes: new Notes(),
-		}
-	}
-	return createMatrix<Cell>(9, { fn: createBox })
+interface CellJSON {
+	kind: CellKinds
+	notes: NoteValue
+	value: number
 }
 
 export class Board {
 	#value
 
 	constructor({ initBoard }: { initBoard?: BoardValue }) {
-		this.#value = initBoard ?? fillBoard()
+		this.#value = initBoard ?? Board.#fill()
 	}
 
 	get value() {
@@ -41,7 +27,7 @@ export class Board {
 	}
 
 	static create(opts: BoardOpts = {}) {
-		return new Board({ initBoard: fillBoard(opts) })
+		return new Board({ initBoard: Board.#fill(opts) })
 	}
 
 	static from(boardLike: unknown) {
@@ -51,11 +37,37 @@ export class Board {
 			)
 			return new Board({ initBoard })
 		}
+		if (Array.isArray(boardLike) && boardLike.every(rows => Array.isArray(rows))) {
+			const initBoard = (boardLike as CellJSON[][]).map(rows =>
+				rows.map<Cell>(cell => ({ ...cell, notes: new Notes({ initNotes: cell.notes }) }))
+			)
+			return new Board({ initBoard })
+		}
 		throw new InvalidLikeError('board', boardLike)
 	}
 
+	static #fill({ difficulty = DifficultyKinds.Beginner, solution = new Solution() }: BoardOpts = {}) {
+		let initials = 0
+		const createBox = ({ row, col }: Position): Cell => {
+			const isInitial = Boolean(Math.random() * 2) && initials < difficulty
+			if (!isInitial)
+				return {
+					kind: CellKinds.Empty,
+					value: 0,
+					notes: new Notes(),
+				}
+			initials++
+			return {
+				kind: CellKinds.Initial,
+				value: solution.value[row][col],
+				notes: new Notes(),
+			}
+		}
+		return createMatrix<Cell>(9, { fn: createBox })
+	}
+
 	toJSON() {
-		return this.#map(cell => ({
+		return this.#map<CellJSON>(cell => ({
 			...cell,
 			notes: cell.notes.value,
 		}))

@@ -17,7 +17,7 @@ export class BrowserBoardRepo implements BoardRepo {
 		}
 	}
 
-	async create(opts: BoardOpts) {
+	async create(opts?: BoardOpts) {
 		this.#storage.set(Board.create(opts).toString())
 	}
 
