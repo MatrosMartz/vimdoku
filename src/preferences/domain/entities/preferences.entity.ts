@@ -18,26 +18,26 @@ export interface PrefOts {
 const { freeze: _f } = Object
 
 export class Preferences {
-	static DEFAULT_SUDOKU = _f({
+	static readonly DEFAULT_SUDOKU = _f<SudokuPreferences>({
 		automaticNoteDeletion: true,
 		automaticValidation: true,
 		highlightNumber: true,
 		remainingNumbers: true,
-	}) satisfies SudokuPreferences
+	})
 
-	static DEFAULT_USER = _f({
+	static readonly DEFAULT_USER = _f<UserPreferences>({
 		animations: true,
 		language: Langs.EN,
 		theme: 'default',
 		timer: true,
-	}) satisfies UserPreferences
+	})
 
-	static DEFAULT_VIM = _f({
+	static readonly DEFAULT_VIM = _f<VimPreferences>({
 		fontSize: 16,
 		history: 100,
 		numbers: true,
 		relativeNumbers: false,
-	}) satisfies VimPreferences
+	})
 
 	#sudoku: SudokuPreferences
 	#user: UserPreferences
