@@ -18,7 +18,7 @@ interface CellJSON {
 export class Board {
 	#value
 
-	constructor({ initBoard }: { initBoard?: BoardValue }) {
+	constructor({ initBoard }: { initBoard?: BoardValue } = {}) {
 		this.#value = initBoard ?? Board.#fill()
 	}
 
