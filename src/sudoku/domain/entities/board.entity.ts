@@ -30,7 +30,7 @@ export class Board {
 		return new Board({ initBoard: Board.#fill(opts) })
 	}
 
-	static from(boardLike: unknown) {
+	static from(boardLike: string | CellJSON[][]) {
 		if (typeof boardLike === 'string') {
 			const initBoard = JSON.parse(boardLike, (key, value) =>
 				key !== 'notes' ? value : new Notes({ initNotes: value })
@@ -38,7 +38,7 @@ export class Board {
 			return new Board({ initBoard })
 		}
 		if (Array.isArray(boardLike) && boardLike.every(rows => Array.isArray(rows))) {
-			const initBoard = (boardLike as CellJSON[][]).map(rows =>
+			const initBoard = boardLike.map(rows =>
 				rows.map<Cell>(cell => ({ ...cell, notes: new Notes({ initNotes: cell.notes }) }))
 			)
 			return new Board({ initBoard })

@@ -21,7 +21,7 @@ export interface ToggleField {
 export type FormField = Record<string, NumberField | StringField | ToggleField | OptionField<unknown>>
 
 export type FieldsToModel<F extends FormField> = {
-	[P in keyof F]: F[P] extends NumberField
+	-readonly [P in keyof F]: F[P] extends NumberField
 		? number
 		: F[P] extends StringField
 		? string

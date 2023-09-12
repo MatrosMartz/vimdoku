@@ -29,7 +29,7 @@ export class Solution {
 		return true
 	}
 
-	static from(solutionLike: unknown) {
+	static from(solutionLike: string) {
 		if (typeof solutionLike === 'string') {
 			const initSolution = JSON.parse(solutionLike)
 			return new Solution({ initSolution })

@@ -19,7 +19,7 @@ export class Notes {
 		return structuredClone(this.#value)
 	}
 
-	static from(noteLike: unknown) {
+	static from(noteLike: string) {
 		if (typeof noteLike === 'string') {
 			const initNotes = JSON.parse(noteLike)
 			return new Notes({ initNotes })
