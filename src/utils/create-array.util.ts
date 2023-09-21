@@ -1,13 +1,17 @@
 import type { Position } from '$sudoku/domain/models'
 
+export function createArray<T>(length: number, mapper: { fn(index: number): T }): T[]
+export function createArray<T>(length: number, mapper: { value: T }): T[]
 export function createArray<T>(length: number, mapper: { fn(index: number): T } | { value: T }) {
-	const array = []
+	const array = new Array(length)
 
 	for (let i = 0; i < length; i++) array[i] = 'fn' in mapper ? mapper.fn(i) : mapper.value
 
 	return array
 }
 
+export function createMatrix<T>(length: number, mapper: { fn(pos: Position): T }): T[][]
+export function createMatrix<T>(length: number, mapper: { value: T }): T[][]
 export function createMatrix<T>(length: number, mapper: { fn(pos: Position): T } | { value: T }) {
 	return createArray(length, {
 		fn: col =>
