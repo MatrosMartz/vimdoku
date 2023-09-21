@@ -17,7 +17,6 @@ module.exports = {
 		{
 			extends: ['plugin:jest-dom/recommended', 'plugin:testing-library/dom'],
 			files: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
-			rules: { 'testing-library/prefer-wait-for': 'error' },
 		},
 		{
 			files: ['svelte.config.js', 'vite.config.ts', 'vitest.config.ts'],
