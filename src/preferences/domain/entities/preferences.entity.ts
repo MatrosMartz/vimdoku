@@ -1,13 +1,18 @@
-import { InvalidLikeError, InvalidPreferencesError, sameStructure } from '~/utils'
+import { InvalidPreferencesError, sameStructure } from '~/utils'
 
-import {
-	type AllPreferences,
-	Langs,
-	type PreferencesValue,
-	type SudokuPreferences,
-	type UserPreferences,
-	type VimPreferences,
-} from '../models'
+import { sudokuFields, type SudokuPreferences } from './sudoku.entity'
+import { Langs, userField, type UserPreferences } from './user.entity'
+import { vimFields, type VimPreferences } from './vim.entity'
+
+export interface PreferencesValue {
+	sudoku: SudokuPreferences
+	user: UserPreferences
+	vim: VimPreferences
+}
+
+export type AllPreferences = SudokuPreferences & UserPreferences & VimPreferences
+
+export const preferencesFields = { sudoku: sudokuFields, user: userField, vim: vimFields } as const
 
 export interface PrefOts {
 	initSudoku?: Partial<SudokuPreferences>
@@ -49,9 +54,9 @@ export class Preferences {
 			this.#user = Preferences.DEFAULT_USER
 			this.#vim = Preferences.DEFAULT_VIM
 		} else {
-			if (sameStructure(initPref.sudoku, Preferences.DEFAULT_SUDOKU)) throw new InvalidPreferencesError('sudoku')
-			if (sameStructure(initPref.user, Preferences.DEFAULT_USER)) throw new InvalidPreferencesError('user')
-			if (sameStructure(initPref.vim, Preferences.DEFAULT_VIM)) throw new InvalidPreferencesError('vim')
+			if (sameStructure(initPref.sudoku, Preferences.DEFAULT_SUDOKU)) throw new InvalidPreferencesError(initPref.sudoku)
+			if (sameStructure(initPref.user, Preferences.DEFAULT_USER)) throw new InvalidPreferencesError(initPref.user)
+			if (sameStructure(initPref.vim, Preferences.DEFAULT_VIM)) throw new InvalidPreferencesError(initPref.vim)
 			this.#sudoku = initPref.sudoku
 			this.#user = initPref.user
 			this.#vim = initPref.vim
@@ -85,7 +90,7 @@ export class Preferences {
 			const initPref = JSON.parse(preferencesLike)
 			return new Preferences({ initPref })
 		}
-		throw new InvalidLikeError('preferences', preferencesLike)
+		throw new InvalidPreferencesError(preferencesLike)
 	}
 
 	set<K extends keyof AllPreferences>(key: K, value: AllPreferences[K]) {

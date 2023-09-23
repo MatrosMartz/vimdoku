@@ -1,4 +1,4 @@
-import type { FieldsToModel, FormField } from './form-fields.model'
+import type { FieldsToModel, FormField } from './form-fields.entity'
 
 export const vimFields = {
 	fontSize: { type: 'number' },

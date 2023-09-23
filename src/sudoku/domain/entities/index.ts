@@ -1,3 +1,7 @@
 export * from './board.entity'
+export * from './cell.entity'
+export * from './difficulties.entity'
+export * from './modes.entity'
 export * from './notes.entity'
+export * from './position.entity'
 export * from './solution.entity'
