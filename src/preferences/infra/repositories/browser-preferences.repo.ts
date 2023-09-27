@@ -1,6 +1,5 @@
 import { type BrowserStorage, LocalStorageEntryMissingError } from '~/utils'
-import { Preferences } from '$preferences/domain/entities'
-import type { AllPreferences } from '$preferences/domain/models'
+import { type AllPreferences, Preferences } from '$preferences/domain/models'
 import type { PreferencesRepo } from '$preferences/domain/repositories'
 
 export class BrowserPreferencesRepo implements PreferencesRepo {

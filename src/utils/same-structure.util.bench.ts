@@ -42,7 +42,7 @@ const obj5 = {
 }
 const obj5Clone = obj5
 
-const arr1 = createArray(10_000, { fn: i => i })
+const arr1 = createArray(10_000, i => i)
 const arr1Clone = arr1
 
 const options: BenchOptions = {

@@ -1,4 +1,4 @@
-import type { Solution } from '../entities'
+import type { Solution } from '../models'
 
 export interface SolutionRepo {
 	create(): Promise<void>

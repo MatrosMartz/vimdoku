@@ -1,4 +1,4 @@
-import type { Board, BoardOpts } from '../entities'
+import type { Board, BoardOpts } from '../models'
 
 export interface BoardRepo {
 	create(opts?: BoardOpts): Promise<void>

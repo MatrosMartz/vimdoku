@@ -1,5 +1,4 @@
-import type { Preferences } from '../entities'
-import type { AllPreferences } from '../models'
+import type { AllPreferences, Preferences } from '../models'
 
 export interface PreferencesRepo {
 	create(): Promise<void>

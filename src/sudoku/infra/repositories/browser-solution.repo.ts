@@ -1,5 +1,5 @@
 import type { BrowserStorage } from '~/utils'
-import { Solution } from '$sudoku/domain/entities'
+import { Solution } from '$sudoku/domain/models'
 import type { SolutionRepo } from '$sudoku/domain/repositories'
 
 export class BrowserSolutionRepo implements SolutionRepo {
@@ -18,7 +18,7 @@ export class BrowserSolutionRepo implements SolutionRepo {
 	}
 
 	async create() {
-		const solution = new Solution()
+		const solution = Solution.create()
 		this.#storage.set(solution.toString())
 	}
 

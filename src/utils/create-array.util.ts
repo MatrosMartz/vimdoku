@@ -1,4 +1,4 @@
-import type { Position } from '$sudoku/domain/entities/position.model'
+import type { Position } from '$sudoku/domain/models/position.model'
 
 export function createArray<T>(length: number, mapFn: (index: number) => T) {
 	const array: T[] = new Array(length)

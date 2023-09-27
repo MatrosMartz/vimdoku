@@ -1,4 +1,4 @@
-import type { Position } from '~/sudoku/domain/entities/position.model'
+import type { Position } from '~/sudoku/domain/models/position.model'
 
 import { createArray } from './create-array.util'
 
