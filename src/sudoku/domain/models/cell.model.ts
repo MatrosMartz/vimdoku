@@ -1,4 +1,10 @@
-import { CellNotes, type CellNotesJSON, type ICellNotes, type ValidNumbers } from './cell-notes.model'
+import {
+	CellNotes,
+	type CellNotesData,
+	type CellNotesJSON,
+	type ICellNotes,
+	type ValidNumbers,
+} from './cell-notes.model'
 
 export enum CellKinds {
 	Correct = 'correct',
@@ -10,8 +16,12 @@ export enum CellKinds {
 }
 
 interface ICellBase<T extends InitialCellData | WritableCellData> {
-	/** Get the current set of notes. */
+	/** Get the current value of cell. */
+	get cellValue(): number
+	/** Get the current data of cell. */
 	get data(): T
+	/** Get the current kind of cell. */
+	get kind(): T extends InitialCellData ? CellKinds.Initial : Exclude<CellKinds, CellKinds.Initial>
 	/** Converts Cell instance in JSON. */
 	toJSON(): CellJSON
 	toString(): string
@@ -36,8 +46,16 @@ export class InitialCell implements IInitialCell {
 		this.#cellValue = value as ValidNumbers
 	}
 
+	get cellValue() {
+		return this.#cellValue
+	}
+
 	get data(): InitialCellData {
 		return { kind: CellKinds.Initial, value: this.#cellValue }
+	}
+
+	get kind() {
+		return CellKinds.Initial as const
 	}
 
 	toJSON(): CellJSON {
@@ -57,8 +75,15 @@ export interface IWritableCell extends ICellBase<WritableCellData> {
 	 * @param {ValidNumbers} solutionValue Solution for this Cell.
 	 */
 	checkValue(solutionValue: ValidNumbers): this
-	/** remove value and clear note set. */
+	/** Remove value and clear note set. */
 	clear(): this
+	/** Get the current data of cell notes. */
+	get notesData(): CellNotesData
+	/**
+	 * Remove a note in the Notes class.
+	 * @param {ValidNumbers} num The note to remove (1 to 9).
+	 */
+	removeNote(num: ValidNumbers): this
 	/**
 	 * Toggle a note in the Notes class (add if not present, remove if present).
 	 * @param {ValidNumbers} num The note to toggle (1 to 9).
@@ -94,8 +119,20 @@ export class WritableCell implements IWritableCell {
 		this.#notes = notes
 	}
 
+	get cellValue() {
+		return this.#cellValue
+	}
+
 	get data(): WritableCellData {
 		return { kind: this.#kind, notes: this.#notes, value: this.#cellValue }
+	}
+
+	get kind() {
+		return this.#kind
+	}
+
+	get notesData() {
+		return this.#notes.data
 	}
 
 	checkValue(solutionValue: ValidNumbers) {
@@ -106,6 +143,14 @@ export class WritableCell implements IWritableCell {
 	clear() {
 		this.#cellValue = WritableCell.EMPTY_VALUE
 		this.#notes.clear()
+		return this
+	}
+
+	removeNote(num: ValidNumbers) {
+		this.#notes = this.#notes.remove(num)
+		this.#cellValue = WritableCell.EMPTY_VALUE
+		this.#kind = this.#kindByNotes()
+
 		return this
 	}
 

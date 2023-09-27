@@ -1,10 +1,10 @@
-import { _throw, createMatrix, iterateArray, iterateMatrix } from '~/utils'
+import { createMatrix, iterateArray, iterateMatrix } from '~/utils'
 
 import type { Position } from './position.model'
 
 export type CompareCBFn<T, U> = (compareCell: T, currCell: T, position: Position) => U
 export type CBFn<T, U> = (value: T, position: Position) => U
-type CreateCBFn<T> = (pos: Position, retry: () => never) => T
+type CreateCBFn<T> = (pos: Position) => T
 
 export interface ISudokuGrid<T> {
 	/**
@@ -33,6 +33,12 @@ export interface ISudokuGrid<T> {
 	compareWithRow(cellPos: Position, fn: CompareCBFn<T, boolean>): boolean
 	/** Get the data as a two-dimensional array representing the Sudoku grid. */
 	get data(): T[][]
+	/**
+	 * Edit selected Cell.
+	 * @param {Position} cellPos Position of the cell to be edited.
+	 * @param {CDBFn<T,U>} fn The function to edit cell.
+	 */
+	editCell<U>(cellPos: Position, fn: CBFn<T, U>): ISudokuGrid<T | U>
 	/**
 	 * Check if a given function returns true for all cells in a specific box.
 	 * @param {number} box The box number (0-8).
@@ -170,7 +176,7 @@ export class SudokuGrid<T> implements ISudokuGrid<T> {
 	 * @param {CreateCBFn<T>} mapFn A mapping function to call on every element of the array.
 	 */
 	static create<T>(mapFn: CreateCBFn<T>) {
-		return new SudokuGrid(createMatrix(9, pos => mapFn(pos, _throw(new Error()))))
+		return new SudokuGrid(createMatrix(9, mapFn))
 	}
 
 	/**
@@ -287,6 +293,14 @@ export class SudokuGrid<T> implements ISudokuGrid<T> {
 		for (const col of iterateArray(9))
 			if (col !== compareCol && !fn(this.#data[row][compareCol], this.#data[row][col], { row, col })) return false
 		return true
+	}
+
+	editCell<U>(cellPos: Position, fn: CBFn<T, U>) {
+		const newGrid = this.data as Array<Array<T | U>>
+
+		newGrid[cellPos.row][cellPos.col] = fn(this.getCell(cellPos), cellPos)
+
+		return new SudokuGrid(newGrid)
 	}
 
 	everyBox(box: number, fn: CBFn<T, boolean>) {
