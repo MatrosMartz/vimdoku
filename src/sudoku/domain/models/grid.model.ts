@@ -1,6 +1,6 @@
 import { _throw, createMatrix, iterateArray, iterateMatrix } from '~/utils'
 
-import type { Position } from './position.entity'
+import type { Position } from './position.model'
 
 export type CompareCBFn<T, U> = (compareCell: T, currCell: T, position: Position) => U
 export type CBFn<T, U> = (value: T, position: Position) => U

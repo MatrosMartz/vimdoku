@@ -1,10 +1,10 @@
 import { InvalidBoardError } from '~/utils'
 
-import { type CellJSON, CellKinds, type ICell, InitialCell, WritableCell } from './cell.entity'
-import { CellNotes, type ValidNumbers } from './cell-notes.entity'
-import { DifficultyKinds } from './difficulties.entity'
-import { type ISudokuGrid, SudokuGrid } from './grid.entity'
-import { Solution } from './solution.entity'
+import { type CellJSON, CellKinds, type ICell, InitialCell, WritableCell } from './cell.model'
+import { CellNotes, type ValidNumbers } from './cell-notes.model'
+import { DifficultyKinds } from './difficulties.model'
+import { type ISudokuGrid, SudokuGrid } from './grid.model'
+import { Solution } from './solution.model'
 
 export type BoardData = ISudokuGrid<ICell>
 

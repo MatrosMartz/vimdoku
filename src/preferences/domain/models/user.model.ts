@@ -1,4 +1,4 @@
-import type { FieldsToModel, FormField } from './form-fields.entity'
+import type { FieldsToModel, FormField } from './form-fields.model'
 
 export enum Langs {
 	EN = 'en',

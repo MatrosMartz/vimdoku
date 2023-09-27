@@ -1,8 +1,8 @@
 import { box, createMatrix, InvalidSolutionError, iterateMatrix, randomNumbers } from '~/utils'
 
-import type { ValidNumbers } from './cell-notes.entity'
-import { type ISudokuGrid, SudokuGrid } from './grid.entity'
-import type { Position } from './position.entity'
+import type { ValidNumbers } from './cell-notes.model'
+import { type ISudokuGrid, SudokuGrid } from './grid.model'
+import type { Position } from './position.model'
 
 function checkErrorRgx() {
 	return /^Cannot read properties of undefined \(reading '[0-8]'\)/

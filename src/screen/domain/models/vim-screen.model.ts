@@ -1,6 +1,6 @@
-import type { HelpDialogKinds, PrefDialogKinds } from './dialog.entity'
-import { DialogKinds } from './dialog.entity'
-import { MainScreenKinds } from './main.entity'
+import type { HelpDialogKinds, PrefDialogKinds } from './dialog.model'
+import { DialogKinds } from './dialog.model'
+import { MainScreenKinds } from './main.model'
 
 export interface VimScreenValue {
 	dialog: DialogKinds

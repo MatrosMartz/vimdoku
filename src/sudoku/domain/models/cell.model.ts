@@ -1,4 +1,4 @@
-import { CellNotes, type CellNotesJSON, type ICellNotes, type ValidNumbers } from './cell-notes.entity'
+import { CellNotes, type CellNotesJSON, type ICellNotes, type ValidNumbers } from './cell-notes.model'
 
 export enum CellKinds {
 	Correct = 'correct',

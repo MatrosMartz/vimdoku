@@ -1,8 +1,8 @@
 import { InvalidPreferencesError, sameStructure } from '~/utils'
 
-import { sudokuFields, type SudokuPreferences } from './sudoku.entity'
-import { Langs, userField, type UserPreferences } from './user.entity'
-import { vimFields, type VimPreferences } from './vim.entity'
+import { sudokuFields, type SudokuPreferences } from './sudoku.model'
+import { Langs, userField, type UserPreferences } from './user.model'
+import { vimFields, type VimPreferences } from './vim.model'
 
 export interface PreferencesValue {
 	sudoku: SudokuPreferences
