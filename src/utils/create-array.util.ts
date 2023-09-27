@@ -1,22 +1,19 @@
-import type { Position } from '$sudoku/domain/models'
+import type { Position } from '$sudoku/domain/entities/position.entity'
 
-export function createArray<T>(length: number, mapper: { fn(index: number): T }): T[]
-export function createArray<T>(length: number, mapper: { value: T }): T[]
-export function createArray<T>(length: number, mapper: { fn(index: number): T } | { value: T }) {
-	const array = new Array(length)
+export function createArray<T>(length: number, mapFn: (index: number) => T) {
+	const array: T[] = new Array(length)
 
-	for (let i = 0; i < length; i++) array[i] = 'fn' in mapper ? mapper.fn(i) : mapper.value
+	for (let i = 0; i < length; i++) array[i] = mapFn(i)
 
 	return array
 }
 
-export function createMatrix<T>(length: number, mapper: { fn(pos: Position): T }): T[][]
-export function createMatrix<T>(length: number, mapper: { value: T }): T[][]
-export function createMatrix<T>(length: number, mapper: { fn(pos: Position): T } | { value: T }) {
-	return createArray(length, {
-		fn: col =>
-			createArray(length, { fn: row => ('fn' in mapper ? mapper.fn({ col, row }) : structuredClone(mapper.value)) }),
-	})
+export function createMatrix<T>(length: number, mapFn: (position: Position) => T) {
+	return createArray(length, col => createArray(length, row => mapFn({ row, col })))
+}
+
+export function* iterateArray(length: number) {
+	for (let i = 0; i < length; i++) yield i
 }
 
 export function* iterateMatrix(length: number) {

@@ -9,3 +9,7 @@ export function xor(a: boolean, b: boolean) {
 }
 
 export type Values<T extends Record<string, unknown> = Record<string, unknown>> = T[keyof T]
+
+export function _throw(err: Error): never {
+	throw err
+}
