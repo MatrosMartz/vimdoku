@@ -1,4 +1,4 @@
-import { InvalidPreferencesError, sameStructure } from '~/utils'
+import { InvalidPreferencesError, sameStructure } from '~/share/utils'
 
 import { sudokuFields, type SudokuPreferences } from './sudoku.model'
 import { Langs, userField, type UserPreferences } from './user.model'

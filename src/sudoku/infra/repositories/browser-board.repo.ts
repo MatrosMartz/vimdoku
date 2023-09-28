@@ -1,5 +1,5 @@
-import type { BrowserStorage } from '~/utils'
-import { Board, type BoardOpts } from '$sudoku/domain/models'
+import type { BrowserStorage } from '~/share/utils'
+import { BoardService, type BoardOpts } from '$sudoku/domain/models'
 import type { BoardRepo } from '$sudoku/domain/repositories'
 
 export class BrowserBoardRepo implements BoardRepo {
@@ -18,7 +18,7 @@ export class BrowserBoardRepo implements BoardRepo {
 	}
 
 	async create(opts?: BoardOpts) {
-		this.#storage.set(Board.create(opts).toString())
+		this.#storage.set(BoardService.create(opts).toString())
 	}
 
 	async delete() {
@@ -27,7 +27,7 @@ export class BrowserBoardRepo implements BoardRepo {
 
 	async getBoard() {
 		const data = this.#storage.get()
-		return data == null ? null : Board.from(data)
+		return data == null ? null : BoardService.from(data)
 	}
 
 	async has() {

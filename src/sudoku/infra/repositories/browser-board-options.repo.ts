@@ -1,4 +1,4 @@
-import type { BrowserStorage } from '~/utils'
+import type { BrowserStorage } from '~/share/utils'
 import { type BoardOpts, type DifficultyKinds, Solution } from '$sudoku/domain/models'
 import type { BoardOptsRepo } from '$sudoku/domain/repositories'
 

@@ -1,45 +1,11 @@
-import { createArray, InvalidNoteError } from '~/utils'
+import { createArray, InvalidNoteError } from '~/share/utils'
 
-/** valid numbers for notes or cell values. */
-export type ValidNumbers = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
-
-export type CellNotesData = Array<ValidNumbers | null>
-export type CellNotesJSON = ValidNumbers[]
-
-const primes = [2, 3, 5, 7, 11, 13, 17, 19, 23]
-
-export interface ICellNotes {
-	/**
-	 *	Add a note to the set.
-	 * @param {ValidNumbers} num The note add (1 to 9).
-	 */
-	add(num: ValidNumbers): this
-	/** remove all notes */
-	clear(): this
-	/** Get the current set of notes. */
-	get data(): CellNotesData
-	/** Checks if notes set is empty */
-	get isEmpty(): boolean
-	/**
-	 * Remove a note to the set.
-	 * @param {ValidNumbers} num The note remove (1 to 9).
-	 */
-	remove(num: ValidNumbers): this
-	/** Converts Notes instance in JSON. */
-	toJSON(): CellNotesJSON
-	/** Converts Notes instance in num. */
-	toNumber(): number
-	/** Converts Notes instance to a string. */
-	toString(): string
-	/**
-	 * Toggle a note in the set (add if not present, remove if present).
-	 * @param {ValidNumbers} num - The note to toggle (1 to 9).
-	 */
-	toggle(num: ValidNumbers): this
-}
+import type { CellNotesData, INotes, ValidNumbers } from '../models'
 
 /** Represents a Sudoku cell notes. */
-export class CellNotes implements ICellNotes {
+export class NotesService implements INotes {
+	static readonly #PRIMES = [2, 3, 5, 7, 11, 13, 17, 19, 23]
+
 	#data
 
 	/**
@@ -70,7 +36,7 @@ export class CellNotes implements ICellNotes {
 				if (num == null || num < 1 || num > 9) throw new InvalidNoteError(initialNotes)
 				value[num - 1] = num
 			}
-		return new CellNotes(value)
+		return new NotesService(value)
 	}
 
 	/**
@@ -90,9 +56,9 @@ export class CellNotes implements ICellNotes {
 
 		if (Number.isNaN(numNotes) || numNotes === 0) throw new InvalidNoteError(notesLike)
 
-		for (let i = 0; i < primes.length; i++) if (numNotes % primes[i] === 0) notes[i] = 1 + i
+		for (let i = 0; i < NotesService.#PRIMES.length; i++) if (numNotes % NotesService.#PRIMES[i] === 0) notes[i] = 1 + i
 
-		return new CellNotes(notes as Array<ValidNumbers | null>)
+		return new NotesService(notes as Array<ValidNumbers | null>)
 	}
 
 	add(num: ValidNumbers) {
@@ -116,7 +82,7 @@ export class CellNotes implements ICellNotes {
 
 	toNumber() {
 		let num = 1
-		for (const note of this.#data) if (note != null) num *= primes[note - 1]
+		for (const note of this.#data) if (note != null) num *= NotesService.#PRIMES[note - 1]
 		return num
 	}
 

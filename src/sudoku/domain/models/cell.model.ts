@@ -1,4 +1,4 @@
-import { CellNotes, type CellNotesData, type ICellNotes, type ValidNumbers } from './cell-notes.model'
+import { type CellNotesData, type INotes, type ValidNumbers } from './notes.model'
 
 export enum CellKinds {
 	Correct = 'correct',
@@ -7,6 +7,25 @@ export enum CellKinds {
 	Empty = 'empty',
 	WithValue = 'value',
 	WhitNotes = 'notes',
+}
+
+export interface InitialCellData {
+	kind: CellKinds.Initial
+	value: ValidNumbers
+}
+
+export interface WritableCellData {
+	kind: Exclude<CellKinds, CellKinds.Initial>
+	notes: INotes
+	value: number
+}
+
+export type CellData = (InitialCellData & { notes: INotes }) | WritableCellData
+
+export interface CellJSON {
+	kind: CellKinds
+	notes: number
+	value: number
 }
 
 interface ICellBase<T extends InitialCellData | WritableCellData> {
@@ -21,47 +40,7 @@ interface ICellBase<T extends InitialCellData | WritableCellData> {
 	toString(): string
 }
 
-export interface InitialCellData {
-	kind: CellKinds.Initial
-	value: ValidNumbers
-}
-
 export interface IInitialCell extends ICellBase<InitialCellData> {}
-
-/** Represents a Sudoku cell of Initial kind.  */
-export class InitialCell implements IInitialCell {
-	#cellValue
-
-	/**
-	 * Creates an instance of the InitialCell class.
-	 * @param {number} value Solution and value for cell.
-	 */
-	constructor(value: number) {
-		this.#cellValue = value as ValidNumbers
-	}
-
-	get cellValue() {
-		return this.#cellValue
-	}
-
-	get data(): InitialCellData {
-		return { kind: CellKinds.Initial, value: this.#cellValue }
-	}
-
-	get kind() {
-		return CellKinds.Initial as const
-	}
-
-	toJSON(): CellJSON {
-		return { kind: CellKinds.Initial, notes: 1, value: this.#cellValue }
-	}
-}
-
-export interface WritableCellData {
-	kind: Exclude<CellKinds, CellKinds.Initial>
-	notes: ICellNotes
-	value: number
-}
 
 export interface IWritableCell extends ICellBase<WritableCellData> {
 	/**
@@ -88,95 +67,6 @@ export interface IWritableCell extends ICellBase<WritableCellData> {
 	 * @param {ValidNumbers} num The note add (1 to 9).
 	 */
 	writeValue(num: ValidNumbers): this
-}
-
-/** Represents a Sudoku cell of non Initial kind (Correct, Incorrect, Empty, WithNotes and WithValue). */
-export class WritableCell implements IWritableCell {
-	static readonly EMPTY_VALUE = 0
-
-	#cellValue
-	#kind
-	#notes
-
-	/**
-	 * Creates an instance of the WritableCell class.
-	 * @param {Partial<WritableCellData>} [data] Kind, value and Notes for Cell.
-	 */
-	constructor(data?: Partial<WritableCellData>)
-	constructor({
-		kind = CellKinds.Empty,
-		notes = CellNotes.create(),
-		value = WritableCell.EMPTY_VALUE,
-	}: Partial<WritableCellData> = {}) {
-		this.#cellValue = value
-		this.#kind = kind
-		this.#notes = notes
-	}
-
-	get cellValue() {
-		return this.#cellValue
-	}
-
-	get data(): WritableCellData {
-		return { kind: this.#kind, notes: this.#notes, value: this.#cellValue }
-	}
-
-	get kind() {
-		return this.#kind
-	}
-
-	get notesData() {
-		return this.#notes.data
-	}
-
-	checkValue(solutionValue: ValidNumbers) {
-		this.#kind = this.#cellValue === solutionValue ? CellKinds.Correct : CellKinds.Incorrect
-		return this
-	}
-
-	clear() {
-		this.#cellValue = WritableCell.EMPTY_VALUE
-		this.#notes.clear()
-		return this
-	}
-
-	removeNote(num: ValidNumbers) {
-		this.#notes = this.#notes.remove(num)
-		this.#cellValue = WritableCell.EMPTY_VALUE
-		this.#kind = this.#kindByNotes()
-
-		return this
-	}
-
-	toJSON(): CellJSON {
-		return { kind: this.#kind, notes: this.#notes.toNumber(), value: this.#cellValue }
-	}
-
-	toggleNote(num: ValidNumbers) {
-		this.#cellValue = WritableCell.EMPTY_VALUE
-		this.#notes.toggle(num)
-		this.#kind = this.#kindByNotes()
-		return this
-	}
-
-	writeValue(num: ValidNumbers) {
-		this.#kind = CellKinds.WithValue
-		this.#cellValue = num
-		this.#notes.clear()
-		return this
-	}
-
-	#kindByNotes() {
-		return this.#notes.isEmpty ? CellKinds.Empty : CellKinds.WhitNotes
-	}
-}
-
-export type CellData = (InitialCellData & { notes: ICellNotes }) | WritableCellData
-
-export interface CellJSON {
-	kind: CellKinds
-	notes: number
-	value: number
 }
 
 export type ICell = IInitialCell | IWritableCell
