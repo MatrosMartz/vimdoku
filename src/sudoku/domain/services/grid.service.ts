@@ -8,7 +8,7 @@ export class GridService<T> implements IGrid<T> {
 	#data
 
 	/**
-	 * Create a SudokuGrid instance with the provided data.
+	 * Create an instance of the GridService class with the provided data.
 	 * @param {T[][]} data A two-dimensional array representing the Sudoku grid.
 	 * @throws {Error} If the data is invalid (not a 9x9 grid).
 	 */
@@ -22,7 +22,7 @@ export class GridService<T> implements IGrid<T> {
 	}
 
 	/**
-	 * Create new instance of SudokuGrid.
+	 * Create an instance of the GridService class with map function.
 	 * @param {CreateCBFn<T>} mapFn A mapping function to call on every element of the array.
 	 */
 	static create<T>(mapFn: CreateCBFn<T>) {

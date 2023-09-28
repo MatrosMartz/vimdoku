@@ -10,7 +10,8 @@ export interface ISolution {
 	get data(): SolutionJSON
 	/** Get the current grid. */
 	get grid(): SolutionGrid
-	/** Converts th solution instance to a array. */
+	/** Converts the solution instance to a array. */
 	toJSON(): SolutionJSON
+	/** Converts Solution instance in sudoku board string representation. */
 	toString(): string
 }

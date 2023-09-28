@@ -43,7 +43,7 @@ export class PreferencesService implements IPreferences {
 	#vim
 
 	/**
-	 * Creates an instance of the Preferences class.
+	 * Create an instance of the PreferencesService class.
 	 * @param {PreferencesData} data Initial Sudoku board.
 	 */
 	constructor(data: PreferencesData) {
@@ -65,7 +65,7 @@ export class PreferencesService implements IPreferences {
 	}
 
 	/**
-	 * Create instance of the Preferences Class
+	 * Create an instance of the PreferencesService Class
 	 * @param {PreferencesOpts} [opts] Custom, initial Preferences.
 	 */
 	static create(opts?: PreferencesOpts): PreferencesService
@@ -78,7 +78,7 @@ export class PreferencesService implements IPreferences {
 	}
 
 	/**
-	 * Create instance of Preferences class from a JSON string.
+	 * Create an  instance of PreferencesService class from a JSON string.
 	 * @param preferencesLike JSON representation of preferences.
 	 */
 	static from(preferencesLike: string) {

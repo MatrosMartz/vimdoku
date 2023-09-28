@@ -37,6 +37,7 @@ interface ICellBase<T extends InitialCellData | WritableCellData> {
 	get kind(): T extends InitialCellData ? CellKinds.Initial : Exclude<CellKinds, CellKinds.Initial>
 	/** Converts Cell instance in JSON. */
 	toJSON(): CellJSON
+	/** Converts the Cell instance to a JSON string. */
 	toString(): string
 }
 
@@ -54,17 +55,17 @@ export interface IWritableCell extends ICellBase<WritableCellData> {
 	get notesData(): CellNotesData
 	/**
 	 * Remove a note in the Notes class.
-	 * @param {ValidNumbers} num The note to remove (1 to 9).
+	 * @param {ValidNumbers} num The note to remove (1-9).
 	 */
 	removeNote(num: ValidNumbers): this
 	/**
 	 * Toggle a note in the Notes class (add if not present, remove if present).
-	 * @param {ValidNumbers} num The note to toggle (1 to 9).
+	 * @param {ValidNumbers} num The note to toggle (1-9).
 	 */
 	toggleNote(num: ValidNumbers): this
 	/**
 	 * Toggle a cell value (add if not present, remove if present).
-	 * @param {ValidNumbers} num The note add (1 to 9).
+	 * @param {ValidNumbers} num The note add (1-9).
 	 */
 	writeValue(num: ValidNumbers): this
 }

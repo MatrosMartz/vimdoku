@@ -13,7 +13,7 @@ export class SolutionService implements ISolution {
 	#grid
 
 	/**
-	 * Creates an instance of the Solution class.
+	 * Create an instance of the SolutionService class with data.
 	 * @param {SolutionGrid} data Solution Data.
 	 */
 	constructor(data: SolutionGrid) {
@@ -43,15 +43,15 @@ export class SolutionService implements ISolution {
 		}
 	}
 
-	/** Create new instance of Solution class. */
+	/** Create an instance of the SolutionService class. */
 	static create() {
 		return new SolutionService(SolutionService.#fillSolution())
 	}
 
 	/**
-	 * Create instance of Solution class from a JSON string.
+	 * Create an instance of the SolutionService class from a JSON string.
 	 * @param {string} solutionLike JSON representation of solution.
-	 * @throws {InvalidSolutionError} - If `solutionLike` is not a valid JSON string.
+	 * @throws {InvalidSolutionError} If `solutionLike` is not a valid JSON string.
 	 * @example
 	 * const solutionJSON = JSON.stringify(solutionInstance)
 	 * const newSolutionInstance = Solution.from(solutionJSON)
@@ -66,9 +66,9 @@ export class SolutionService implements ISolution {
 
 	/**
 	 * Check if a Sudoku cell is safe to place a number.
-	 * @param {SolutionGrid} value - The current Sudoku grid.
-	 * @param {number} num - The number to check.
-	 * @param {Position} position - The position of the cell to check.
+	 * @param {SolutionGrid} value The current Sudoku grid.
+	 * @param {number} num The number to check.
+	 * @param {Position} position The position of the cell to check.
 	 * @private
 	 */
 	static #cellIsSafe(value: number[][], num: number, { row, col }: Position) {

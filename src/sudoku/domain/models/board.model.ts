@@ -13,20 +13,20 @@ export interface IBoard {
 	clear(cellPos: Position): this
 	/** Get the current cells of board. */
 	get data(): BoardData
-	/** Convert Board instance in JSON. */
+	/** Converts Board instance in JSON. */
 	toJSON(): CellJSON[][]
-	/** Convert the Board instance to a JSON string. */
+	/** Converts the Board instance to a JSON string. */
 	toString(): string
 	/**
 	 * Toggle a note in the Notes class (add if not present, remove if present).
 	 * @param {Position} cellPos Position of the cell to which the notes are to be toggled.
-	 * @param {ValidNumbers} num The note to toggle (1 to 9).
+	 * @param {ValidNumbers} num The note to toggle (1-9).
 	 */
 	toggleNotes(cellPos: Position, num: ValidNumbers): this
 	/**
 	 * Toggle a cell value (add if not present, remove if present).
 	 * @param {Position} cellPos Position of the cell to which the value is changed.
-	 * @param {ValidNumbers} num The note add (1 to 9).
+	 * @param {ValidNumbers} num The note add (1-9).
 	 */
 	write(cellPos: Position, num: ValidNumbers): this
 }

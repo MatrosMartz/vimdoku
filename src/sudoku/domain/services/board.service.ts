@@ -35,7 +35,7 @@ export class BoardService implements IBoard {
 	}
 
 	/**
-	 * Create new instance of Board class with options.
+	 * Create instance of Board class with options.
 	 * @param {BoardOpts} [opts] Options for create board (optional).
 	 */
 	static create(opts?: Partial<BoardOpts>): BoardService

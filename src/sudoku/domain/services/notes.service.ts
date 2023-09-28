@@ -9,7 +9,7 @@ export class NotesService implements INotes {
 	#data
 
 	/**
-	 * Creates an instance of the Notes class.
+	 * Creates an instance of the NotesService class.
 	 * @param {CellNotesData} data Initial Sudoku cell notes (optional).
 	 */
 	constructor(data: CellNotesData) {
@@ -25,7 +25,7 @@ export class NotesService implements INotes {
 	}
 
 	/**
-	 * Create an instance of the Notes class.
+	 * Create an instance of the NotesService class.
 	 * @param {ValidNumbers[]} [initialNotes] Initial Sudoku cell notes (optional).
 	 * @throws {InvalidBoardError} If `initialNotes` is not a valid array of numbers.
 	 */
@@ -40,7 +40,7 @@ export class NotesService implements INotes {
 	}
 
 	/**
-	 * Create instance of Notes class from a JSON string.
+	 * Create instance of the NotesService class from a JSON string.
 	 * @param {string} notesLike JSON representation of notes.
 	 * @throws {InvalidBoardError} If `solutionLike` is not a valid JSON string.
 	 * @example

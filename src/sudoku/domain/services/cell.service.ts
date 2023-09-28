@@ -14,7 +14,7 @@ export class InitialCellService implements IInitialCell {
 	#cellValue
 
 	/**
-	 * Creates an instance of the InitialCell class.
+	 * Create an instance of InitialCellService class.
 	 * @param {number} value Solution and value for cell.
 	 */
 	constructor(value: number) {
@@ -47,7 +47,7 @@ export class WritableCellService implements IWritableCell {
 	#notes
 
 	/**
-	 * Creates an instance of the WritableCell class.
+	 * Create an instance of the WritableCellService class.
 	 * @param {Partial<WritableCellData>} [data] Kind, value and Notes for Cell.
 	 */
 	constructor(data?: Partial<WritableCellData>)
