@@ -29,6 +29,8 @@ export interface IGrid<T> {
 	 * @param {CompareCBFn<T, boolean>} fn The comparison function.
 	 */
 	compareWithRow(cellPos: Position, fn: CompareCBFn<T, boolean>): boolean
+	/** Return copy of grid. */
+	copy(): IGrid<T>
 	/** Get the data as a two-dimensional array representing the Sudoku grid. */
 	get data(): T[][]
 	/**

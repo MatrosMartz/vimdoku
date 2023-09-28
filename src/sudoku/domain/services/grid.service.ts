@@ -18,7 +18,7 @@ export class GridService<T> implements IGrid<T> {
 	}
 
 	get data() {
-		return this.#data
+		return this.#data.map(row => row.map(cell => cell))
 	}
 
 	/**
@@ -143,6 +143,10 @@ export class GridService<T> implements IGrid<T> {
 		for (const col of iterateArray(9))
 			if (col !== compareCol && !fn(this.#data[row][compareCol], this.#data[row][col], { row, col })) return false
 		return true
+	}
+
+	copy() {
+		return new GridService(this.data)
 	}
 
 	editCell<U>(cellPos: Position, fn: CBFn<T, U>) {
