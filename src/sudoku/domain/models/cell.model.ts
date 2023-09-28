@@ -1,10 +1,4 @@
-import {
-	CellNotes,
-	type CellNotesData,
-	type CellNotesJSON,
-	type ICellNotes,
-	type ValidNumbers,
-} from './cell-notes.model'
+import { CellNotes, type CellNotesData, type ICellNotes, type ValidNumbers } from './cell-notes.model'
 
 export enum CellKinds {
 	Correct = 'correct',
@@ -59,7 +53,7 @@ export class InitialCell implements IInitialCell {
 	}
 
 	toJSON(): CellJSON {
-		return { kind: CellKinds.Initial, notes: [], value: this.#cellValue }
+		return { kind: CellKinds.Initial, notes: 1, value: this.#cellValue }
 	}
 }
 
@@ -155,7 +149,7 @@ export class WritableCell implements IWritableCell {
 	}
 
 	toJSON(): CellJSON {
-		return { kind: this.#kind, notes: this.#notes.toJSON(), value: this.#cellValue }
+		return { kind: this.#kind, notes: this.#notes.toNumber(), value: this.#cellValue }
 	}
 
 	toggleNote(num: ValidNumbers) {
@@ -181,7 +175,7 @@ export type CellData = (InitialCellData & { notes: ICellNotes }) | WritableCellD
 
 export interface CellJSON {
 	kind: CellKinds
-	notes: CellNotesJSON
+	notes: number
 	value: number
 }
 

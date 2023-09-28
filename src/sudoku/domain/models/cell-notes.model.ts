@@ -6,6 +6,8 @@ export type ValidNumbers = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 export type CellNotesData = Array<ValidNumbers | null>
 export type CellNotesJSON = ValidNumbers[]
 
+const primes = [2, 3, 5, 7, 11, 13, 17, 19, 23]
+
 export interface ICellNotes {
 	/**
 	 *	Add a note to the set.
@@ -25,6 +27,8 @@ export interface ICellNotes {
 	remove(num: ValidNumbers): this
 	/** Converts Notes instance in JSON. */
 	toJSON(): CellNotesJSON
+	/** Converts Notes instance in num. */
+	toNumber(): number
 	/** Converts Notes instance to a string. */
 	toString(): string
 	/**
@@ -71,18 +75,24 @@ export class CellNotes implements ICellNotes {
 
 	/**
 	 * Create instance of Notes class from a JSON string.
-	 * @param {string} noteLike JSON representation of notes.
+	 * @param {string} notesLike JSON representation of notes.
 	 * @throws {InvalidBoardError} If `solutionLike` is not a valid JSON string.
 	 * @example
 	 * const notesJSON = JSON.stringify(notesInstance)
 	 * const newNotesInstance = Notes.from(notesJSON)
 	 */
-	static from(noteLike: string) {
-		if (typeof noteLike === 'string') {
-			const initNotes = JSON.parse(noteLike)
-			return new CellNotes(initNotes)
-		}
-		throw new InvalidNoteError(noteLike)
+	static from(notesLike: string | number) {
+		const notes = createArray<number | null>(9, () => null)
+		let numNotes = 0
+
+		if (typeof notesLike === 'string') numNotes = Number(notesLike)
+		else if (typeof notesLike === 'number') numNotes = notesLike
+
+		if (Number.isNaN(numNotes) || numNotes === 0) throw new InvalidNoteError(notesLike)
+
+		for (let i = 0; i < primes.length; i++) if (numNotes % primes[i] === 0) notes[i] = 1 + i
+
+		return new CellNotes(notes as Array<ValidNumbers | null>)
 	}
 
 	add(num: ValidNumbers) {
@@ -101,11 +111,17 @@ export class CellNotes implements ICellNotes {
 	}
 
 	toJSON() {
-		return this.data.filter((val): val is ValidNumbers => val != null)
+		return this.#data.filter((val): val is ValidNumbers => val != null)
+	}
+
+	toNumber() {
+		let num = 1
+		for (const note of this.#data) if (note != null) num *= primes[note - 1]
+		return num
 	}
 
 	toString() {
-		return JSON.stringify(this.#data)
+		return JSON.stringify(this.toJSON())
 	}
 
 	toggle(num: ValidNumbers) {

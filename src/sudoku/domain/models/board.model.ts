@@ -101,7 +101,7 @@ export class Board implements IBoard {
 			const data = new SudokuGrid(cellJSONs).mapGrid<ICell>(({ kind, value, notes }) =>
 				kind === CellKinds.Initial
 					? new InitialCell(value as ValidNumbers)
-					: new WritableCell({ kind, value, notes: CellNotes.create(notes) })
+					: new WritableCell({ kind, value, notes: CellNotes.from(notes) })
 			)
 			return new Board(data)
 		} else throw new InvalidBoardError(boardLike)
