@@ -1,2 +1,2 @@
 export * from './board.repo'
-export * from './solution.repo'
+export * from './board-options.repo'

@@ -1,20 +1,14 @@
 import { InvalidBoardError } from '~/utils'
 
+import type { BoardOpts } from './board-options.model'
 import { type CellJSON, CellKinds, type ICell, InitialCell, type IWritableCell, WritableCell } from './cell.model'
 import { CellNotes, type ValidNumbers } from './cell-notes.model'
 import { DifficultyKinds } from './difficulties.model'
 import { type ISudokuGrid, SudokuGrid } from './grid.model'
 import type { Position } from './position.model'
-import { type ISolution, Solution } from './solution.model'
+import { Solution } from './solution.model'
 
 export type BoardData = ISudokuGrid<ICell>
-
-export interface BoardOpts {
-	/** Number of initials cells (optional). */
-	difficulty?: DifficultyKinds
-	/** Sudoku solution (optional). */
-	solution?: ISolution
-}
 
 export interface IBoard {
 	/**
@@ -62,8 +56,8 @@ export class Board implements IBoard {
 	 * Create new instance of Board class with options.
 	 * @param {BoardOpts} [opts] Options for create board (optional).
 	 */
-	static create(opts?: BoardOpts): Board
-	static create({ difficulty = DifficultyKinds.Beginner, solution = Solution.create() }: BoardOpts = {}) {
+	static create(opts?: Partial<BoardOpts>): Board
+	static create({ difficulty = DifficultyKinds.Beginner, solution = Solution.create() }: Partial<BoardOpts> = {}) {
 		let initials = 0
 		const grid = SudokuGrid.create<ICell>(pos => {
 			const isInitial = Boolean(Math.random() * 2) && initials < difficulty

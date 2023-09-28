@@ -10,15 +10,13 @@ function checkErrorRgx() {
 
 export type SolutionData = ISudokuGrid<ValidNumbers>
 
-export interface SolutionInitOpts {
-	/** Initial Sudoku solution (optional). */
-	initSolution?: SolutionData
-}
+export type SolutionJSON = ValidNumbers[][]
 
 export interface ISolution {
 	/** Get the current solution. */
 	get data(): SolutionData
-	/** Converts the Solution instance to a string representation of the Sudoku grid. */
+	/** Converts th solution instance to a array. */
+	toJSON(): SolutionJSON
 	toString(): string
 }
 
@@ -69,7 +67,7 @@ export class Solution implements ISolution {
 	static from(solutionLike: string) {
 		if (typeof solutionLike === 'string') {
 			const initSolution = JSON.parse(solutionLike)
-			return new Solution(initSolution)
+			return new Solution(new SudokuGrid(initSolution))
 		}
 		throw new InvalidSolutionError(solutionLike)
 	}
@@ -114,6 +112,10 @@ export class Solution implements ISolution {
 			}
 		}
 		return new SudokuGrid(data as ValidNumbers[][])
+	}
+
+	toJSON(): SolutionJSON {
+		return this.#data.data
 	}
 
 	toString() {

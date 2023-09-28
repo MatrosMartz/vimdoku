@@ -1,4 +1,5 @@
 export * from './board.model'
+export * from './board-options.model'
 export * from './cell.model'
 export * from './cell-notes.model'
 export * from './difficulties.model'
