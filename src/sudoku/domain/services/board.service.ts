@@ -9,6 +9,7 @@ import {
 	DifficultyKinds,
 	type IBoard,
 	type ICell,
+	type IGrid,
 	type IWritableCell,
 	type ValidNumbers,
 } from '../models'
@@ -19,18 +20,18 @@ import { SolutionService } from './solution.service'
 
 /** Represent a Sudoku Board. */
 export class BoardService implements IBoard {
-	#data
+	#grid
 
 	/**
 	 * Creates an instance of the Board class.
-	 * @param {BoardService} data Initial Sudoku board.
+	 * @param {BoardService} grid Initial Sudoku board.
 	 */
-	constructor(data: BoardData) {
-		this.#data = data
+	constructor(grid: IGrid<ICell>) {
+		this.#grid = grid
 	}
 
-	get data() {
-		return structuredClone(this.#data)
+	get data(): BoardData {
+		return this.#grid.data
 	}
 
 	/**
@@ -48,7 +49,7 @@ export class BoardService implements IBoard {
 			if (!isInitial) return new WritableCellService()
 
 			initials++
-			return new InitialCellService(solution.data.getCell(pos))
+			return new InitialCellService(solution.grid.getCell(pos))
 		})
 
 		return new BoardService(grid)
@@ -86,13 +87,13 @@ export class BoardService implements IBoard {
 	}
 
 	clear(cellPos: Position) {
-		this.#data = this.#data.editCell(cellPos, cell => (cell.kind === CellKinds.Initial ? cell : cell.clear()))
+		this.#grid = this.#grid.editCell(cellPos, cell => (cell.kind === CellKinds.Initial ? cell : cell.clear()))
 
 		return this
 	}
 
 	toJSON() {
-		return this.#data.mapGrid(cell => cell.toJSON()).data
+		return this.#grid.mapGrid(cell => cell.toJSON()).data
 	}
 
 	toString() {
@@ -100,14 +101,14 @@ export class BoardService implements IBoard {
 	}
 
 	toggleNotes(cellPos: Position, num: ValidNumbers) {
-		this.#data = this.#data.editCell(cellPos, cell => (cell.kind === CellKinds.Initial ? cell : cell.toggleNote(num)))
+		this.#grid = this.#grid.editCell(cellPos, cell => (cell.kind === CellKinds.Initial ? cell : cell.toggleNote(num)))
 
 		return this
 	}
 
 	write(cellPos: Position, num: ValidNumbers) {
-		if (this.#data.getCell(cellPos).kind !== CellKinds.Initial)
-			this.#data = this.#data
+		if (this.#grid.getCell(cellPos).kind !== CellKinds.Initial)
+			this.#grid = this.#grid
 				.editCell(cellPos, cell => (cell as IWritableCell).writeValue(num))
 				.mapRelated(cellPos, cell => (cell.kind === CellKinds.Initial ? cell : cell.removeNote(num)))
 

@@ -1,40 +1,44 @@
 import type { Position } from '~/share/domain/models'
 import { box, createMatrix, InvalidSolutionError, iterateMatrix, randomNumbers } from '~/share/utils'
 
-import { type ISolution, type SolutionData, type SolutionJSON, type ValidNumbers } from '../models'
+import { type ISolution, type SolutionGrid, type SolutionJSON, type ValidNumbers } from '../models'
 import { GridService } from './grid.service'
 
-function checkErrorRgx() {
+function notArrayErrorMsgRgx() {
 	return /^Cannot read properties of undefined \(reading '[0-8]'\)/
 }
 
 /** Represent a Sudoku solution. */
 export class SolutionService implements ISolution {
-	#data
+	#grid
 
 	/**
 	 * Creates an instance of the Solution class.
-	 * @param {SolutionData} data Solution Data.
+	 * @param {SolutionGrid} data Solution Data.
 	 */
-	constructor(data: SolutionData) {
-		this.#data = data
+	constructor(data: SolutionGrid) {
+		this.#grid = data
 	}
 
 	get data() {
-		return structuredClone(this.#data)
+		return this.toJSON()
+	}
+
+	get grid() {
+		return this.#grid.copy()
 	}
 
 	/**
 	 * Check if a given Sudoku solution is valid.
-	 * @param {SolutionData} solution The Sudoku solution to check.
+	 * @param {SolutionGrid} grid The Sudoku solution to check.
 	 */
-	static check(solution: SolutionData) {
+	static check(grid: SolutionGrid) {
 		try {
 			for (const pos of iterateMatrix(9))
-				if (solution.compareRelated(pos, (comp, current) => comp === current)) return false
+				if (grid.compareRelated(pos, (comp, current) => comp === current)) return false
 			return true
 		} catch (err) {
-			if (err instanceof TypeError && checkErrorRgx().test(err.message)) return false
+			if (err instanceof TypeError && notArrayErrorMsgRgx().test(err.message)) return false
 			throw err
 		}
 	}
@@ -62,7 +66,7 @@ export class SolutionService implements ISolution {
 
 	/**
 	 * Check if a Sudoku cell is safe to place a number.
-	 * @param {SolutionData} value - The current Sudoku grid.
+	 * @param {SolutionGrid} value - The current Sudoku grid.
 	 * @param {number} num - The number to check.
 	 * @param {Position} position - The position of the cell to check.
 	 * @private
@@ -103,12 +107,12 @@ export class SolutionService implements ISolution {
 	}
 
 	toJSON(): SolutionJSON {
-		return this.#data.data
+		return this.#grid.data
 	}
 
 	toString() {
 		const col = ' | '
 		const row = '\n- - - + - - - + - - -\n'
-		return this.data.joinGrid({ col, row })
+		return this.grid.joinGrid({ col, row })
 	}
 }

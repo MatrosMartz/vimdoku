@@ -1,10 +1,9 @@
 import type { Position } from '~/share/domain/models'
 
 import { type CellJSON, type ICell } from './cell.model'
-import { type IGrid } from './grid.model'
 import { type ValidNumbers } from './notes.model'
 
-export type BoardData = IGrid<ICell>
+export type BoardData = ICell[][]
 
 export interface IBoard {
 	/**
