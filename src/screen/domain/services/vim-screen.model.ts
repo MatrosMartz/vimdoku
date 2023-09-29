@@ -12,11 +12,7 @@ const { freeze: _f } = Object
 
 /** Represent a VIM-like screen for Sudoku game. */
 export class ScreenService implements IScreen {
-	/**
-	 * Define default values for screen
-	 * @readonly
-	 * @constant
-	 */
+	/** Define default values for screen. */
 	static readonly DEFAULT_SCREEN = _f<VimScreenValue>({
 		dialog: DialogKinds.None,
 		main: MainScreenKinds.Init,
@@ -27,6 +23,10 @@ export class ScreenService implements IScreen {
 
 	get dialog() {
 		return this.#value.dialog
+	}
+
+	get dialogOpts() {
+		return this.#dialogOpts
 	}
 
 	get mainScreen() {

@@ -19,6 +19,8 @@ export type DialogOpts = HelpDialogKinds | PrefDialogKinds | null
 export interface IScreen {
 	/** Get the current dialog. */
 	get dialog(): DialogKinds
+	/** Get the current dialogOpts */
+	get dialogOpts(): DialogOpts
 	/** Get the current main screen. */
 	get mainScreen(): MainScreenKinds
 	/** Set dialog and options. */
