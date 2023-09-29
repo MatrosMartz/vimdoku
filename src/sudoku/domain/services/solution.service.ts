@@ -14,18 +14,18 @@ export class SolutionService implements ISolution {
 
 	/**
 	 * Create an instance of the SolutionService class with data.
-	 * @param {SolutionGrid} data Solution Data.
+	 * @param {SolutionGrid} grid Solution Data.
 	 */
-	constructor(data: SolutionGrid) {
-		this.#grid = data
-	}
-
-	get data() {
-		return this.toJSON()
+	constructor(grid: SolutionGrid) {
+		this.#grid = grid
 	}
 
 	get grid() {
 		return this.#grid.copy()
+	}
+
+	get value() {
+		return this.toJSON()
 	}
 
 	/**
@@ -56,12 +56,13 @@ export class SolutionService implements ISolution {
 	 * const solutionJSON = JSON.stringify(solutionInstance)
 	 * const newSolutionInstance = Solution.from(solutionJSON)
 	 */
-	static from(solutionLike: string) {
-		if (typeof solutionLike === 'string') {
+	static fromString(solutionLike: string) {
+		try {
 			const initSolution = JSON.parse(solutionLike)
 			return new SolutionService(new GridService(initSolution))
+		} catch (err) {
+			throw new InvalidSolutionError(solutionLike, err)
 		}
-		throw new InvalidSolutionError(solutionLike)
 	}
 
 	/**
@@ -85,29 +86,29 @@ export class SolutionService implements ISolution {
 
 	/** Create a Sudoku solution data. */
 	static #fillSolution() {
-		let data = createMatrix(9, () => 0)
+		let value = createMatrix(9, () => 0)
 		for (let i = 0; i < 9; i++) {
 			const retry = () => {
-				data = createMatrix(9, () => 0)
+				value = createMatrix(9, () => 0)
 				i = -1
 			}
 			for (let j = i; j < 9; j++) {
 				const numbers = randomNumbers()
-				for (const num of numbers) if (this.#cellIsSafe(data, num, { row: i, col: j })) data[i][j] = num
+				for (const num of numbers) if (this.#cellIsSafe(value, num, { row: i, col: j })) value[i][j] = num
 
-				for (const num of numbers.reverse()) if (this.#cellIsSafe(data, num, { row: j, col: i })) data[j][i] = num
+				for (const num of numbers.reverse()) if (this.#cellIsSafe(value, num, { row: j, col: i })) value[j][i] = num
 
-				if (data[i][j] === 0 || data[j][i] === 0) {
+				if (value[i][j] === 0 || value[j][i] === 0) {
 					retry()
 					break
 				}
 			}
 		}
-		return new GridService(data as ValidNumbers[][])
+		return new GridService(value as ValidNumbers[][])
 	}
 
 	toJSON(): SolutionJSON {
-		return this.#grid.data
+		return this.#grid.value
 	}
 
 	toString() {

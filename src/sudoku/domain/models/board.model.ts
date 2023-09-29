@@ -3,7 +3,7 @@ import type { Position } from '~/share/domain/models'
 import { type CellJSON, type ICell } from './cell.model'
 import { type ValidNumbers } from './notes.model'
 
-export type BoardData = ICell[][]
+export type BoardValue = ICell[][]
 
 export interface IBoard {
 	/**
@@ -11,8 +11,6 @@ export interface IBoard {
 	 * @param {Position} cellPos Position of the cell to be cleared.
 	 */
 	clear(cellPos: Position): this
-	/** Get the current cells of board. */
-	get data(): BoardData
 	/** Converts Board instance in JSON. */
 	toJSON(): CellJSON[][]
 	/** Converts the Board instance to a JSON string. */
@@ -23,6 +21,8 @@ export interface IBoard {
 	 * @param {ValidNumbers} num The note to toggle (1-9).
 	 */
 	toggleNotes(cellPos: Position, num: ValidNumbers): this
+	/** Get the current cells of board. */
+	get value(): BoardValue
 	/**
 	 * Toggle a cell value (add if not present, remove if present).
 	 * @param {Position} cellPos Position of the cell to which the value is changed.

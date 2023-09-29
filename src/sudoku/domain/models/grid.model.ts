@@ -31,8 +31,6 @@ export interface IGrid<T> {
 	compareWithRow(cellPos: Position, fn: CompareCBFn<T, boolean>): boolean
 	/** Return copy of grid. */
 	copy(): IGrid<T>
-	/** Get the data as a two-dimensional array representing the Sudoku grid. */
-	get data(): T[][]
 	/**
 	 * Edit selected Cell.
 	 * @param {Position} cellPos Position of the cell to be edited.
@@ -151,4 +149,6 @@ export interface IGrid<T> {
 	 * @param {CBFn<T, boolean>} fn The function to check against each cell in the row.
 	 */
 	someRow(row: number, fn: CBFn<T, boolean>): boolean
+	/** Get the value as a two-dimensional array representing the Sudoku grid. */
+	get value(): T[][]
 }

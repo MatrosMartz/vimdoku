@@ -2,8 +2,8 @@ import type { Position } from '~/share/domain/models'
 import { InvalidBoardError } from '~/share/utils'
 
 import {
-	type BoardData,
 	type BoardOpts,
+	type BoardValue,
 	type CellJSON,
 	CellKinds,
 	DifficultyKinds,
@@ -30,8 +30,8 @@ export class BoardService implements IBoard {
 		this.#grid = grid
 	}
 
-	get data(): BoardData {
-		return this.#grid.data
+	get value(): BoardValue {
+		return this.#grid.value
 	}
 
 	/**
@@ -57,33 +57,37 @@ export class BoardService implements IBoard {
 
 	/**
 	 * Create instance of Board class from a JSON string
-	 * @param {string} boardLike JSON representation of board.
-	 * @throws {InvalidBoardError} If `boardLike` is not a valid JSON string.
-	 * @example
-	 * const boardJSON = JSON.stringify(boardInstance)
-	 * const newBoardInstance = Board.from(boardJSON)
-	 */
-	static from(boardLike: string): BoardService
-	/**
-	 * Create instance of Board class from a JSON string
 	 * @param {CellJSON[][]} boardLike JSON representation of board.
 	 * @throws {InvalidBoardError} If `boardLike` is not a  valid JSON.
-	 * @example
-	 * const boardJSON = boardInstance.toJSON()
-	 * const newBoardInstance = Board.from(boardJSON)
 	 */
-	static from(boardLike: CellJSON[][]): BoardService
-	static from(boardLike: string | CellJSON[][]) {
-		const cellJSONs: CellJSON[][] = typeof boardLike === 'string' ? JSON.parse(boardLike) : boardLike
+	static fromJSON(boardLike: CellJSON[][]) {
+		try {
+			if (Array.isArray(boardLike)) {
+				const data = new GridService(boardLike).mapGrid<ICell>(({ kind, num: value, notes }) =>
+					kind === CellKinds.Initial
+						? new InitialCellService(value as ValidNumbers)
+						: new WritableCellService({ kind, num: value, notes: NotesService.fromNumber(Number(notes)) })
+				)
+				return new BoardService(data)
+			} else throw new InvalidBoardError(boardLike)
+		} catch (err) {
+			throw err instanceof InvalidBoardError ? err : new InvalidBoardError(boardLike, err)
+		}
+	}
 
-		if (Array.isArray(cellJSONs)) {
-			const data = new GridService(cellJSONs).mapGrid<ICell>(({ kind, value, notes }) =>
-				kind === CellKinds.Initial
-					? new InitialCellService(value as ValidNumbers)
-					: new WritableCellService({ kind, value, notes: NotesService.from(notes) })
-			)
-			return new BoardService(data)
-		} else throw new InvalidBoardError(boardLike)
+	/**
+	 * Create instance of Board class from a JSON string
+	 * @param {string} boardLike JSON representation of board.
+	 * @throws {InvalidBoardError} If `boardLike` is not a valid JSON string.
+	 */
+	static fromString(boardLike: string) {
+		try {
+			const cellJSONs: CellJSON[][] = JSON.parse(boardLike)
+
+			return this.fromJSON(cellJSONs)
+		} catch (err) {
+			throw err instanceof InvalidBoardError ? err : new InvalidBoardError(boardLike, err)
+		}
 	}
 
 	clear(cellPos: Position) {
@@ -93,7 +97,7 @@ export class BoardService implements IBoard {
 	}
 
 	toJSON() {
-		return this.#grid.mapGrid(cell => cell.toJSON()).data
+		return this.#grid.mapGrid(cell => cell.toJSON()).value
 	}
 
 	toString() {

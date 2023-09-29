@@ -4,8 +4,8 @@ import {
 	type AllPreferences,
 	type IPreferences,
 	Langs,
-	type PreferencesData,
 	type PreferencesOpts,
+	type PreferencesValue,
 	type SudokuPreferences,
 	type UserPreferences,
 	type VimPreferences,
@@ -26,14 +26,14 @@ const vim: VimPreferences = { fontSize: 16, history: 100, numbers: true, relativ
 
 /** Represent a Preferences for game. */
 export class PreferencesService implements IPreferences {
-	/** Default all Preferences. */
-	static readonly DEFAULT_DATA = _f<PreferencesData>({ sudoku, user, vim })
-
 	/** Default Sudoku Preferences. */
 	static readonly DEFAULT_SUDOKU = _f(sudoku)
 
 	/** Default User Preferences. */
 	static readonly DEFAULT_USER = _f(user)
+
+	/** Default all Preferences. */
+	static readonly DEFAULT_VALUE = _f<PreferencesValue>({ sudoku, user, vim })
 
 	/** Default VIM preferences. */
 	static readonly DEFAULT_VIM = _f(vim)
@@ -44,12 +44,12 @@ export class PreferencesService implements IPreferences {
 
 	/**
 	 * Create an instance of the PreferencesService class.
-	 * @param {PreferencesData} data Initial Sudoku board.
+	 * @param {PreferencesValue} value Initial Sudoku board.
 	 */
-	constructor(data: PreferencesData) {
-		this.#sudoku = data.sudoku
-		this.#user = data.user
-		this.#vim = data.vim
+	constructor(value: PreferencesValue) {
+		this.#sudoku = value.sudoku
+		this.#user = value.user
+		this.#vim = value.vim
 	}
 
 	get sudoku() {
@@ -81,11 +81,11 @@ export class PreferencesService implements IPreferences {
 	 * Create an  instance of PreferencesService class from a JSON string.
 	 * @param preferencesLike JSON representation of preferences.
 	 */
-	static from(preferencesLike: string) {
+	static fromString(preferencesLike: string) {
 		if (typeof preferencesLike === 'string') {
-			const data: PreferencesData = JSON.parse(preferencesLike)
-			if (sameStructure(data, PreferencesService.DEFAULT_DATA)) throw new InvalidPreferencesError(data)
-			return new PreferencesService(data)
+			const value: PreferencesValue = JSON.parse(preferencesLike)
+			if (sameStructure(value, PreferencesService.DEFAULT_VALUE)) throw new InvalidPreferencesError(value)
+			return new PreferencesService(value)
 		}
 		throw new InvalidPreferencesError(preferencesLike)
 	}
@@ -98,7 +98,7 @@ export class PreferencesService implements IPreferences {
 		return this
 	}
 
-	toJSON(): PreferencesData {
+	toJSON(): PreferencesValue {
 		return { sudoku: this.sudoku, user: this.user, vim: this.vim }
 	}
 

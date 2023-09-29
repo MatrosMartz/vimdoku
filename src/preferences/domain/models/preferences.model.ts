@@ -2,7 +2,7 @@ import { sudokuFields, type SudokuPreferences } from './sudoku.model'
 import { userField, type UserPreferences } from './user.model'
 import { vimFields, type VimPreferences } from './vim.model'
 
-export interface PreferencesData {
+export interface PreferencesValue {
 	sudoku: SudokuPreferences
 	user: UserPreferences
 	vim: VimPreferences
@@ -28,7 +28,7 @@ export interface IPreferences {
 	/** Get the current value of the Sudoku preferences. */
 	get sudoku(): SudokuPreferences
 	/** Converts the Preferences instance in JSON. */
-	toJSON(): PreferencesData
+	toJSON(): PreferencesValue
 	/** Converts the Preferences instance to a JSON string. */
 	toString(): string
 	/** Get the current value of the User preferences. */

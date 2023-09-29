@@ -1,4 +1,4 @@
-import { type CellNotesData, type INotes, type ValidNumbers } from './notes.model'
+import { type CellNotesValue, type INotes, type ValidNumbers } from './notes.model'
 
 export enum CellKinds {
 	Correct = 'correct',
@@ -9,41 +9,41 @@ export enum CellKinds {
 	WhitNotes = 'notes',
 }
 
-export interface InitialCellData {
+export interface InitialCellValue {
 	kind: CellKinds.Initial
-	value: ValidNumbers
+	num: ValidNumbers
 }
 
-export interface WritableCellData {
+export interface WritableCellValue {
 	kind: Exclude<CellKinds, CellKinds.Initial>
 	notes: INotes
-	value: number
+	num: number
 }
 
-export type CellData = (InitialCellData & { notes: INotes }) | WritableCellData
+export type CellValue = (InitialCellValue & { notes: INotes }) | WritableCellValue
 
 export interface CellJSON {
 	kind: CellKinds
 	notes: number
-	value: number
+	num: number
 }
 
-interface ICellBase<T extends InitialCellData | WritableCellData> {
-	/** Get the current value of cell. */
-	get cellValue(): number
-	/** Get the current data of cell. */
-	get data(): T
+interface ICellBase<T extends InitialCellValue | WritableCellValue> {
 	/** Get the current kind of cell. */
-	get kind(): T extends InitialCellData ? CellKinds.Initial : Exclude<CellKinds, CellKinds.Initial>
+	get kind(): T extends InitialCellValue ? CellKinds.Initial : Exclude<CellKinds, CellKinds.Initial>
+	/** Get the current value of cell. */
+	get num(): number
 	/** Converts Cell instance in JSON. */
 	toJSON(): CellJSON
 	/** Converts the Cell instance to a JSON string. */
 	toString(): string
+	/** Get the current data of cell. */
+	get value(): T
 }
 
-export interface IInitialCell extends ICellBase<InitialCellData> {}
+export interface IInitialCell extends ICellBase<InitialCellValue> {}
 
-export interface IWritableCell extends ICellBase<WritableCellData> {
+export interface IWritableCell extends ICellBase<WritableCellValue> {
 	/**
 	 * change kind if value is the correct or incorrect.
 	 * @param {ValidNumbers} solutionValue Solution for this Cell.
@@ -52,7 +52,7 @@ export interface IWritableCell extends ICellBase<WritableCellData> {
 	/** Remove value and clear note set. */
 	clear(): this
 	/** Get the current data of cell notes. */
-	get notesData(): CellNotesData
+	get notes(): CellNotesValue
 	/**
 	 * Remove a note in the Notes class.
 	 * @param {ValidNumbers} num The note to remove (1-9).
