@@ -80,14 +80,16 @@ export class PreferencesService implements IPreferences {
 	/**
 	 * Create an  instance of PreferencesService class from a JSON string.
 	 * @param preferencesLike JSON representation of preferences.
+	 * @throws {InvalidPreferencesError} If `preferencesLike` is not a valid JSON.
 	 */
 	static fromString(preferencesLike: string) {
-		if (typeof preferencesLike === 'string') {
+		try {
 			const value: PreferencesValue = JSON.parse(preferencesLike)
 			if (sameStructure(value, PreferencesService.DEFAULT_VALUE)) throw new InvalidPreferencesError(value)
 			return new PreferencesService(value)
+		} catch (err) {
+			throw new InvalidPreferencesError(preferencesLike, err)
 		}
-		throw new InvalidPreferencesError(preferencesLike)
 	}
 
 	set<K extends keyof AllPreferences>(key: K, value: AllPreferences[K]) {
