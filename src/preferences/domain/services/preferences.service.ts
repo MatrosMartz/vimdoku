@@ -1,15 +1,20 @@
-import { InvalidPreferencesError, sameStructure } from '~/share/utils'
-
 import {
 	type AllPreferences,
 	type IPreferences,
 	Langs,
 	type Preferences,
-	type PreferencesOpts,
 	type SudokuPreferences,
 	type UserPreferences,
 	type VimPreferences,
 } from '../models'
+import type { PreferencesRepo } from '../repositories'
+
+export interface PreferencesOpts {
+	initSudoku?: Partial<SudokuPreferences>
+	initUser?: Partial<UserPreferences>
+	initVim?: Partial<VimPreferences>
+	repo: PreferencesRepo
+}
 
 const { freeze: _f } = Object
 
@@ -35,6 +40,7 @@ export class PreferencesService implements IPreferences {
 	/** Default VIM preferences. */
 	static readonly DEFAULT_VIM = _f(vim)
 
+	#repo
 	#sudoku
 	#user
 	#vim
@@ -43,7 +49,8 @@ export class PreferencesService implements IPreferences {
 	 * Create an instance of the PreferencesService class.
 	 * @param value Initial Sudoku board.
 	 */
-	constructor(value: Preferences) {
+	constructor(repo: PreferencesRepo, value: Preferences) {
+		this.#repo = repo
 		this.#sudoku = value.sudoku
 		this.#user = value.user
 		this.#vim = value.vim
@@ -57,6 +64,10 @@ export class PreferencesService implements IPreferences {
 		return structuredClone(this.#user)
 	}
 
+	get value(): Preferences {
+		return { sudoku: this.sudoku, user: this.user, vim: this.vim }
+	}
+
 	get vim() {
 		return structuredClone(this.#vim)
 	}
@@ -65,28 +76,17 @@ export class PreferencesService implements IPreferences {
 	 * Create an instance of the PreferencesService.
 	 * @param opts Custom, initial Preferences.
 	 */
-	static create(opts?: PreferencesOpts): PreferencesService
-	static create({ initSudoku = {}, initUser = {}, initVim = {} }: PreferencesOpts = {}) {
-		return new PreferencesService({
+	static create(opts: PreferencesOpts): PreferencesService
+	static create({ initSudoku = {}, initUser = {}, initVim = {}, repo }: PreferencesOpts) {
+		return new PreferencesService(repo, {
 			sudoku: { ...PreferencesService.DEFAULT_SUDOKU, ...initSudoku },
 			user: { ...PreferencesService.DEFAULT_USER, ...initUser },
 			vim: { ...PreferencesService.DEFAULT_VIM, ...initVim },
 		})
 	}
 
-	/**
-	 * Create an instance of PreferencesService from a JSON string.
-	 * @param preferencesLike JSON representation of preferences.
-	 * @throws {InvalidPreferencesError} If `preferencesLike` is not a valid JSON.
-	 */
-	static fromString(preferencesLike: string) {
-		try {
-			const value: Preferences = JSON.parse(preferencesLike)
-			if (sameStructure(value, PreferencesService.DEFAULT_VALUE)) throw new InvalidPreferencesError(value)
-			return new PreferencesService(value)
-		} catch (err) {
-			throw new InvalidPreferencesError(preferencesLike, err)
-		}
+	async save() {
+		await this.#repo.save(this.value)
 	}
 
 	set<K extends keyof AllPreferences>(key: K, value: AllPreferences[K]) {
@@ -97,8 +97,8 @@ export class PreferencesService implements IPreferences {
 		return this
 	}
 
-	toJSON(): Preferences {
-		return { sudoku: this.sudoku, user: this.user, vim: this.vim }
+	toJSON() {
+		return this.value
 	}
 
 	toString() {

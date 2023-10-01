@@ -12,13 +12,9 @@ export type AllPreferences = SudokuPreferences & UserPreferences & VimPreference
 
 export const preferencesFields = { sudoku: sudokuFields, user: userField, vim: vimFields } as const
 
-export interface PreferencesOpts {
-	initSudoku?: Partial<SudokuPreferences>
-	initUser?: Partial<UserPreferences>
-	initVim?: Partial<VimPreferences>
-}
-
 export interface IPreferences {
+	/** save the current  */
+	save(): Promise<void>
 	/**
 	 * Set specific preference.
 	 * @param key The key preference to the establish.
@@ -33,6 +29,8 @@ export interface IPreferences {
 	toString(): string
 	/** Get the current value of the User preferences. */
 	get user(): UserPreferences
+	/** Get the current all preferences. */
+	get value(): Preferences
 	/** Get the current value of the VIM preferences. */
 	get vim(): VimPreferences
 }
