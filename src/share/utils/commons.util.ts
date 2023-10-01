@@ -4,6 +4,14 @@ export type KeysByType<O, T> = {
 	[K in keyof O]: O[K] extends T ? K : never
 }[keyof O]
 
+export type RequireOne<T> = {
+	[K in keyof T]: {
+		[O in keyof T]?: T[O]
+	} & {
+		[P in K]: T[P]
+	}
+}[keyof T]
+
 export function xor(a: boolean, b: boolean) {
 	return (a || b) && !(a && b)
 }

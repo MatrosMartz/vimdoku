@@ -1,4 +1,5 @@
 import type { Position } from '~/share/domain/models'
+import { PositionService } from '~/share/domain/services'
 import { createMatrix, iterateArray, iterateMatrix } from '~/share/utils'
 
 import type { CBFn, CompareCBFn, CreateCBFn, IGrid } from '../models'
@@ -28,98 +29,14 @@ export class GridService<T> implements IGrid<T> {
 		return new GridService(createMatrix(9, mapFn))
 	}
 
-	/**
-	 * Get the box number (0-8) for a given cell position.
-	 * @static
-	 * @param {Position} pos The position of the cell.
-	 * @returns The box number for the cell.
-	 */
-	static getBoxFromPos(pos: Position) {
-		const { row, col } = GridService.getInitsBox(pos)
-		return row + (col + 3)
-	}
-
-	/**
-	 * Get the initial position of the box that contains a cell.
-	 * @param {Position} position The position of the cell.
-	 * @returns The initial position of the box.
-	 */
-	static getInitsBox(position: Position): Position
-	static getInitsBox({ row, col }: Position): Position {
-		return { row: Math.ceil(row / 3) * 3, col: Math.ceil(col / 3) * 3 }
-	}
-
-	/**
-	 * Get the position from a box index.
-	 * @param {number} index The box index of the cell.
-	 * @returns The initial position of the box.
-	 */
-	static getPosFromBox(index: number): Position {
-		return { row: index % 3, col: Math.ceil(index / 3) }
-	}
-
-	/**
-	 * Check if two cell positions are in the same box.
-	 * @static
-	 * @param {Position} pos1 The first cell position.
-	 * @param {Position} pos2 The second cell position.
-	 * @returns True if the positions are in the same box, otherwise false.
-	 */
-	static sameBox(pos1: Position, pos2: Position) {
-		return GridService.getBoxFromPos(pos1) === GridService.getBoxFromPos(pos2)
-	}
-
-	/**
-	 * Check if two cell positions are in the same column.
-	 * @static
-	 * @param {Position} pos1 The first cell position.
-	 * @param {Position} pos2 The second cell position.
-	 * @returns True if the positions are in the same column, otherwise false.
-	 */
-	static sameCol(pos1: Position, pos2: Position) {
-		return pos1.col === pos2.col
-	}
-
-	/**
-	 * Check if two cell positions are the same.
-	 * @static
-	 * @param {Position} pos1 The first cell position.
-	 * @param {Position} pos2 The second cell position.
-	 * @returns True if the positions are the same, otherwise false.
-	 */
-	static samePos(pos1: Position, pos2: Position) {
-		return pos1.row === pos2.row && pos1.col === pos2.col
-	}
-
-	/**
-	 * Check if two cell positions are in the same row.
-	 * @static
-	 * @param {Position} pos1 The first cell position.
-	 * @param {Position} pos2 The second cell position.
-	 * @returns True if the positions are in the same row, otherwise false.
-	 */
-	static sameRow(pos1: Position, pos2: Position) {
-		return pos1.row === pos2.row
-	}
-
-	/**
-	 * Sum two cell positions.
-	 * @static
-	 * @param {Position} pos1 The first cell position.
-	 * @param {Position} pos2 The second cell position.
-	 */
-	static sumPos(pos1: Position, pos2: Position): Position {
-		return { row: pos1.row + pos2.row, col: pos1.col + pos2.col }
-	}
-
 	compareRelated(cellPos: Position, fn: CompareCBFn<T, boolean>) {
 		return this.compareWithBox(cellPos, fn) && this.compareWithCol(cellPos, fn) && this.compareWithRow(cellPos, fn)
 	}
 
 	compareWithBox(cellPos: Position, fn: CompareCBFn<T, boolean>) {
-		const box = GridService.getInitsBox(cellPos)
+		const box = PositionService.getInitsBox(cellPos)
 		for (const pos of iterateMatrix(3)) {
-			const currPos = GridService.sumPos(pos, box)
+			const currPos = PositionService.sumPos(pos, box)
 			if (
 				(currPos.row !== cellPos.row || currPos.col !== cellPos.col) &&
 				!fn(this.#value[cellPos.row][cellPos.col], this.getCell(currPos), currPos)
@@ -157,9 +74,9 @@ export class GridService<T> implements IGrid<T> {
 	}
 
 	everyBox(box: number, fn: CBFn<T, boolean>) {
-		const boxPos = GridService.getPosFromBox(box)
+		const boxPos = PositionService.getPosFromBox(box)
 		for (const pos of iterateMatrix(3)) {
-			const { row, col } = GridService.sumPos(boxPos, pos)
+			const { row, col } = PositionService.sumPos(boxPos, pos)
 			if (!fn(this.#value[row][col], { row, col })) return false
 		}
 
@@ -187,9 +104,9 @@ export class GridService<T> implements IGrid<T> {
 	joinBox(box: number, separators: { col?: string; row?: string }): string
 	joinBox(box: number, { row: rowSep = '', col: colSep = '' }: { col?: string; row?: string }) {
 		let str = ''
-		const boxPos = GridService.getPosFromBox(box)
+		const boxPos = PositionService.getPosFromBox(box)
 		for (const pos of iterateMatrix(3)) {
-			const { row, col } = GridService.sumPos(pos, boxPos)
+			const { row, col } = PositionService.sumPos(pos, boxPos)
 			if (pos.row === 0 && pos.col === 0) str += this.#value[row][col]
 			else if (pos.col === 0) str += colSep + this.#value[row][col]
 			else str += rowSep + this.#value[row][col]
@@ -220,7 +137,7 @@ export class GridService<T> implements IGrid<T> {
 	mapBox<U>(box: number, fn: CBFn<T, U>) {
 		const newData = createMatrix(9, currPos => {
 			const cell = this.getCell(currPos)
-			return GridService.getBoxFromPos(currPos) === box ? fn(cell, currPos) : cell
+			return PositionService.getBoxFromPos(currPos) === box ? fn(cell, currPos) : cell
 		})
 
 		return new GridService(newData)
@@ -251,10 +168,10 @@ export class GridService<T> implements IGrid<T> {
 	mapRelated<U>(cellPos: Position, fn: CBFn<T, U>) {
 		const newData = createMatrix(9, currPos => {
 			const cell = this.getCell(currPos)
-			if (GridService.samePos(cellPos, currPos)) return cell
-			if (GridService.sameRow(cellPos, currPos)) return fn(cell, currPos)
-			if (GridService.sameCol(cellPos, currPos)) return fn(cell, currPos)
-			if (GridService.sameBox(cellPos, currPos)) return fn(cell, currPos)
+			if (PositionService.equalsPos(cellPos, currPos)) return cell
+			if (PositionService.equalsRow(cellPos, currPos)) return fn(cell, currPos)
+			if (PositionService.equalsCol(cellPos, currPos)) return fn(cell, currPos)
+			if (PositionService.equalsBox(cellPos, currPos)) return fn(cell, currPos)
 			return cell
 		})
 
@@ -271,9 +188,9 @@ export class GridService<T> implements IGrid<T> {
 	}
 
 	someBox(box: number, fn: CBFn<T, boolean>) {
-		const boxPos = GridService.getPosFromBox(box)
+		const boxPos = PositionService.getPosFromBox(box)
 		for (const pos of iterateMatrix(3)) {
-			const { row, col } = GridService.sumPos(boxPos, pos)
+			const { row, col } = PositionService.sumPos(boxPos, pos)
 			if (fn(this.#value[row][col], { row, col })) return true
 		}
 
