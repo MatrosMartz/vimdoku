@@ -1,7 +1,7 @@
 import type { DialogKinds, HelpDialogKinds, PrefDialogKinds } from './dialog.model'
 import { type MainScreenKinds } from './main.model'
 
-export interface VimScreenValue {
+export interface VimScreen {
 	dialog: DialogKinds
 	main: MainScreenKinds
 }
@@ -28,5 +28,5 @@ export interface IScreen {
 	/** Set main screen. */
 	setMain(main: MainScreenKinds): void
 	/** Get the current main screen and dialog. */
-	get value(): VimScreenValue
+	get value(): VimScreen
 }

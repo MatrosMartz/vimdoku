@@ -2,7 +2,7 @@ import type { RequireOne } from '~/share/utils'
 
 import type { IPosition, Position } from '../models'
 
-/** Represent a Position. */
+/** Represent a Position Service. */
 export class PositionService implements IPosition {
 	/** The maximum range for row and column coordinates. */
 	static readonly MAX_RANGE = 9

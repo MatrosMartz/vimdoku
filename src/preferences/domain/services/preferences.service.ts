@@ -4,8 +4,8 @@ import {
 	type AllPreferences,
 	type IPreferences,
 	Langs,
+	type Preferences,
 	type PreferencesOpts,
-	type PreferencesValue,
 	type SudokuPreferences,
 	type UserPreferences,
 	type VimPreferences,
@@ -24,17 +24,14 @@ const user: UserPreferences = { animations: true, language: Langs.EN, theme: 'de
 
 const vim: VimPreferences = { fontSize: 16, history: 100, numbers: true, relativeNumbers: false }
 
-/** Represent a Preferences for game. */
+/** Represent a Preferences Service for game. */
 export class PreferencesService implements IPreferences {
 	/** Default Sudoku Preferences. */
 	static readonly DEFAULT_SUDOKU = _f(sudoku)
-
 	/** Default User Preferences. */
 	static readonly DEFAULT_USER = _f(user)
-
 	/** Default all Preferences. */
-	static readonly DEFAULT_VALUE = _f<PreferencesValue>({ sudoku, user, vim })
-
+	static readonly DEFAULT_VALUE = _f<Preferences>({ sudoku, user, vim })
 	/** Default VIM preferences. */
 	static readonly DEFAULT_VIM = _f(vim)
 
@@ -44,9 +41,9 @@ export class PreferencesService implements IPreferences {
 
 	/**
 	 * Create an instance of the PreferencesService class.
-	 * @param {PreferencesValue} value Initial Sudoku board.
+	 * @param value Initial Sudoku board.
 	 */
-	constructor(value: PreferencesValue) {
+	constructor(value: Preferences) {
 		this.#sudoku = value.sudoku
 		this.#user = value.user
 		this.#vim = value.vim
@@ -65,8 +62,8 @@ export class PreferencesService implements IPreferences {
 	}
 
 	/**
-	 * Create an instance of the PreferencesService Class
-	 * @param {PreferencesOpts} [opts] Custom, initial Preferences.
+	 * Create an instance of the PreferencesService.
+	 * @param opts Custom, initial Preferences.
 	 */
 	static create(opts?: PreferencesOpts): PreferencesService
 	static create({ initSudoku = {}, initUser = {}, initVim = {} }: PreferencesOpts = {}) {
@@ -78,13 +75,13 @@ export class PreferencesService implements IPreferences {
 	}
 
 	/**
-	 * Create an  instance of PreferencesService class from a JSON string.
+	 * Create an instance of PreferencesService from a JSON string.
 	 * @param preferencesLike JSON representation of preferences.
 	 * @throws {InvalidPreferencesError} If `preferencesLike` is not a valid JSON.
 	 */
 	static fromString(preferencesLike: string) {
 		try {
-			const value: PreferencesValue = JSON.parse(preferencesLike)
+			const value: Preferences = JSON.parse(preferencesLike)
 			if (sameStructure(value, PreferencesService.DEFAULT_VALUE)) throw new InvalidPreferencesError(value)
 			return new PreferencesService(value)
 		} catch (err) {
@@ -100,7 +97,7 @@ export class PreferencesService implements IPreferences {
 		return this
 	}
 
-	toJSON(): PreferencesValue {
+	toJSON(): Preferences {
 		return { sudoku: this.sudoku, user: this.user, vim: this.vim }
 	}
 

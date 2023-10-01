@@ -8,12 +8,12 @@ function notArrayErrorMsgRgx() {
 	return /^Cannot read properties of undefined \(reading '[0-8]'\)/
 }
 
-/** Represent a Sudoku solution. */
+/** Represent a Sudoku Solution Service. */
 export class SolutionService implements ISolution {
 	#grid
 
 	/**
-	 * Create an instance of the SolutionService class with data.
+	 * Creates an instance of the SolutionService class.
 	 * @param grid Solution Data.
 	 */
 	constructor(grid: SolutionGrid) {
@@ -43,13 +43,13 @@ export class SolutionService implements ISolution {
 		}
 	}
 
-	/** Create an instance of the SolutionService class. */
+	/** Create an instance of the SolutionService. */
 	static create() {
 		return new SolutionService(SolutionService.#fillSolution())
 	}
 
 	/**
-	 * Create an instance of the SolutionService class from a JSON string.
+	 * Create an instance of the SolutionService from a JSON string.
 	 * @param solutionLike JSON representation of solution.
 	 * @throws {InvalidSolutionError} If `solutionLike` is not a valid JSON string.
 	 * @example

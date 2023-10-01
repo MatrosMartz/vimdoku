@@ -1,4 +1,4 @@
-import { type CellNotesValue, type INotes, type ValidNumbers } from './notes.model'
+import { type INotes, type Notes, type ValidNumbers } from './notes.model'
 
 export enum CellKinds {
 	Correct = 'correct',
@@ -52,7 +52,7 @@ export interface IWritableCell extends ICellBase<WritableCellValue> {
 	/** Remove value and clear note set. */
 	clear(): this
 	/** Get the current data of cell notes. */
-	get notes(): CellNotesValue
+	get notes(): Notes
 	/** Get value return of Notes instance toNumber() method. */
 	get notesNumber(): number
 	/**

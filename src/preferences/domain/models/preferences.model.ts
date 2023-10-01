@@ -2,7 +2,7 @@ import { sudokuFields, type SudokuPreferences } from './sudoku.model'
 import { userField, type UserPreferences } from './user.model'
 import { vimFields, type VimPreferences } from './vim.model'
 
-export interface PreferencesValue {
+export interface Preferences {
 	sudoku: SudokuPreferences
 	user: UserPreferences
 	vim: VimPreferences
@@ -21,14 +21,14 @@ export interface PreferencesOpts {
 export interface IPreferences {
 	/**
 	 * Set specific preference.
-	 * @param {K} key The key preference to the establish.
-	 * @param {AllPreferences[K]} value New value for the preference.
+	 * @param key The key preference to the establish.
+	 * @param value New value for the preference.
 	 */
 	set<K extends keyof AllPreferences>(key: K, value: AllPreferences[K]): this
 	/** Get the current value of the Sudoku preferences. */
 	get sudoku(): SudokuPreferences
 	/** Converts the Preferences instance in JSON. */
-	toJSON(): PreferencesValue
+	toJSON(): Preferences
 	/** Converts the Preferences instance to a JSON string. */
 	toString(): string
 	/** Get the current value of the User preferences. */

@@ -1,9 +1,10 @@
 import { createArray, InvalidNoteError } from '~/share/utils'
 
-import type { CellNotesValue, INotes, ValidNumbers } from '../models'
+import type { INotes, Notes, ValidNumbers } from '../models'
 
-/** Represents a Sudoku cell notes. */
+/** Represents a Sudoku Cell Notes Service. */
 export class NotesService implements INotes {
+	/** Represent the first 9 primes numbers. */
 	static readonly #PRIMES = [2, 3, 5, 7, 11, 13, 17, 19, 23]
 
 	#value
@@ -12,7 +13,7 @@ export class NotesService implements INotes {
 	 * Creates an instance of the NotesService class.
 	 * @param value Initial Sudoku cell notes.
 	 */
-	constructor(value: CellNotesValue) {
+	constructor(value: Notes) {
 		this.#value = value
 	}
 
@@ -25,12 +26,12 @@ export class NotesService implements INotes {
 	}
 
 	/**
-	 * Create an instance of the NotesService class.
+	 * Creates an instance of the NotesService.
 	 * @param initialNotes Initial Sudoku cell notes (optional).
 	 * @throws {InvalidBoardError} If `initialNotes` is not a valid array of numbers.
 	 */
 	static create(initialNotes?: ValidNumbers[]) {
-		const value = Array(9).fill(null) as CellNotesValue
+		const value = Array(9).fill(null) as Notes
 		if (initialNotes != null)
 			for (const num of initialNotes) {
 				if (num == null || num < 1 || num > 9) throw new InvalidNoteError(initialNotes)
@@ -40,7 +41,7 @@ export class NotesService implements INotes {
 	}
 
 	/**
-	 * Create instance of the NotesService class from a JSON string.
+	 * Creates an instance of the NotesService from a JSON string.
 	 * @param notesLike number representation of notes.
 	 * @throws {InvalidBoardError} If `solutionLike` is not a valid JSON string.
 	 */
@@ -61,7 +62,7 @@ export class NotesService implements INotes {
 	}
 
 	/**
-	 * Create instance of the NotesService class from a JSON string.
+	 * Creates an instance of the NotesService from a JSON string.
 	 * @param notesLike JSON representation of notes.
 	 * @throws {InvalidBoardError} If `solutionLike` is not a valid JSON string.
 	 */

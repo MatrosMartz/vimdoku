@@ -17,12 +17,12 @@ import type { GameRepo } from '../repositories'
 import { BoardService } from './board.service'
 import { SolutionService } from './solution.service'
 
-/** Represent a Non-started Sudoku Game. */
+/** Represent a Non-started Sudoku Game Service. */
 export class NonStartedGameService implements INonStartedGame {
 	readonly #repo
 
 	/**
-	 * Creates an instance of the Non-started Game class.
+	 * Creates an instance of the NonStartedGameService class.
 	 * @param repo The repository for game data.
 	 */
 	constructor(repo: GameRepo) {
@@ -61,15 +61,15 @@ const board = Symbol('board')
 const pos = Symbol('position')
 const repo = Symbol('repo')
 
-/** Represents a started Sudoku Game. */
+/** Represents a started Sudoku Game Service. */
 abstract class StartedGameService implements IStartedGameRoot {
 	[board]: IBoard;
 	[pos]: IPosition;
 	[repo]: GameRepo
 
 	/**
-	 * Creates an instance of the Started Game class.
-	 * @param opts Options for the started game service.
+	 * Creates an instance of the StartedGameService class.
+	 * @param opts Options for the StartedGameService (board service, game repository and position service).
 	 */
 	constructor(opts: StartedGameOpts) {
 		this[board] = opts.board
@@ -122,6 +122,7 @@ abstract class StartedGameService implements IStartedGameRoot {
 	}
 }
 
+/** Represents a Writable Sudoku Game Service. */
 abstract class WritableGameService extends StartedGameService implements IWritableGame {
 	clear() {
 		this[board].clear(this[pos].value)
@@ -129,6 +130,7 @@ abstract class WritableGameService extends StartedGameService implements IWritab
 	}
 }
 
+/** Represents a Sudoku Game Service in Annotation mode. */
 class AnnotationGameService extends WritableGameService implements IAnnotationGame {
 	get mode() {
 		return ModeKinds.Annotation as const
@@ -152,6 +154,7 @@ class AnnotationGameService extends WritableGameService implements IAnnotationGa
 	}
 }
 
+/** Represents a Sudoku Game Service in Command mode. */
 class CommandGameService extends StartedGameService implements ICommandGame {
 	get mode() {
 		return ModeKinds.Command as const
@@ -170,6 +173,7 @@ class CommandGameService extends StartedGameService implements ICommandGame {
 	}
 }
 
+/** Represents a Sudoku Game Service in Insert mode. */
 class InsertGameService extends WritableGameService implements IInsertGame {
 	get mode() {
 		return ModeKinds.Insert as const
@@ -193,6 +197,7 @@ class InsertGameService extends WritableGameService implements IInsertGame {
 	}
 }
 
+/** Represents a Sudoku Game Service in Normal mode. */
 class NormalGameService extends StartedGameService implements INormalGame {
 	get mode() {
 		return ModeKinds.Normal as const

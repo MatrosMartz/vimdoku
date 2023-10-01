@@ -4,12 +4,12 @@ import { createMatrix, iterateArray, iterateMatrix } from '~/share/utils'
 
 import type { CBFn, CompareCBFn, CreateCBFn, IGrid } from '../models'
 
-/** Class representing a Sudoku grid. */
+/** Represent a Sudoku Grid Service. */
 export class GridService<T> implements IGrid<T> {
 	#value
 
 	/**
-	 * Create an instance of the GridService class with the provided data.
+	 * Creates an instance of the GridService class with the provided data.
 	 * @param value A two-dimensional array representing the Sudoku grid.
 	 * @throws {Error} If the data is invalid (not a 9x9 grid).
 	 */
@@ -22,7 +22,7 @@ export class GridService<T> implements IGrid<T> {
 	}
 
 	/**
-	 * Create an instance of the GridService class with map function.
+	 * Creates an instance of the GridService with map function.
 	 * @param mapFn A mapping function to call on every element of the array.
 	 */
 	static create<T>(mapFn: CreateCBFn<T>) {

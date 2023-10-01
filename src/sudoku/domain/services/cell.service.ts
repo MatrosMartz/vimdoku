@@ -9,12 +9,12 @@ import {
 } from '../models'
 import { NotesService } from './notes.service'
 
-/** Represents a Sudoku cell of Initial kind.  */
+/** Represents a Sudoku Cell Service in Initial kind.  */
 export class InitialCellService implements IInitialCell {
 	#num
 
 	/**
-	 * Create an instance of InitialCellService class.
+	 * Creates an instance of InitialCellService class.
 	 * @param value Solution and value for cell.
 	 */
 	constructor(value: number) {
@@ -38,8 +38,9 @@ export class InitialCellService implements IInitialCell {
 	}
 }
 
-/** Represents a Sudoku cell of non Initial kind (Correct, Incorrect, Empty, WithNotes and WithValue). */
+/** Represents a Sudoku Cell Service in Non-initial kind (Correct, Incorrect, Empty, WithNotes and WithValue). */
 export class WritableCellService implements IWritableCell {
+	/** Number representing the empty value for cell. */
 	static readonly EMPTY_VALUE = 0
 
 	#kind
@@ -47,7 +48,7 @@ export class WritableCellService implements IWritableCell {
 	#num
 
 	/**
-	 * Create an instance of the WritableCellService class.
+	 * Creates an instance of the WritableCellService class.
 	 * @param data Kind, value and Notes for Cell.
 	 */
 	constructor(data?: Partial<WritableCellValue>)

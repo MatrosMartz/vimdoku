@@ -1,7 +1,7 @@
 /** valid numbers for notes or cell values. */
 export type ValidNumbers = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 
-export type CellNotesValue = Array<ValidNumbers | null>
+export type Notes = Array<ValidNumbers | null>
 export type CellNotesJSON = ValidNumbers[]
 
 export interface INotes {
@@ -31,5 +31,5 @@ export interface INotes {
 	 */
 	toggle(num: ValidNumbers): this
 	/** Get the current  set of notes. */
-	get value(): CellNotesValue
+	get value(): Notes
 }

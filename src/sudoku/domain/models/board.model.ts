@@ -3,7 +3,7 @@ import type { Position } from '~/share/domain/models'
 import { type CellJSON, type ICell } from './cell.model'
 import { type ValidNumbers } from './notes.model'
 
-export type BoardValue = ICell[][]
+export type Board = ICell[][]
 
 export type BoardJSON = CellJSON[][]
 
@@ -24,7 +24,7 @@ export interface IBoard {
 	 */
 	toggleNotes(cellPos: Position, num: ValidNumbers): this
 	/** Get the current cells of board. */
-	get value(): BoardValue
+	get value(): Board
 	/**
 	 * Toggle a cell value (add if not present, remove if present).
 	 * @param cellPos Position of the cell to which the value is changed.

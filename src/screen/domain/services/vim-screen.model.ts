@@ -5,21 +5,21 @@ import {
 	type IScreen,
 	MainScreenKinds,
 	type PrefDialogKinds,
-	type VimScreenValue,
+	type VimScreen,
 } from '../models'
 
 const { freeze: _f } = Object
 
-/** Represent a VIM-like screen for Sudoku game. */
+/** Represent a VIM-like Screen Service for Sudoku game. */
 export class ScreenService implements IScreen {
 	/** Define default values for screen. */
-	static readonly DEFAULT_SCREEN = _f<VimScreenValue>({
+	static readonly DEFAULT_SCREEN = _f<VimScreen>({
 		dialog: DialogKinds.None,
 		main: MainScreenKinds.Init,
 	})
 
 	#dialogOpts: DialogOpts = null
-	#value: VimScreenValue = { ...ScreenService.DEFAULT_SCREEN }
+	#value: VimScreen = { ...ScreenService.DEFAULT_SCREEN }
 
 	get dialog() {
 		return this.#value.dialog

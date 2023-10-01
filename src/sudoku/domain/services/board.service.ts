@@ -10,29 +10,29 @@ import {
 	type IWritableCell,
 	type ValidNumbers,
 } from '../models'
-import { type BoardJSON, type BoardValue, type IBoard } from '../models/board.model'
+import { type Board, type BoardJSON, type IBoard } from '../models/board.model'
 import { InitialCellService, WritableCellService } from './cell.service'
 import { GridService } from './grid.service'
 import { NotesService } from './notes.service'
 
-/** Represent a Sudoku Board. */
+/** Represent a Sudoku Board Service. */
 export class BoardService implements IBoard {
 	#grid
 
 	/**
-	 * Creates an instance of the Board class.
+	 * Creates an instance of the BoardService class.
 	 * @param grid Initial Sudoku board.
 	 */
 	constructor(grid: IGrid<ICell>) {
 		this.#grid = grid
 	}
 
-	get value(): BoardValue {
+	get value(): Board {
 		return this.#grid.value
 	}
 
 	/**
-	 * Create instance of Board class with options.
+	 * Create instance of BoardService with options.
 	 * @param opts Options for create board (optional).
 	 */
 	static create(opts: GameOpts): BoardService
@@ -50,7 +50,7 @@ export class BoardService implements IBoard {
 	}
 
 	/**
-	 * Create instance of Board class from a JSON string
+	 * Create instance of BoardService from a JSON string
 	 * @param boardLike JSON representation of board.
 	 * @throws {InvalidBoardError} If `boardLike` is not a valid JSON.
 	 */
@@ -70,7 +70,7 @@ export class BoardService implements IBoard {
 	}
 
 	/**
-	 * Create instance of Board class from a JSON string
+	 * Create instance of BoardService from a JSON string
 	 * @param boardLike JSON representation of board.
 	 * @throws {InvalidBoardError} If `boardLike` is not a valid JSON string.
 	 */
