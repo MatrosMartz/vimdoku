@@ -46,26 +46,28 @@ export interface IInitialCell extends ICellBase<InitialCellValue> {}
 export interface IWritableCell extends ICellBase<WritableCellValue> {
 	/**
 	 * change kind if value is the correct or incorrect.
-	 * @param {ValidNumbers} solutionValue Solution for this Cell.
+	 * @param solutionValue Solution for this Cell.
 	 */
 	checkValue(solutionValue: ValidNumbers): this
 	/** Remove value and clear note set. */
 	clear(): this
 	/** Get the current data of cell notes. */
 	get notes(): CellNotesValue
+	/** Get value return of Notes instance toNumber() method. */
+	get notesNumber(): number
 	/**
 	 * Remove a note in the Notes class.
-	 * @param {ValidNumbers} num The note to remove (1-9).
+	 * @param num The note to remove (1-9).
 	 */
 	removeNote(num: ValidNumbers): this
 	/**
 	 * Toggle a note in the Notes class (add if not present, remove if present).
-	 * @param {ValidNumbers} num The note to toggle (1-9).
+	 * @param num The note to toggle (1-9).
 	 */
 	toggleNote(num: ValidNumbers): this
 	/**
 	 * Toggle a cell value (add if not present, remove if present).
-	 * @param {ValidNumbers} num The note add (1-9).
+	 * @param num The note add (1-9).
 	 */
 	writeValue(num: ValidNumbers): this
 }

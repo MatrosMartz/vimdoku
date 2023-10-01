@@ -7,7 +7,7 @@ export type CellNotesJSON = ValidNumbers[]
 export interface INotes {
 	/**
 	 *	Add a note to the set.
-	 * @param {ValidNumbers} num The note add (1-9).
+	 * @param num The note add (1-9).
 	 */
 	add(num: ValidNumbers): this
 	/** remove all notes */
@@ -16,7 +16,7 @@ export interface INotes {
 	get isEmpty(): boolean
 	/**
 	 * Remove a note to the set.
-	 * @param {ValidNumbers} num The note remove (1-9).
+	 * @param num The note remove (1-9).
 	 */
 	remove(num: ValidNumbers): this
 	/** Converts Notes instance in JSON. */
@@ -27,7 +27,7 @@ export interface INotes {
 	toString(): string
 	/**
 	 * Toggle a note in the set (add if not present, remove if present).
-	 * @param {ValidNumbers} num - The note to toggle (1-9).
+	 * @param num The note to toggle (1-9).
 	 */
 	toggle(num: ValidNumbers): this
 	/** Get the current  set of notes. */

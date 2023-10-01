@@ -2,21 +2,18 @@ import type { Position } from '~/share/domain/models'
 import { InvalidBoardError } from '~/share/utils'
 
 import {
-	type BoardOpts,
-	type BoardValue,
 	type CellJSON,
 	CellKinds,
-	DifficultyKinds,
-	type IBoard,
+	type GameOpts,
 	type ICell,
 	type IGrid,
 	type IWritableCell,
 	type ValidNumbers,
 } from '../models'
+import { type BoardJSON, type BoardValue, type IBoard } from '../models/board.model'
 import { InitialCellService, WritableCellService } from './cell.service'
 import { GridService } from './grid.service'
 import { NotesService } from './notes.service'
-import { SolutionService } from './solution.service'
 
 /** Represent a Sudoku Board. */
 export class BoardService implements IBoard {
@@ -24,7 +21,7 @@ export class BoardService implements IBoard {
 
 	/**
 	 * Creates an instance of the Board class.
-	 * @param {BoardService} grid Initial Sudoku board.
+	 * @param grid Initial Sudoku board.
 	 */
 	constructor(grid: IGrid<ICell>) {
 		this.#grid = grid
@@ -36,13 +33,10 @@ export class BoardService implements IBoard {
 
 	/**
 	 * Create instance of Board class with options.
-	 * @param {BoardOpts} [opts] Options for create board (optional).
+	 * @param opts Options for create board (optional).
 	 */
-	static create(opts?: Partial<BoardOpts>): BoardService
-	static create({
-		difficulty = DifficultyKinds.Beginner,
-		solution = SolutionService.create(),
-	}: Partial<BoardOpts> = {}) {
+	static create(opts: GameOpts): BoardService
+	static create({ difficulty, solution }: GameOpts) {
 		let initials = 0
 		const grid = GridService.create<ICell>(pos => {
 			const isInitial = Boolean(Math.random() * 2) && initials < difficulty
@@ -57,8 +51,8 @@ export class BoardService implements IBoard {
 
 	/**
 	 * Create instance of Board class from a JSON string
-	 * @param {CellJSON[][]} boardLike JSON representation of board.
-	 * @throws {InvalidBoardError} If `boardLike` is not a  valid JSON.
+	 * @param boardLike JSON representation of board.
+	 * @throws {InvalidBoardError} If `boardLike` is not a valid JSON.
 	 */
 	static fromJSON(boardLike: CellJSON[][]) {
 		try {
@@ -77,7 +71,7 @@ export class BoardService implements IBoard {
 
 	/**
 	 * Create instance of Board class from a JSON string
-	 * @param {string} boardLike JSON representation of board.
+	 * @param boardLike JSON representation of board.
 	 * @throws {InvalidBoardError} If `boardLike` is not a valid JSON string.
 	 */
 	static fromString(boardLike: string) {
@@ -96,7 +90,7 @@ export class BoardService implements IBoard {
 		return this
 	}
 
-	toJSON() {
+	toJSON(): BoardJSON {
 		return this.#grid.mapGrid(cell => cell.toJSON()).value
 	}
 

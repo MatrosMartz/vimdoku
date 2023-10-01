@@ -10,7 +10,7 @@ export class NotesService implements INotes {
 
 	/**
 	 * Creates an instance of the NotesService class.
-	 * @param {CellNotesValue} value Initial Sudoku cell notes.
+	 * @param value Initial Sudoku cell notes.
 	 */
 	constructor(value: CellNotesValue) {
 		this.#value = value
@@ -26,7 +26,7 @@ export class NotesService implements INotes {
 
 	/**
 	 * Create an instance of the NotesService class.
-	 * @param {ValidNumbers[]} [initialNotes] Initial Sudoku cell notes (optional).
+	 * @param initialNotes Initial Sudoku cell notes (optional).
 	 * @throws {InvalidBoardError} If `initialNotes` is not a valid array of numbers.
 	 */
 	static create(initialNotes?: ValidNumbers[]) {
@@ -41,7 +41,7 @@ export class NotesService implements INotes {
 
 	/**
 	 * Create instance of the NotesService class from a JSON string.
-	 * @param {number} notesLike number representation of notes.
+	 * @param notesLike number representation of notes.
 	 * @throws {InvalidBoardError} If `solutionLike` is not a valid JSON string.
 	 */
 	static fromNumber(notesLike: number) {
@@ -62,7 +62,7 @@ export class NotesService implements INotes {
 
 	/**
 	 * Create instance of the NotesService class from a JSON string.
-	 * @param {string} notesLike JSON representation of notes.
+	 * @param notesLike JSON representation of notes.
 	 * @throws {InvalidBoardError} If `solutionLike` is not a valid JSON string.
 	 */
 	static fromString(notesLike: string) {
