@@ -1,9 +1,9 @@
-import type { AllPreferences, PreferencesService } from '../models'
+import type { AllPreferences, IPreferences } from '../models'
 
 export interface PreferencesRepo {
 	create(): Promise<void>
 	delete(): Promise<void>
-	getPreferences(): Promise<PreferencesService | null>
+	getPreferences(): Promise<IPreferences | null>
 	has(): Promise<boolean>
 	setPreference<K extends keyof AllPreferences>(key: K, value: AllPreferences[K]): Promise<void>
 }

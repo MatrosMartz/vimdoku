@@ -1,6 +1,7 @@
 import { type BrowserStorage, LocalStorageEntryMissingError } from '~/share/utils'
-import { type AllPreferences, PreferencesService } from '$preferences/domain/models'
+import { type AllPreferences } from '$preferences/domain/models'
 import type { PreferencesRepo } from '$preferences/domain/repositories'
+import { PreferencesService } from '$preferences/domain/services'
 
 export class BrowserPreferencesRepo implements PreferencesRepo {
 	#name
@@ -21,7 +22,7 @@ export class BrowserPreferencesRepo implements PreferencesRepo {
 	}
 
 	async create() {
-		const preferences = new PreferencesService()
+		const preferences = PreferencesService.create()
 
 		this.#value = preferences
 		this.#storage.set(preferences.toString())
@@ -39,7 +40,7 @@ export class BrowserPreferencesRepo implements PreferencesRepo {
 
 		if (data == null) return null
 
-		this.#value = PreferencesService.from(data)
+		this.#value = PreferencesService.fromString(data)
 
 		return this.#value
 	}
@@ -54,7 +55,7 @@ export class BrowserPreferencesRepo implements PreferencesRepo {
 
 			if (data == null) throw new LocalStorageEntryMissingError(this.#name)
 
-			this.#value = PreferencesService.from(data)
+			this.#value = PreferencesService.fromString(data)
 		}
 		this.#value.set(key, value)
 
