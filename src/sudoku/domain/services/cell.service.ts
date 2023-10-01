@@ -2,10 +2,10 @@ import {
 	type CellJSON,
 	CellKinds,
 	type IInitialCell,
-	type InitialCellValue,
+	type InitialCell,
 	type IWritableCell,
 	type ValidNumbers,
-	type WritableCellValue,
+	type WritableCell,
 } from '../models'
 import { NotesService } from './notes.service'
 
@@ -29,7 +29,7 @@ export class InitialCellService implements IInitialCell {
 		return this.#num
 	}
 
-	get value(): InitialCellValue {
+	get value(): InitialCell {
 		return { kind: CellKinds.Initial, num: this.#num }
 	}
 
@@ -51,12 +51,12 @@ export class WritableCellService implements IWritableCell {
 	 * Creates an instance of the WritableCellService class.
 	 * @param data Kind, value and Notes for Cell.
 	 */
-	constructor(data?: Partial<WritableCellValue>)
+	constructor(data?: Partial<WritableCell>)
 	constructor({
 		kind = CellKinds.Empty,
 		notes = NotesService.create(),
 		num: value = WritableCellService.EMPTY_VALUE,
-	}: Partial<WritableCellValue> = {}) {
+	}: Partial<WritableCell> = {}) {
 		this.#num = value
 		this.#kind = kind
 		this.#notes = notes
@@ -78,7 +78,7 @@ export class WritableCellService implements IWritableCell {
 		return this.#num
 	}
 
-	get value(): WritableCellValue {
+	get value(): WritableCell {
 		return { kind: this.#kind, notes: this.#notes, num: this.#num }
 	}
 

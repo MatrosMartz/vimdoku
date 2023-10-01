@@ -9,18 +9,18 @@ export enum CellKinds {
 	WhitNotes = 'notes',
 }
 
-export interface InitialCellValue {
+export interface InitialCell {
 	kind: CellKinds.Initial
 	num: ValidNumbers
 }
 
-export interface WritableCellValue {
+export interface WritableCell {
 	kind: Exclude<CellKinds, CellKinds.Initial>
 	notes: INotes
 	num: number
 }
 
-export type CellValue = (InitialCellValue & { notes: INotes }) | WritableCellValue
+export type Cell = (InitialCell & { notes: INotes }) | WritableCell
 
 export interface CellJSON {
 	kind: CellKinds
@@ -28,9 +28,9 @@ export interface CellJSON {
 	num: number
 }
 
-interface ICellBase<T extends InitialCellValue | WritableCellValue> {
+interface ICellBase<V extends InitialCell | WritableCell> {
 	/** Get the current kind of cell. */
-	get kind(): T extends InitialCellValue ? CellKinds.Initial : Exclude<CellKinds, CellKinds.Initial>
+	get kind(): V extends InitialCell ? CellKinds.Initial : Exclude<CellKinds, CellKinds.Initial>
 	/** Get the current value of cell. */
 	get num(): number
 	/** Converts Cell instance in JSON. */
@@ -38,12 +38,12 @@ interface ICellBase<T extends InitialCellValue | WritableCellValue> {
 	/** Converts the Cell instance to a JSON string. */
 	toString(): string
 	/** Get the current data of cell. */
-	get value(): T
+	get value(): V
 }
 
-export interface IInitialCell extends ICellBase<InitialCellValue> {}
+export interface IInitialCell extends ICellBase<InitialCell> {}
 
-export interface IWritableCell extends ICellBase<WritableCellValue> {
+export interface IWritableCell extends ICellBase<WritableCell> {
 	/**
 	 * change kind if value is the correct or incorrect.
 	 * @param solutionValue Solution for this Cell.
