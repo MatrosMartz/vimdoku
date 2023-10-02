@@ -1,3 +1,5 @@
+import { notifyObservers, ObservableService } from '~/share/domain/services'
+
 import {
 	type AllPreferences,
 	type IPreferences,
@@ -7,14 +9,7 @@ import {
 	type UserPreferences,
 	type VimPreferences,
 } from '../models'
-import type { PreferencesRepo } from '../repositories'
-
-export interface PreferencesOpts {
-	initSudoku?: Partial<SudokuPreferences>
-	initUser?: Partial<UserPreferences>
-	initVim?: Partial<VimPreferences>
-	repo: PreferencesRepo
-}
+import type * as repositories from '../repositories'
 
 const { freeze: _f } = Object
 
@@ -30,7 +25,7 @@ const user: UserPreferences = { animations: true, language: Langs.EN, theme: 'de
 const vim: VimPreferences = { fontSize: 16, history: 100, numbers: true, relativeNumbers: false }
 
 /** Represent a Preferences Service for game. */
-export class PreferencesService implements IPreferences {
+export class PreferencesService extends ObservableService<Preferences> implements IPreferences {
 	/** Default Sudoku Preferences. */
 	static readonly DEFAULT_SUDOKU = _f(sudoku)
 	/** Default User Preferences. */
@@ -41,19 +36,18 @@ export class PreferencesService implements IPreferences {
 	static readonly DEFAULT_VIM = _f(vim)
 
 	#repo
-	#sudoku
-	#user
-	#vim
+	#sudoku: SudokuPreferences = { ...PreferencesService.DEFAULT_SUDOKU }
+	#user: UserPreferences = { ...PreferencesService.DEFAULT_USER }
+	#vim: VimPreferences = { ...PreferencesService.DEFAULT_VIM }
 
 	/**
 	 * Create an instance of the PreferencesService class.
-	 * @param value Initial Sudoku board.
+	 * @param repo Initial Sudoku board.
 	 */
-	constructor(repo: PreferencesRepo, value: Preferences) {
+	constructor(repo: repositories.PreferencesRepo) {
+		super()
 		this.#repo = repo
-		this.#sudoku = value.sudoku
-		this.#user = value.user
-		this.#vim = value.vim
+		void this.#loadFromRepo()
 	}
 
 	get sudoku() {
@@ -72,19 +66,6 @@ export class PreferencesService implements IPreferences {
 		return structuredClone(this.#vim)
 	}
 
-	/**
-	 * Create an instance of the PreferencesService.
-	 * @param opts Custom, initial Preferences.
-	 */
-	static create(opts: PreferencesOpts): PreferencesService
-	static create({ initSudoku = {}, initUser = {}, initVim = {}, repo }: PreferencesOpts) {
-		return new PreferencesService(repo, {
-			sudoku: { ...PreferencesService.DEFAULT_SUDOKU, ...initSudoku },
-			user: { ...PreferencesService.DEFAULT_USER, ...initUser },
-			vim: { ...PreferencesService.DEFAULT_VIM, ...initVim },
-		})
-	}
-
 	async save() {
 		await this.#repo.save(this.value)
 	}
@@ -93,6 +74,8 @@ export class PreferencesService implements IPreferences {
 		if (key in PreferencesService.DEFAULT_SUDOKU) this.#sudoku = { ...this.#sudoku, [key]: value }
 		if (key in PreferencesService.DEFAULT_USER) this.#user = { ...this.#user, [key]: value }
 		if (key in PreferencesService.DEFAULT_VIM) this.#vim = { ...this.#vim, [key]: value }
+
+		this[notifyObservers](this.value)
 
 		return this
 	}
@@ -103,5 +86,15 @@ export class PreferencesService implements IPreferences {
 
 	toString() {
 		return JSON.stringify(this.toJSON())
+	}
+
+	async #loadFromRepo() {
+		const value = await this.#repo.getPreferences()
+
+		if (value == null) return
+
+		this.#sudoku = value.sudoku
+		this.#user = value.user
+		this.#vim = value.vim
 	}
 }
