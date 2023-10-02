@@ -47,7 +47,6 @@ export class PreferencesService extends ObservableService<Preferences> implement
 	constructor(repo: repositories.PreferencesRepo) {
 		super()
 		this.#repo = repo
-		void this.#loadFromRepo()
 	}
 
 	get sudoku() {
@@ -64,6 +63,16 @@ export class PreferencesService extends ObservableService<Preferences> implement
 
 	get vim() {
 		return structuredClone(this.#vim)
+	}
+
+	async load() {
+		const value = await this.#repo.load()
+
+		if (value == null) return
+
+		this.#sudoku = value.sudoku
+		this.#user = value.user
+		this.#vim = value.vim
 	}
 
 	async save() {
@@ -86,15 +95,5 @@ export class PreferencesService extends ObservableService<Preferences> implement
 
 	toString() {
 		return JSON.stringify(this.toJSON())
-	}
-
-	async #loadFromRepo() {
-		const value = await this.#repo.getPreferences()
-
-		if (value == null) return
-
-		this.#sudoku = value.sudoku
-		this.#user = value.user
-		this.#vim = value.vim
 	}
 }

@@ -13,7 +13,9 @@ export type AllPreferences = SudokuPreferences & UserPreferences & VimPreference
 export const preferencesFields = { sudoku: sudokuFields, user: userField, vim: vimFields } as const
 
 export interface IPreferences {
-	/** save the current  */
+	/** Load from the repo. */
+	load(): Promise<void>
+	/** Save the current  */
 	save(): Promise<void>
 	/**
 	 * Set specific preference.

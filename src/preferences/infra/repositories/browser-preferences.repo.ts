@@ -21,7 +21,7 @@ export class BrowserPreferencesRepo implements PreferencesRepo {
 		this.#storage.del()
 	}
 
-	async getPreferences() {
+	async load() {
 		const data = this.#storage.get()
 
 		return data == null ? null : (JSON.parse(data) as Preferences)
