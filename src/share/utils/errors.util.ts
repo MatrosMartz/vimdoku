@@ -16,6 +16,12 @@ export class InvalidNoteError extends Error {
 	}
 }
 
+export class InvalidPreferencesError extends Error {
+	constructor(preferences: unknown, cause?: unknown) {
+		super(`Invalid Preferences: "${JSON.stringify(preferences)}"`, { cause })
+	}
+}
+
 export class LocalStorageEntryMissingError extends Error {
 	constructor(entryName: string) {
 		super(`Missing Entry: "${entryName}" in localStore`)

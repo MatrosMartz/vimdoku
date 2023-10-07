@@ -1,24 +1,26 @@
 import type { RemoveObserver, Update } from '~/share/domain/models'
-import type { AllPreferences, Preferences } from '$preferences/domain/models'
-import { PreferencesService } from '$preferences/domain/services'
+import type { Preferences } from '$preferences/domain/models'
 
-import { BrowserPreferencesRepo } from '../repositories'
+import { preferencesService } from './preferences'
 
 interface PreferencesStore {
-	setByKey<K extends keyof AllPreferences>(key: K, value: AllPreferences[K]): void
+	load(): Promise<void>
+	set(preferences: Preferences): Promise<void>
 	subscribe(update: Update<Preferences>): RemoveObserver
 }
-const preferences = new PreferencesService(new BrowserPreferencesRepo())
 
 function createPreferencesSvelte(): PreferencesStore {
 	return {
-		setByKey(key, value) {
-			preferences.set(key, value)
+		async load() {
+			await preferencesService.load()
 		},
-		subscribe: update => preferences.addObserver({ update }),
+		async set(preferences) {
+			await preferencesService.setAll(preferences).save()
+		},
+		subscribe: update => preferencesService.addObserver({ update }),
 	}
 }
 
-void preferences.load()
+void preferencesService.load()
 
 export const prefSvelte = createPreferencesSvelte()

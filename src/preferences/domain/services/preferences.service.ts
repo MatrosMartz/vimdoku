@@ -1,4 +1,5 @@
 import { notifyObservers, ObservableService } from '~/share/domain/services'
+import { InvalidPreferencesError, sameStructure } from '~/share/utils'
 
 import {
 	type AllPreferences,
@@ -23,6 +24,20 @@ const sudoku: SudokuPreferences = {
 const user: UserPreferences = { animations: true, language: Langs.EN, theme: 'default', timer: true }
 
 const vim: VimPreferences = { fontSize: 16, history: 100, numbers: true, relativeNumbers: false }
+
+function createKeyError(key: string, value: unknown) {
+	return new InvalidPreferencesError(`the key "${key}" in sudoku can not have the value "${JSON.stringify(value)}"`)
+}
+
+function keyInPreferences(key: keyof AllPreferences, preferences: SudokuPreferences): key is keyof SudokuPreferences
+function keyInPreferences(key: keyof AllPreferences, preferences: UserPreferences): key is keyof UserPreferences
+function keyInPreferences(key: keyof AllPreferences, preferences: VimPreferences): key is keyof VimPreferences
+function keyInPreferences(
+	key: keyof AllPreferences,
+	preferences: SudokuPreferences | UserPreferences | VimPreferences
+) {
+	return key in preferences
+}
 
 /** Represent a Preferences Service for game. */
 export class PreferencesService extends ObservableService<Preferences> implements IPreferences {
@@ -65,6 +80,10 @@ export class PreferencesService extends ObservableService<Preferences> implement
 		return structuredClone(this.#vim)
 	}
 
+	static check(preferences: Preferences) {
+		return sameStructure(preferences, PreferencesService.DEFAULT_VALUE)
+	}
+
 	async load() {
 		const value = await this.#repo.load()
 
@@ -79,10 +98,26 @@ export class PreferencesService extends ObservableService<Preferences> implement
 		await this.#repo.save(this.value)
 	}
 
-	set<K extends keyof AllPreferences>(key: K, value: AllPreferences[K]) {
-		if (key in PreferencesService.DEFAULT_SUDOKU) this.#sudoku = { ...this.#sudoku, [key]: value }
-		if (key in PreferencesService.DEFAULT_USER) this.#user = { ...this.#user, [key]: value }
-		if (key in PreferencesService.DEFAULT_VIM) this.#vim = { ...this.#vim, [key]: value }
+	setAll(preferences: Preferences) {
+		if (!PreferencesService.check(preferences)) throw new InvalidPreferencesError(preferences)
+
+		this.#sudoku = preferences.sudoku
+		this.#user = preferences.user
+		this.#vim = preferences.vim
+		return this
+	}
+
+	setByKey<K extends keyof AllPreferences>(key: K, value: AllPreferences[K]) {
+		if (keyInPreferences(key, PreferencesService.DEFAULT_SUDOKU)) {
+			if (!sameStructure(value, PreferencesService.DEFAULT_SUDOKU[key])) throw createKeyError(key, value)
+			this.#sudoku = { ...this.#sudoku, [key]: value }
+		} else if (keyInPreferences(key, PreferencesService.DEFAULT_USER)) {
+			if (!sameStructure(value, PreferencesService.DEFAULT_USER[key])) throw createKeyError(key, value)
+			this.#user = { ...this.#user, [key]: value }
+		} else if (keyInPreferences(key, PreferencesService.DEFAULT_VIM)) {
+			if (!sameStructure(value, PreferencesService.DEFAULT_VIM[key])) throw createKeyError(key, value)
+			this.#vim = { ...this.#vim, [key]: value }
+		} else throw new InvalidPreferencesError(`the key "${key}" not exist in Preferences`)
 
 		this[notifyObservers](this.value)
 

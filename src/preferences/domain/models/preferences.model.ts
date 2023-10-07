@@ -1,5 +1,4 @@
 import type { FormSchema } from '~/share/domain/models'
-import type { InvalidPreferencesError } from '~/share/utils' // eslint-disable-line @typescript-eslint/no-unused-vars
 
 import { sudokuFields, type SudokuPreferences } from './sudoku.model'
 import { userFields, type UserPreferences } from './user.model'
