@@ -6,10 +6,10 @@
 </script>
 
 <div>
-	<input type="checkbox" id={name} {name} bind:checked={value} hidden />
+	<input type="checkbox" id={name} {name} bind:checked={value} />
 	<label for={name} class="field">
-		<span>{capitalCase(name)}:</span>
-		<div class="switch"></div>
+		<span>{capitalCase(name)}</span>
+		<div class="switch" aria-hidden></div>
 	</label>
 </div>
 
@@ -45,6 +45,10 @@
 		transform: translateX(var(--x));
 		box-shadow: 0 0 16px rgb(34 30 39);
 		transition: transform 200ms cubic-bezier(0.25, 0.9, 0.5, 1);
+	}
+
+	input {
+		display: none;
 	}
 
 	input:checked + label > .switch {

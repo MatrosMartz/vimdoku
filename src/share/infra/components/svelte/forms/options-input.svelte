@@ -7,7 +7,7 @@
 </script>
 
 <label class="field">
-	<span>{capitalCase(name)}:</span>
+	<span>{capitalCase(name)}</span>
 
 	<select {name} id={name} required bind:value>
 		{#each options as option}

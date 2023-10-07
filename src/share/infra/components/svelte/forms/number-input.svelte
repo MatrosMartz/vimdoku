@@ -8,6 +8,6 @@
 </script>
 
 <label class="field">
-	<span>{capitalCase(name)}:</span>
-	<input id={name} {name} {...settings} required bind:value />
+	<span>{capitalCase(name)}</span>
+	<input id={name} {name} {...settings} placeholder={String(value)} required bind:value />
 </label>
