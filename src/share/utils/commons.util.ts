@@ -21,3 +21,13 @@ export type Values<T extends Record<string, unknown> = Record<string, unknown>> 
 export function _throw(err: Error): never {
 	throw err
 }
+
+export function capitalCase(str: string) {
+	return (
+		str[0].toUpperCase() +
+		str
+			.slice(1)
+			.split(/(?=[A-Z])/)
+			.join(' ')
+	)
+}

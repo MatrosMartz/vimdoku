@@ -2,79 +2,62 @@
 	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 	line-height: 1.5;
 	font-weight: 400;
-
 	color-scheme: light dark;
-	color: rgba(255, 255, 255, 0.87);
+	color: rgb(255 255 255 / 87%);
 	background-color: #242424;
-
 	font-synthesis: none;
-	text-rendering: optimizeLegibility;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	-webkit-text-size-adjust: 100%;
+	text-rendering: optimizelegibility;
 }
 
-a {
-	font-weight: 500;
-	color: #646cff;
-	text-decoration: inherit;
-}
-a:hover {
-	color: #535bf2;
-}
-
-body {
+* {
+	box-sizing: border-box;
 	margin: 0;
-	display: flex;
-	place-items: center;
-	min-width: 320px;
-	min-height: 100vh;
+	padding: 0;
 }
 
-h1 {
-	font-size: 3.2em;
-	line-height: 1.1;
-}
-
-.card {
-	padding: 2em;
-}
-
-#app {
-	max-width: 1280px;
-	margin: 0 auto;
-	padding: 2rem;
-	text-align: center;
-}
-
-button {
-	border-radius: 8px;
-	border: 1px solid transparent;
-	padding: 0.6em 1.2em;
-	font-size: 1em;
+legend {
 	font-weight: 500;
-	font-family: inherit;
-	background-color: #1a1a1a;
-	cursor: pointer;
-	transition: border-color 0.25s;
-}
-button:hover {
-	border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-	outline: 4px auto -webkit-focus-ring-color;
+	font-size: 1.1rem;
 }
 
-@media (prefers-color-scheme: light) {
-	:root {
-		color: #213547;
-		background-color: #ffffff;
-	}
-	a:hover {
-		color: #747bff;
-	}
-	button {
-		background-color: #f9f9f9;
-	}
+.field {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	align-items: center;
+}
+
+:where(input, select):focus {
+	outline: none;
+}
+
+input,
+select {
+	font-size: 0.9rem;
+}
+
+.field :where(input:where([type='text'], [type='number']), select) {
+	padding-inline: 1rem;
+	height: 40px;
+	border-radius: 8px;
+	width: min(calc(2rem + 15ch), calc(100% - 4rem));
+	background: rgb(26 23 27);
+	color: inherit;
+	border: 2px solid rgb(63 56 68);
+	box-shadow: 0 0 16px rgb(34 30 39);
+	transition:
+		border 200ms ease-out,
+		box-shadow 200ms ease-out;
+}
+
+.field :where(input:where([type='text'], [type='number']), select):hover {
+	box-shadow: 0 0 8px rgb(62 46 82);
+}
+
+.field :where(input:where([type='text'], [type='number']), select):focus {
+	border-color: rgb(98 89 105);
+}
+
+.field select option {
+	height: 40px;
 }
