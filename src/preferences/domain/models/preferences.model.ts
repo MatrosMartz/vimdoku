@@ -1,5 +1,8 @@
+import type { FormSchema } from '~/share/domain/models'
+import type { InvalidPreferencesError } from '~/share/utils' // eslint-disable-line @typescript-eslint/no-unused-vars
+
 import { sudokuFields, type SudokuPreferences } from './sudoku.model'
-import { userField, type UserPreferences } from './user.model'
+import { userFields, type UserPreferences } from './user.model'
 import { vimFields, type VimPreferences } from './vim.model'
 
 export interface Preferences {
@@ -10,19 +13,29 @@ export interface Preferences {
 
 export type AllPreferences = SudokuPreferences & UserPreferences & VimPreferences
 
-export const preferencesFields = { sudoku: sudokuFields, user: userField, vim: vimFields } as const
+export const preferencesFormSchema = {
+	sudoku: sudokuFields,
+	user: userFields,
+	vim: vimFields,
+} as const satisfies FormSchema
 
 export interface IPreferences {
 	/** Load from the repo. */
 	load(): Promise<void>
 	/** Save the current  */
 	save(): Promise<void>
+	/** Set new Preferences Object.
+	 * @param preferences The new value for all preferences.
+	 * @throws {InvalidPreferencesError} If preferences is invalid.
+	 */
+	setAll(preferences: Preferences): this
 	/**
 	 * Set specific preference.
 	 * @param key The key preference to the establish.
-	 * @param value New value for the preference.
+	 * @param value New value for the specific preference.
+	 * @throws {InvalidPreferencesError} If value or key is invalid.
 	 */
-	set<K extends keyof AllPreferences>(key: K, value: AllPreferences[K]): this
+	setByKey<K extends keyof AllPreferences>(key: K, value: AllPreferences[K]): this
 	/** Get the current value of the Sudoku preferences. */
 	get sudoku(): SudokuPreferences
 	/** Converts the Preferences instance in JSON. */

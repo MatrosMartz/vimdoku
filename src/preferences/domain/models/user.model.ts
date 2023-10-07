@@ -1,15 +1,15 @@
-import type { FieldsToModel, FormField } from './form-fields.model'
+import type { FieldsToModel, FormGroup } from '~/share/domain/models'
 
 export enum Langs {
 	EN = 'en',
 	ES = 'es',
 }
 
-export const userField = {
+export const userFields = {
 	animations: { type: 'toggle' },
 	language: { type: 'options', opts: Object.values(Langs) },
-	theme: { type: 'string' },
+	theme: { type: 'text' },
 	timer: { type: 'toggle' },
-} as const satisfies FormField
+} as const satisfies FormGroup
 
-export interface UserPreferences extends FieldsToModel<typeof userField> {}
+export type UserPreferences = FieldsToModel<typeof userFields>

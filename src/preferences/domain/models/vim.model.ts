@@ -1,10 +1,10 @@
-import type { FieldsToModel, FormField } from './form-fields.model'
+import type { FieldsToModel, FormGroup } from '~/share/domain/models'
 
 export const vimFields = {
 	fontSize: { type: 'number' },
-	history: { min: 0, max: 500, type: 'number' },
+	history: { max: 500, min: 50, type: 'number' },
 	numbers: { type: 'toggle' },
 	relativeNumbers: { type: 'toggle' },
-} as const satisfies FormField
+} as const satisfies FormGroup
 
-export interface VimPreferences extends FieldsToModel<typeof vimFields> {}
+export type VimPreferences = FieldsToModel<typeof vimFields>

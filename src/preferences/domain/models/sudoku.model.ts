@@ -1,10 +1,10 @@
-import type { FieldsToModel, FormField } from './form-fields.model'
+import type { FieldsToModel, FormGroup } from '~/share/domain/models'
 
 export const sudokuFields = {
 	automaticNoteDeletion: { type: 'toggle' },
 	automaticValidation: { type: 'toggle' },
 	highlightNumber: { type: 'toggle' },
 	remainingNumbers: { type: 'toggle' },
-} as const satisfies FormField
+} as const satisfies FormGroup
 
-export interface SudokuPreferences extends FieldsToModel<typeof sudokuFields> {}
+export type SudokuPreferences = FieldsToModel<typeof sudokuFields>
