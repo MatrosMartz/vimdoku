@@ -6,9 +6,12 @@ export abstract class ObservableService<T> implements IObservable<T> {
 	#observers = new Set<Observer<T>>()
 	#timer: number | null = null
 
+	abstract get value(): T
+
 	addObserver(observer: Observer<T>): RemoveObserver {
 		this.#observers.add(observer)
 
+		observer.update(this.value)
 		return () => this.#observers.delete(observer)
 	}
 
@@ -17,6 +20,6 @@ export abstract class ObservableService<T> implements IObservable<T> {
 
 		this.#timer = setTimeout(() => {
 			for (const observer of this.#observers) observer.update(value)
-		}, 500) as unknown as number
+		}, 100) as unknown as number
 	}
 }
