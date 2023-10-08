@@ -1,4 +1,4 @@
 {
-	"extends": ["stylelint-config-standard", "stylelint-config-html/svelte"],
+	"extends": ["stylelint-config-standard", "stylelint-config-html/svelte", "stylelint-config-recess-order"],
 	"ignoreFiles": ["**/*.js", "**/*.[cm]js", "**/*.json", "**/*.ts"]
 }
