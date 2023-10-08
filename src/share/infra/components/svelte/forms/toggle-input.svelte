@@ -5,57 +5,59 @@
 	export let value = true
 </script>
 
-<div>
+<label class="field">
 	<input type="checkbox" id={name} {name} bind:checked={value} />
-	<label for={name} class="field">
-		<span>{capitalCase(name)}</span>
-		<div class="switch" aria-hidden></div>
-	</label>
-</div>
+	<span>{capitalCase(name)}</span>
+	<div class="switch" aria-hidden></div>
+</label>
 
 <style>
 	.switch {
-		--bg: rgb(63 56 68);
-		--color: rgb(26 23 27);
 		--height: 40px;
 
 		position: relative;
 		width: calc(var(--height) * 2.2);
 		height: var(--height);
-		background-color: var(--bg);
-		border-radius: var(--height);
-		border: 2px solid var(--bg);
 		margin-inline: auto;
+		overflow: hidden;
+		background-color: var(--input-border);
+		border: 2px solid var(--input-border);
+		border-radius: var(--height);
+		box-shadow: 0 0 16px var(--input-shadow);
 		transition:
 			background-color 300ms cubic-bezier(0.5, -0.15, 0.5, 1.15),
-			border-color 300ms cubic-bezier(0.5, -0.15, 0.5, 1.15);
-		overflow: hidden;
+			border-color 300ms cubic-bezier(0.5, -0.15, 0.5, 1.15),
+			box-shadow 200ms ease-out;
 	}
 
 	.switch::after {
 		--x: 0;
 
-		content: '';
 		position: absolute;
 		left: 0;
 		width: 50%;
 		height: 100%;
+		content: '';
+		background-color: var(--input-background);
 		border-radius: var(--height);
-		background-color: var(--color);
-		transform: translateX(var(--x));
-		box-shadow: 0 0 16px rgb(34 30 39);
+		box-shadow: 0 0 16px var(--input-shadow);
 		transition: transform 200ms cubic-bezier(0.25, 0.9, 0.5, 1);
+		transform: translateX(var(--x));
+	}
+
+	label:hover > .switch {
+		--input-shadow: var(--hover-shadow);
 	}
 
 	input {
 		display: none;
 	}
 
-	input:checked + label > .switch {
-		--bg: rgb(98 89 105);
+	label:has(input:checked) > .switch {
+		--input-border: var(--alternative-border);
 	}
 
-	input:checked + label > .switch::after {
+	label:has(input:checked) > .switch::after {
 		--x: 100%;
 	}
 </style>

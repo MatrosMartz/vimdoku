@@ -4,10 +4,12 @@
 
 	export let name: string
 	export let settings: TextField
-	export let value = ''
+	export let value: string
+
+	const placeholder = value
 </script>
 
 <label class="field">
 	<span>{capitalCase(name)}</span>
-	<input id={name} {name} {...settings} required placeholder={value} bind:value />
+	<input id={name} {name} {...settings} {placeholder} required bind:value />
 </label>

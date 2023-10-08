@@ -1,30 +1,45 @@
 :root {
+	--surface: rgb(31 24 32);
+	--input-background: rgb(26 23 27);
+	--input-border: rgb(63 56 68);
+	--alternative-border: rgb(98 89 105);
+	--input-shadow: rgb(34 30 39);
+	--hover-shadow: rgb(62 46 82 / 60%);
+
 	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-	line-height: 1.5;
 	font-weight: 400;
-	color-scheme: light dark;
+	line-height: 1.5;
 	color: rgb(255 255 255 / 87%);
-	background-color: #242424;
+	color-scheme: light dark;
+	background-color: var(--surface);
 	font-synthesis: none;
 	text-rendering: optimizelegibility;
 }
 
 * {
 	box-sizing: border-box;
-	margin: 0;
 	padding: 0;
+	margin: 0;
 }
 
 legend {
-	font-weight: 500;
 	font-size: 1.1rem;
+	font-weight: 500;
 }
 
 .field {
 	display: flex;
+	flex-basis: calc(2rem + 15ch);
 	flex-direction: column;
+	flex-grow: 1;
 	gap: 6px;
 	align-items: center;
+	text-align: center;
+}
+
+.field span {
+	height: 1lh;
+	overflow: hidden;
 }
 
 :where(input, select):focus {
@@ -37,25 +52,25 @@ select {
 }
 
 .field :where(input:where([type='text'], [type='number']), select) {
-	padding-inline: 1rem;
+	width: calc(100% - 4rem);
 	height: 40px;
-	border-radius: 8px;
-	width: min(calc(2rem + 15ch), calc(100% - 4rem));
-	background: rgb(26 23 27);
+	padding-inline: 1rem;
 	color: inherit;
-	border: 2px solid rgb(63 56 68);
-	box-shadow: 0 0 16px rgb(34 30 39);
+	background: var(--input-background);
+	border: 2px solid var(--input-border);
+	border-radius: 8px;
+	box-shadow: 0 0 16px var(--input-shadow);
 	transition:
 		border 200ms ease-out,
 		box-shadow 200ms ease-out;
 }
 
 .field :where(input:where([type='text'], [type='number']), select):hover {
-	box-shadow: 0 0 8px rgb(62 46 82);
+	--input-shadow: var(--hover-shadow);
 }
 
 .field :where(input:where([type='text'], [type='number']), select):focus {
-	border-color: rgb(98 89 105);
+	--input-border: var(--alternative-border);
 }
 
 .field select option {
