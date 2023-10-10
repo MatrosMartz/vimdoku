@@ -12,6 +12,12 @@ export type RequireOne<T> = {
 	}
 }[keyof T]
 
+export type Entries<T> = Array<
+	{
+		[K in keyof T]: [K, T[K]]
+	}[keyof T]
+>
+
 export function xor(a: boolean, b: boolean) {
 	return (a || b) && !(a && b)
 }
