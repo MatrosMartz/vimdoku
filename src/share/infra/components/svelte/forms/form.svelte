@@ -4,11 +4,8 @@
 	import type { FormSchema, SchemaToModel } from '~/share/domain/models'
 	import { capitalCase } from '~/share/utils'
 
-	import Button from '../button.svelte'
-	import NumberInput from './number-input.svelte'
-	import OptionsInput from './options-input.svelte'
-	import TextInput from './text-input.svelte'
-	import ToggleInput from './toggle-input.svelte'
+	import { Button, ButtonMenu } from '../buttons'
+	import { NumberInput, OptionsInput, TextInput, ToggleInput } from './inputs'
 
 	type Schema = $$Generic<FormSchema>
 
@@ -49,10 +46,10 @@
 			{/each}
 		</fieldset>
 	{/each}
-	<section class="buttons">
-		<Button type="reset">Reset to default.</Button>
-		<Button type="submit">Save all.</Button>
-	</section>
+	<ButtonMenu>
+		<li><Button type="reset">Reset to default.</Button></li>
+		<li><Button type="submit">Save all.</Button></li>
+	</ButtonMenu>
 </form>
 
 <style>
@@ -95,11 +92,5 @@
 		background-color: rgb(19 15 24);
 		border-radius: 0 8px 8px 0;
 		transform: translateY(-50%);
-	}
-
-	.buttons {
-		display: flex;
-		gap: 1rem;
-		justify-content: right;
 	}
 </style>

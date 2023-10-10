@@ -1,2 +1,2 @@
-export { default as Button } from './button.svelte'
+export * from './buttons'
 export * from './forms'

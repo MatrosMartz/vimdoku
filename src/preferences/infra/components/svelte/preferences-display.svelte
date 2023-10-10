@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button } from '~/share/infra/components/svelte'
+	import { Button, ButtonMenu } from '~/share/infra/components/svelte'
 	import { capitalCase, type Entries } from '~/share/utils'
 	import type { Preferences, SudokuPreferences, UserPreferences, VimPreferences } from '$preferences/domain/models'
 	import { PreferencesService } from '$preferences/domain/services'
@@ -52,10 +52,10 @@
 			</tbody>
 		</table>
 	{/each}
-	<menu class="buttons">
+	<ButtonMenu>
 		<li><Button on:click={createHandleShow(true)}>Show all.</Button></li>
 		<li><Button on:click={createHandleShow(false)}>Show different from default values.</Button></li>
-	</menu>
+	</ButtonMenu>
 </article>
 
 <style>
@@ -155,12 +155,5 @@
 	.bool {
 		font-weight: 600;
 		color: rgb(156 95 105);
-	}
-
-	.buttons {
-		display: flex;
-		gap: 1rem;
-		justify-content: end;
-		list-style: none;
 	}
 </style>
