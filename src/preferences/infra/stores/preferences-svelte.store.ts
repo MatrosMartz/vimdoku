@@ -21,6 +21,6 @@ function createPreferencesSvelte(): PreferencesStore {
 	}
 }
 
-void preferencesService.load()
+await preferencesService.load()
 
 export const prefSvelte = createPreferencesSvelte()
