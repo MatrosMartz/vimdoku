@@ -53,8 +53,8 @@
 		</table>
 	{/each}
 	<ButtonMenu>
-		<li><Button on:click={createHandleShow(true)}>Show all.</Button></li>
-		<li><Button on:click={createHandleShow(false)}>Show different from default values.</Button></li>
+		<Button on:click={createHandleShow(true)}>Show all.</Button>
+		<Button on:click={createHandleShow(false)}>Show different from default values.</Button>
 	</ButtonMenu>
 </article>
 

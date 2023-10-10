@@ -47,8 +47,8 @@
 		</fieldset>
 	{/each}
 	<ButtonMenu>
-		<li><Button type="reset">Reset to default.</Button></li>
-		<li><Button type="submit">Save all.</Button></li>
+		<Button type="reset">Reset to default.</Button>
+		<Button type="submit">Save all.</Button>
 	</ButtonMenu>
 </form>
 
