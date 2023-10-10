@@ -27,7 +27,7 @@ legend {
 	font-weight: 500;
 }
 
-.field {
+form .field {
 	display: flex;
 	flex-basis: calc(2rem + 15ch);
 	flex-direction: column;
@@ -37,7 +37,7 @@ legend {
 	text-align: center;
 }
 
-.field span {
+form .field span {
 	height: 1lh;
 	overflow: hidden;
 }
@@ -51,7 +51,7 @@ select {
 	font-size: 0.9rem;
 }
 
-.field :where(input:where([type='text'], [type='number']), select) {
+form .field :where(input:where([type='text'], [type='number']), select) {
 	width: calc(100% - 4rem);
 	height: 40px;
 	padding-inline: 1rem;
@@ -65,14 +65,14 @@ select {
 		box-shadow 200ms ease-out;
 }
 
-.field :where(input:where([type='text'], [type='number']), select):hover {
+form .field :where(input:where([type='text'], [type='number']), select):hover {
 	--input-shadow: var(--hover-shadow);
 }
 
-.field :where(input:where([type='text'], [type='number']), select):focus {
+form .field :where(input:where([type='text'], [type='number']), select):focus {
 	--input-border: var(--alternative-border);
 }
 
-.field select option {
+form .field select option {
 	height: 40px;
 }
