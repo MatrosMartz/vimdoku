@@ -2,7 +2,7 @@
 	export let type: 'button' | 'submit' | 'reset' = 'button'
 </script>
 
-<button {type}>
+<button {type} on:click>
 	<slot />
 </button>
 
