@@ -1,4 +1,12 @@
 {
 	"extends": ["stylelint-config-standard", "stylelint-config-html/svelte", "stylelint-config-recess-order"],
-	"ignoreFiles": ["**/*.js", "**/*.[cm]js", "**/*.json", "**/*.ts"]
+	"ignoreFiles": ["**/*.js", "**/*.[cm]js", "**/*.json", "**/*.ts"],
+	"overrides": [
+		{
+			"files": ["*.svelte"],
+			"rules": {
+				"selector-pseudo-class-no-unknown": [true, { "ignorePseudoClasses": ["global"] }]
+			}
+		}
+	]
 }
