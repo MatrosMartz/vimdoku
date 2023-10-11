@@ -11,7 +11,6 @@
 
 	export let schema: Schema
 	export let defaultValues: SchemaToModel<Schema>
-	export let name: string
 	export let method: 'get' | 'post' | 'dialog' = 'dialog'
 
 	const dispatcher = createEventDispatcher<{ submit: SchemaToModel<Schema> }>()
@@ -29,7 +28,6 @@
 </script>
 
 <form {method} on:submit|preventDefault={submitHandler} on:reset|preventDefault={resetHandler}>
-	<h3>{capitalCase(name)}</h3>
 	{#each dataEntries as [group, fields]}
 		<fieldset>
 			<legend>{capitalCase(group)}</legend>
@@ -56,14 +54,7 @@
 	form {
 		display: flex;
 		flex-direction: column;
-		gap: 1.5rem;
-		padding: 1rem 2rem;
-		border-radius: 8px;
-		box-shadow: 0 4px 8px hsl(280deg 16% 7% / 90%);
-	}
-
-	h3 {
-		text-align: center;
+		gap: 2rem;
 	}
 
 	fieldset {
@@ -89,6 +80,8 @@
 		width: calc(25% + 2rem);
 		max-width: 12rem;
 		padding: 4px 2rem;
+		font-size: 1rem;
+		font-weight: bold;
 		background-color: rgb(19 15 24);
 		border-radius: 0 8px 8px 0;
 		transform: translateY(-50%);

@@ -6,7 +6,6 @@
 </script>
 
 <Form
-	name="Edit Preferences"
 	schema={preferencesFormSchema}
 	defaultValues={PreferencesService.DEFAULT_VALUE}
 	on:submit={async ({ detail }) => {

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button, ButtonMenu } from '~/share/infra/components/svelte'
+	import { Button, ButtonMenu } from '~/share/infra/components/svelte/buttons'
 	import { capitalCase, type Entries } from '~/share/utils'
 	import type { Preferences, SudokuPreferences, UserPreferences, VimPreferences } from '$preferences/domain/models'
 	import { PreferencesService } from '$preferences/domain/services'
@@ -27,7 +27,6 @@
 </script>
 
 <article>
-	<h3>Preferences Display</h3>
 	{#each actualPreferences as [group, fields]}
 		<table class="preferences">
 			<thead>
@@ -63,14 +62,6 @@
 		display: flex;
 		flex-direction: column;
 		gap: 2rem;
-		height: 100%;
-		padding: 1rem 2rem;
-		overflow: hidden scroll;
-	}
-
-	h3 {
-		padding-block: 0.5rem;
-		text-align: center;
 	}
 
 	.preferences {
@@ -82,7 +73,7 @@
 		box-shadow: 0 4px 16px rgb(19 15 24 / 50%);
 	}
 
-	thead {
+	thead th {
 		position: absolute;
 		top: 0;
 		left: -2rem;
@@ -90,6 +81,7 @@
 		min-width: max-content;
 		max-width: 12rem;
 		padding: 4px 2rem;
+		text-align: start;
 		background-color: rgb(19 15 24);
 		border-radius: 0 8px 8px 0;
 		transform: translateY(-50%);
