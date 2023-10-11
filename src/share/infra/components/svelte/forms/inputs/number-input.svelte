@@ -6,10 +6,19 @@
 	export let settings: NumberField
 	export let value: number
 
+	const parse = {
+		get value() {
+			return String(value)
+		},
+		set value(newValue: string) {
+			value = Number(newValue)
+		},
+	}
+
 	const placeholder = String(value)
 </script>
 
 <label class="field">
 	<span>{capitalCase(name)}</span>
-	<input id={name} {name} {...settings} {placeholder} required bind:value />
+	<input id={name} {name} {...settings} {placeholder} required bind:value={parse.value} />
 </label>

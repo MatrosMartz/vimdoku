@@ -96,6 +96,7 @@ export class PreferencesService extends ObservableService<Preferences> implement
 
 	async save() {
 		await this.#repo.save(this.value)
+		this[notifyObservers](this.value)
 	}
 
 	setAll(preferences: Preferences) {
@@ -118,8 +119,6 @@ export class PreferencesService extends ObservableService<Preferences> implement
 			if (!sameStructure(value, PreferencesService.DEFAULT_VIM[key])) throw createKeyError(key, value)
 			this.#vim = { ...this.#vim, [key]: value }
 		} else throw new InvalidPreferencesError(`the key "${key}" not exist in Preferences`)
-
-		this[notifyObservers](this.value)
 
 		return this
 	}

@@ -17,6 +17,8 @@
 		Object.entries(fields),
 	])
 
+	$: console.log(actualPreferences)
+
 	function getDefaultValue(group: keyof Preferences, name: string) {
 		return (PreferencesService.DEFAULT_VALUE[group] as Record<string, unknown>)[name]
 	}

@@ -11,12 +11,13 @@
 
 	export let schema: Schema
 	export let defaultValues: SchemaToModel<Schema>
+	export let initialValues: SchemaToModel<Schema>
 	export let method: 'get' | 'post' | 'dialog' = 'dialog'
 
 	const dispatcher = createEventDispatcher<{ submit: SchemaToModel<Schema> }>()
 	const dataEntries = Object.entries(schema).map(([name, settings]) => [name, Object.entries(settings)] as const)
 
-	let values: any = structuredClone(defaultValues)
+	let values: any = structuredClone(initialValues)
 
 	function submitHandler() {
 		dispatcher('submit', values)
