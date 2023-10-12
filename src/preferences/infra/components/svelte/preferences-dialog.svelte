@@ -1,37 +1,123 @@
 <script lang="ts">
-	import { TabGroup } from '~/share/infra/components/svelte/tab'
-	import type { TabSchema } from '~/share/infra/components/svelte/tab/tab-interface'
+	import { Tab, TabList, TabPanel } from '~/share/infra/components/svelte/tab'
 
 	import PreferencesDisplay from './preferences-display.svelte'
 	import PreferencesForm from './preferences-form.svelte'
 
-	const tabs: TabSchema[] = [
-		{ key: 'all', label: 'Show', panel: PreferencesDisplay },
-		{ key: 'edit', label: 'Edit', panel: PreferencesForm },
-	]
+	let dialog: HTMLDialogElement
+
+	let selected = 'all'
+
+	let hide = false
 </script>
 
-<dialog open>
-	<TabGroup {tabs} selected="all" />
+<button
+	on:click={() => {
+		dialog.showModal()
+	}}
+>
+	open
+</button>
+
+<dialog
+	class:hide
+	bind:this={dialog}
+	on:animationend={({ animationName }) => {
+		if (/backdrop-hide$/.test(animationName)) {
+			hide = false
+			dialog.close()
+		}
+	}}
+>
+	<div class="content">
+		<TabList>
+			<Tab key="all" bind:selected>Show</Tab>
+			<Tab key="edit" bind:selected>Edit.</Tab>
+			<li>
+				<button on:click={() => (hide = true)}>close</button>
+			</li>
+		</TabList>
+		<TabPanel key="all" {selected}>
+			<PreferencesDisplay />
+		</TabPanel>
+		<TabPanel key="edit" {selected}>
+			<PreferencesForm />
+		</TabPanel>
+	</div>
 </dialog>
 
 <style>
 	dialog {
 		inset: 0;
+		margin: auto;
+		color: inherit;
+		background: none;
+		border: none;
+	}
+
+	dialog[open] {
+		animation: show 500ms ease-in-out;
+	}
+
+	@keyframes show {
+		from {
+			opacity: 0;
+			transform: translateY(-50%);
+		}
+	}
+
+	dialog.hide {
+		animation: hide 500ms ease-in-out;
+	}
+
+	@keyframes hide {
+		to {
+			opacity: 0;
+			transform: translateY(-50%);
+		}
+	}
+
+	dialog::backdrop {
+		background-color: rgb(61 25 71 / 10%);
+		backdrop-filter: blur(15px);
+	}
+
+	dialog[open]::backdrop {
+		animation: backdrop-show 500ms ease-in-out;
+	}
+
+	@keyframes backdrop-show {
+		from {
+			opacity: 0;
+		}
+	}
+
+	dialog.hide::backdrop {
+		animation: backdrop-hide 500ms ease-in-out;
+	}
+
+	@keyframes backdrop-hide {
+		to {
+			opacity: 0;
+		}
+	}
+
+	.content {
 		display: flex;
 		flex-direction: column;
 		width: 80vw;
 		max-width: 600px;
 		height: 90vh;
-		margin: auto;
 		overflow: hidden;
-		color: inherit;
 		background-color: hsl(280deg 17% 14%);
-		border: none;
 		border-radius: 8px;
 	}
 
-	dialog::backdrop {
-		background-color: brown;
+	li button {
+		position: absolute;
+		right: 0;
+		height: 100%;
+		aspect-ratio: 1 / 1;
+		border: none;
 	}
 </style>

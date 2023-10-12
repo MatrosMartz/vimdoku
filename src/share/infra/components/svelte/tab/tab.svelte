@@ -21,20 +21,29 @@
 	}
 
 	button {
+		position: relative;
 		width: 100%;
 		height: 48px;
 		color: inherit;
-		background-color: rgb(23 18 27);
+		background-color: transparent;
 		border: none;
 	}
 
 	button:hover {
-		filter: brightness(112%);
+		backdrop-filter: brightness(95%) saturate(80%);
+	}
+
+	button:not(:disabled)::after {
+		position: absolute;
+		top: 4px;
+		right: -1px;
+		width: 2px;
+		height: calc(100% - 8px);
+		content: '';
+		background-color: rgb(19 15 24 / 50%);
 	}
 
 	button:disabled {
-		background-color: rgb(32 25 37);
-		filter: brightness(100%);
-		border-bottom: 2px solid var(--input-border);
+		background-color: rgb(27 23 32);
 	}
 </style>
