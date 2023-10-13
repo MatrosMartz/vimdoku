@@ -10,13 +10,13 @@ interface PreferencesStore {
 }
 
 function createPreferencesSvelte(): PreferencesStore {
+	void preferencesService.load()
+
 	return {
 		load: async () => await preferencesService.load(),
 		set: async preferences => await preferencesService.setAll(preferences).save(),
 		subscribe: update => preferencesService.addObserver({ update }),
 	}
 }
-
-await preferencesService.load()
 
 export const prefSvelte = createPreferencesSvelte()
