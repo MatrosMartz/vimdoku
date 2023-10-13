@@ -11,15 +11,7 @@ export interface DialogState {
 export function createDialogStore(value: boolean): DialogState {
 	const { subscribe, set } = writable(value)
 
-	return {
-		close() {
-			set(false)
-		},
-		open() {
-			set(true)
-		},
-		subscribe,
-	}
+	return { close: () => set(false), open: () => set(true), subscribe }
 }
 
 const key = Symbol('dialog')

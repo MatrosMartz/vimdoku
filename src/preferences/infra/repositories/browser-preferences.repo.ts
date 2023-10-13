@@ -7,13 +7,9 @@ export class BrowserPreferencesRepo implements PreferencesRepo {
 
 	constructor(name = 'preferences') {
 		this.#storage = {
-			del() {
-				localStorage.removeItem(name)
-			},
+			del: () => localStorage.removeItem(name),
 			get: () => localStorage.getItem(name),
-			set(value) {
-				localStorage.setItem(name, value)
-			},
+			set: value => localStorage.setItem(name, value),
 		}
 	}
 
@@ -21,14 +17,14 @@ export class BrowserPreferencesRepo implements PreferencesRepo {
 		this.#storage.del()
 	}
 
+	async has() {
+		return this.#storage.get() != null
+	}
+
 	async load() {
 		const data = this.#storage.get()
 
 		return data == null ? null : (JSON.parse(data) as Preferences)
-	}
-
-	async has() {
-		return this.#storage.get() != null
 	}
 
 	async save(preferences: Preferences) {

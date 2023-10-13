@@ -11,12 +11,8 @@ interface PreferencesStore {
 
 function createPreferencesSvelte(): PreferencesStore {
 	return {
-		async load() {
-			await preferencesService.load()
-		},
-		async set(preferences) {
-			await preferencesService.setAll(preferences).save()
-		},
+		load: async () => await preferencesService.load(),
+		set: async preferences => await preferencesService.setAll(preferences).save(),
 		subscribe: update => preferencesService.addObserver({ update }),
 	}
 }

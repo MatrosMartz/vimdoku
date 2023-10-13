@@ -5,13 +5,7 @@
 </script>
 
 <li>
-	<button
-		on:click={() => {
-			dialog.close()
-		}}
-	>
-		close
-	</button>
+	<button on:click={() => dialog.close()}>close</button>
 </li>
 
 <style>

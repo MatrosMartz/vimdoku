@@ -11,13 +11,7 @@
 	const dialogState = createDialogStore(false)
 </script>
 
-<button
-	on:click={() => {
-		dialogState.open()
-	}}
->
-	open
-</button>
+<button on:click={() => dialogState.open()}>open</button>
 
 <Dialog {dialogState}>
 	<TabGroup bind:selected>

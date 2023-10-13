@@ -37,9 +37,10 @@ module.exports = {
 		'@typescript-eslint/explicit-function-return-type': 'off',
 		'@typescript-eslint/member-ordering': ['error', require('./eslint/member-ordering.cjs')],
 		'@typescript-eslint/method-signature-style': ['error', 'method'],
-		'@typescript-eslint/no-non-null-assertion': 'off',
+		'@typescript-eslint/no-confusing-void-expression': 'off',
 		'@typescript-eslint/no-namespace': ['error', { allowDeclarations: true }],
-		'simple-import-sort/imports': 'error',
+		'@typescript-eslint/no-non-null-assertion': 'off',
 		'simple-import-sort/exports': 'error',
+		'simple-import-sort/imports': 'error',
 	},
 }

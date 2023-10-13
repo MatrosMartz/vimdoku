@@ -12,13 +12,9 @@ type CellJSONStore = Omit<CellJSON, 'notes'>
 
 function createStore(name: string): BrowserStorage {
 	return {
-		del() {
-			localStorage.removeItem(name)
-		},
+		del: () => localStorage.removeItem(name),
 		get: () => localStorage.getItem(name),
-		set(value) {
-			localStorage.setItem(name, value)
-		},
+		set: value => localStorage.setItem(name, value),
 	}
 }
 
