@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getSelectedContext } from "./tab.context"
+	import { getSelectedContext } from './tab.context'
 
 	export let key: string
 
