@@ -1,10 +1,12 @@
 <script lang="ts">
+	import { getSelectedContext } from "./tab.context"
+
 	export let key: string
 
-	export let selected: string
+	const selected = getSelectedContext()
 </script>
 
-<div id="panel{key}" aria-labelledby="tab{key}" role="tabpanel" aria-hidden={selected !== key}>
+<div id="panel{key}" aria-labelledby="tab{key}" role="tabpanel" aria-hidden={$selected !== key}>
 	<slot />
 </div>
 

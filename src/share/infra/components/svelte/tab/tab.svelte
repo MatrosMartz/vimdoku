@@ -1,13 +1,16 @@
 <script lang="ts">
+	import { getSelectedContext } from "./tab.context"
+
 	export let key: string
-	export let selected: string
+
+	const selected = getSelectedContext()
 </script>
 
 <li id="tab{key}" role="tab" aria-controls="panel{key}">
 	<button
-		disabled={selected === key}
+		disabled={$selected === key}
 		on:click={() => {
-			selected = key
+			selected.set(key)
 		}}
 	>
 		<slot />

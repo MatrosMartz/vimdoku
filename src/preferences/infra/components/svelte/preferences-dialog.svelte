@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Tab, TabList, TabPanel } from '~/share/infra/components/svelte/tab'
+	import { Tab, TabGroup, TabList, TabPanel } from '~/share/infra/components/svelte/tab'
 
 	import PreferencesDisplay from './preferences-display.svelte'
 	import PreferencesForm from './preferences-form.svelte'
@@ -30,19 +30,21 @@
 	}}
 >
 	<div class="content">
-		<TabList>
-			<Tab key="all" bind:selected>Show</Tab>
-			<Tab key="edit" bind:selected>Edit.</Tab>
-			<li>
-				<button on:click={() => (hide = true)}>close</button>
-			</li>
-		</TabList>
-		<TabPanel key="all" {selected}>
-			<PreferencesDisplay />
-		</TabPanel>
-		<TabPanel key="edit" {selected}>
-			<PreferencesForm />
-		</TabPanel>
+		<TabGroup bind:selected>
+			<TabList>
+				<Tab key="all">Show</Tab>
+				<Tab key="edit">Edit.</Tab>
+				<li>
+					<button on:click={() => (hide = true)}>close</button>
+				</li>
+			</TabList>
+			<TabPanel key="all">
+				<PreferencesDisplay />
+			</TabPanel>
+			<TabPanel key="edit">
+				<PreferencesForm />
+			</TabPanel>
+		</TabGroup>
 	</div>
 </dialog>
 
