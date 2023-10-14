@@ -35,11 +35,12 @@ export class NonStartedGameService implements INonStartedGame {
 
 	async resume() {
 		const boardData = await this.#repo.getBoard()
+		const optsData = await this.#repo.getOpts()
 
-		if (boardData == null) return null
+		if (boardData == null || optsData == null) return null
 
 		const opts: StartedGameOpts = {
-			board: BoardService.fromJSON(boardData),
+			board: BoardService.fromJSON(boardData, optsData.solution),
 			pos: new PositionService(),
 			repo: this.#repo,
 		}

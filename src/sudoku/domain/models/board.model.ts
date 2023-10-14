@@ -13,6 +13,8 @@ export interface IBoard {
 	 * @param cellPos Position of the cell to be cleared.
 	 */
 	clear(cellPos: Position): this
+	/** Get the current cells of board. */
+	get data(): Board
 	/** Converts Board instance in JSON. */
 	toJSON(): BoardJSON
 	/** Converts the Board instance to a JSON string. */
@@ -23,8 +25,6 @@ export interface IBoard {
 	 * @param num The note to toggle (1-9).
 	 */
 	toggleNotes(cellPos: Position, num: ValidNumbers): this
-	/** Get the current cells of board. */
-	get value(): Board
 	/**
 	 * Toggle a cell value (add if not present, remove if present).
 	 * @param cellPos Position of the cell to which the value is changed.

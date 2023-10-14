@@ -20,12 +20,12 @@ export class SolutionService implements ISolution {
 		this.#grid = grid
 	}
 
-	get grid() {
-		return this.#grid.copy()
+	get data() {
+		return this.toJSON()
 	}
 
-	get value() {
-		return this.toJSON()
+	get grid() {
+		return this.#grid.copy()
 	}
 
 	/**

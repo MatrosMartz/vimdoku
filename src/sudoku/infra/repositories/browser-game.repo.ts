@@ -31,11 +31,11 @@ export class BrowserGameRepo implements GameRepo {
 
 	async create(opts: GameOptsJSON, board: BoardJSON): Promise<void>
 	async create({ difficulty, solution }: GameOptsJSON, board: BoardJSON) {
-		const boardJSON = createMatrix(9, ({ row, col }) => {
-			const { kind, num } = board[row][col]
-			return { kind, num }
+		const boardJSON = createMatrix<CellJSONStore>(9, ({ row, col }) => {
+			const { kind, value } = board[row][col]
+			return { kind, value }
 		})
-		const notes = createMatrix(9, ({ row, col }) => board[row][col].num)
+		const notes = createMatrix(9, ({ row, col }) => board[row][col].value)
 		this.#boardStorage.set(JSON.stringify(boardJSON))
 		this.#notesStorage.set(JSON.stringify(notes))
 		this.#optsStorage.set(JSON.stringify({ difficulty, solution }))

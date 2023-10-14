@@ -2,74 +2,75 @@ import { type INotes, type Notes, type ValidNumbers } from './notes.model'
 
 export enum CellKinds {
 	Correct = 'correct',
+	Empty = 'empty',
 	Incorrect = 'incorrect',
 	Initial = 'initial',
-	Empty = 'empty',
-	WithValue = 'value',
+	Unverified = 'unverified',
 	WhitNotes = 'notes',
 }
 
-export interface InitialCell {
-	kind: CellKinds.Initial
-	num: ValidNumbers
-}
-
-export interface WritableCell {
-	kind: Exclude<CellKinds, CellKinds.Initial>
+export interface Cell {
+	kind: CellKinds
 	notes: INotes
-	num: number
+	readonly solution: ValidNumbers
+	value: number
 }
-
-export type Cell = (InitialCell & { notes: INotes }) | WritableCell
 
 export interface CellJSON {
 	kind: CellKinds
 	notes: number
-	num: number
+	value: number
 }
 
-interface ICellBase<V extends InitialCell | WritableCell> {
-	/** Get the current kind of cell. */
-	get kind(): V extends InitialCell ? CellKinds.Initial : Exclude<CellKinds, CellKinds.Initial>
-	/** Get the current value of cell. */
-	get num(): number
-	/** Converts Cell instance in JSON. */
-	toJSON(): CellJSON
-	/** Converts the Cell instance to a JSON string. */
-	toString(): string
-	/** Get the current data of cell. */
-	get value(): V
-}
-
-export interface IInitialCell extends ICellBase<InitialCell> {}
-
-export interface IWritableCell extends ICellBase<WritableCell> {
+export interface ICellState {
 	/**
-	 * change kind if value is the correct or incorrect.
-	 * @param solutionValue Solution for this Cell.
+	 * Add a note in the Notes class.
+	 * @param num The note to remove (1-9).
 	 */
-	checkValue(solutionValue: ValidNumbers): this
+	addNote(num: ValidNumbers): ICellState
 	/** Remove value and clear note set. */
-	clear(): this
-	/** Get the current data of cell notes. */
-	get notes(): Notes
-	/** Get value return of Notes instance toNumber() method. */
-	get notesNumber(): number
+	clear(): ICellState
+	/** Get the current data of cell. */
+	get data(): Cell
 	/**
 	 * Remove a note in the Notes class.
 	 * @param num The note to remove (1-9).
 	 */
-	removeNote(num: ValidNumbers): this
+	removeNote(num: ValidNumbers): ICellState
 	/**
 	 * Toggle a note in the Notes class (add if not present, remove if present).
 	 * @param num The note to toggle (1-9).
 	 */
-	toggleNote(num: ValidNumbers): this
+	toggleNote(num: ValidNumbers): ICellState
+	/**
+	 * change kind if value is the correct or incorrect.
+	 * @param solutionValue Solution for this Cell.
+	 */
+	verify(): ICellState
 	/**
 	 * Toggle a cell value (add if not present, remove if present).
 	 * @param num The note add (1-9).
 	 */
-	writeValue(num: ValidNumbers): this
+	writeValue(num: ValidNumbers): ICellState
 }
 
-export type ICell = IInitialCell | IWritableCell
+export interface ICell extends ICellState {
+	addNote(num: ValidNumbers): this
+	clear(): this
+	/** Get the current kind of cell. */
+	get kind(): CellKinds
+	/** Get the current data of cell notes. */
+	get notes(): Notes
+	/** Get value return of Notes instance toNumber() method. */
+	get notesNumber(): number
+	removeNote(num: ValidNumbers): this
+	/** Converts Cell instance in JSON. */
+	toJSON(): CellJSON
+	/** Converts the Cell instance to a JSON string. */
+	toString(): string
+	toggleNote(num: ValidNumbers): this
+	/** Get the current value of cell. */
+	get value(): number
+	verify(): this
+	writeValue(num: ValidNumbers): this
+}
