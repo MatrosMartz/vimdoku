@@ -1,20 +1,50 @@
-import { type Cell, type CellJSON, CellKinds, type ICell, type ICellState, type ValidNumbers } from '../models'
+import {
+	type Cell,
+	type CellJSON,
+	CellKinds,
+	type ICell,
+	type ICellState,
+	type INotes,
+	type ValidNumbers,
+} from '../models'
 import { NotesService } from './notes.service'
+
+/** Represents a Sudoku Cell Entity.  */
+class CellEntity implements Cell {
+	kind: CellKinds
+	notes: INotes
+	readonly solution: ValidNumbers
+	value: number
+
+	constructor(data: Cell) {
+		this.kind = data.kind
+		this.notes = data.notes
+		this.solution = data.solution
+		this.value = data.value
+	}
+}
+
+interface CellOpts {
+	isInitial: boolean
+	solution: ValidNumbers
+}
 
 /** Represents a Sudoku Cell Service.  */
 export class CellService implements ICell {
+	#data: CellEntity
 	#state: ICellState
 
 	/**
 	 * Creates an instance of CellService class.
 	 * @param data Kind, notes, solution and value for cell.
 	 */
-	constructor(data: Cell) {
+	constructor(data: CellEntity) {
+		this.#data = data
 		this.#state = this.#stateForKind(data)
 	}
 
 	get data() {
-		return this.#state.data
+		return { ...this.#data, notes: new NotesService(this.#data.notes.value) }
 	}
 
 	get kind() {
@@ -33,19 +63,29 @@ export class CellService implements ICell {
 		return this.data.value
 	}
 
-	static create(solution: ValidNumbers, isInitial: boolean) {
+	/**
+	 * Create instance of CellService with options.
+	 * @param opts Options for create cell (optional).
+	 */
+	static create(opts: CellOpts): CellService
+	static create({ isInitial, solution }: CellOpts) {
 		const baseData: Omit<Cell, 'kind' | 'value'> = { notes: NotesService.create(), solution }
 
 		const specificData: Pick<Cell, 'kind' | 'value'> = isInitial
 			? { kind: CellKinds.Initial, value: solution }
 			: { kind: CellKinds.Empty, value: CellState.EMPTY_VALUE }
 
-		return new CellService({ ...baseData, ...specificData })
+		return new CellService(new CellEntity({ ...baseData, ...specificData }))
 	}
 
-	static fromJSON(json: CellJSON, solution: ValidNumbers): CellService
+	/**
+	 * Create instance of BoardService from a JSON string
+	 * @param cellLike JSON representation of cell.
+	 * @param solution Value for  solution of cell.
+	 */
+	static fromJSON(cellLike: CellJSON, solution: ValidNumbers): CellService
 	static fromJSON({ kind, notes, value }: CellJSON, solution: ValidNumbers) {
-		const data: Cell = { kind, notes: NotesService.fromNumber(notes), solution, value }
+		const data = new CellEntity({ kind, notes: NotesService.fromNumber(notes), solution, value })
 		return new CellService(data)
 	}
 
@@ -65,9 +105,7 @@ export class CellService implements ICell {
 	}
 
 	toJSON(): CellJSON {
-		const data = this.#state.data
-
-		return { kind: data.kind, notes: data.notes.toNumber(), value: data.value }
+		return { kind: this.#data.kind, notes: this.#data.notes.toNumber(), value: this.#data.value }
 	}
 
 	toString() {
@@ -115,19 +153,15 @@ abstract class CellState implements ICellState {
 	/** Number representing the empty value for cell. */
 	static readonly EMPTY_VALUE = 0
 
-	protected [data]: Cell
+	protected [data]: CellEntity
 
 	/**
 	 * Creates an instance of CellState class.
 	 * @param data Kind, notes, solution and value for cell.
 	 */
-	constructor(Data: Cell)
-	constructor(cellData: Cell) {
+	constructor(data: CellEntity)
+	constructor(cellData: CellEntity) {
 		this[data] = cellData
-	}
-
-	get data(): Cell {
-		return { ...this[data] }
 	}
 
 	addNote(num: ValidNumbers): ICellState {
@@ -155,9 +189,18 @@ abstract class CellState implements ICellState {
 	}
 }
 
-class InitialCellState extends CellState {}
+class InitialCellState extends CellState {
+	constructor(data: CellEntity) {
+		data.kind = CellKinds.Incorrect
+		super(data)
+	}
+}
 
 abstract class WritableCellState extends CellState {
+	addNote(num: ValidNumbers) {
+		return new NotesCellState(this[data]).addNote(num)
+	}
+
 	clear() {
 		return new EmptyCellState(this[data]).clear()
 	}
@@ -168,8 +211,9 @@ abstract class WritableCellState extends CellState {
 }
 
 class UnverifiedCellState extends WritableCellState {
-	addNote(num: ValidNumbers) {
-		return new NotesCellState(this[data]).addNote(num)
+	constructor(data: CellEntity) {
+		data.kind = CellKinds.Unverified
+		super(data)
 	}
 
 	verify() {
@@ -187,6 +231,11 @@ class UnverifiedCellState extends WritableCellState {
 }
 
 class EmptyCellState extends WritableCellState {
+	constructor(data: Cell) {
+		data.kind = CellKinds.Empty
+		super(data)
+	}
+
 	clear() {
 		this[data].notes.clear()
 		this[data].value = CellState.EMPTY_VALUE
@@ -194,10 +243,25 @@ class EmptyCellState extends WritableCellState {
 		return this
 	}
 }
-class CorrectCellState extends WritableCellState {}
-class IncorrectCellState extends WritableCellState {}
+class CorrectCellState extends WritableCellState {
+	constructor(data: CellEntity) {
+		data.kind = CellKinds.Correct
+		super(data)
+	}
+}
+class IncorrectCellState extends WritableCellState {
+	constructor(data: CellEntity) {
+		data.kind = CellKinds.Incorrect
+		super(data)
+	}
+}
 
 class NotesCellState extends WritableCellState {
+	constructor(data: CellEntity) {
+		data.kind = CellKinds.WhitNotes
+		super(data)
+	}
+
 	addNote(num: ValidNumbers) {
 		this[data].notes.add(num)
 		this[data].value = CellState.EMPTY_VALUE

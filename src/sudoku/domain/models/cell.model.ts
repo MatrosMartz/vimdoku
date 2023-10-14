@@ -30,8 +30,6 @@ export interface ICellState {
 	addNote(num: ValidNumbers): ICellState
 	/** Remove value and clear note set. */
 	clear(): ICellState
-	/** Get the current data of cell. */
-	get data(): Cell
 	/**
 	 * Remove a note in the Notes class.
 	 * @param num The note to remove (1-9).
@@ -57,6 +55,8 @@ export interface ICellState {
 export interface ICell extends ICellState {
 	addNote(num: ValidNumbers): this
 	clear(): this
+	/** Get the current data of cell. */
+	get data(): Cell
 	/** Get the current kind of cell. */
 	get kind(): CellKinds
 	/** Get the current data of cell notes. */

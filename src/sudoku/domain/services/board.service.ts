@@ -40,7 +40,7 @@ export class BoardService implements IBoard {
 		const grid = GridService.create<ICell>(pos => {
 			const isInitial = Boolean(Math.random() * 2) && initials < difficulty
 			if (isInitial) initials++
-			return CellService.create(solution.grid.getCell(pos), isInitial)
+			return CellService.create({ isInitial, solution: solution.grid.getCell(pos) })
 		})
 
 		return new BoardService(grid)
@@ -52,7 +52,7 @@ export class BoardService implements IBoard {
 	 * @param solution JSON representation of solutions.
 	 * @throws {InvalidBoardError} If `boardLike` is not a valid JSON.
 	 */
-	static fromJSON(boardLike: CellJSON[][], solution: SolutionJSON) {
+	static fromJSON(boardLike: BoardJSON, solution: SolutionJSON) {
 		try {
 			if (Array.isArray(boardLike)) {
 				const data = new GridService(boardLike).mapGrid<ICell>((json, { row, col }) =>
