@@ -3,5 +3,6 @@
 /// <reference types="vite/client" />
 
 interface ObjectConstructor {
-	entries<T>(o: { [K in keyof T]: T[K] }): Array<[K, T[K]]>
+	entries<O>(o: { [K in keyof O]: O[K] }): Array<[K, O[K]]>
+	keys<O>(o: O): Array<keyof O>
 }
