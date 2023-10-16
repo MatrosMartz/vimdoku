@@ -1,4 +1,4 @@
-import type { RequireOne } from '~/share/utils'
+import type { RequireOne } from '~/share/types'
 
 export interface Position {
 	col: number

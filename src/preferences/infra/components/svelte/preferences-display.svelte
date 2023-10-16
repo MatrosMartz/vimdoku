@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Button, ButtonMenu } from '~/share/infra/components/svelte/buttons'
-	import { capitalCase, type Entries } from '~/share/utils'
+	import type { Entries } from '~/share/types'
+	import { capitalCase } from '~/share/utils'
 	import type { Preferences, SudokuPreferences, UserPreferences, VimPreferences } from '$preferences/domain/models'
 	import { PreferencesService } from '$preferences/domain/services'
 	import { prefSvelte } from '$preferences/infra/stores'

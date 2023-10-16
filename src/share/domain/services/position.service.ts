@@ -1,4 +1,4 @@
-import type { RequireOne } from '~/share/utils'
+import type { RequireOne } from '~/share/types'
 
 import type { IPosition, Position } from '../models'
 
