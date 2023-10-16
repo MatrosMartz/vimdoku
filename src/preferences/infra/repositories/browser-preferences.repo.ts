@@ -1,16 +1,12 @@
-import type { BrowserStorage } from '~/share/utils'
+import { createBrowserStorage } from '~/share/infra/repositories'
 import type { Preferences } from '$preferences/domain/models'
 import type { PreferencesRepo } from '$preferences/domain/repositories'
 
 export class BrowserPreferencesRepo implements PreferencesRepo {
-	#storage: BrowserStorage
+	#storage
 
 	constructor(name = 'preferences') {
-		this.#storage = {
-			del: () => localStorage.removeItem(name),
-			get: () => localStorage.getItem(name),
-			set: value => localStorage.setItem(name, value),
-		}
+		this.#storage = createBrowserStorage(name)
 	}
 
 	async delete() {

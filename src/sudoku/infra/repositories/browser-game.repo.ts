@@ -1,4 +1,5 @@
-import { type BrowserStorage, createMatrix } from '~/share/utils'
+import { createBrowserStorage } from '~/share/infra/repositories'
+import { createMatrix } from '~/share/utils'
 import type { BoardJSON, CellJSON, GameOptsJSON } from '$sudoku/domain/models'
 import type { GameRepo } from '$sudoku/domain/repositories'
 import { GridService } from '$sudoku/domain/services'
@@ -11,23 +12,15 @@ interface StorageNames {
 
 type CellJSONStore = Omit<CellJSON, 'notes'>
 
-function createStore(name: string): BrowserStorage {
-	return {
-		del: () => localStorage.removeItem(name),
-		get: () => localStorage.getItem(name),
-		set: value => localStorage.setItem(name, value),
-	}
-}
-
 export class BrowserGameRepo implements GameRepo {
 	#boardStorage
 	#notesStorage
 	#optsStorage
 
 	constructor({ board = 'board', notes = 'notes', opts = 'opts' }: StorageNames = {}) {
-		this.#boardStorage = createStore(board)
-		this.#notesStorage = createStore(notes)
-		this.#optsStorage = createStore(opts)
+		this.#boardStorage = createBrowserStorage(board)
+		this.#notesStorage = createBrowserStorage(notes)
+		this.#optsStorage = createBrowserStorage(opts)
 	}
 
 	async create(opts: GameOptsJSON, board: BoardJSON): Promise<void>
