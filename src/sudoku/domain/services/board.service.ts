@@ -27,7 +27,7 @@ export class BoardService implements IBoard {
 	}
 
 	get data(): Board {
-		return this.#grid.value
+		return this.#grid.data
 	}
 
 	/**
@@ -88,7 +88,7 @@ export class BoardService implements IBoard {
 	}
 
 	toJSON(): BoardJSON {
-		return this.#grid.mapGrid(cell => cell.toJSON()).value
+		return this.#grid.mapGrid(cell => cell.toJSON()).data
 	}
 
 	toString() {

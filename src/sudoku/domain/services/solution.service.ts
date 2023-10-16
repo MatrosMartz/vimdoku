@@ -108,7 +108,7 @@ export class SolutionService implements ISolution {
 	}
 
 	toJSON(): SolutionJSON {
-		return this.#grid.value
+		return this.#grid.data
 	}
 
 	toString() {
