@@ -1,6 +1,5 @@
 import type { DifficultyKinds } from './difficulties.model'
-import type { ValidNumbers } from './notes.model'
-import type { ISolution } from './solution.model'
+import type { ISolution, SolutionJSON } from './solution.model'
 
 export interface GameOpts {
 	/** Number of initials cells */
@@ -11,5 +10,5 @@ export interface GameOpts {
 
 export interface GameOptsJSON {
 	difficulty: DifficultyKinds
-	solution: ValidNumbers[][]
+	solution: SolutionJSON
 }

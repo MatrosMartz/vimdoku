@@ -1,9 +1,11 @@
+import type { Tuple } from '~/share/types'
+
 import { type IGrid } from './grid.model'
 import type { ValidNumbers } from './notes.model'
 
 export type SolutionGrid = IGrid<ValidNumbers>
 
-export type SolutionJSON = ValidNumbers[][]
+export type SolutionJSON = Tuple<Tuple<ValidNumbers, 9>, 9>
 
 export interface ISolution {
 	/** Get the current data of Solution. */
