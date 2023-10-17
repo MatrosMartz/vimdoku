@@ -1,1 +1,1 @@
-export * from './vim-screen.model'
+export * from './vim-screen.service'

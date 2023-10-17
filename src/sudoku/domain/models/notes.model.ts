@@ -5,6 +5,10 @@ export type Notes = Array<ValidNumbers | null>
 export type CellNotesJSON = ValidNumbers[]
 
 export interface INotes {
+	/** Get the current set of notes. */
+	readonly data: Notes
+	/** Checks if notes set is empty */
+	readonly isEmpty: boolean
 	/**
 	 *	Add a note to the set.
 	 * @param num The note add (1-9).
@@ -12,10 +16,6 @@ export interface INotes {
 	add(num: ValidNumbers): this
 	/** remove all notes */
 	clear(): this
-	/** Get the current set of notes. */
-	get data(): Notes
-	/** Checks if notes set is empty */
-	get isEmpty(): boolean
 	/**
 	 * Remove a note to the set.
 	 * @param num The note remove (1-9).

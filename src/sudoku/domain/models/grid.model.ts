@@ -11,6 +11,8 @@ export type SubGrids<U> = {
 export type GridData<T> = Tuple<Tuple<T, 9>, 9>
 
 export interface IGrid<T> {
+	/** Get the data as a two-dimensional array representing the Sudoku grid. */
+	readonly data: GridData<T>
 	/**
 	 * Compare a function with related cells in the same row, column, and box of the specified cell.
 	 * @param cellPos The position of the cell to compare with.
@@ -44,8 +46,6 @@ export interface IGrid<T> {
 	 * @returns A new grid with the same data.
 	 */
 	copy(): IGrid<T>
-	/** Get the data as a two-dimensional array representing the Sudoku grid. */
-	get data(): GridData<T>
 	/**
 	 * Edit selected Cell.
 	 * @param cellPos Position of the cell to be edited.

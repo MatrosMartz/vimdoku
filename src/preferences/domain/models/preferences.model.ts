@@ -20,7 +20,13 @@ export const preferencesFormSchema = {
 
 export interface IPreferences {
 	/** Get the current data of preferences. */
-	get data(): Preferences
+	readonly data: Preferences
+	/** Get the current value of the Sudoku preferences. */
+	readonly sudoku: SudokuPreferences
+	/** Get the current value of the User preferences. */
+	readonly user: UserPreferences
+	/** Get the current value of the VIM preferences. */
+	readonly vim: VimPreferences
 	/** Load from the repo. */
 	load(): Promise<void>
 	/** Save the current  */
@@ -37,14 +43,8 @@ export interface IPreferences {
 	 * @throws {InvalidPreferencesError} If value or key is invalid.
 	 */
 	setByKey<K extends keyof AllPreferences>(key: K, value: AllPreferences[K]): this
-	/** Get the current value of the Sudoku preferences. */
-	get sudoku(): SudokuPreferences
 	/** Converts the Preferences instance in JSON. */
 	toJSON(): Preferences
 	/** Converts the Preferences instance to a JSON string. */
 	toString(): string
-	/** Get the current value of the User preferences. */
-	get user(): UserPreferences
-	/** Get the current value of the VIM preferences. */
-	get vim(): VimPreferences
 }

@@ -80,6 +80,10 @@ class StartedGameService implements IStartedGame {
 		this.#repo = repo
 	}
 
+	get board() {
+		return this.#repo.getBoard() as Promise<BoardJSON>
+	}
+
 	get mode() {
 		return this.#data.mode
 	}
@@ -102,10 +106,6 @@ class StartedGameService implements IStartedGame {
 	async end(): Promise<INonStartedGame> {
 		await this.#repo.delete()
 		return new NonStartedGameService(this.#repo)
-	}
-
-	async getBoard(): Promise<BoardJSON> {
-		return (await this.#repo.getBoard())!
 	}
 
 	moveDown(times: number) {

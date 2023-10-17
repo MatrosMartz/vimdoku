@@ -90,6 +90,8 @@ export interface IGameState {
 }
 
 export interface IStartedGame {
+	/** Get the game board data as a JSON Object. */
+	readonly board: Promise<BoardJSON>
 	/** Get if the game has started. */
 	readonly isStarted: true
 	/** Get the game mode. */
@@ -116,8 +118,6 @@ export interface IStartedGame {
 	 * @returns The new Non-started game.
 	 */
 	end(): Promise<INonStartedGame>
-	/** Get the game board data as a JSON Object. */
-	getBoard(): Promise<BoardJSON>
 	/**
 	 * Move the current position down by a specified number of times.
 	 * @param times The number of times to move down.

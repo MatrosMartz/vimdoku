@@ -60,18 +60,20 @@ export interface ICellState {
 }
 
 export interface ICell extends ICellState {
+	/** Get the current data of cell. */
+	readonly data: Cell
+	/** Get the current kind of cell. */
+	readonly kind: CellKinds
+	/** Get the current data of cell notes. */
+	readonly notes: Notes
+	/** Get value return of Notes instance toNumber() method. */
+	readonly notesNumber: number
+	/** Get the current value of cell. */
+	readonly value: number
 	/** @returns The updated cell. */
 	addNote(num: ValidNumbers): this
 	/** @returns The updated cell. */
 	clear(): this
-	/** Get the current data of cell. */
-	get data(): Cell
-	/** Get the current kind of cell. */
-	get kind(): CellKinds
-	/** Get the current data of cell notes. */
-	get notes(): Notes
-	/** Get value return of Notes instance toNumber() method. */
-	get notesNumber(): number
 	/** @returns The updated cell. */
 	removeNote(num: ValidNumbers): this
 	/** Converts Cell instance in JSON. */
@@ -80,8 +82,6 @@ export interface ICell extends ICellState {
 	toString(): string
 	/** @returns The updated cell. */
 	toggleNote(num: ValidNumbers): this
-	/** Get the current value of cell. */
-	get value(): number
 	/** @returns The updated cell. */
 	verify(): this
 	/** @returns The updated cell. */
