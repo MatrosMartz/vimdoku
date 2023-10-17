@@ -2,9 +2,7 @@
 	import { Dialog, DialogClose } from '~/share/infra/components/svelte/dialog'
 	import { createDialogStore } from '~/share/infra/components/svelte/dialog/dialog.context'
 	import { Tab, TabGroup, TabList, TabPanel } from '~/share/infra/components/svelte/tab'
-
-	import PreferencesDisplay from './preferences-display.svelte'
-	import PreferencesForm from './preferences-form.svelte'
+	import { PreferencesDisplay, PreferencesForm } from '$preferences/infra/components/svelte'
 
 	let selected = 'all'
 
@@ -17,7 +15,7 @@
 	<TabGroup bind:selected>
 		<TabList>
 			<Tab key="all">Show</Tab>
-			<Tab key="edit">Edit.</Tab>
+			<Tab key="edit">Edit</Tab>
 			<DialogClose />
 		</TabList>
 		<TabPanel key="all">
