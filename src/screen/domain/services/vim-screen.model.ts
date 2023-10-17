@@ -18,11 +18,15 @@ export class ScreenService implements IScreen {
 		main: MainScreenKinds.Init,
 	})
 
+	#data: VimScreen = { ...ScreenService.DEFAULT_SCREEN }
 	#dialogOpts: DialogOpts = null
-	#value: VimScreen = { ...ScreenService.DEFAULT_SCREEN }
+
+	get data() {
+		return structuredClone(this.#data)
+	}
 
 	get dialog() {
-		return this.#value.dialog
+		return this.#data.dialog
 	}
 
 	get dialogOpts() {
@@ -30,22 +34,18 @@ export class ScreenService implements IScreen {
 	}
 
 	get mainScreen() {
-		return this.#value.main
-	}
-
-	get value() {
-		return structuredClone(this.#value)
+		return this.#data.main
 	}
 
 	setDialog(dialog: DialogKinds.None): void
 	setDialog(dialog: DialogKinds.Help, opts: HelpDialogKinds): void
 	setDialog(dialog: DialogKinds.Pref, opts: PrefDialogKinds): void
 	setDialog(dialog: DialogKinds, opts: DialogOpts = null) {
-		this.#value = { ...this.#value, dialog }
+		this.#data = { ...this.#data, dialog }
 		this.#dialogOpts = structuredClone(opts)
 	}
 
 	setMain(main: MainScreenKinds) {
-		this.#value = { ...this.#value, main }
+		this.#data = { ...this.#data, main }
 	}
 }

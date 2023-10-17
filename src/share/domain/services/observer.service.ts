@@ -7,12 +7,12 @@ export abstract class ObservableService<T> implements IObservable<T> {
 	#observers = new Set<Observer<T>>()
 	#timer: number | null = null
 
-	abstract get value(): T
+	abstract get data(): T
 
 	addObserver(observer: Observer<T>): RemoveObserver {
 		this.#observers.add(observer)
 
-		observer.update(this.value)
+		observer.update(this.data)
 		return () => this.#observers.delete(observer)
 	}
 

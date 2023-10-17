@@ -66,7 +66,7 @@ export interface IStartedGameRoot {
 }
 
 export interface IWritableGame extends IStartedGameRoot {
-	/** Clear the value at the current position on the game board. */
+	/** Clear the value and notes at the current position on the game board. */
 	clear(): this
 }
 

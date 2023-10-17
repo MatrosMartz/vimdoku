@@ -126,7 +126,7 @@ abstract class StartedGameService implements IStartedGameRoot {
 /** Represents a Writable Sudoku Game Service. */
 abstract class WritableGameService extends StartedGameService implements IWritableGame {
 	clear() {
-		this[board].clear(this[pos].value)
+		this[board].clear(this[pos].data)
 		return this
 	}
 }
@@ -150,7 +150,7 @@ class AnnotationGameService extends WritableGameService implements IAnnotationGa
 	}
 
 	toggleNote(num: ValidNumbers) {
-		this[board].toggleNotes(this[pos].value, num)
+		this[board].toggleNotes(this[pos].data, num)
 		return this
 	}
 }
@@ -193,7 +193,7 @@ class InsertGameService extends WritableGameService implements IInsertGame {
 	}
 
 	write(num: ValidNumbers): this {
-		this[board].write(this[pos].value, num)
+		this[board].write(this[pos].data, num)
 		return this
 	}
 }

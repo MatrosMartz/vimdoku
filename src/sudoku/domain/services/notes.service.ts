@@ -7,22 +7,22 @@ export class NotesService implements INotes {
 	/** Represent the first 9 primes numbers. */
 	static readonly #PRIMES = [2, 3, 5, 7, 11, 13, 17, 19, 23]
 
-	#value
+	#data
 
 	/**
 	 * Creates an instance of the NotesService class.
-	 * @param value Initial Sudoku cell notes.
+	 * @param data Initial Sudoku cell notes.
 	 */
-	constructor(value: Notes) {
-		this.#value = value
+	constructor(data: Notes) {
+		this.#data = data
 	}
+	
+		get data() {
+			return structuredClone(this.#data)
+		}
 
 	get isEmpty() {
-		return !this.#value.some(num => num != null)
-	}
-
-	get value() {
-		return structuredClone(this.#value)
+		return !this.#data.some(num => num != null)
 	}
 
 	/**
@@ -82,27 +82,27 @@ export class NotesService implements INotes {
 	}
 
 	add(num: ValidNumbers) {
-		this.#value[num - 1] = num
+		this.#data[num - 1] = num
 		return this
 	}
 
 	clear() {
-		this.#value = createArray(9, () => null)
+		this.#data = createArray(9, () => null)
 		return this
 	}
 
 	remove(num: ValidNumbers) {
-		this.#value[num - 1] = null
+		this.#data[num - 1] = null
 		return this
 	}
 
 	toJSON() {
-		return this.#value.filter((val): val is ValidNumbers => val != null)
+		return this.#data.filter((val): val is ValidNumbers => val != null)
 	}
 
 	toNumber() {
 		let num = 1
-		for (const note of this.#value) if (note != null) num *= NotesService.#PRIMES[note - 1]
+		for (const note of this.#data) if (note != null) num *= NotesService.#PRIMES[note - 1]
 		return num
 	}
 
@@ -111,7 +111,7 @@ export class NotesService implements INotes {
 	}
 
 	toggle(num: ValidNumbers) {
-		if (this.#value[num - 1] == null) this.add(num)
+		if (this.#data[num - 1] == null) this.add(num)
 		else this.remove(num)
 		return this
 	}

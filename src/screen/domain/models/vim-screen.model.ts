@@ -17,6 +17,8 @@ export interface PrefDialogOpts {
 export type DialogOpts = HelpDialogKinds | PrefDialogKinds | null
 
 export interface IScreen {
+	/** Get the current main screen and dialog. */
+	get data(): VimScreen
 	/** Get the current dialog. */
 	get dialog(): DialogKinds
 	/** Get the current dialogOpts */
@@ -27,6 +29,4 @@ export interface IScreen {
 	setDialog(dialog: DialogKinds, opts: DialogOpts): void
 	/** Set main screen. */
 	setMain(main: MainScreenKinds): void
-	/** Get the current main screen and dialog. */
-	get value(): VimScreen
 }

@@ -44,7 +44,7 @@ export class CellService implements ICell {
 	}
 
 	get data() {
-		return { ...this.#data, notes: new NotesService(this.#data.notes.value) }
+		return { ...this.#data, notes: new NotesService(this.#data.notes.data) }
 	}
 
 	get kind() {

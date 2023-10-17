@@ -41,12 +41,12 @@ function keyInPreferences(
 
 /** Represent a Preferences Service for game. */
 export class PreferencesService extends ObservableService<Preferences> implements IPreferences {
+	/** Default all Preferences. */
+	static readonly DEFAULT_DATA = _f<Preferences>({ sudoku, user, vim })
 	/** Default Sudoku Preferences. */
 	static readonly DEFAULT_SUDOKU = _f(sudoku)
 	/** Default User Preferences. */
 	static readonly DEFAULT_USER = _f(user)
-	/** Default all Preferences. */
-	static readonly DEFAULT_VALUE = _f<Preferences>({ sudoku, user, vim })
 	/** Default VIM preferences. */
 	static readonly DEFAULT_VIM = _f(vim)
 
@@ -64,6 +64,10 @@ export class PreferencesService extends ObservableService<Preferences> implement
 		this.#repo = repo
 	}
 
+	get data(): Preferences {
+		return { sudoku: this.sudoku, user: this.user, vim: this.vim }
+	}
+
 	get sudoku() {
 		return structuredClone(this.#sudoku)
 	}
@@ -72,16 +76,12 @@ export class PreferencesService extends ObservableService<Preferences> implement
 		return structuredClone(this.#user)
 	}
 
-	get value(): Preferences {
-		return { sudoku: this.sudoku, user: this.user, vim: this.vim }
-	}
-
 	get vim() {
 		return structuredClone(this.#vim)
 	}
 
 	static check(preferences: Preferences) {
-		return sameStructure(preferences, PreferencesService.DEFAULT_VALUE)
+		return sameStructure(preferences, PreferencesService.DEFAULT_DATA)
 	}
 
 	async load() {
@@ -93,12 +93,12 @@ export class PreferencesService extends ObservableService<Preferences> implement
 		this.#user = value.user
 		this.#vim = value.vim
 
-		this[notifyObservers](this.value)
+		this[notifyObservers](this.data)
 	}
 
 	async save() {
-		await this.#repo.save(this.value)
-		this[notifyObservers](this.value)
+		await this.#repo.save(this.data)
+		this[notifyObservers](this.data)
 	}
 
 	setAll(preferences: Preferences) {
@@ -126,7 +126,7 @@ export class PreferencesService extends ObservableService<Preferences> implement
 	}
 
 	toJSON() {
-		return this.value
+		return this.data
 	}
 
 	toString() {

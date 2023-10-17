@@ -10,7 +10,7 @@ export type BoardJSON = Tuple<Tuple<CellJSON, 9>, 9>
 
 export interface IBoard {
 	/**
-	 * Remove value and clear note set.
+	 * Remove cell value and clear note set.
 	 * @param cellPos Position of the cell to be cleared.
 	 */
 	clear(cellPos: Position): this

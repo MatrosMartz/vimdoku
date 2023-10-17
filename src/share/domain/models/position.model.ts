@@ -11,6 +11,8 @@ export interface IPosition {
 	 * @param pos An object containing row and/or col properties to update the position.
 	 */
 	change(pos: RequireOne<Position>): this
+	/** Get the current data of position. */
+	get data(): Position
 	/**
 	 * Move the position down by a specified number of times within the valid range.
 	 * @param times The number of times to move down.
@@ -31,6 +33,4 @@ export interface IPosition {
 	 * @param times The number of times to move up.
 	 */
 	moveUp(times: number): this
-	/** Get the current value of position. */
-	get value(): Position
 }

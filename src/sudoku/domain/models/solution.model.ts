@@ -6,7 +6,7 @@ export type SolutionGrid = IGrid<ValidNumbers>
 export type SolutionJSON = ValidNumbers[][]
 
 export interface ISolution {
-	/** Get the current value Solution. */
+	/** Get the current data of Solution. */
 	get data(): SolutionJSON
 	/** Get the current grid. */
 	get grid(): SolutionGrid

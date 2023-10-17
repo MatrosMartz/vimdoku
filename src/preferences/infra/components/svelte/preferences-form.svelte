@@ -7,8 +7,8 @@
 
 <Form
 	schema={preferencesFormSchema}
-	defaultValues={PreferencesService.DEFAULT_VALUE}
-	initialValues={preferencesService.value}
+	defaultValues={PreferencesService.DEFAULT_DATA}
+	initialValues={preferencesService.data}
 	on:submit={async ({ detail }) => {
 		await preferencesService.setAll(detail).save()
 	}}

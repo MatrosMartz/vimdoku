@@ -12,6 +12,8 @@ export interface INotes {
 	add(num: ValidNumbers): this
 	/** remove all notes */
 	clear(): this
+	/** Get the current set of notes. */
+	get data(): Notes
 	/** Checks if notes set is empty */
 	get isEmpty(): boolean
 	/**
@@ -30,6 +32,4 @@ export interface INotes {
 	 * @param num The note to toggle (1-9).
 	 */
 	toggle(num: ValidNumbers): this
-	/** Get the current  set of notes. */
-	get value(): Notes
 }

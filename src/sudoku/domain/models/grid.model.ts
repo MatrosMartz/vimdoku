@@ -44,7 +44,7 @@ export interface IGrid<T> {
 	 * @returns A new grid with the same data.
 	 */
 	copy(): IGrid<T>
-	/** Get the value as a two-dimensional array representing the Sudoku grid. */
+	/** Get the data as a two-dimensional array representing the Sudoku grid. */
 	get data(): GridData<T>
 	/**
 	 * Edit selected Cell.

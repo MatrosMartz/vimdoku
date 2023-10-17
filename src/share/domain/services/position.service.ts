@@ -22,7 +22,7 @@ export class PositionService implements IPosition {
 		this.#row = row
 	}
 
-	get value(): Position {
+	get data(): Position {
 		return { row: this.#row, col: this.#col }
 	}
 

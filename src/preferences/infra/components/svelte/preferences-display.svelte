@@ -18,8 +18,8 @@
 		Object.entries(fields),
 	])
 
-	function getDefaultValue(group: keyof Preferences, name: string) {
-		return (PreferencesService.DEFAULT_VALUE[group] as Record<string, unknown>)[name]
+	function getDefaultData(group: keyof Preferences, name: string) {
+		return (PreferencesService.DEFAULT_DATA[group] as Record<string, unknown>)[name]
 	}
 
 	function createHandleShow(setShow: boolean) {
@@ -37,7 +37,7 @@
 			</thead>
 			<tbody>
 				{#each fields as [name, value]}
-					<tr class="field" class:strike={!showAll && value !== getDefaultValue(group, name)}>
+					<tr class="field" class:strike={!showAll && value !== getDefaultData(group, name)}>
 						<th class="key">{capitalCase(name)}</th>
 						<td
 							class="value"
