@@ -1,11 +1,11 @@
-import type { CellJSON, GameOptsJSON } from '../models'
+import type { BoardJSON, GameOptsJSON } from '../models'
 
 export interface GameRepo {
-	create(opts: GameOptsJSON, board: CellJSON[][]): Promise<void>
+	create(opts: GameOptsJSON, board: BoardJSON): Promise<void>
 	delete(): Promise<void>
-	getBoard(): Promise<CellJSON[][] | null>
+	getBoard(): Promise<BoardJSON | null>
 	getOpts(): Promise<GameOptsJSON | null>
 	hasBoard(): Promise<boolean>
 	hasOpts(): Promise<boolean>
-	setBoard(board: CellJSON[][]): Promise<void>
+	setBoard(board: BoardJSON): Promise<void>
 }

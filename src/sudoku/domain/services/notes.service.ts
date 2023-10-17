@@ -46,7 +46,7 @@ export class NotesService implements INotes {
 	 * @throws {InvalidBoardError} If `solutionLike` is not a valid JSON string.
 	 */
 	static fromNumber(notesLike: number) {
-		const notes = createArray<number | null>(9, () => null)
+		const notes = createArray(9, () => null as number | null)
 		let numNotes = 0
 
 		for (let i = 0; i < NotesService.#PRIMES.length; i++)
@@ -69,7 +69,7 @@ export class NotesService implements INotes {
 	static fromString(notesLike: string) {
 		try {
 			const notesJSON: ValidNumbers[] = JSON.parse(notesLike)
-			const notes = createArray<ValidNumbers | null>(9, () => null)
+			const notes = createArray(9, () => null as ValidNumbers | null)
 
 			for (const num of notesJSON)
 				if (typeof num === 'number' || num > 0 || num < 9) notes[num - 1] = num

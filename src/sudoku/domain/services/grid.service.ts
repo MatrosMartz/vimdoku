@@ -1,5 +1,6 @@
 import type { Position } from '~/share/domain/models'
 import { PositionService } from '~/share/domain/services'
+import type { Tuple } from '~/share/types'
 import { createArray, createMatrix, iterateArray, iterateMatrix } from '~/share/utils'
 
 import type { CBFn, CompareCBFn, CreateCBFn, GridData, IGrid } from '../models'
@@ -22,8 +23,8 @@ export class GridService<T> implements IGrid<T> {
 		this.#data = data
 	}
 
-	get data(): GridData<T> {
-		return this.#data.map(row => row.map(cell => cell))
+	get data() {
+		return this.#data.map(row => row.map(cell => cell)) as GridData<T>
 	}
 
 	/**
@@ -115,7 +116,7 @@ export class GridService<T> implements IGrid<T> {
 			const result = fn(this.getCell(pos), pos)
 
 			for (const key of Object.keys(result)) {
-				if (!(key in newGrid)) newGrid[key] = new GridService(createArray(9, () => Array<U[keyof U]>(9)))
+				if (!(key in newGrid)) newGrid[key] = new GridService(createArray(9, () => Array(9) as Tuple<U[keyof U], 9>))
 				newGrid[key].#mutateCell(pos, result[key])
 			}
 		}
@@ -183,7 +184,7 @@ export class GridService<T> implements IGrid<T> {
 	}
 
 	mapGrid<U>(fn: CBFn<T, U>) {
-		const newData = this.#data.map((Row, row) => Row.map((cell, col) => fn(cell, { row, col })))
+		const newData = this.#data.map((Row, row) => Row.map((cell, col) => fn(cell, { row, col }))) as GridData<U>
 		return new GridService(newData)
 	}
 

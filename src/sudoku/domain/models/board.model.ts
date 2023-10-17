@@ -1,11 +1,12 @@
 import type { Position } from '~/share/domain/models'
+import type { Tuple } from '~/share/types'
 
 import { type CellJSON, type ICell } from './cell.model'
 import { type ValidNumbers } from './notes.model'
 
-export type Board = ICell[][]
+export type Board = Tuple<Tuple<ICell, 9>, 9>
 
-export type BoardJSON = CellJSON[][]
+export type BoardJSON = Tuple<Tuple<CellJSON, 9>, 9>
 
 export interface IBoard {
 	/**

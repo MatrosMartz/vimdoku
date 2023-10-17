@@ -1,4 +1,5 @@
 import type { Position } from '~/share/domain/models'
+import type { Tuple } from '~/share/types'
 import { box, createMatrix, InvalidSolutionError, iterateMatrix, randomNumbers } from '~/share/utils'
 
 import { type ISolution, type SolutionGrid, type SolutionJSON, type ValidNumbers } from '../models'
@@ -104,7 +105,7 @@ export class SolutionService implements ISolution {
 				}
 			}
 		}
-		return new GridService(value as ValidNumbers[][])
+		return new GridService(value as Tuple<Tuple<ValidNumbers, 9>, 9>)
 	}
 
 	toJSON(): SolutionJSON {

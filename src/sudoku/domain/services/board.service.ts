@@ -1,15 +1,7 @@
 import type { Position } from '~/share/domain/models'
 import { InvalidBoardError } from '~/share/utils'
 
-import {
-	type CellJSON,
-	CellKinds,
-	type GameOpts,
-	type ICell,
-	type IGrid,
-	type SolutionJSON,
-	type ValidNumbers,
-} from '../models'
+import { CellKinds, type GameOpts, type ICell, type IGrid, type SolutionJSON, type ValidNumbers } from '../models'
 import { type Board, type BoardJSON, type IBoard } from '../models/board.model'
 import { CellService } from './cell.service'
 import { GridService } from './grid.service'
@@ -73,7 +65,7 @@ export class BoardService implements IBoard {
 	 */
 	static fromString(boardLike: string, solution: SolutionJSON) {
 		try {
-			const cellJSONs: CellJSON[][] = JSON.parse(boardLike)
+			const cellJSONs: BoardJSON = JSON.parse(boardLike)
 
 			return this.fromJSON(cellJSONs, solution)
 		} catch (err) {

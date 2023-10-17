@@ -46,7 +46,7 @@ export class BrowserGameRepo implements GameRepo {
 
 		if (board == null || notes == null) return null
 
-		return createMatrix<CellJSON>(9, ({ row, col }) => ({ ...board[row][col], notes: notes[row][col] }))
+		return createMatrix<CellJSON, 9>(9, ({ row, col }) => ({ ...board[row][col], notes: notes[row][col] }))
 	}
 
 	async getOpts() {

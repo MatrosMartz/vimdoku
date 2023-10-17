@@ -1,4 +1,5 @@
 import type { Position } from '~/share/domain/models'
+import type { Tuple } from '~/share/types'
 
 export type CompareCBFn<T, U> = (compareCell: T, currCell: T, position: Position) => U
 export type CBFn<T, U> = (value: T, position: Position) => U
@@ -7,7 +8,7 @@ export type SubGrids<U> = {
 	[K in keyof U]: IGrid<U[K]>
 }
 
-export type GridData<T> = T[][]
+export type GridData<T> = Tuple<Tuple<T, 9>, 9>
 
 export interface IGrid<T> {
 	/**

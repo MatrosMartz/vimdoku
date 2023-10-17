@@ -92,7 +92,7 @@ export class PreferencesService extends ObservableService<Preferences> implement
 		this.#sudoku = value.sudoku
 		this.#user = value.user
 		this.#vim = value.vim
-		
+
 		this[notifyObservers](this.value)
 	}
 

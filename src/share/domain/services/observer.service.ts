@@ -1,5 +1,6 @@
 import type { IObservable, Observer, RemoveObserver } from '../models'
 
+/** Simulated key for protected field. */
 export const notifyObservers = Symbol('notify-observers')
 
 export abstract class ObservableService<T> implements IObservable<T> {
