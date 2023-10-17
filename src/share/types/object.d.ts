@@ -17,3 +17,5 @@ export type Entries<T> = Array<
 >
 
 export type Values<T> = T[keyof T]
+
+export type OptionalKeys<T, K extends keyof T> = { [P in Exclude<keyof T, K>]: T[P] } & { [P in K]?: T[P] }
