@@ -23,7 +23,7 @@ export class BoardService implements IBoard {
 	}
 
 	/**
-	 * Create instance of BoardService with options.
+	 * Create an instance of BoardService with options.
 	 * @param opts Options for create board (optional).
 	 */
 	static create(opts: GameOpts): BoardService
@@ -39,7 +39,7 @@ export class BoardService implements IBoard {
 	}
 
 	/**
-	 * Create instance of BoardService from a JSON string
+	 * Create an instance of BoardService from a JSON string
 	 * @param boardLike JSON representation of board.
 	 * @param solution JSON representation of solutions.
 	 * @throws {InvalidBoardError} If `boardLike` is not a valid JSON.
@@ -58,7 +58,7 @@ export class BoardService implements IBoard {
 	}
 
 	/**
-	 * Create instance of BoardService from a JSON string
+	 * Create an instance of BoardService from a JSON string
 	 * @param boardLike JSON representation of board.
 	 * @param solution JSON representation of solutions.
 	 * @throws {InvalidBoardError} If `boardLike` is not a valid JSON string.

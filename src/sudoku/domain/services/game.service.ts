@@ -1,24 +1,16 @@
-import type { IPosition, Position } from '~/share/domain/models'
+import type { Position } from '~/share/domain/models'
 import { PositionService } from '~/share/domain/services'
+import type { OptionalKeys } from '~/share/types'
 
-import { type BoardJSON, DifficultyKinds, type GameOpts, type IBoard, ModeKinds, type ValidNumbers } from '../models'
-import {
-	GameState,
-	type IAnnotationGame,
-	type ICommandGame,
-	type IInsertGame,
-	type INonStartedGame,
-	type INormalGame,
-	type IStartedGameRoot,
-	type IWritableGame,
-	type StartedGameOpts,
-} from '../models/game.model'
+import { type BoardJSON, DifficultyKinds, type GameOpts, ModeKinds, type ValidNumbers } from '../models'
+import type { IGameState, INonStartedGame, IStartedGame, StartedGame, StartedGameOpts } from '../models/game.model'
 import type { GameRepo } from '../repositories'
 import { BoardService } from './board.service'
 import { SolutionService } from './solution.service'
 
 /** Represent a Non-started Sudoku Game Service. */
 export class NonStartedGameService implements INonStartedGame {
+	readonly isStarted = false
 	readonly #repo
 
 	/**
@@ -29,190 +21,216 @@ export class NonStartedGameService implements INonStartedGame {
 		this.#repo = repo
 	}
 
-	get state() {
-		return GameState.NonStarted as const
-	}
-
 	async resume() {
 		const boardData = await this.#repo.getBoard()
 		const optsData = await this.#repo.getOpts()
 
 		if (boardData == null || optsData == null) return null
 
-		const opts: StartedGameOpts = {
+		const data = new StartedGameData({
 			board: BoardService.fromJSON(boardData, optsData.solution),
 			pos: new PositionService(),
-			repo: this.#repo,
-		}
+		})
 
-		return new NormalGameService(opts)
+		return new StartedGameService({ data, repo: this.#repo })
 	}
 
-	async start(opts?: GameOpts): Promise<InsertGameService>
+	async start(opts?: GameOpts): Promise<StartedGameService>
 	async start({ difficulty = DifficultyKinds.Beginner, solution = SolutionService.create() }: Partial<GameOpts> = {}) {
 		const board = BoardService.create({ difficulty, solution })
 
 		await this.#repo.create({ difficulty, solution: solution.toJSON() }, board.toJSON())
 
-		return new InsertGameService({ board, pos: new PositionService(), repo: this.#repo })
+		const data = new StartedGameData({ board, pos: new PositionService() })
+
+		return new StartedGameService({
+			data,
+			repo: this.#repo,
+		})
 	}
 }
 
-const board = Symbol('board')
-const pos = Symbol('position')
-const repo = Symbol('repo')
+class StartedGameData implements StartedGame {
+	readonly board
+	mode
+	readonly pos
 
-/** Represents a started Sudoku Game Service. */
-abstract class StartedGameService implements IStartedGameRoot {
-	[board]: IBoard;
-	[pos]: IPosition;
-	[repo]: GameRepo
+	constructor({ board, mode = ModeKinds.Normal, pos }: OptionalKeys<StartedGame, 'mode'>) {
+		this.board = board
+		this.mode = mode
+		this.pos = pos
+	}
+}
+
+/** Represent a Started Sudoku Game Service. */
+class StartedGameService implements IStartedGame {
+	readonly isStarted = true
+	#data
+	readonly #repo
+	#state: IGameState
 
 	/**
 	 * Creates an instance of the StartedGameService class.
-	 * @param opts Options for the StartedGameService (board service, game repository and position service).
+	 * @param opts Options for the StartedGameService (game data and repository).
 	 */
-	constructor(opts: StartedGameOpts) {
-		this[board] = opts.board
-		this[pos] = opts.pos
-		this[repo] = opts.repo
+	constructor(opts: StartedGameOpts)
+	constructor({ data, repo }: StartedGameOpts) {
+		this.#data = data
+		this.#state = GameState.create(data, data.mode)
+		this.#repo = repo
 	}
 
-	get state() {
-		return GameState.Started as const
+	get mode() {
+		return this.#data.mode
 	}
 
-	changePos(position: Position) {
-		this[pos].change(position)
-
+	changeMode(mode: ModeKinds) {
+		this.#state = this.#state.changeMode(mode)
 		return this
 	}
 
-	async delete() {
-		await this[repo].delete()
+	changePos(position: Position) {
+		this.#state.changePos(position)
+		return this
+	}
 
-		return new NonStartedGameService(this[repo])
+	clear() {
+		this.#state.clear()
+		return this
+	}
+
+	async end(): Promise<INonStartedGame> {
+		await this.#repo.delete()
+		return new NonStartedGameService(this.#repo)
 	}
 
 	async getBoard(): Promise<BoardJSON> {
-		return (await this[repo].getBoard())!
+		return (await this.#repo.getBoard())!
 	}
 
 	moveDown(times: number) {
-		this[pos].moveDown(times)
+		this.#state.moveDown(times)
 		return this
 	}
 
 	moveLeft(times: number) {
-		this[pos].moveLeft(times)
+		this.#state.moveLeft(times)
 		return this
 	}
 
 	moveRight(times: number) {
-		this[pos].moveRight(times)
+		this.#state.moveRight(times)
 		return this
 	}
 
 	moveUp(times: number) {
-		this[pos].moveUp(times)
+		this.#state.moveUp(times)
 		return this
 	}
 
-	async save() {
-		await this[repo].setBoard(this[board].toJSON())
+	async save(): Promise<void> {
+		await this.#repo.setBoard(this.#data.board.toJSON())
+	}
+
+	write(num: ValidNumbers) {
+		this.#state.write(num)
+		return this
 	}
 }
 
-/** Represents a Writable Sudoku Game Service. */
-abstract class WritableGameService extends StartedGameService implements IWritableGame {
+/** Simulated key for protected field. */
+const data = Symbol('game-data')
+
+abstract class GameState implements IGameState {
+	[data]: StartedGameData
+
+	constructor(data: StartedGameData)
+	constructor(gData: StartedGameData) {
+		this[data] = gData
+	}
+
+	/**
+	 * Create an instance of GameState with options.
+	 * @param data The game data with create instance.
+	 * @param mode The value to set.
+	 */
+	static create(data: StartedGameData, mode: ModeKinds): GameState {
+		data.mode = mode
+		switch (mode) {
+			case ModeKinds.Annotation:
+				return new AnnotationGameState(data)
+			case ModeKinds.Command:
+				return new CommandGameState(data)
+			case ModeKinds.Insert:
+				return new InsertGameState(data)
+			case ModeKinds.Normal:
+				return new NormalGameState(data)
+		}
+	}
+
+	changeMode(mode: ModeKinds) {
+		return GameState.create(this[data], mode)
+	}
+
+	changePos(position: Position) {
+		this[data].pos.change(position)
+		return this
+	}
+
 	clear() {
-		this[board].clear(this[pos].data)
+		return this
+	}
+
+	moveDown(times: number) {
+		this[data].pos.moveDown(times)
+		return this
+	}
+
+	moveLeft(times: number) {
+		this[data].pos.moveLeft(times)
+		return this
+	}
+
+	moveRight(times: number) {
+		this[data].pos.moveRight(times)
+		return this
+	}
+
+	moveUp(times: number) {
+		this[data].pos.moveUp(times)
+		return this
+	}
+
+	verify() {
+		return this
+	}
+
+	write(num: ValidNumbers) {
 		return this
 	}
 }
 
-/** Represents a Sudoku Game Service in Annotation mode. */
-class AnnotationGameService extends WritableGameService implements IAnnotationGame {
-	get mode() {
-		return ModeKinds.Annotation as const
-	}
-
-	changeToCommand() {
-		return new CommandGameService({ board: this[board], pos: this[pos], repo: this[repo] })
-	}
-
-	changeToInsert() {
-		return new InsertGameService({ board: this[board], pos: this[pos], repo: this[repo] })
-	}
-
-	changeToNormal() {
-		return new NormalGameService({ board: this[board], pos: this[pos], repo: this[repo] })
-	}
-
-	toggleNote(num: ValidNumbers) {
-		this[board].toggleNotes(this[pos].data, num)
+abstract class EditedGameState extends GameState {
+	clear() {
+		this[data].board.clear(this[data].pos.data)
 		return this
 	}
 }
 
-/** Represents a Sudoku Game Service in Command mode. */
-class CommandGameService extends StartedGameService implements ICommandGame {
-	get mode() {
-		return ModeKinds.Command as const
-	}
-
-	changeToAnnotation() {
-		return new AnnotationGameService({ board: this[board], pos: this[pos], repo: this[repo] })
-	}
-
-	changeToInsert() {
-		return new InsertGameService({ board: this[board], pos: this[pos], repo: this[repo] })
-	}
-
-	changeToNormal() {
-		return new NormalGameService({ board: this[board], pos: this[pos], repo: this[repo] })
-	}
-}
-
-/** Represents a Sudoku Game Service in Insert mode. */
-class InsertGameService extends WritableGameService implements IInsertGame {
-	get mode() {
-		return ModeKinds.Insert as const
-	}
-
-	changeToAnnotation() {
-		return new AnnotationGameService({ board: this[board], pos: this[pos], repo: this[repo] })
-	}
-
-	changeToCommand() {
-		return new CommandGameService({ board: this[board], pos: this[pos], repo: this[repo] })
-	}
-
-	changeToNormal() {
-		return new NormalGameService({ board: this[board], pos: this[pos], repo: this[repo] })
-	}
-
-	write(num: ValidNumbers): this {
-		this[board].write(this[pos].data, num)
+class AnnotationGameState extends EditedGameState {
+	write(num: ValidNumbers) {
+		this[data].board.toggleNotes(this[data].pos.data, num)
 		return this
 	}
 }
 
-/** Represents a Sudoku Game Service in Normal mode. */
-class NormalGameService extends StartedGameService implements INormalGame {
-	get mode() {
-		return ModeKinds.Normal as const
-	}
+class CommandGameState extends GameState {}
 
-	changeToAnnotation() {
-		return new AnnotationGameService({ board: this[board], pos: this[pos], repo: this[repo] })
-	}
-
-	changeToCommand() {
-		return new CommandGameService({ board: this[board], pos: this[pos], repo: this[repo] })
-	}
-
-	changeToInsert() {
-		return new InsertGameService({ board: this[board], pos: this[pos], repo: this[repo] })
+class InsertGameState extends EditedGameState {
+	write(num: ValidNumbers) {
+		this[data].board.write(this[data].pos.data, num)
+		return this
 	}
 }
+
+class NormalGameState extends GameState {}

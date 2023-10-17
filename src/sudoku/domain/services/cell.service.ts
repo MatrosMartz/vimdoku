@@ -64,7 +64,7 @@ export class CellService implements ICell {
 	}
 
 	/**
-	 * Create instance of CellService with options.
+	 * Create an instance of CellService with options.
 	 * @param opts Options for create cell (optional).
 	 */
 	static create(opts: CellOpts): CellService
@@ -79,7 +79,7 @@ export class CellService implements ICell {
 	}
 
 	/**
-	 * Create instance of BoardService from a JSON string
+	 * Create an instance of BoardService from a JSON string
 	 * @param cellLike JSON representation of cell.
 	 * @param solution Value for  solution of cell.
 	 */

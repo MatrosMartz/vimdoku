@@ -16,10 +16,10 @@ export class NotesService implements INotes {
 	constructor(data: Notes) {
 		this.#data = data
 	}
-	
-		get data() {
-			return structuredClone(this.#data)
-		}
+
+	get data() {
+		return structuredClone(this.#data)
+	}
 
 	get isEmpty() {
 		return !this.#data.some(num => num != null)
