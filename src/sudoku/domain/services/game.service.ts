@@ -2,7 +2,7 @@ import type { Position } from '~/share/domain/models'
 import { PositionService } from '~/share/domain/services'
 import type { OptionalKeys } from '~/share/types'
 
-import { type BoardJSON, DifficultyKinds, type GameOpts, ModeKinds, type ValidNumbers } from '../models'
+import { DifficultyKinds, type GameOpts, ModeKinds, type ValidNumbers } from '../models'
 import type { IGameState, INonStartedGame, IStartedGame, StartedGame, StartedGameOpts } from '../models/game.model'
 import type { GameRepo } from '../repositories'
 import { BoardService } from './board.service'
@@ -81,7 +81,7 @@ class StartedGameService implements IStartedGame {
 	}
 
 	get board() {
-		return this.#repo.getBoard() as Promise<BoardJSON>
+		return this.#data.board.toJSON()
 	}
 
 	get mode() {

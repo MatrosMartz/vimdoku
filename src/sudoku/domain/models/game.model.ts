@@ -91,7 +91,7 @@ export interface IGameState {
 
 export interface IStartedGame {
 	/** Get the game board data as a JSON Object. */
-	readonly board: Promise<BoardJSON>
+	readonly board: BoardJSON
 	/** Get if the game has started. */
 	readonly isStarted: true
 	/** Get the game mode. */
