@@ -1,6 +1,6 @@
 import { createArray, InvalidNoteError } from '~/share/utils'
 
-import type { INotes, Notes, ValidNumbers } from '../models'
+import type { INotes, Notes, NotesJSON, ValidNumbers } from '../models'
 
 /** Represents a Sudoku Cell Notes Service. */
 export class NotesService implements INotes {
@@ -46,19 +46,18 @@ export class NotesService implements INotes {
 	 * @throws {InvalidBoardError} If `solutionLike` is not a valid JSON string.
 	 */
 	static fromNumber(notesLike: number) {
-		const notes = createArray(9, () => null as number | null)
-		let numNotes = 0
+		const notes = createArray<ValidNumbers | null, 9>(9, () => null)
 
 		for (let i = 0; i < NotesService.#PRIMES.length; i++)
-			if (numNotes % NotesService.#PRIMES[i] === 0) {
-				notes[i] = 1 + i
-				numNotes /= NotesService.#PRIMES[i]
+			if (notesLike % NotesService.#PRIMES[i] === 0) {
+				notes[i] = (1 + i) as ValidNumbers
+				notesLike /= NotesService.#PRIMES[i]
 			}
 
-		if (numNotes !== 0)
-			throw new InvalidNoteError(notes, `there is no note with the representation in primes: ${numNotes}`)
+		if (notesLike !== 0)
+			throw new InvalidNoteError(notes, `there is no note with the representation in primes: ${notesLike}`)
 
-		return new NotesService(notes as Array<ValidNumbers | null>)
+		return new NotesService(notes)
 	}
 
 	/**
@@ -91,13 +90,17 @@ export class NotesService implements INotes {
 		return this
 	}
 
+	copy() {
+		return new NotesService(this.data)
+	}
+
 	remove(num: ValidNumbers) {
 		this.#data[num - 1] = null
 		return this
 	}
 
 	toJSON() {
-		return this.#data.filter((val): val is ValidNumbers => val != null)
+		return this.#data.filter((val): val is ValidNumbers => val != null) as NotesJSON
 	}
 
 	toNumber() {

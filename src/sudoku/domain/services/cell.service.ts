@@ -10,7 +10,7 @@ import {
 import { NotesService } from './notes.service'
 
 /** Represents a Sudoku Cell Entity.  */
-class CellEntity implements Cell {
+class CellEntity {
 	kind: CellKinds
 	notes: INotes
 	readonly solution: ValidNumbers
@@ -43,8 +43,8 @@ export class CellService implements ICell {
 		this.#state = this.#stateForKind(data)
 	}
 
-	get data() {
-		return { ...this.#data, notes: new NotesService(this.#data.notes.data) }
+	get data(): Cell {
+		return { ...this.#data, notes: this.#data.notes.copy() }
 	}
 
 	get kind() {
@@ -198,15 +198,24 @@ class InitialCellState extends CellState {
 
 abstract class WritableCellState extends CellState {
 	addNote(num: ValidNumbers) {
-		return new NotesCellState(this[data]).addNote(num)
+		this[data].notes.add(num)
+		this[data].value = CellState.EMPTY_VALUE
+
+		return new NotesCellState(this[data])
 	}
 
 	clear() {
-		return new EmptyCellState(this[data]).clear()
+		this[data].notes.clear()
+		this[data].value = CellState.EMPTY_VALUE
+
+		return new EmptyCellState(this[data])
 	}
 
 	writeValue(num: ValidNumbers) {
-		return new UnverifiedCellState(this[data]).writeValue(num)
+		this[data].notes.clear()
+		this[data].value = num
+
+		return new UnverifiedCellState(this[data])
 	}
 }
 
@@ -221,13 +230,6 @@ class UnverifiedCellState extends WritableCellState {
 			? new CorrectCellState(this[data])
 			: new IncorrectCellState(this[data])
 	}
-
-	writeValue(num: ValidNumbers) {
-		this[data].notes.clear()
-		this[data].value = num
-
-		return this
-	}
 }
 
 class EmptyCellState extends WritableCellState {
@@ -235,20 +237,15 @@ class EmptyCellState extends WritableCellState {
 		data.kind = CellKinds.Empty
 		super(data)
 	}
-
-	clear() {
-		this[data].notes.clear()
-		this[data].value = CellState.EMPTY_VALUE
-
-		return this
-	}
 }
+
 class CorrectCellState extends WritableCellState {
 	constructor(data: CellEntity) {
 		data.kind = CellKinds.Correct
 		super(data)
 	}
 }
+
 class IncorrectCellState extends WritableCellState {
 	constructor(data: CellEntity) {
 		data.kind = CellKinds.Incorrect
@@ -260,13 +257,6 @@ class NotesCellState extends WritableCellState {
 	constructor(data: CellEntity) {
 		data.kind = CellKinds.WhitNotes
 		super(data)
-	}
-
-	addNote(num: ValidNumbers) {
-		this[data].notes.add(num)
-		this[data].value = CellState.EMPTY_VALUE
-
-		return this
 	}
 
 	removeNote(num: ValidNumbers) {
