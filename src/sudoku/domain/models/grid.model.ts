@@ -63,11 +63,11 @@ export interface IGrid<T> {
 
 	/**
 	 * Check if a given function returns true for all cells in a specific column.
-	 * @param col The column number (0-8).
+	 * @param x The column number (0-8).
 	 * @param fn The function to check against each cell in the col.
 	 * @returns True if the function returns true for all cells in the specified column, false otherwise.
 	 */
-	everyCol(col: number, fn: CBFn<T, boolean>): boolean
+	everyCol(x: number, fn: CBFn<T, boolean>): boolean
 
 	/**
 	 * Check if a given function returns true for all cells in the entire grid.
@@ -78,11 +78,11 @@ export interface IGrid<T> {
 
 	/**
 	 * Check if a given function returns true for all cells in a specific row.
-	 * @param row The row number (0-8).
+	 * @param y The row number (0-8).
 	 * @param fn The function to check against each cell in the row.
 	 * @returns True if the function returns true for all cells in the specified row, false otherwise.
 	 */
-	everyRow(row: number, fn: CBFn<T, boolean>): boolean
+	everyRow(y: number, fn: CBFn<T, boolean>): boolean
 	/**
 	 * Get the value of a cell at the specified position.
 	 * @param position The position of the cell to retrieve.
@@ -102,7 +102,7 @@ export interface IGrid<T> {
 	 * @param separators Separators for columns and rows in the box.
 	 * @returns A string representation of the box with the specified separators.
 	 */
-	joinBox(box: number, separators: { col?: string; row?: string }): string
+	joinBox(box: number, separators: { x?: string; y?: string }): string
 	/**
 	 * Join the values of cells in a specific column into a string using a specified row separator.
 	 * @param col The column number (0-8).
@@ -115,7 +115,7 @@ export interface IGrid<T> {
 	 * @param separators Separators for columns and rows in the grid.
 	 * @returns A string representation of the entire grid with the specified separators.
 	 */
-	joinGrid(separators: { col?: string; row?: string }): string
+	joinGrid(separators: { x?: string; y?: string }): string
 	/**
 	 * Join the values of cells in a specific row into a string using a specified column separator.
 	 * @param row The row number (0-8).

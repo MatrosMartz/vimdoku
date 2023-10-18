@@ -73,13 +73,13 @@ export class SolutionService implements ISolution {
 	 * @param position The position of the cell to check.
 	 * @private
 	 */
-	static #cellIsSafe(value: number[][], num: number, { row, col }: Position) {
-		if (value[row][col] !== 0) return false
+	static #cellIsSafe(value: number[][], num: number, { y, x }: Position) {
+		if (value[y][x] !== 0) return false
 
 		for (let i = 0; i < 9; i++) {
-			if (value[row][i] === num) return false
-			if (value[i][col] === num) return false
-			if (value[box.row(i, row)][box.col(i, col)] === num) return false
+			if (value[y][i] === num) return false
+			if (value[i][x] === num) return false
+			if (value[box.y(i, y)][box.x(i, x)] === num) return false
 		}
 
 		return true
@@ -95,9 +95,9 @@ export class SolutionService implements ISolution {
 			}
 			for (let j = i; j < 9; j++) {
 				const numbers = randomNumbers()
-				for (const num of numbers) if (this.#cellIsSafe(value, num, { row: i, col: j })) value[i][j] = num
+				for (const num of numbers) if (this.#cellIsSafe(value, num, { y: i, x: j })) value[i][j] = num
 
-				for (const num of numbers.reverse()) if (this.#cellIsSafe(value, num, { row: j, col: i })) value[j][i] = num
+				for (const num of numbers.reverse()) if (this.#cellIsSafe(value, num, { y: j, x: i })) value[j][i] = num
 
 				if (value[i][j] === 0 || value[j][i] === 0) {
 					retry()
@@ -113,8 +113,8 @@ export class SolutionService implements ISolution {
 	}
 
 	toString() {
-		const col = ' | '
-		const row = '\n- - - + - - - + - - -\n'
-		return this.grid.joinGrid({ col, row })
+		const x = ' | '
+		const y = '\n- - - + - - - + - - -\n'
+		return this.grid.joinGrid({ x, y })
 	}
 }

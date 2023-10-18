@@ -1,5 +1,3 @@
-import type { Position } from '~/share/domain/models'
-
 import { createArray } from './create-array.util'
 
 export function randomNumbers() {
@@ -12,12 +10,7 @@ export function randomNumbers() {
 	return numbers
 }
 
-const [rows, cols] = [createArray(9, i => i), createArray(9, i => i)]
-export function boardEach(fn: (pos: Position) => void) {
-	for (const row of rows) for (const col of cols) fn({ row, col })
-}
-
 export const box = {
-	row: (i: number, row: number) => (i % 3) + Math.trunc(row / 3) * 3,
-	col: (i: number, col: number) => Math.trunc(i / 3) + Math.trunc(col / 3) * 3,
+	y: (i: number, y: number) => (i % 3) + Math.trunc(y / 3) * 3,
+	x: (i: number, x: number) => Math.trunc(i / 3) + Math.trunc(x / 3) * 3,
 }

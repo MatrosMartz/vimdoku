@@ -47,8 +47,8 @@ export class BoardService implements IBoard {
 	static fromJSON(boardLike: BoardJSON, solution: SolutionJSON) {
 		try {
 			if (Array.isArray(boardLike)) {
-				const data = new GridService(boardLike).mapGrid<ICell>((json, { row, col }) =>
-					CellService.fromJSON(json, solution[row][col])
+				const data = new GridService(boardLike).mapGrid<ICell>((json, { y, x }) =>
+					CellService.fromJSON(json, solution[y][x])
 				)
 				return new BoardService(data)
 			} else throw new InvalidBoardError(boardLike)
@@ -74,7 +74,7 @@ export class BoardService implements IBoard {
 	}
 
 	clear(cellPos: Position) {
-		this.#grid = this.#grid.editCell(cellPos, cell => (cell.kind === CellKinds.Initial ? cell : cell.clear()))
+		this.#grid = this.#grid.editCell(cellPos, cell => cell.clear())
 
 		return this
 	}
@@ -88,7 +88,7 @@ export class BoardService implements IBoard {
 	}
 
 	toggleNotes(cellPos: Position, num: ValidNumbers) {
-		this.#grid = this.#grid.editCell(cellPos, cell => (cell.kind === CellKinds.Initial ? cell : cell.toggleNote(num)))
+		this.#grid = this.#grid.editCell(cellPos, cell => cell.toggleNote(num))
 
 		return this
 	}

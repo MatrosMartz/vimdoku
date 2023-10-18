@@ -9,21 +9,21 @@ export class PositionService implements IPosition {
 	/** The minimum range for row and column coordinates. */
 	static readonly MIN_RANGE = 0
 
-	#col
-	#row
+	#x
+	#y
 
 	/**
 	 * Creates an instance of the Position class.
 	 * @param pos Initial Sudoku board.
 	 */
 	constructor(pos?: Partial<Position>)
-	constructor({ row = 0, col = 0 }: Partial<Position> = {}) {
-		this.#col = col
-		this.#row = row
+	constructor({ y = 0, x = 0 }: Partial<Position> = {}) {
+		this.#x = x
+		this.#y = y
 	}
 
 	get data(): Position {
-		return { row: this.#row, col: this.#col }
+		return { y: this.#y, x: this.#x }
 	}
 
 	/**
@@ -41,7 +41,7 @@ export class PositionService implements IPosition {
 	 * @param pos2 The second cell position.
 	 */
 	static equalsCol(pos1: Position, pos2: Position) {
-		return pos1.col === pos2.col
+		return pos1.x === pos2.x
 	}
 
 	/**
@@ -50,7 +50,7 @@ export class PositionService implements IPosition {
 	 * @param pos2 The second cell position.
 	 */
 	static equalsPos(pos1: Position, pos2: Position) {
-		return pos1.row === pos2.row && pos1.col === pos2.col
+		return pos1.y === pos2.y && pos1.x === pos2.x
 	}
 
 	/**
@@ -59,7 +59,7 @@ export class PositionService implements IPosition {
 	 * @param pos2 The second cell position.
 	 */
 	static equalsRow(pos1: Position, pos2: Position) {
-		return pos1.row === pos2.row
+		return pos1.y === pos2.y
 	}
 
 	/**
@@ -68,8 +68,8 @@ export class PositionService implements IPosition {
 	 * @returns The box number for the cell.
 	 */
 	static getBoxFromPos(pos: Position) {
-		const { row, col } = PositionService.getInitsBox(pos)
-		return row + (col + 3)
+		const { y, x } = PositionService.getInitsBox(pos)
+		return y + (x + 3)
 	}
 
 	/**
@@ -78,8 +78,8 @@ export class PositionService implements IPosition {
 	 * @returns The initial position of the box.
 	 */
 	static getInitsBox(position: Position): Position
-	static getInitsBox({ row, col }: Position): Position {
-		return { row: Math.ceil(row / 3) * 3, col: Math.ceil(col / 3) * 3 }
+	static getInitsBox({ y, x }: Position): Position {
+		return { y: Math.ceil(y / 3) * 3, x: Math.ceil(x / 3) * 3 }
 	}
 
 	/**
@@ -88,7 +88,7 @@ export class PositionService implements IPosition {
 	 * @returns The initial position of the box.
 	 */
 	static getPosFromBox(index: number): Position {
-		return { row: index % 3, col: Math.ceil(index / 3) }
+		return { y: index % 3, x: Math.ceil(index / 3) }
 	}
 
 	/**
@@ -97,32 +97,32 @@ export class PositionService implements IPosition {
 	 * @param pos2 The second cell position.
 	 */
 	static sumPos(pos1: Position, pos2: Position): Position {
-		return { row: pos1.row + pos2.row, col: pos1.col + pos2.col }
+		return { y: pos1.y + pos2.y, x: pos1.x + pos2.x }
 	}
 
-	change({ row, col }: RequireOne<Position>) {
-		if (col != null) this.#col = col
-		if (row != null) this.#row = row
+	change({ y, x }: RequireOne<Position>) {
+		if (x != null) this.#x = x
+		if (y != null) this.#y = y
 		return this
 	}
 
 	moveDown(times: number) {
-		this.#row = Math.min(PositionService.MAX_RANGE, this.#row + times)
+		this.#y = Math.min(PositionService.MAX_RANGE, this.#y + times)
 		return this
 	}
 
 	moveLeft(times: number) {
-		this.#col = Math.max(PositionService.MIN_RANGE, this.#col - times)
+		this.#x = Math.max(PositionService.MIN_RANGE, this.#x - times)
 		return this
 	}
 
 	moveRight(times: number) {
-		this.#col = Math.min(PositionService.MAX_RANGE, this.#col + times)
+		this.#x = Math.min(PositionService.MAX_RANGE, this.#x + times)
 		return this
 	}
 
 	moveUp(times: number) {
-		this.#row = Math.max(PositionService.MIN_RANGE, this.#row - times)
+		this.#y = Math.max(PositionService.MIN_RANGE, this.#y - times)
 		return this
 	}
 }

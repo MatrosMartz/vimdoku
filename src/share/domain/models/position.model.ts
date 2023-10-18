@@ -1,8 +1,8 @@
 import type { RequireOne } from '~/share/types'
 
 export interface Position {
-	col: number
-	row: number
+	x: number
+	y: number
 }
 
 export interface IPosition {
