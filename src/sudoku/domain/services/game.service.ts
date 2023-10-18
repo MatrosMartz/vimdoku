@@ -35,7 +35,7 @@ export class NonStartedGameService implements INonStartedGame {
 		return new StartedGameService({ data, repo: this.#repo })
 	}
 
-	async start(opts?: GameOpts): Promise<StartedGameService>
+	async start(opts?: Partial<GameOpts>): Promise<StartedGameService>
 	async start({ difficulty = DifficultyKinds.Beginner, solution = SolutionService.create() }: Partial<GameOpts> = {}) {
 		const board = BoardService.create({ difficulty, solution })
 
