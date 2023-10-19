@@ -1,5 +1,4 @@
 import type { Field } from '~/share/domain/models'
-import { notifyObservers, ObservableService } from '~/share/domain/services'
 import { InvalidPreferencesError, sameStructure } from '~/share/utils'
 
 import {
@@ -73,7 +72,7 @@ const validatePref = {
 }
 
 /** Represent a Preferences Service for game. */
-export class PreferencesService extends ObservableService<Preferences> implements IPreferences {
+export class PreferencesService implements IPreferences {
 	/** Default all Preferences. */
 	static readonly DEFAULT_DATA = _f<Preferences>({ sudoku, user, vim })
 	/** Default Sudoku Preferences. */
@@ -93,7 +92,6 @@ export class PreferencesService extends ObservableService<Preferences> implement
 	 * @param repo Initial Sudoku board.
 	 */
 	constructor(repo: PreferencesRepo) {
-		super()
 		this.#repo = repo
 	}
 
@@ -125,8 +123,6 @@ export class PreferencesService extends ObservableService<Preferences> implement
 		this.#sudoku = value.sudoku
 		this.#user = value.user
 		this.#vim = value.vim
-
-		this[notifyObservers](this.data)
 	}
 
 	resetAll() {
@@ -145,7 +141,6 @@ export class PreferencesService extends ObservableService<Preferences> implement
 
 	async save() {
 		await this.#repo.save(this.data)
-		this[notifyObservers](this.data)
 	}
 
 	setAll(preferences: Preferences) {
