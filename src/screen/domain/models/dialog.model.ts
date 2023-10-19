@@ -4,9 +4,9 @@ export enum DialogKinds {
 	Pref = 'preferences',
 }
 
-export enum HelpDialogKinds {}
+export enum HelpDialogTypes {}
 
-export enum PrefDialogKinds {
+export enum PrefDialogTypes {
 	all = 'all',
 	diff = 'differ',
 	edit = 'edit',

@@ -1,12 +1,4 @@
-import {
-	DialogKinds,
-	type DialogOpts,
-	type HelpDialogKinds,
-	type IScreen,
-	MainScreenKinds,
-	type PrefDialogKinds,
-	type VimScreen,
-} from '../models'
+import { type DialogData, DialogKinds, type IScreen, MainScreenKinds, type VimScreen } from '../models'
 
 const { freeze: _f } = Object
 
@@ -14,38 +6,30 @@ const { freeze: _f } = Object
 export class ScreenService implements IScreen {
 	/** Define default values for screen. */
 	static readonly DEFAULT_SCREEN = _f<VimScreen>({
-		dialog: DialogKinds.None,
+		dialog: _f({ kind: DialogKinds.None, opts: null }),
 		main: MainScreenKinds.Init,
 	})
 
-	#data: VimScreen = { ...ScreenService.DEFAULT_SCREEN }
-	#dialogOpts: DialogOpts = null
+	#dialog: DialogData = ScreenService.DEFAULT_SCREEN.dialog
+	#main = ScreenService.DEFAULT_SCREEN.main
 
-	get data() {
-		return structuredClone(this.#data)
+	get data(): VimScreen {
+		return { dialog: this.#dialog, main: this.#main }
 	}
 
 	get dialog() {
-		return this.#data.dialog
-	}
-
-	get dialogOpts() {
-		return this.#dialogOpts
+		return this.#dialog
 	}
 
 	get mainScreen() {
-		return this.#data.main
+		return this.#main
 	}
 
-	setDialog(dialog: DialogKinds.None): void
-	setDialog(dialog: DialogKinds.Help, opts: HelpDialogKinds): void
-	setDialog(dialog: DialogKinds.Pref, opts: PrefDialogKinds): void
-	setDialog(dialog: DialogKinds, opts: DialogOpts = null) {
-		this.#data = { ...this.#data, dialog }
-		this.#dialogOpts = structuredClone(opts)
+	setDialog(dialog: DialogData) {
+		this.#dialog = structuredClone(dialog)
 	}
 
 	setMain(main: MainScreenKinds) {
-		this.#data = { ...this.#data, main }
+		this.#main = main
 	}
 }
