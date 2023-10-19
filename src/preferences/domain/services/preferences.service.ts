@@ -1,3 +1,4 @@
+import type { Field } from '~/share/domain/models'
 import { notifyObservers, ObservableService } from '~/share/domain/services'
 import { InvalidPreferencesError, sameStructure } from '~/share/utils'
 
@@ -6,11 +7,14 @@ import {
 	type IPreferences,
 	Langs,
 	type Preferences,
+	sudokuFields,
 	type SudokuPreferences,
+	userFields,
 	type UserPreferences,
+	vimFields,
 	type VimPreferences,
 } from '../models'
-import type * as repositories from '../repositories'
+import type { PreferencesRepo } from '../repositories'
 
 const { freeze: _f } = Object
 
@@ -29,14 +33,43 @@ function createKeyError(key: string, value: unknown) {
 	return new InvalidPreferencesError(`the key "${key}" in sudoku can not have the value "${JSON.stringify(value)}"`)
 }
 
-function keyInPreferences(key: keyof AllPreferences, preferences: SudokuPreferences): key is keyof SudokuPreferences
-function keyInPreferences(key: keyof AllPreferences, preferences: UserPreferences): key is keyof UserPreferences
-function keyInPreferences(key: keyof AllPreferences, preferences: VimPreferences): key is keyof VimPreferences
-function keyInPreferences(
-	key: keyof AllPreferences,
-	preferences: SudokuPreferences | UserPreferences | VimPreferences
-) {
-	return key in preferences
+const keyIn = {
+	sudoku(key: keyof AllPreferences): key is keyof SudokuPreferences {
+		return key in PreferencesService.DEFAULT_SUDOKU
+	},
+	user(key: keyof AllPreferences): key is keyof UserPreferences {
+		return key in PreferencesService.DEFAULT_USER
+	},
+	vim(key: keyof AllPreferences): key is keyof VimPreferences {
+		return key in PreferencesService.DEFAULT_VIM
+	},
+}
+
+function validateField(value: unknown, field: Field) {
+	if (field.type === 'toggle') return typeof value === 'boolean'
+	if (field.type === 'text') return !(typeof value !== 'string' || (field.regex != null && !field.regex?.test(value)))
+
+	if (field.type === 'number')
+		return !(
+			typeof value !== 'number' ||
+			(field.max != null && value > field.max) ||
+			(field.min != null && value < field.min)
+		)
+
+	if (field.type === 'options') return typeof value === 'string' && field.opts.includes(value)
+	return false
+}
+
+const validatePref = {
+	sudoku<K extends keyof SudokuPreferences>(key: K, value: unknown): value is SudokuPreferences[K] {
+		return validateField(value, sudokuFields[key])
+	},
+	user<K extends keyof UserPreferences>(key: K, value: unknown): value is UserPreferences[K] {
+		return validateField(value, userFields[key])
+	},
+	vim<K extends keyof VimPreferences>(key: K, value: unknown): value is VimPreferences[K] {
+		return validateField(value, vimFields[key])
+	},
 }
 
 /** Represent a Preferences Service for game. */
@@ -59,7 +92,7 @@ export class PreferencesService extends ObservableService<Preferences> implement
 	 * Create an instance of the PreferencesService class.
 	 * @param repo Initial Sudoku board.
 	 */
-	constructor(repo: repositories.PreferencesRepo) {
+	constructor(repo: PreferencesRepo) {
 		super()
 		this.#repo = repo
 	}
@@ -96,6 +129,20 @@ export class PreferencesService extends ObservableService<Preferences> implement
 		this[notifyObservers](this.data)
 	}
 
+	resetAll() {
+		this.#sudoku = { ...PreferencesService.DEFAULT_SUDOKU }
+		this.#user = { ...PreferencesService.DEFAULT_USER }
+		this.#vim = { ...PreferencesService.DEFAULT_VIM }
+		return this
+	}
+
+	resetByKey<K extends keyof AllPreferences>(key: K) {
+		if (keyIn.sudoku(key)) this.#sudoku = { ...this.#sudoku, [key]: PreferencesService.DEFAULT_SUDOKU[key] }
+		if (keyIn.user(key)) this.#user = { ...this.#user, [key]: PreferencesService.DEFAULT_USER[key] }
+		if (keyIn.vim(key)) this.#vim = { ...this.#vim, [key]: PreferencesService.DEFAULT_VIM[key] }
+		return this
+	}
+
 	async save() {
 		await this.#repo.save(this.data)
 		this[notifyObservers](this.data)
@@ -111,14 +158,14 @@ export class PreferencesService extends ObservableService<Preferences> implement
 	}
 
 	setByKey<K extends keyof AllPreferences>(key: K, value: AllPreferences[K]) {
-		if (keyInPreferences(key, PreferencesService.DEFAULT_SUDOKU)) {
-			if (!sameStructure(value, PreferencesService.DEFAULT_SUDOKU[key])) throw createKeyError(key, value)
+		if (keyIn.sudoku(key)) {
+			if (!validatePref.sudoku(key, value)) throw createKeyError(key, value)
 			this.#sudoku = { ...this.#sudoku, [key]: value }
-		} else if (keyInPreferences(key, PreferencesService.DEFAULT_USER)) {
-			if (!sameStructure(value, PreferencesService.DEFAULT_USER[key])) throw createKeyError(key, value)
+		} else if (keyIn.user(key)) {
+			if (!validatePref.user(key, value)) throw createKeyError(key, value)
 			this.#user = { ...this.#user, [key]: value }
-		} else if (keyInPreferences(key, PreferencesService.DEFAULT_VIM)) {
-			if (!sameStructure(value, PreferencesService.DEFAULT_VIM[key])) throw createKeyError(key, value)
+		} else if (keyIn.vim(key)) {
+			if (!validatePref.vim(key, value)) throw createKeyError(key, value)
 			this.#vim = { ...this.#vim, [key]: value }
 		} else throw new InvalidPreferencesError(`the key "${key}" not exist in Preferences`)
 

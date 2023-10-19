@@ -29,6 +29,13 @@ export interface IPreferences {
 	readonly vim: VimPreferences
 	/** Load from the repo. */
 	load(): Promise<void>
+	/** Reset to default values all preferences. */
+	resetAll(): this
+	/**
+	 * Reset to default value specific preference.
+	 * @param key: The key preference to the reset.
+	 */
+	resetByKey<K extends keyof AllPreferences>(key: K): this
 	/** Save the current  */
 	save(): Promise<void>
 	/** Set new Preferences Object.
