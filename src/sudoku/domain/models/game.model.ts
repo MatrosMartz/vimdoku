@@ -1,7 +1,7 @@
 import type { IPosition, Position } from '~/share/domain/models'
 
 import type { GameRepo } from '../repositories'
-import type { BoardJSON, IBoard } from './board.model'
+import type { Board, IBoard } from './board.model'
 import type { GameOpts } from './game-options.model'
 import type { ModeKinds } from './modes.model'
 import type { ValidNumbers } from './notes.model'
@@ -91,7 +91,7 @@ export interface IGameState {
 
 export interface IStartedGame {
 	/** Get the game board data as a JSON Object. */
-	readonly board: BoardJSON
+	readonly board: Board
 	/** Get if the game has started. */
 	readonly isStarted: true
 	/** Get the game mode. */

@@ -81,7 +81,7 @@ class StartedGameService implements IStartedGame {
 	}
 
 	get board() {
-		return this.#data.board.toJSON()
+		return this.#data.board.data
 	}
 
 	get mode() {

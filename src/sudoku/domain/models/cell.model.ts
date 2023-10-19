@@ -9,10 +9,16 @@ export enum CellKinds {
 	WhitNotes = 'notes',
 }
 
-export interface Cell {
+export interface CellData {
 	kind: CellKinds
 	notes: INotes
 	readonly solution: ValidNumbers
+	value: number
+}
+
+export interface Cell {
+	kind: CellKinds
+	notes: Notes
 	value: number
 }
 

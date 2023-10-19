@@ -1,5 +1,6 @@
 import {
 	type Cell,
+	type CellData,
 	type CellJSON,
 	CellKinds,
 	type ICell,
@@ -10,13 +11,13 @@ import {
 import { NotesService } from './notes.service'
 
 /** Represents a Sudoku Cell Entity.  */
-class CellEntity {
+class CellEntity implements CellData {
 	kind: CellKinds
 	notes: INotes
 	readonly solution: ValidNumbers
 	value: number
 
-	constructor(data: Cell) {
+	constructor(data: CellData) {
 		this.kind = data.kind
 		this.notes = data.notes
 		this.solution = data.solution
@@ -44,7 +45,7 @@ export class CellService implements ICell {
 	}
 
 	get data(): Cell {
-		return { ...this.#data, notes: this.#data.notes.copy() }
+		return { ...this.#data, notes: this.#data.notes.toJSON() }
 	}
 
 	get kind() {
@@ -52,11 +53,11 @@ export class CellService implements ICell {
 	}
 
 	get notes() {
-		return this.data.notes.toJSON()
+		return this.#data.notes.toJSON()
 	}
 
 	get notesNumber() {
-		return this.data.notes.toNumber()
+		return this.#data.notes.toNumber()
 	}
 
 	get value() {
@@ -69,9 +70,9 @@ export class CellService implements ICell {
 	 */
 	static create(opts: CellOpts): CellService
 	static create({ isInitial, solution }: CellOpts) {
-		const baseData: Omit<Cell, 'kind' | 'value'> = { notes: NotesService.create(), solution }
+		const baseData: Omit<CellData, 'kind' | 'value'> = { notes: NotesService.create(), solution }
 
-		const specificData: Pick<Cell, 'kind' | 'value'> = isInitial
+		const specificData: Pick<CellData, 'kind' | 'value'> = isInitial
 			? { kind: CellKinds.Initial, value: solution }
 			: { kind: CellKinds.Empty, value: CellState.EMPTY_VALUE }
 
@@ -127,7 +128,7 @@ export class CellService implements ICell {
 		return this
 	}
 
-	#stateForKind(data: Cell) {
+	#stateForKind(data: CellData) {
 		switch (data.kind) {
 			case CellKinds.Correct:
 				return new CorrectCellState(data)
@@ -233,7 +234,7 @@ class UnverifiedCellState extends WritableCellState {
 }
 
 class EmptyCellState extends WritableCellState {
-	constructor(data: Cell) {
+	constructor(data: CellEntity) {
 		data.kind = CellKinds.Empty
 		super(data)
 	}
