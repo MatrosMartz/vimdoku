@@ -44,7 +44,7 @@ export class GridService<T> implements IGrid<T> {
 		for (const pos of iterateMatrix(3)) {
 			const currPos = PositionService.sumPos(pos, box)
 			if (
-				(!PositionService.equalsPos(cellPos, currPos)) &&
+				!PositionService.equalsPos(cellPos, currPos) &&
 				!fn(this.#data[cellPos.y][cellPos.x], this.getCell(currPos), currPos)
 			)
 				return false
