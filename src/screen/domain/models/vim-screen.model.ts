@@ -1,5 +1,9 @@
-import type { DialogKinds, HelpDialogTypes, PrefDialogTypes } from './dialog.model'
+import type { CmdDialogTypes, DialogKinds, HelpDialogTypes, PrefDialogTypes } from './dialog.model'
 import { type MainScreenKinds } from './main.model'
+
+export interface CmdDialogOpts {
+	type: CmdDialogTypes
+}
 
 export interface HelpDialogOpts {
 	type: HelpDialogTypes
@@ -12,6 +16,7 @@ export interface PrefDialogOpts {
 export type DialogOpts = HelpDialogOpts | PrefDialogOpts | null | undefined
 
 export type DialogData =
+	| { kind: DialogKinds.Cmd; opts: CmdDialogOpts }
 	| { kind: DialogKinds.Help; opts: HelpDialogOpts }
 	| { opts?: null; kind: DialogKinds.None }
 	| { kind: DialogKinds.Pref; opts: PrefDialogOpts }
