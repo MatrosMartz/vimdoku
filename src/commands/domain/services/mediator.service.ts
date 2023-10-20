@@ -20,12 +20,16 @@ interface MediatorSubscribers {
 	screen: IObservable<VimScreen>
 }
 
+function createSubscribers(): MediatorSubscribers {
+	return { board: new Observable(), modes: new Observable(), preferences: new Observable(), screen: new Observable() }
+}
+
 export class MediatorService implements IVimMediator {
 	#game
 	#hasLoaded = false
 	#pref
 	#screen
-	#subscribers = this.#initSubscribers()
+	#subscribers = createSubscribers()
 
 	constructor({ game, preferences, screen }: MediatorArgs) {
 		this.#game = game
@@ -33,7 +37,7 @@ export class MediatorService implements IVimMediator {
 		this.#screen = screen
 	}
 
-	dispatch(args: DispatchArgs): void {
+	dispatch(args: DispatchArgs) {
 		switch (args.action) {
 			case ScreenActions.ExitScreen:
 				this.#screen.close()
@@ -111,8 +115,11 @@ export class MediatorService implements IVimMediator {
 	}
 
 	async load() {
+		if (this.#hasLoaded) return
+
 		await Promise.all([this.#pref.load()])
 		this.#subscribers.preferences.update(this.#pref.data)
+		this.#hasLoaded = true
 	}
 
 	subscribe(args: SubscriberArgs): RemoveObserver {
@@ -134,9 +141,5 @@ export class MediatorService implements IVimMediator {
 
 		this.#subscribers.screen.add(args.observer)
 		return () => this.#subscribers.screen.remove(args.observer)
-	}
-
-	#initSubscribers(): MediatorSubscribers {
-		return { board: new Observable(), modes: new Observable(), preferences: new Observable(), screen: new Observable() }
 	}
 }
