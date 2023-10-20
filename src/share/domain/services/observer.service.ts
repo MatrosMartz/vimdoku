@@ -1,26 +1,17 @@
-import type { IObservable, Observer, RemoveObserver } from '../models'
+import type { IObservable, Observer } from '../models'
 
-/** Simulated key for protected field. */
-export const notifyObservers = Symbol('notify-observers')
+export class Observable<T> implements IObservable<T> {
+	#subs = new Set<Observer<T>>()
 
-export abstract class ObservableService<T> implements IObservable<T> {
-	#observers = new Set<Observer<T>>()
-	#timer: number | null = null
-
-	abstract get data(): T
-
-	addObserver(observer: Observer<T>): RemoveObserver {
-		this.#observers.add(observer)
-
-		observer.update(this.data)
-		return () => this.#observers.delete(observer)
+	add(sub: Observer<T>) {
+		this.#subs.add(sub)
 	}
 
-	protected [notifyObservers](value: T) {
-		if (this.#timer != null) clearTimeout(this.#timer)
+	remove(sub: Observer<T>) {
+		this.#subs.delete(sub)
+	}
 
-		this.#timer = setTimeout(() => {
-			for (const observer of this.#observers) observer.update(value)
-		}, 100) as unknown as number
+	update(data: T) {
+		for (const sub of this.#subs) sub(data)
 	}
 }

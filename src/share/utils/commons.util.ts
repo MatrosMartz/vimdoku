@@ -17,3 +17,7 @@ export function capitalCase(str: string) {
 			.join(' ')
 	)
 }
+
+export function runAsync(fn: () => Promise<void>) {
+	void fn()
+}

@@ -1,3 +1,4 @@
+export * from './actions.model'
 export * from './board.model'
 export * from './cell.model'
 export * from './difficulties.model'

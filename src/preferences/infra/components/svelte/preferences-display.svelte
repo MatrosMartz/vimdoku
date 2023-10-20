@@ -2,9 +2,9 @@
 	import { Button, ButtonMenu } from '~/share/infra/components/svelte/buttons'
 	import type { Entries } from '~/share/types'
 	import { capitalCase } from '~/share/utils'
+	import { prefSvelte } from '$cmd/infra/stores'
 	import type { Preferences, SudokuPreferences, UserPreferences, VimPreferences } from '$preferences/domain/models'
 	import { PreferencesService } from '$preferences/domain/services'
-	import { prefSvelte } from '$preferences/infra/stores'
 
 	export let showAll = true
 

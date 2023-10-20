@@ -1,15 +1,16 @@
 <script lang="ts">
 	import { Form } from '~/share/infra/components/svelte'
-	import { preferencesFormSchema } from '$preferences/domain/models'
+	import { mediator } from '$cmd/infra/services'
+	import { PreferencesActions, preferencesFormSchema } from '$preferences/domain/models'
 	import { PreferencesService } from '$preferences/domain/services'
-	import { preferencesService } from '$preferences/infra/stores'
+	import { preferences } from '$preferences/infra/services'
 </script>
 
 <Form
 	schema={preferencesFormSchema}
 	defaultValues={PreferencesService.DEFAULT_DATA}
-	initialValues={preferencesService.data}
-	on:submit={async ({ detail }) => {
-		await preferencesService.setAll(detail).save()
+	initialValues={preferences.data}
+	on:submit={({ detail }) => {
+		mediator.dispatch({ action: PreferencesActions.SavePref, data: { type: 'all', replace: detail } })
 	}}
 />

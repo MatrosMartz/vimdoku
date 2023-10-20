@@ -1,11 +1,9 @@
-export type Update<T> = (value: T) => void
-
-export interface Observer<T> {
-	update: Update<T>
-}
+export type Observer<T> = (value: T) => void
 
 export type RemoveObserver = () => void
 
 export interface IObservable<T> {
-	addObserver(observer: Observer<T>): RemoveObserver
+	add(observer: Observer<T>): void
+	remove(observer: Observer<T>): void
+	update(value: T): void
 }
