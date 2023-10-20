@@ -36,6 +36,8 @@ export class MediatorService implements IVimMediator {
 	dispatch(args: DispatchArgs): void {
 		switch (args.action) {
 			case ScreenActions.ExitScreen:
+				this.#screen.close()
+				this.#subscribers.screen.update(this.#screen.data)
 				break
 			case ScreenActions.OpenDialog:
 				this.#screen.setDialog(args.data)

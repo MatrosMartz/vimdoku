@@ -28,6 +28,8 @@ export interface IScreen {
 	readonly dialog: DialogData
 	/** Get the current main screen. */
 	readonly mainScreen: MainScreenKinds
+	/** Return to previous screen or close dialog. */
+	close(): void
 	/** Set dialog and options. */
 	setDialog(dialog: DialogData): void
 	/** Set main screen. */
