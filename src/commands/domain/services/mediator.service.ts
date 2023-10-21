@@ -42,18 +42,20 @@ export class MediatorService implements IMediator {
 	dispatch<Action extends DispatchUnDataActions>(action: Action): void
 	dispatch<Action extends DispatchActions>(action: Action, data: MediatorDispatch[Action]): void
 	dispatch(action: unknown, data?: any) {
-		if (action === ScreenActions.Exit) this.#dExitScreen()
-		else if (action === ScreenActions.OpenDialog) this.#dOpenDialog(data)
-		else if (action === ScreenActions.OpenScreen) this.#dOpenScreen(data)
-		else if (action === SudokuActions.ChangeMode) this.#dChangeMode(data)
-		else if (action === SudokuActions.Erase) this.#dCellErase()
-		else if (action === SudokuActions.Move) this.#dGameMove(data)
-		else if (action === SudokuActions.End) this.#dGameEnd()
-		else if (action === SudokuActions.Save) this.#dGameSave()
-		else if (action === SudokuActions.Start) this.#dGameStart(data)
-		else if (action === SudokuActions.Write) this.#dGameWrite(data)
-		else if (action === PrefActions.Reset) this.#dPrefReset(data)
-		else if (action === PrefActions.Save) this.#dPrefSave(data)
+		runAsync(async () => {
+			if (action === ScreenActions.Exit) this.#dExitScreen()
+			else if (action === ScreenActions.OpenDialog) this.#dOpenDialog(data)
+			else if (action === ScreenActions.OpenScreen) this.#dOpenScreen(data)
+			else if (action === SudokuActions.ChangeMode) this.#dChangeMode(data)
+			else if (action === SudokuActions.Erase) this.#dCellErase()
+			else if (action === SudokuActions.Move) this.#dGameMove(data)
+			else if (action === SudokuActions.End) await this.#dGameEnd()
+			else if (action === SudokuActions.Save) await this.#dGameSave()
+			else if (action === SudokuActions.Start) await this.#dGameStart(data)
+			else if (action === SudokuActions.Write) this.#dGameWrite(data)
+			else if (action === PrefActions.Reset) await this.#dPrefReset(data)
+			else if (action === PrefActions.Save) await this.#dPrefSave(data)
+		})
 	}
 
 	get<K extends StateKeys>(key: K): MediatorState[K]
@@ -80,17 +82,13 @@ export class MediatorService implements IMediator {
 	}
 
 	#dCellErase() {
-		if (this.#game.isStarted) {
-			this.#game.clear()
-			this.#notify('board')
-		}
+		this.#game.clear()
+		this.#notify('board')
 	}
 
 	#dChangeMode(data: SudokuData.ChangeMode) {
-		if (this.#game.isStarted) {
-			this.#game.changeMode(data.mode)
-			this.#notify('modes')
-		}
+		this.#game.changeMode(data.mode)
+		this.#notify('modes')
 	}
 
 	#dExitScreen() {
@@ -98,43 +96,33 @@ export class MediatorService implements IMediator {
 		this.#notify('screen')
 	}
 
-	#dGameEnd() {
-		runAsync(async () => {
-			if (this.#game.isStarted) this.#game = await this.#game.end()
-			this.#notify('board')
-		})
+	async #dGameEnd() {
+		this.#game = await this.#game.end()
+		this.#notify('board')
 	}
 
 	#dGameMove(data: SudokuData.Move) {
-		if (this.#game.isStarted) {
-			if (data.type === 'down') this.#game.moveDown(data.times)
-			if (data.type === 'left') this.#game.moveLeft(data.times)
-			if (data.type === 'right') this.#game.moveRight(data.times)
-			if (data.type === 'up') this.#game.moveUp(data.times)
-			if (data.type === 'set') this.#game.changePos(data.position)
-			this.#notify('board')
-		}
+		if (data.type === 'down') this.#game.moveDown(data.times)
+		if (data.type === 'left') this.#game.moveLeft(data.times)
+		if (data.type === 'right') this.#game.moveRight(data.times)
+		if (data.type === 'up') this.#game.moveUp(data.times)
+		if (data.type === 'set') this.#game.changePos(data.position)
+		this.#notify('board')
 	}
 
-	#dGameSave() {
-		runAsync(async () => {
-			if (this.#game.isStarted) await this.#game.save()
-		})
+	async #dGameSave() {
+		await this.#game.save()
 	}
 
-	#dGameStart(data: Partial<GameOpts>) {
-		runAsync(async () => {
-			if (!this.#game.isStarted) this.#game = await this.#game.start(data)
-			this.#notify('board')
-		})
+	async #dGameStart(data: Partial<GameOpts>) {
+		this.#game = await this.#game.start(data)
+		this.#notify('board')
 	}
 
 	#dGameWrite(data: SudokuData.Write) {
-		if (this.#game.isStarted) {
-			if (data.value === 0) this.#game.clear()
-			else this.#game.write(data.value)
-			this.#notify('board')
-		}
+		if (data.value === 0) this.#game.clear()
+		else this.#game.write(data.value)
+		this.#notify('board')
 	}
 
 	#dOpenDialog(data: DialogData) {
@@ -147,19 +135,15 @@ export class MediatorService implements IMediator {
 		this.#notify('screen')
 	}
 
-	#dPrefReset(data: PrefData.Reset) {
-		runAsync(async () => {
-			if (data.type === 'all') await this.#pref.resetAll().save()
-			else await this.#pref.resetByKey(data.key).save()
-		})
+	async #dPrefReset(data: PrefData.Reset) {
+		if (data.type === 'all') await this.#pref.resetAll().save()
+		else await this.#pref.resetByKey(data.key).save()
 	}
 
-	#dPrefSave(data: PrefData.Save) {
-		runAsync(async () => {
-			if (data.type === 'all') await this.#pref.setAll(data.replace).save()
-			else await this.#pref.setByKey(data.key, data.replace).save()
-			this.#notify('preferences')
-		})
+	async #dPrefSave(data: PrefData.Save) {
+		if (data.type === 'all') await this.#pref.setAll(data.replace).save()
+		else await this.#pref.setByKey(data.key, data.replace).save()
+		this.#notify('preferences')
 	}
 
 	/**
