@@ -1,11 +1,19 @@
-import type { IObservable, RemoveObserver } from '~/share/domain/models'
+import type { Observer, RemoveObserver, SubscriberData } from '~/share/domain/models'
 import { Observable } from '~/share/domain/services'
 import { runAsync } from '~/share/utils'
-import { type IPreferences, type Preferences, PreferencesActions } from '$preferences/domain/models'
-import { type IScreen, ScreenActions, type VimScreen } from '$screen/domain/models'
-import { type Board, GameActions, type IGame, type ModeKinds } from '$sudoku/domain/models'
+import { type IPreferences, PrefActions, type PrefData } from '$preferences/domain/models'
+import { type DialogData, type IScreen, ScreenActions, type ScreenData } from '$screen/domain/models'
+import { type GameOpts, type IGame, SudokuActions, type SudokuData } from '$sudoku/domain/models'
 
-import { type DispatchArgs, type IVimMediator, type SubscriberArgs } from '../models'
+import {
+	type DispatchActions,
+	type DispatchUnDataActions,
+	type IMediator,
+	type MediatorDispatch,
+	type MediatorObservers,
+	type MediatorSubscribers,
+	type SubscribersKeys,
+} from '../models'
 
 interface MediatorArgs {
 	game: IGame
@@ -13,18 +21,11 @@ interface MediatorArgs {
 	screen: IScreen
 }
 
-interface MediatorSubscribers {
-	board: IObservable<Board | null | undefined>
-	modes: IObservable<ModeKinds | null | undefined>
-	preferences: IObservable<Preferences>
-	screen: IObservable<VimScreen>
-}
-
 function createSubscribers(): MediatorSubscribers {
 	return { board: new Observable(), modes: new Observable(), preferences: new Observable(), screen: new Observable() }
 }
 
-export class MediatorService implements IVimMediator {
+export class MediatorService implements IMediator {
 	#game
 	#hasLoaded = false
 	#pref
@@ -37,81 +38,30 @@ export class MediatorService implements IVimMediator {
 		this.#screen = screen
 	}
 
-	dispatch(args: DispatchArgs) {
-		switch (args.action) {
-			case ScreenActions.ExitScreen:
-				this.#screen.close()
-				this.#subscribers.screen.update(this.#screen.data)
-				break
-			case ScreenActions.OpenDialog:
-				this.#screen.setDialog(args.data)
-				this.#subscribers.screen.update(this.#screen.data)
-				break
-			case ScreenActions.OpenScreen:
-				this.#screen.setMain(args.data.screen)
-				this.#subscribers.screen.update(this.#screen.data)
-				break
-			case GameActions.ChangeMode:
-				if (this.#game.isStarted) {
-					this.#game.changeMode(args.data.mode)
-					this.#subscribers.board.update(this.#game.board)
-				}
-				break
-			case GameActions.Erase:
-				if (this.#game.isStarted) {
-					this.#game.clear()
-					this.#subscribers.board.update(this.#game.board)
-				}
-				break
-			case GameActions.Move:
-				if (this.#game.isStarted) {
-					if (args.data.type === 'down') this.#game.moveDown(args.data.times)
-					if (args.data.type === 'left') this.#game.moveLeft(args.data.times)
-					if (args.data.type === 'right') this.#game.moveRight(args.data.times)
-					if (args.data.type === 'up') this.#game.moveUp(args.data.times)
-					if (args.data.type === 'set') this.#game.changePos(args.data.position)
-					this.#subscribers.board.update(this.#game.board)
-				}
-				break
-			case GameActions.RemoveGame:
-				runAsync(async () => {
-					if (this.#game.isStarted) this.#game = await this.#game.end()
-					this.#subscribers.board.update(null)
-				})
-				break
-			case GameActions.SaveGame:
-				runAsync(async () => {
-					if (this.#game.isStarted) await this.#game.save()
-				})
-				break
-			case GameActions.StartGame:
-				runAsync(async () => {
-					if (!this.#game.isStarted) this.#game = await this.#game.start(args.data)
-					this.#subscribers.board.update(this.#game.board)
-				})
-				break
-			case GameActions.Write:
-				if (this.#game.isStarted) {
-					if (args.data.value === 0) this.#game.clear()
-					else this.#game.write(args.data.value)
-					this.#subscribers.board.update(this.#game.board)
-				}
+	dispatch<Action extends DispatchUnDataActions>(action: Action): void
+	dispatch<Action extends DispatchActions>(action: Action, data: MediatorDispatch[Action]): void
+	dispatch(action: unknown, data?: any) {
+		if (action === ScreenActions.Exit) this.#dExitScreen()
+		else if (action === ScreenActions.OpenDialog) this.#dOpenDialog(data)
+		else if (action === ScreenActions.OpenScreen) this.#dOpenScreen(data)
+		else if (action === SudokuActions.ChangeMode) this.#dChangeMode(data)
+		else if (action === SudokuActions.Erase) this.#dCellErase()
+		else if (action === SudokuActions.Move) this.#dGameMove(data)
+		else if (action === SudokuActions.End) this.#dGameEnd()
+		else if (action === SudokuActions.Save) this.#dGameSave()
+		else if (action === SudokuActions.Start) this.#dGameStart(data)
+		else if (action === SudokuActions.Write) this.#dGameWrite(data)
+		else if (action === PrefActions.Reset) this.#dPrefReset(data)
+		else if (action === PrefActions.Save) this.#dPrefSave(data)
+	}
 
-				break
-			case PreferencesActions.ResetPref:
-				runAsync(async () => {
-					if (args.data.type === 'all') await this.#pref.resetAll().save()
-					else await this.#pref.resetByKey(args.data.key).save()
-				})
-				break
-			case PreferencesActions.SavePref:
-				runAsync(async () => {
-					if (args.data.type === 'all') await this.#pref.setAll(args.data.replace).save()
-					else await this.#pref.setByKey(args.data.key, args.data.replace).save()
-					this.#subscribers.preferences.update(this.#pref.data)
-				})
-				break
-		}
+	get<S extends SubscribersKeys>(subscriber: S): SubscriberData<MediatorSubscribers[S]>
+	get(subscriber: string) {
+		if (subscriber === 'board') return !this.#game.isStarted ? null : this.#game.board
+		if (subscriber === 'modes') return !this.#game.isStarted ? null : this.#game.mode
+		if (subscriber === 'preferences') return this.#pref.data
+		if (subscriber === 'preferences') return this.#pref.data
+		if (subscriber === 'screen') return this.#screen.data
 	}
 
 	async load() {
@@ -122,24 +72,104 @@ export class MediatorService implements IVimMediator {
 		this.#hasLoaded = true
 	}
 
-	subscribe(args: SubscriberArgs): RemoveObserver {
-		if (args.on === 'board') {
-			this.#subscribers.board.add(args.observer)
-			return () => this.#subscribers.board.remove(args.observer)
-		}
+	subscribe<S extends SubscribersKeys>(subscriber: S, observer: MediatorObservers[S]): RemoveObserver
+	subscribe(subscriber: string, observer: Observer<any>) {
+		if (subscriber === 'board') return this.#subscribeInternal(subscriber, observer)
+		if (subscriber === 'modes') return this.#subscribeInternal(subscriber, observer)
+		if (subscriber === 'preferences') return this.#subscribeInternal(subscriber, observer)
+		if (subscriber === 'screen') return this.#subscribeInternal(subscriber, observer)
+	}
 
-		if (args.on === 'modes') {
-			this.#subscribers.modes.add(args.observer)
-			return () => this.#subscribers.modes.remove(args.observer)
+	#dCellErase() {
+		if (this.#game.isStarted) {
+			this.#game.clear()
+			this.#update('board')
 		}
+	}
 
-		if (args.on === 'preferences') {
-			this.#subscribers.preferences.add(args.observer)
-			args.observer(this.#pref.data)
-			return () => this.#subscribers.preferences.remove(args.observer)
+	#dChangeMode(data: SudokuData.ChangeMode) {
+		if (this.#game.isStarted) {
+			this.#game.changeMode(data.mode)
+			this.#update('modes')
 		}
+	}
 
-		this.#subscribers.screen.add(args.observer)
-		return () => this.#subscribers.screen.remove(args.observer)
+	#dExitScreen() {
+		this.#screen.close()
+		this.#update('screen')
+	}
+
+	#dGameEnd() {
+		runAsync(async () => {
+			if (this.#game.isStarted) this.#game = await this.#game.end()
+			this.#update('board')
+		})
+	}
+
+	#dGameMove(data: SudokuData.Move) {
+		if (this.#game.isStarted) {
+			if (data.type === 'down') this.#game.moveDown(data.times)
+			if (data.type === 'left') this.#game.moveLeft(data.times)
+			if (data.type === 'right') this.#game.moveRight(data.times)
+			if (data.type === 'up') this.#game.moveUp(data.times)
+			if (data.type === 'set') this.#game.changePos(data.position)
+			this.#update('board')
+		}
+	}
+
+	#dGameSave() {
+		runAsync(async () => {
+			if (this.#game.isStarted) await this.#game.save()
+		})
+	}
+
+	#dGameStart(data: Partial<GameOpts>) {
+		runAsync(async () => {
+			if (!this.#game.isStarted) this.#game = await this.#game.start(data)
+			this.#update('board')
+		})
+	}
+
+	#dGameWrite(data: SudokuData.Write) {
+		if (this.#game.isStarted) {
+			if (data.value === 0) this.#game.clear()
+			else this.#game.write(data.value)
+			this.#update('board')
+		}
+	}
+
+	#dOpenDialog(data: DialogData) {
+		this.#screen.setDialog(data)
+		this.#update('screen')
+	}
+
+	#dOpenScreen(data: ScreenData.OpenScreen) {
+		this.#screen.setMain(data.screen)
+		this.#update('screen')
+	}
+
+	#dPrefReset(data: PrefData.Reset) {
+		runAsync(async () => {
+			if (data.type === 'all') await this.#pref.resetAll().save()
+			else await this.#pref.resetByKey(data.key).save()
+		})
+	}
+
+	#dPrefSave(data: PrefData.Save) {
+		runAsync(async () => {
+			if (data.type === 'all') await this.#pref.setAll(data.replace).save()
+			else await this.#pref.setByKey(data.key, data.replace).save()
+			this.#update('preferences')
+		})
+	}
+
+	#subscribeInternal(subscriber: SubscribersKeys, observer: Observer<any>) {
+		this.#subscribers[subscriber].add(observer)
+		observer(this.get(subscriber))
+		return () => this.#subscribers[subscriber].remove(observer)
+	}
+
+	#update(key: SubscribersKeys) {
+		this.#subscribers[key].update(this.get(key))
 	}
 }

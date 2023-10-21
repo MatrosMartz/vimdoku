@@ -1,26 +1,24 @@
-import type { Observer } from '~/share/domain/models'
-
 import type { MainScreenKinds } from './main.model'
-import type { DialogData, VimScreen } from './vim-screen.model'
+import type { DialogData } from './vim-screen.model'
 
 export enum ScreenActions {
-	ExitScreen = 'exit-screen',
+	Exit = 'exit-screen',
 	OpenDialog = 'open-dialog',
 	OpenScreen = 'open-screen',
 }
 
-export interface OpenScreenData {
-	screen: MainScreenKinds
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace ScreenData {
+	export interface OpenScreen {
+		screen: MainScreenKinds
+	}
+
+	export type OpenDialog = DialogData
 }
 
-export type ScreenData = DialogData | OpenScreenData
+export type ScreenDispatchUnData = ScreenActions.Exit
 
-export type ScreenDispatchArgs =
-	| { data?: null; action: ScreenActions.ExitScreen }
-	| { action: ScreenActions.OpenDialog; data: DialogData }
-	| { action: ScreenActions.OpenScreen; data: OpenScreenData }
-
-export interface ScreenSubscribeArgs {
-	observer: Observer<VimScreen>
-	on: 'screen'
+export interface ScreenDispatch {
+	[ScreenActions.OpenDialog]: ScreenData.OpenDialog
+	[ScreenActions.OpenScreen]: ScreenData.OpenScreen
 }

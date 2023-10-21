@@ -7,3 +7,5 @@ export interface IObservable<T> {
 	remove(observer: Observer<T>): void
 	update(value: T): void
 }
+
+export type SubscriberData<O> = O extends Observer<infer T> ? T : never

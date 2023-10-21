@@ -7,7 +7,7 @@ function createPreferencesStore(): Readable<Preferences> {
 	return {
 		subscribe(observer) {
 			void mediator.load()
-			return mediator.subscribe({ on: 'preferences', observer })
+			return mediator.subscribe('preferences', observer)
 		},
 	}
 }
