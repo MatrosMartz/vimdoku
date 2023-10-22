@@ -63,7 +63,6 @@ export class MediatorService implements IMediator {
 		if (key === 'board') return !this.#game.isStarted ? null : this.#game.board
 		if (key === 'modes') return !this.#game.isStarted ? null : this.#game.mode
 		if (key === 'preferences') return this.#pref.data
-		if (key === 'preferences') return this.#pref.data
 		if (key === 'screen') return this.#screen.data
 	}
 
