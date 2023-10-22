@@ -78,6 +78,10 @@ export interface IGame {
 	readonly board?: Board | null
 	/** Get the game mode. */
 	readonly mode?: ModeKinds | null
+	/** Get the current position. */
+	readonly position?: Position | null
+	/** Get the current value of timer. */
+	readonly timer?: number
 	/** Get if the game has started. */
 	readonly isStarted: boolean
 	/**

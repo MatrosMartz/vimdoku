@@ -12,9 +12,10 @@ import { SolutionService } from './solution.service'
 const repo = Symbol('board-repo')
 
 abstract class GameService implements IGame {
-	abstract mode?: ModeKinds | null
-	protected [repo]: GameRepo
-	abstract isStarted: boolean
+	abstract readonly mode?: ModeKinds | null
+	abstract readonly position?: Position | null
+	protected readonly [repo]: GameRepo
+	abstract readonly isStarted: boolean
 
 	/**
 	 * Creates an instance of the NonStartedGameService class.
@@ -77,6 +78,7 @@ export class NonStartedGameService extends GameService {
 	readonly board = null
 	readonly isStarted = false
 	readonly mode = null
+	readonly position = null
 
 	async resume() {
 		const boardData = await this[repo].getBoard()
@@ -142,6 +144,10 @@ class StartedGameService extends GameService {
 
 	get mode() {
 		return this.#data.mode
+	}
+
+	get position() {
+		return this.#data.pos.data
 	}
 
 	changeMode(mode: ModeKinds) {

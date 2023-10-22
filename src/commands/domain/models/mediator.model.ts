@@ -1,4 +1,4 @@
-import type { IObservable, Observer, RemoveObserver } from '~/share/domain/models'
+import type { IObservable, Observer, Position, RemoveObserver } from '~/share/domain/models'
 import type { PrefDispatch, Preferences } from '$preferences/domain/models'
 import type { ScreenDispatch, ScreenDispatchUnData, VimScreen } from '$screen/domain/models'
 import type { Board, ModeKinds, SudokuDispatch, SudokuDispatchUnData } from '$sudoku/domain/models'
@@ -12,6 +12,7 @@ export type DispatchUnDataActions = ScreenDispatchUnData | SudokuDispatchUnData
 export interface MediatorState {
 	board?: Board | null
 	modes?: ModeKinds | null
+	position?: Position | null
 	preferences: Preferences
 	screen: VimScreen
 }

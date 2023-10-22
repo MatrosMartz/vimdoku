@@ -23,7 +23,13 @@ interface MediatorArgs {
 }
 
 function createObservables(): MediatorObservables {
-	return { board: new Observable(), modes: new Observable(), preferences: new Observable(), screen: new Observable() }
+	return {
+		board: new Observable(),
+		modes: new Observable(),
+		position: new Observable(),
+		preferences: new Observable(),
+		screen: new Observable(),
+	}
 }
 
 export class MediatorService implements IMediator {
@@ -59,9 +65,10 @@ export class MediatorService implements IMediator {
 	}
 
 	get<K extends StateKeys>(key: K): MediatorState[K]
-	get(key: string) {
-		if (key === 'board') return !this.#game.isStarted ? null : this.#game.board
-		if (key === 'modes') return !this.#game.isStarted ? null : this.#game.mode
+	get<K extends StateKeys>(key: K) {
+		if (key === 'board') return this.#game.board
+		if (key === 'modes') return this.#game.mode
+		if (key === 'position') return this.#game.position
 		if (key === 'preferences') return this.#pref.data
 		if (key === 'screen') return this.#screen.data
 	}
