@@ -16,7 +16,7 @@ import {
 	type StateKeys,
 } from '../models'
 
-interface MediatorArgs {
+interface MediatorServices {
 	game: IGame
 	preferences: IPreferences
 	screen: IScreen
@@ -33,6 +33,7 @@ function createObservables(): MediatorObservables {
 	}
 }
 
+/** Represent a Mediator Board Service. */
 export class MediatorService implements IMediator {
 	#game
 	#hasLoaded = false
@@ -41,7 +42,12 @@ export class MediatorService implements IMediator {
 	#pref
 	#screen
 
-	constructor({ game, preferences, screen }: MediatorArgs) {
+	/**
+	 * Creates an instance of the MediatorService class.
+	 * @param services Services that the state manages.
+	 */
+	constructor(services: MediatorServices)
+	constructor({ game, preferences, screen }: MediatorServices) {
 		this.#game = game
 		this.#pref = preferences
 		this.#screen = screen
