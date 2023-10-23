@@ -13,6 +13,7 @@ export interface MediatorState {
 	board?: Board | null
 	modes?: ModeKinds | null
 	position?: Position | null
+	timer?: string | null
 	preferences: Preferences
 	screen: VimScreen
 }

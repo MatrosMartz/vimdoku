@@ -27,6 +27,7 @@ function createObservables(): MediatorObservables {
 		board: new Observable(),
 		modes: new Observable(),
 		position: new Observable(),
+		timer: new Observable(),
 		preferences: new Observable(),
 		screen: new Observable(),
 	}
@@ -35,6 +36,7 @@ function createObservables(): MediatorObservables {
 export class MediatorService implements IMediator {
 	#game
 	#hasLoaded = false
+	#intervalId: ReturnType<typeof setInterval> | null = null
 	#observables = createObservables()
 	#pref
 	#screen
@@ -71,6 +73,7 @@ export class MediatorService implements IMediator {
 		if (key === 'position') return this.#game.position
 		if (key === 'preferences') return this.#pref.data
 		if (key === 'screen') return this.#screen.data
+		if (key === 'timer') return this.#game.timer
 	}
 
 	async load() {
@@ -105,6 +108,8 @@ export class MediatorService implements IMediator {
 	async #dGameEnd() {
 		this.#game = await this.#game.end()
 		this.#notify('board')
+		clearInterval(this.#intervalId ?? 0)
+		this.#intervalId = null
 	}
 
 	#dGameMove(data: SudokuData.Move) {
@@ -123,6 +128,13 @@ export class MediatorService implements IMediator {
 	async #dGameStart(data: Partial<GameOpts>) {
 		this.#game = await this.#game.start(data)
 		this.#notify('board')
+
+		if (this.#pref.user.timer) {
+			this.#intervalId = setInterval(() => {
+				this.#game.timerInc()
+				this.#notify('timer')
+			}, 1000)
+		}
 	}
 
 	#dGameWrite(data: SudokuData.Write) {
