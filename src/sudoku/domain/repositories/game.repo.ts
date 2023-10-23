@@ -5,7 +5,9 @@ export interface GameRepo {
 	delete(): Promise<void>
 	getBoard(): Promise<BoardJSON | null>
 	getOpts(): Promise<GameOptsJSON | null>
+	getTimer(): Promise<number | null>
 	hasBoard(): Promise<boolean>
 	hasOpts(): Promise<boolean>
-	setBoard(board: BoardJSON): Promise<void>
+	hasTimer(): Promise<boolean>
+	save(data: {board: BoardJSON, timer: number}): Promise<void>
 }

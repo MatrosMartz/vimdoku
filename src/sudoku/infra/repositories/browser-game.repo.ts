@@ -8,6 +8,7 @@ interface StorageNames {
 	board?: string
 	notes?: string
 	opts?: string
+	timer?: string
 }
 
 type CellJSONStore = Omit<CellJSON, 'notes'>
@@ -16,11 +17,13 @@ export class BrowserGameRepo implements GameRepo {
 	#boardStorage
 	#notesStorage
 	#optsStorage
+	#timerStorage
 
-	constructor({ board = 'board', notes = 'notes', opts = 'opts' }: StorageNames = {}) {
+	constructor({ board = 'board', notes = 'notes', opts = 'opts', timer = 'game-timer' }: StorageNames = {}) {
 		this.#boardStorage = createBrowserStorage(board)
 		this.#notesStorage = createBrowserStorage(notes)
 		this.#optsStorage = createBrowserStorage(opts)
+		this.#timerStorage = createBrowserStorage(timer)
 	}
 
 	async create(opts: GameOptsJSON, board: BoardJSON): Promise<void>
@@ -38,6 +41,7 @@ export class BrowserGameRepo implements GameRepo {
 		this.#boardStorage.del()
 		this.#notesStorage.del()
 		this.#optsStorage.del()
+		this.#timerStorage.del()
 	}
 
 	async getBoard() {
@@ -55,6 +59,12 @@ export class BrowserGameRepo implements GameRepo {
 		return opts
 	}
 
+	async getTimer() {
+		const timer: number | null = JSON.parse(this.#timerStorage.get()!)
+
+		return timer
+	}
+
 	async hasBoard() {
 		return this.#boardStorage.get() != null && this.#notesStorage.get() != null
 	}
@@ -63,5 +73,11 @@ export class BrowserGameRepo implements GameRepo {
 		return this.#optsStorage.get() != null
 	}
 
-	async setBoard(board: BoardJSON) {}
+	async hasTimer() {
+		return this.#timerStorage.get() != null
+	}
+
+	async save(data: { board: BoardJSON; timer: number }) {
+		
+	}
 }

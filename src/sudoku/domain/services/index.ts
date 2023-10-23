@@ -1,5 +1,7 @@
 export * from './board.service'
 export * from './cell.service'
+export * from './game.service'
 export * from './grid.service'
 export * from './notes.service'
 export * from './solution.service'
+export * from './timer.service'

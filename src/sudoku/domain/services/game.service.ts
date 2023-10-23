@@ -2,11 +2,12 @@ import type { Position } from '~/share/domain/models'
 import { PositionService } from '~/share/domain/services'
 import type { OptionalKeys } from '~/share/types'
 
-import { DifficultyKinds, type GameOpts, ModeKinds, type ValidNumbers } from '../models'
+import { DifficultyKinds, type GameOpts, type ITimer, ModeKinds, type ValidNumbers } from '../models'
 import type { Game, IGame, IGameState, StartedGameOpts } from '../models/game.model'
 import type { GameRepo } from '../repositories'
 import { BoardService } from './board.service'
 import { SolutionService } from './solution.service'
+import { TimerService } from './timer.service'
 
 /** Simulated key for protected field. */
 const repo = Symbol('board-repo')
@@ -14,6 +15,7 @@ const repo = Symbol('board-repo')
 abstract class GameService implements IGame {
 	abstract readonly mode?: ModeKinds | null
 	abstract readonly position?: Position | null
+	abstract readonly timer?: string | null
 	protected readonly [repo]: GameRepo
 	abstract readonly isStarted: boolean
 
@@ -68,6 +70,14 @@ abstract class GameService implements IGame {
 		return this
 	}
 
+	timerDec() {
+		return this
+	}
+
+	timerInc() {
+		return this
+	}
+
 	write(num: ValidNumbers) {
 		return this
 	}
@@ -79,19 +89,21 @@ export class NonStartedGameService extends GameService {
 	readonly isStarted = false
 	readonly mode = null
 	readonly position = null
+	readonly timer = null
 
 	async resume() {
 		const boardData = await this[repo].getBoard()
 		const optsData = await this[repo].getOpts()
+		const timerData = await this[repo].getTimer()
 
-		if (boardData == null || optsData == null) return null
+		if (boardData == null || optsData == null || timerData == null) return null
 
 		const data = new StartedGameData({
 			board: BoardService.fromJSON(boardData, optsData.solution),
 			pos: new PositionService(),
 		})
 
-		return new StartedGameService({ data, repo: this[repo] })
+		return new StartedGameService({ data, repo: this[repo], timer: Number(timerData) })
 	}
 
 	async start(opts?: Partial<GameOpts>): Promise<StartedGameService>
@@ -102,10 +114,7 @@ export class NonStartedGameService extends GameService {
 
 		const data = new StartedGameData({ board, pos: new PositionService() })
 
-		return new StartedGameService({
-			data,
-			repo: this[repo],
-		})
+		return new StartedGameService({ data, repo: this[repo], timer: 0 })
 	}
 }
 
@@ -126,16 +135,18 @@ class StartedGameService extends GameService {
 	readonly isStarted = true
 	#data
 	#state: IGameState
+	#timer: ITimer
 
 	/**
 	 * Creates an instance of the StartedGameService class.
 	 * @param opts Options for th[StartedGam]eService (game data and repository).
 	 */
 	constructor(opts: StartedGameOpts)
-	constructor({ data, repo }: StartedGameOpts) {
+	constructor({ data, repo, timer }: StartedGameOpts) {
 		super(repo)
 		this.#data = data
 		this.#state = GameState.create(data, data.mode)
+		this.#timer = new TimerService(timer)
 	}
 
 	get board() {
@@ -148,6 +159,10 @@ class StartedGameService extends GameService {
 
 	get position() {
 		return this.#data.pos.data
+	}
+
+	get timer() {
+		return this.#timer.toString()
 	}
 
 	changeMode(mode: ModeKinds) {
@@ -191,7 +206,17 @@ class StartedGameService extends GameService {
 	}
 
 	async save(): Promise<void> {
-		await this[repo].setBoard(this.#data.board.toJSON())
+		await this[repo].save({ board: this.#data.board.toJSON(), timer: this.#timer.data })
+	}
+
+	timerDec() {
+		this.#timer.dec()
+		return this
+	}
+
+	timerInc() {
+		this.#timer.inc()
+		return this
 	}
 
 	write(num: ValidNumbers) {

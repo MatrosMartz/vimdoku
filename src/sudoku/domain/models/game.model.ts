@@ -15,6 +15,7 @@ export interface Game {
 export interface StartedGameOpts {
 	data: Game
 	repo: GameRepo
+	timer: number
 }
 
 export interface IGameState {
@@ -81,7 +82,7 @@ export interface IGame {
 	/** Get the current position. */
 	readonly position?: Position | null
 	/** Get the current value of timer. */
-	readonly timer?: number
+	readonly timer?: string | null
 	/** Get if the game has started. */
 	readonly isStarted: boolean
 	/**
@@ -143,6 +144,8 @@ export interface IGame {
 	 * @returns The new started game.
 	 */
 	start(opts?: Partial<GameOpts>): Promise<IGame>
+	timerDec(): this
+	timerInc(): this
 	/**
 	 * Write a valid number as value or notes depending on the game mode in the current position cell.
 	 * @param num The valid number to write.
