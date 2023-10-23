@@ -1,15 +1,16 @@
 <script lang="ts">
+	import { derived } from 'svelte/store'
+
 	import { Dialog, DialogClose } from '~/share/infra/components/svelte/dialog'
-	import { createDialogStore } from '~/share/infra/components/svelte/dialog/dialog.context'
 	import { Tab, TabGroup, TabList, TabPanel } from '~/share/infra/components/svelte/tab'
+	import { screenSvelte } from '$cmd/infra/stores/svelte/screen.store'
 	import { PreferencesDisplay, PreferencesForm } from '$preferences/infra/components/svelte'
+	import { DialogKinds } from '$screen/domain/models'
 
 	let selected = 'all'
 
-	const dialogState = createDialogStore(false)
+	const dialogState = derived(screenSvelte, ({ dialog }) => dialog.kind === DialogKinds.Pref)
 </script>
-
-<button on:click={() => dialogState.open()}>open</button>
 
 <Dialog {dialogState}>
 	<TabGroup bind:selected>

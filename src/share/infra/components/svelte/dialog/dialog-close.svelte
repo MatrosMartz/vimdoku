@@ -1,11 +1,10 @@
 <script lang="ts">
-	import { getDialogContext } from './dialog.context'
-
-	const dialog = getDialogContext()
+	import { mediator } from '$cmd/infra/services'
+	import { ScreenActions } from '$screen/domain/models'
 </script>
 
 <li>
-	<button on:click={() => dialog.close()}>close</button>
+	<button on:click={() => mediator.dispatch(ScreenActions.Exit)}>close</button>
 </li>
 
 <style>

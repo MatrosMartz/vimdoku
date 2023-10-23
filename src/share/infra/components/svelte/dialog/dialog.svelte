@@ -1,22 +1,20 @@
 <script lang="ts">
-	import { createDialogContext, type DialogState } from './dialog.context'
+	import type { Readable } from 'svelte/store'
 
-	export let dialogState: DialogState
-
-	$: hide = !$dialogState
+	export let dialogState: Readable<boolean>
 
 	let dialog: HTMLDialogElement
 
+	$: hide = !$dialogState
+
 	$: if ($dialogState) dialog.showModal()
 
-	createDialogContext(dialogState)
-
-	function handleAnimationEnd({ animationName }: AnimationEvent) {
+	function AnimationendHandler({ animationName }: AnimationEvent) {
 		if (/backdrop-hide$/.test(animationName)) dialog.close()
 	}
 </script>
 
-<dialog class:hide bind:this={dialog} on:animationend={handleAnimationEnd}>
+<dialog class="vim-dialog" class:hide bind:this={dialog} on:animationend={AnimationendHandler}>
 	<div class="content">
 		<slot />
 	</div>
