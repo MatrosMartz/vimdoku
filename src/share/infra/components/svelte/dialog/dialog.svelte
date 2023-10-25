@@ -15,9 +15,7 @@
 </script>
 
 <dialog class="vim-dialog" class:hide bind:this={dialog} on:animationend={AnimationendHandler}>
-	<div class="content">
-		<slot />
-	</div>
+	<slot />
 </dialog>
 
 <style>
@@ -27,6 +25,7 @@
 		color: inherit;
 		background: none;
 		border: none;
+		outline: none;
 	}
 
 	dialog[open] {
@@ -74,16 +73,5 @@
 		to {
 			opacity: 0;
 		}
-	}
-
-	.content {
-		display: flex;
-		flex-direction: column;
-		width: 80vw;
-		max-width: 600px;
-		height: 90vh;
-		overflow: hidden;
-		background-color: hsl(280deg 17% 14%);
-		border-radius: 8px;
 	}
 </style>

@@ -51,7 +51,8 @@ select {
 	font-size: 0.9rem;
 }
 
-form .field :where(input:where([type='text'], [type='number']), select) {
+form .field :where(input:where([type='text'], [type='number']), select),
+.command {
 	width: calc(100% - 4rem);
 	height: 40px;
 	padding-inline: 1rem;
@@ -65,11 +66,13 @@ form .field :where(input:where([type='text'], [type='number']), select) {
 		box-shadow 200ms ease-out;
 }
 
-form .field :where(input:where([type='text'], [type='number']), select):hover {
+form .field :where(input:where([type='text'], [type='number']), select):hover,
+.command:has(input:hover) {
 	--input-shadow: var(--hover-shadow);
 }
 
-form .field :where(input:where([type='text'], [type='number']), select):focus {
+form .field :where(input:where([type='text'], [type='number']), select):focus,
+.command:has(input:focus) {
 	--input-border: var(--alternative-border);
 }
 

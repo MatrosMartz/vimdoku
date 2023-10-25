@@ -4,12 +4,14 @@
 	import { CommandDialog, PreferencesDialog } from '$screen/infra/components/svelte'
 
 	function keydownHandler(ev: KeyboardEvent) {
-		const isVimDialog = ev.target instanceof HTMLElement && ev.target.classList.contains('vim-dialog')
-		if (ev.key === 'Escape' && isVimDialog) ev.preventDefault()
-
-		if (ev.key === ':')
+		if (ev.key === ':') {
+			if (mediator.get('screen').dialog.kind === DialogKinds.None) ev.preventDefault()
 			mediator.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.Cmd, opts: { type: CmdDialogTypes.Full } })
-		if (ev.key === 'Escape') mediator.dispatch(ScreenActions.Exit)
+		}
+		if (ev.key === 'Escape') {
+			if (mediator.get('screen').dialog.kind !== DialogKinds.None) ev.preventDefault()
+			mediator.dispatch(ScreenActions.Exit)
+		}
 	}
 </script>
 
