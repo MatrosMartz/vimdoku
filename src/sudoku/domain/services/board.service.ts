@@ -30,7 +30,7 @@ export class BoardService implements IBoard {
 	static create({ difficulty, solution }: GameOpts) {
 		let initials = 0
 		const grid = GridService.create<ICell>(pos => {
-			const isInitial = Boolean(Math.random() * 2) && initials < difficulty
+			const isInitial = Boolean(Math.random() * 2) && initials < Number(difficulty)
 			if (isInitial) initials++
 			return CellService.create({ isInitial, solution: solution.grid.getCell(pos) })
 		})
