@@ -6,17 +6,17 @@ import { type DialogData, type IScreen, ScreenActions, type ScreenData } from '$
 import { type GameOpts, type IGame, SudokuActions, type SudokuData } from '$sudoku/domain/models'
 
 import type {
-	DispatchActions,
-	DispatchUnDataActions,
 	IMediator,
+	MediatorActions,
 	MediatorDispatch,
 	MediatorKeys,
 	MediatorObservables,
 	MediatorObservers,
 	MediatorState,
+	MediatorUnDataActions,
 } from '../models'
 
-interface MediatorServices {
+interface MediatorDeps {
 	game: IGame
 	preferences: IPreferences
 	screen: IScreen
@@ -33,7 +33,7 @@ function createObservables(): MediatorObservables {
 	}
 }
 
-/** Represent a Mediator Board Service. */
+/** Represent a Mediator Service. */
 export class MediatorService implements IMediator {
 	#game
 	#hasLoaded = false
@@ -44,17 +44,17 @@ export class MediatorService implements IMediator {
 
 	/**
 	 * Creates an instance of the MediatorService class.
-	 * @param services Services that the state manages.
+	 * @param deps An Object contains deps that the state manages.
 	 */
-	constructor(services: MediatorServices)
-	constructor({ game, preferences, screen }: MediatorServices) {
+	constructor(deps: MediatorDeps)
+	constructor({ game, preferences, screen }: MediatorDeps) {
 		this.#game = game
 		this.#pref = preferences
 		this.#screen = screen
 	}
 
-	dispatch<Action extends DispatchUnDataActions>(action: Action): this
-	dispatch<Action extends DispatchActions>(action: Action, data: MediatorDispatch[Action]): this
+	dispatch<Action extends MediatorUnDataActions>(action: Action): this
+	dispatch<Action extends MediatorActions>(action: Action, data: MediatorDispatch[Action]): this
 	dispatch(action: unknown, data?: any) {
 		runAsync(async () => {
 			if (action === ScreenActions.Exit) this.#dExitScreen()
@@ -172,8 +172,8 @@ export class MediatorService implements IMediator {
 	}
 
 	/**
-	 * Update subscribers of an observable.
-	 * @param key The key of the observable to be updated.
+	 * Updates the specified key in the observables with the current value from the state.
+	 * @param key The key to update in the observables.
 	 */
 	#notify<K extends MediatorKeys>(key: K) {
 		this.#observables[key].update(this.get(key))

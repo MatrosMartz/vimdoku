@@ -5,9 +5,11 @@ import type { Board, ModeKinds, SudokuDispatch, SudokuDispatchUnData } from '$su
 
 export type MediatorDispatch = ScreenDispatch & SudokuDispatch & PrefDispatch
 
-export type DispatchActions = keyof MediatorDispatch
+export type MediatorActions = keyof MediatorDispatch
 
-export type DispatchUnDataActions = ScreenDispatchUnData | SudokuDispatchUnData
+export type MediatorUnDataActions = ScreenDispatchUnData | SudokuDispatchUnData
+
+export type AllMediatorActions = MediatorActions | MediatorUnDataActions
 
 export interface MediatorState {
 	board?: Board | null
@@ -32,14 +34,16 @@ export interface IMediator {
 	/**
 	 * Dispatches an action to the mediator without associated data.
 	 * @param action The action to be dispatched.
+	 * @returns The updated Executor.
 	 */
-	dispatch<Action extends DispatchUnDataActions>(action: Action): this
+	dispatch<Action extends MediatorUnDataActions>(action: Action): this
 	/**
 	 * Dispatches an action to the mediator with associated data.
 	 * @param action The action to be dispatched.
 	 * @param data The data associated with the action.
+	 * @returns The updated Executor.
 	 */
-	dispatch<Action extends DispatchActions>(action: Action, data: MediatorDispatch[Action]): this
+	dispatch<Action extends MediatorActions>(action: Action, data: MediatorDispatch[Action]): this
 	/**
 	 * Retrieves the current state of a specific observable.
 	 * @param key The key of the observable from which to retrieve data.
