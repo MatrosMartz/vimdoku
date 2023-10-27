@@ -77,7 +77,5 @@ export class BrowserGameRepo implements GameRepo {
 		return this.#timerStorage.get() != null
 	}
 
-	async save(data: { board: BoardJSON; timer: number }) {
-		
-	}
+	async save(data: { board: BoardJSON; timer: number }) {}
 }
