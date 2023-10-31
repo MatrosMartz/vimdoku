@@ -3,15 +3,7 @@ import { Observable } from '~/share/domain/services'
 import { DialogKinds, PrefDialogTypes, ScreenActions } from '$screen/domain/models'
 import { DifficultyKinds, SudokuActions } from '$sudoku/domain/models'
 
-import type {
-	ExecutorKeys,
-	ExecutorObservables,
-	ExecutorObservers,
-	ExecutorState,
-	IExecutor,
-	IMediator,
-	Suggestion,
-} from '../models'
+import type { Executor, IExecutor, IMediator, Suggestion } from '../models'
 import { ALL_SUGGESTIONS } from './suggestions.service'
 
 interface ExecutorDeps {
@@ -36,7 +28,7 @@ export class ExecutorService implements IExecutor {
 	}
 
 	/** Creates the observables for history and suggestions. */
-	static #createObservables(): ExecutorObservables {
+	static #createObservables(): Executor.Observables {
 		return { history: new Observable(), suggestions: new Observable() }
 	}
 
@@ -67,8 +59,8 @@ export class ExecutorService implements IExecutor {
 		return this
 	}
 
-	get<K extends ExecutorKeys>(key: K): ExecutorState[K]
-	get<K extends ExecutorKeys>(key: K) {
+	get<K extends Executor.Keys>(key: K): Executor.State[K]
+	get<K extends Executor.Keys>(key: K) {
 		if (key === 'history') return this.#history
 		if (key === 'suggestions') return this.#suggestions
 	}
@@ -85,9 +77,9 @@ export class ExecutorService implements IExecutor {
 		return this
 	}
 
-	subscribe<K extends keyof ExecutorState>(key: K, observer: ExecutorObservers[K]): RemoveObserver {
+	subscribe<K extends keyof Executor.State>(key: K, observer: Executor.Observers[K]): RemoveObserver {
 		this.#observables[key].add(observer)
-
+		observer(this.get(key))
 		return () => this.#observables[key].remove(observer)
 	}
 
@@ -95,7 +87,7 @@ export class ExecutorService implements IExecutor {
 	 * Updates the specified key in the observables with the current value from the state.
 	 * @param key The key to update in the observables.
 	 */
-	#update<K extends ExecutorKeys>(key: K) {
+	#update<K extends Executor.Keys>(key: K) {
 		this.#observables[key].update(this.get(key))
 	}
 }

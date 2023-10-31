@@ -1,14 +1,14 @@
 import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
-import type { AllMediatorActions, IMediator, MediatorState } from '../models'
+import type { IMediator, Mediator } from '../models'
 import { ExecutorService } from './executor.service'
 
 const mockMediator: IMediator = {
-	dispatch(action: AllMediatorActions, data?: Record<string, unknown>) {
+	dispatch(action: Mediator.Actions, data?: Record<string, unknown>) {
 		return this
 	},
 	get(key) {
-		return null as MediatorState[typeof key]
+		return null as Mediator.State[typeof key]
 	},
 	async load() {},
 	subscribe(key, observer) {

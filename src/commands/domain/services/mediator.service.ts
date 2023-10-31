@@ -5,16 +5,7 @@ import { type IPreferences, PrefActions, type PrefData } from '$preferences/doma
 import { type DialogData, type IScreen, ScreenActions, type ScreenData } from '$screen/domain/models'
 import { type GameOpts, type IGame, SudokuActions, type SudokuData } from '$sudoku/domain/models'
 
-import type {
-	IMediator,
-	MediatorActions,
-	MediatorDispatch,
-	MediatorKeys,
-	MediatorObservables,
-	MediatorObservers,
-	MediatorState,
-	MediatorUnDataActions,
-} from '../models'
+import type { IMediator, Mediator } from '../models'
 
 interface MediatorDeps {
 	game: IGame
@@ -22,7 +13,7 @@ interface MediatorDeps {
 	screen: IScreen
 }
 
-function createObservables(): MediatorObservables {
+function createObservables(): Mediator.Observables {
 	return {
 		board: new Observable(),
 		modes: new Observable(),
@@ -53,8 +44,8 @@ export class MediatorService implements IMediator {
 		this.#screen = screen
 	}
 
-	dispatch<Action extends MediatorUnDataActions>(action: Action): this
-	dispatch<Action extends MediatorActions>(action: Action, data: MediatorDispatch[Action]): this
+	dispatch<Action extends Mediator.UnDataActions>(action: Action): this
+	dispatch<Action extends Mediator.DataActions>(action: Action, data: Mediator.DataDispatch[Action]): this
 	dispatch(action: unknown, data?: any) {
 		runAsync(async () => {
 			if (action === ScreenActions.Exit) this.#dExitScreen()
@@ -73,8 +64,8 @@ export class MediatorService implements IMediator {
 		return this
 	}
 
-	get<K extends MediatorKeys>(key: K): MediatorState[K]
-	get<K extends MediatorKeys>(key: K) {
+	get<K extends Mediator.Keys>(key: K): Mediator.State[K]
+	get<K extends Mediator.Keys>(key: K) {
 		if (key === 'board') return this.#game.board
 		if (key === 'modes') return this.#game.mode
 		if (key === 'position') return this.#game.position
@@ -91,7 +82,7 @@ export class MediatorService implements IMediator {
 		this.#hasLoaded = true
 	}
 
-	subscribe<K extends MediatorKeys>(key: K, observer: MediatorObservers[K]): RemoveObserver {
+	subscribe<K extends Mediator.Keys>(key: K, observer: Mediator.Observers[K]): RemoveObserver {
 		this.#observables[key].add(observer)
 		observer(this.get(key))
 		return () => this.#observables[key].remove(observer)
@@ -175,7 +166,7 @@ export class MediatorService implements IMediator {
 	 * Updates the specified key in the observables with the current value from the state.
 	 * @param key The key to update in the observables.
 	 */
-	#notify<K extends MediatorKeys>(key: K) {
+	#notify<K extends Mediator.Keys>(key: K) {
 		this.#observables[key].update(this.get(key))
 	}
 }

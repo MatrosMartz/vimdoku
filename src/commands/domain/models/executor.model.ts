@@ -2,19 +2,22 @@ import type { IObservable, Observer, RemoveObserver } from '~/share/domain/model
 
 import type { Suggestion } from './suggestions.model'
 
-export interface ExecutorState {
-	history: string[]
-	suggestions: Suggestion[]
-}
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace Executor {
+	export interface State {
+		history: string[]
+		suggestions: Suggestion[]
+	}
 
-export type ExecutorKeys = keyof ExecutorState
+	export type Keys = keyof State
 
-export type ExecutorObservables = {
-	[K in ExecutorKeys]: IObservable<ExecutorState[K]>
-}
+	export type Observables = {
+		[K in Keys]: IObservable<State[K]>
+	}
 
-export type ExecutorObservers = {
-	[k in ExecutorKeys]: Observer<ExecutorState[k]>
+	export type Observers = {
+		[k in Keys]: Observer<State[k]>
+	}
 }
 
 export interface IExecutor {
@@ -29,7 +32,7 @@ export interface IExecutor {
 	 * @param key The key of the observable from which to retrieve data.
 	 * @returns The data associated with the provided key.
 	 */
-	get<K extends ExecutorKeys>(key: K): ExecutorState[K]
+	get<K extends Executor.Keys>(key: K): Executor.State[K]
 	/**
 	 * Searches for autocomplete suggestions based on the provided command-like input.
 	 * @param cmdLike The command-like input to search for suggestions.
@@ -42,5 +45,5 @@ export interface IExecutor {
 	 * @param observer The observer function or object.
 	 * @returns A function to remove the observer's subscription.
 	 */
-	subscribe<K extends ExecutorKeys>(key: K, observer: ExecutorObservers[K]): RemoveObserver
+	subscribe<K extends Executor.Keys>(key: K, observer: Executor.Observers[K]): RemoveObserver
 }
