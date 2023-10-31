@@ -52,7 +52,7 @@ select {
 }
 
 form .field :where(input:where([type='text'], [type='number']), select),
-.command {
+.command-input {
 	width: calc(100% - 4rem);
 	height: 40px;
 	padding-inline: 1rem;
@@ -67,15 +67,53 @@ form .field :where(input:where([type='text'], [type='number']), select),
 }
 
 form .field :where(input:where([type='text'], [type='number']), select):hover,
-.command:has(input:hover) {
+.command-input:has(input:hover) {
 	--input-shadow: var(--hover-shadow);
 }
 
 form .field :where(input:where([type='text'], [type='number']), select):focus,
-.command:has(input:focus) {
+.command-input:has(input:focus) {
 	--input-border: var(--alternative-border);
 }
 
 form .field select option {
 	height: 40px;
+}
+
+h3 {
+	font-family: monospace;
+}
+
+.command {
+	color: inherit;
+}
+
+.command::before {
+	color: rgb(118 81 148);
+	content: ':';
+}
+
+.optional {
+	color: rgb(153 143 168);
+}
+
+.optional::before {
+	content: '[';
+}
+
+.optional::after {
+	content: ']';
+}
+
+.holder {
+	font-style: italic;
+	color: rgb(205 131 219);
+}
+
+.holder::before {
+	content: '<';
+}
+
+.holder::after {
+	content: '>';
 }

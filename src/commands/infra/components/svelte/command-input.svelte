@@ -1,16 +1,20 @@
 <script lang="ts">
-	import { mediator } from '$cmd/infra/services'
+	import { executor, mediator } from '$cmd/infra/services'
 	import { ScreenActions } from '$screen/domain/models'
 
 	function submitHandler({ currentTarget }: { currentTarget: HTMLFormElement }) {
 		mediator.dispatch(ScreenActions.Exit)
 		currentTarget.reset()
 	}
+
+	function inputHandler({ currentTarget }: { currentTarget: HTMLInputElement }) {
+		executor.searchAutocomplete(currentTarget.value)
+	}
 </script>
 
 <form method="dialog" on:submit|preventDefault={submitHandler}>
-	<label class="command">
-		<input type="text" />
+	<label class="command-input">
+		<input type="text" on:input={inputHandler} />
 	</label>
 </form>
 
@@ -18,24 +22,25 @@
 	form {
 		display: flex;
 		justify-content: center;
-		padding: 1rem;
 	}
 
-	.command {
+	.command-input {
 		box-sizing: content-box;
 		display: flex;
 		align-items: center;
+		width: 100%;
 		overflow: hidden;
 		font: 1rem monospace;
 	}
 
-	.command::before {
+	.command-input::before {
 		height: 1lh;
 		font-size: inherit;
 		content: ':';
 	}
 
 	input {
+		width: 100%;
 		height: 1lh;
 		overflow: hidden;
 		font: inherit;

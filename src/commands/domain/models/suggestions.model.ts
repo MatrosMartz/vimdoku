@@ -1,6 +1,6 @@
 export interface Suggestion {
 	desc: string
-	header: HTMLElement
+	header: HTMLHeadingElement
 	id: string
 	input: string
 }
@@ -16,4 +16,4 @@ export interface ISuggestion {
 	match(cmd: string): boolean
 }
 
-export const COMMANDS_NAMES = ['help', 'set', 'start', 'quit', 'write', 'wquit', 'exit', 'xit', 'pause', 'continue']
+export const COMMANDS_NAMES = ['help', 'set', 'start', 'pause', 'continue', 'write', 'quit', 'exit', 'xit', 'wquit']
