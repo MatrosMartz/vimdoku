@@ -19,7 +19,7 @@ module.exports = {
 			files: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
 		},
 		{
-			files: ['svelte.config.js', 'vite.config.ts', 'vitest.config.ts'],
+			files: ['vite.config.ts', 'vitest.config.ts', 'test/**/*.ts'],
 			parserOptions: {
 				project: './tsconfig.node.json',
 			},

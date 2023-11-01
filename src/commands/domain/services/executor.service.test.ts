@@ -42,16 +42,11 @@ describe.concurrent('ExecutorService suggestions', () => {
 	})
 
 	test('Should be first suggestions are help commands', () => {
-		executor.searchAutocomplete('help  :')
+		executor.searchAutocomplete('help :')
 
 		vi.advanceTimersByTime(500)
 
-		expect(
-			executor
-				.get('suggestions')
-				.slice(0, -2)
-				.every(({ input }) => input.startsWith('help :'))
-		).toBe(true)
+		expect(executor.get('suggestions').every(({ input }) => input.startsWith('help :'))).toBe(true)
 	})
 
 	test('Should be first suggestion are "help :help"', () => {
@@ -59,7 +54,7 @@ describe.concurrent('ExecutorService suggestions', () => {
 
 		vi.advanceTimersByTime(500)
 
-		expect(executor.get('suggestions')).length(3)
+		expect(executor.get('suggestions')).length(1)
 
 		expect(executor.get('suggestions')[0].id).toBe('help-help')
 	})

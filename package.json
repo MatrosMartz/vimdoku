@@ -18,7 +18,6 @@
 	},
 	"devDependencies": {
 		"@sveltejs/vite-plugin-svelte": "^2.4.2",
-		"@testing-library/jest-dom": "^6.1.2",
 		"@testing-library/svelte": "^4.0.3",
 		"@tsconfig/svelte": "^5.0.0",
 		"@typescript-eslint/eslint-plugin": "^6.5.0",
@@ -47,6 +46,7 @@
 		"typescript": "^5.2.2",
 		"vite": "^4.4.5",
 		"vite-tsconfig-paths": "^4.2.0",
-		"vitest": "^0.34.3"
+		"vitest": "^0.34.6",
+		"vitest-dom": "^0.1.1"
 	}
 }
