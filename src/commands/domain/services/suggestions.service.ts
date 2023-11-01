@@ -19,11 +19,12 @@ export class SuggestionService implements ISuggestion {
 	 */
 	constructor(opts: SuggestionsOpts)
 	constructor({ cmdStr, descriptions, id }: SuggestionsOpts) {
-		const [cmd, , opt, , arg] = cmdStr.split(/(\[)(\w+)(\]\s?)/)
+		const [cmd, opt, arg = ''] = cmdStr.split(/(\[\w+\] ?)/)
+		const parseOpt = opt.replace(/(\[|\]|\s)/g, '')
 
-		this.#rgxStr = SuggestionService.#createRgxStr(cmd, opt, arg)
-		const header = SuggestionService.#createCmd(cmd, opt, arg)
-		const input = SuggestionService.#createInput(cmd, opt, arg)
+		this.#rgxStr = SuggestionService.#createRgxStr(cmd, parseOpt, arg)
+		const header = SuggestionService.#createCmd(cmd, parseOpt, arg)
+		const input = SuggestionService.#createInput(cmd, parseOpt, arg)
 
 		this.#data = { header, descriptions, id, input }
 	}
@@ -93,7 +94,7 @@ export class SuggestionService implements ISuggestion {
 	 * @param arg The argument part of the input string.
 	 */
 	static #createRgxStr(cmd: string, opt: string, arg: string) {
-		const cmdRgx = cmd[0] + this.#optionally(cmd.slice(1) + opt)
+		const cmdRgx = '^' + cmd[0] + this.#optionally(cmd.slice(1) + opt)
 		if (arg.length === 0 || /^\{\w+\}$/.test(arg)) return cmdRgx + '$'
 		const parsedArg = arg
 			.replace(/[&?:]/, match => '\\' + match)
