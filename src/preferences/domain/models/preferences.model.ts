@@ -1,4 +1,5 @@
 import type { FormSchema } from '~/share/domain/models'
+import type { KeysByType } from '~/share/types'
 
 import { sudokuFields, type SudokuPreferences } from './sudoku.model'
 import { userFields, type UserPreferences } from './user.model'
@@ -55,3 +56,20 @@ export interface IPreferences {
 	/** Converts the Preferences instance to a JSON string. */
 	toString(): string
 }
+
+const ALL_FIELDS = { ...sudokuFields, ...userFields, ...vimFields }
+
+export const PREFERENCES_NAMES = Object.keys(ALL_FIELDS)
+
+type AllNames = keyof AllPreferences
+type ToggleNames = KeysByType<AllPreferences, boolean>
+type NonToggleNames = Exclude<AllNames, ToggleNames>
+
+export const { TOGGLE_NAMES, NON_TOGGLE_NAMES } = PREFERENCES_NAMES.reduce(
+	(acc, name) => {
+		if (ALL_FIELDS[name].type === 'toggle') acc.TOGGLE_NAMES.push(name as ToggleNames)
+		else acc.NON_TOGGLE_NAMES.push(name as NonToggleNames)
+		return acc
+	},
+	{ TOGGLE_NAMES: [] as ToggleNames[], NON_TOGGLE_NAMES: [] as NonToggleNames[] }
+)

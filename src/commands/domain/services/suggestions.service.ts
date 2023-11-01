@@ -1,3 +1,5 @@
+import { NON_TOGGLE_NAMES, PREFERENCES_NAMES, TOGGLE_NAMES } from '$preferences/domain/models'
+
 import { COMMANDS_NAMES, type ISuggestion, type Suggestion } from '../models'
 
 interface SuggestionsOpts {
@@ -31,33 +33,42 @@ export class SuggestionService implements ISuggestion {
 	}
 
 	/**
+	 * Create an Array of SuggestionService instances from another Array to be mapped.
+	 * @param array The original array.
+	 * @param fn Function to be executed for each iteration of the original array, and which returns the options to create an instance.
+	 */
+	static createArray<T>(array: T[], fn: (value: T) => SuggestionsOpts) {
+		return array.map(value => new SuggestionService(fn(value)))
+	}
+
+	/**
 	 * Generate the formatted command string for displaying in the suggestion.
 	 * @param cmd The command part of the input string.
 	 * @param opt The optional part of the input string.
 	 * @param arg The argument part of the input string.
 	 */
 	static #createCmd(cmd: string, opt: string, arg: string) {
-		const span = document.createElement('h3')
+		const h3 = document.createElement('h3')
 		const cmdSpan = SuggestionService.#createSpan(cmd, 'command')
 		const optSpan = SuggestionService.#createSpan(opt, 'optional')
 		cmdSpan.appendChild(optSpan)
-		span.appendChild(cmdSpan)
+		h3.appendChild(cmdSpan)
 
-		if (arg.length === 0) return span
+		if (arg.length === 0) return h3
 
-		span.appendChild(document.createTextNode(' '))
+		h3.appendChild(document.createTextNode(' '))
 
-		for (const section of arg.split(/(?=\{)|(?='[^']+')|(?=\()/)) {
+		for (const section of arg.split(/(?=\{)|(?='[^']+')|(?=\()|(?=<)/)) {
 			if (section == null || section.length === 0) continue
-			if (/^'.*'$/.test(section)) span.appendChild(SuggestionService.#createSpan(section.slice(1, -1), 'text'))
-			else if (/^\{\w+\}$/.test(arg)) span.appendChild(SuggestionService.#createSpan(section.slice(1, -1), 'holder'))
-			else if (/^\(\w+\)$/.test(section)) span.appendChild(SuggestionService.#createSpan(section.slice(1, -1), 'key'))
-			else if (/^:\w+$/.test(section)) span.appendChild(SuggestionService.#createSpan(section.slice(1), 'command'))
-			else if (/^<\w+>/.test(section)) span.appendChild(SuggestionService.#createSpan(section.slice(1, -1), 'special'))
-			else span.appendChild(document.createTextNode(section))
+			if (/^'.*'$/.test(section)) h3.appendChild(SuggestionService.#createSpan(section.slice(1, -1), 'text'))
+			else if (/^\{\w+\}$/.test(arg)) h3.appendChild(SuggestionService.#createSpan(section.slice(1, -1), 'holder'))
+			else if (/^\(\w+\)$/.test(section)) h3.appendChild(SuggestionService.#createSpan(section.slice(1, -1), 'key'))
+			else if (/^:\w+$/.test(section)) h3.appendChild(SuggestionService.#createSpan(section.slice(1), 'command'))
+			else if (/^<[^>]*>$/.test(section)) h3.appendChild(SuggestionService.#createSpan(section.slice(1, -1), 'special'))
+			else h3.appendChild(document.createTextNode(section))
 		}
 
-		return span
+		return h3
 	}
 
 	/**
@@ -120,14 +131,11 @@ export class SuggestionService implements ISuggestion {
 }
 
 export const HELP_SUGGESTIONS: SuggestionService[] = [
-	...COMMANDS_NAMES.map(
-		cmd =>
-			new SuggestionService({
-				cmdStr: `h[elp] :${cmd}`,
-				desc: `Open a window and display the help of ${cmd} command.`,
-				id: `help-${cmd}`,
-			})
-	),
+	...SuggestionService.createArray(COMMANDS_NAMES, cmd => ({
+		cmdStr: `h[elp] :${cmd}`,
+		desc: `Open a window and display the help of ${cmd} command.`,
+		id: `help-${cmd}`,
+	})),
 	new SuggestionService({
 		cmdStr: 'h[elp] {subject}',
 		desc: 'Like ":help", additionally jump to the tag {subject}.',
@@ -151,10 +159,45 @@ export const SET_SUGGESTIONS: SuggestionService[] = [
 		desc: 'Reset all preferences',
 		id: 'set-reset-all',
 	}),
+	...SuggestionService.createArray(PREFERENCES_NAMES, name => ({
+		cmdStr: `se[t] (${name})<?>`,
+		desc: `Show value of ${name}.`,
+		id: `set-show-a-${name}`,
+	})),
+	...SuggestionService.createArray(PREFERENCES_NAMES, name => ({
+		cmdStr: `set[t] (${name})<&>`,
+		desc: `Reset value of ${name}`,
+		id: `set-reset-${name}`,
+	})),
+	new SuggestionService({
+		cmdStr: 'se[t]] {preference}<&>',
+		desc: "Reset option to it's default value.",
+		id: 'set-reset-preference',
+	}),
+	...SuggestionService.createArray(TOGGLE_NAMES, name => ({
+		cmdStr: `se[t] (${name})`,
+		desc: `Set, ${name} switch it on.`,
+		id: `set-switch-on-${name}`,
+	})),
+	new SuggestionService({
+		cmdStr: 'se[t] {preference}',
+		desc: 'Toggle preference: Set, switch it on.',
+		id: 'set-switch-on-preference',
+	}),
+	...SuggestionService.createArray(NON_TOGGLE_NAMES, name => ({
+		cmdStr: `se[t] (${name})`,
+		desc: `Show value of ${name}.`,
+		id: `set-show-b-${name}`,
+	})),
+	new SuggestionService({
+		cmdStr: 'se[t] {preference}',
+		desc: 'Show value of {preference}.',
+		id: 'set-show-b-preference',
+	}),
 	new SuggestionService({
 		cmdStr: 'se[t]',
 		desc: 'Show all preferences that differ from their default value.',
-		id: 'set-set-differ',
+		id: 'set-show-differ',
 	}),
 ]
 
