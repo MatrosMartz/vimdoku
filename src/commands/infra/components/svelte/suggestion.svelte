@@ -45,7 +45,8 @@
 
 	li:not(:last-of-type)::after {
 		position: absolute;
-		inset: auto 0 0;
+		inset: auto 0 -1px;
+		z-index: 10;
 		width: 95%;
 		height: 2px;
 		margin-inline: auto;
