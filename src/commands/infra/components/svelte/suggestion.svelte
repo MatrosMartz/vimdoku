@@ -4,12 +4,18 @@
 	import { type Suggestion } from '$cmd/domain/models'
 	import { executor } from '$cmd/infra/services'
 
+	import { input } from './input.store'
+
 	export let suggestion: Suggestion
 
 	let btn: HTMLButtonElement
 
 	function clickHandler() {
-		if (suggestion.action === 'execute') executor.exec(suggestion.input)
+		if ($input != null) {
+			executor.searchAutocomplete(suggestion.input)
+			$input.value = suggestion.input
+			$input.focus()
+		}
 	}
 
 	onMount(() => {
@@ -19,7 +25,9 @@
 
 <li>
 	<button tabindex="0" bind:this={btn} on:click={clickHandler}>
-		<p>{suggestion.desc}</p>
+		{#each suggestion.descriptions as desc}
+			<p>{desc}</p>
+		{/each}
 	</button>
 </li>
 
