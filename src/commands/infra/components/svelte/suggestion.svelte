@@ -2,10 +2,15 @@
 	import { onMount } from 'svelte'
 
 	import { type Suggestion } from '$cmd/domain/models'
+	import { executor } from '$cmd/infra/services'
 
 	export let suggestion: Suggestion
 
 	let btn: HTMLButtonElement
+
+	function clickHandler() {
+		if (suggestion.action === 'execute') executor.exec(suggestion.input)
+	}
 
 	onMount(() => {
 		btn.insertAdjacentElement('afterbegin', suggestion.header)
@@ -13,7 +18,7 @@
 </script>
 
 <li>
-	<button tabindex="0" bind:this={btn}>
+	<button tabindex="0" bind:this={btn} on:click={clickHandler}>
 		<p>{suggestion.desc}</p>
 	</button>
 </li>

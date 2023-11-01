@@ -1,4 +1,5 @@
 export interface Suggestion {
+	action: 'replace' | 'execute'
 	desc: string
 	header: HTMLHeadingElement
 	id: string

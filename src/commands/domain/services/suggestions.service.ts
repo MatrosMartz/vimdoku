@@ -25,7 +25,9 @@ export class SuggestionService implements ISuggestion {
 		const header = SuggestionService.#createCmd(cmd, opt, arg)
 		const input = SuggestionService.#createInput(cmd, opt, arg)
 
-		this.#data = { header, desc, id, input }
+		const action = /\{[^}]\}/.test(arg) ? 'replace' : 'execute'
+
+		this.#data = { action, header, desc, id, input }
 	}
 
 	get data() {
