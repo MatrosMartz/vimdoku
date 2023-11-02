@@ -3,15 +3,16 @@ import { Observable } from '~/share/domain/services'
 import { DialogKinds, PrefDialogTypes, ScreenActions } from '$screen/domain/models'
 import { DifficultyKinds, SudokuActions } from '$sudoku/domain/models'
 
-import type { Executor, IExecutor, IMediator, Suggestion } from '../models'
-import { ALL_SUGGESTIONS } from './suggestions.service'
+import type { Executor, IExecutor, IMediator, ISuggestion, Suggestion } from '../models'
 
 interface ExecutorDeps {
+	allSuggestions: ISuggestion[]
 	mediator: IMediator
 }
 
 /** Represent a Executor Service. */
 export class ExecutorService implements IExecutor {
+	readonly #allSuggestions
 	#history: string[] = []
 	#mediator
 	#observables = ExecutorService.#createObservables()
@@ -23,8 +24,9 @@ export class ExecutorService implements IExecutor {
 	 * @param deps An object contains mediator service and other dependencies.
 	 */
 	constructor(deps: ExecutorDeps)
-	constructor({ mediator }: ExecutorDeps) {
+	constructor({ allSuggestions, mediator }: ExecutorDeps) {
 		this.#mediator = mediator
+		this.#allSuggestions = allSuggestions
 	}
 
 	/** Creates the observables for history and suggestions. */
@@ -69,7 +71,7 @@ export class ExecutorService implements IExecutor {
 		if (this.#timeoutID != null) clearTimeout(this.#timeoutID)
 
 		this.#timeoutID = setTimeout(() => {
-			this.#suggestions = ALL_SUGGESTIONS.filter(suggestions => suggestions.match(cmdLike)).map(({ data }) => data)
+			this.#suggestions = this.#allSuggestions.filter(suggestions => suggestions.match(cmdLike)).map(({ data }) => data)
 			this.#update('suggestions')
 			this.#timeoutID = null
 		}, 500)

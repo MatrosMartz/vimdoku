@@ -56,7 +56,7 @@ describe.concurrent('ExecutorService suggestions', () => {
 
 		expect(executor.get('suggestions')).length(1)
 
-		expect(executor.get('suggestions')[0].id).toBe('help-help')
+		expect(executor.get('suggestions')[0].id).toBe('help-cmd-help')
 	})
 
 	test('Should be if search empty string suggestions length are zero', () => {
