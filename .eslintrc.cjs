@@ -16,7 +16,7 @@ module.exports = {
 	overrides: [
 		{
 			extends: ['plugin:jest-dom/recommended', 'plugin:testing-library/dom'],
-			files: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
+			files: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test|bench).[jt]s?(x)'],
 		},
 		{
 			files: ['vite.config.ts', 'vitest.config.ts', 'test/**/*.ts'],
