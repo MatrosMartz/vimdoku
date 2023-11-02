@@ -1,6 +1,7 @@
 import { COMMANDS_NAMES } from '$cmd/domain/models'
 import { SuggestionService } from '$cmd/domain/services'
 import { NON_TOGGLE_NAMES, PREFERENCES_NAMES, TOGGLE_NAMES } from '$preferences/domain/models'
+import { DIFFICULTIES_NAMES } from '$sudoku/domain/models'
 
 export const HELP_SUGGESTIONS: SuggestionService[] = [
 	...SuggestionService.createArray(COMMANDS_NAMES, cmd => ({
@@ -31,25 +32,25 @@ export const SET_SUGGESTIONS: SuggestionService[] = [
 		descriptions: 'Reset all preferences',
 		id: 'set-reset-all',
 	}),
-	...SuggestionService.createArray(PREFERENCES_NAMES, name => ({
-		cmdStr: `se[t] (${name})<?>`,
-		descriptions: `Show value of ${name}.`,
-		id: `set-show-a-${name}`,
+	...SuggestionService.createArray(PREFERENCES_NAMES, pref => ({
+		cmdStr: `se[t] (${pref})<?>`,
+		descriptions: `Show value of ${pref}.`,
+		id: `set-show-a-${pref}`,
 	})),
-	...SuggestionService.createArray(PREFERENCES_NAMES, name => ({
-		cmdStr: `set[t] (${name})<&>`,
-		descriptions: `Reset value of ${name}`,
-		id: `set-reset-${name}`,
+	...SuggestionService.createArray(PREFERENCES_NAMES, pref => ({
+		cmdStr: `set[t] (${pref})<&>`,
+		descriptions: `Reset value of ${pref}`,
+		id: `set-reset-${pref}`,
 	})),
 	new SuggestionService({
 		cmdStr: 'se[t] {preference}<&>',
 		descriptions: "Reset option to it's default value.",
 		id: 'set-reset-preference',
 	}),
-	...SuggestionService.createArray(TOGGLE_NAMES, name => ({
-		cmdStr: `se[t] (${name})`,
-		descriptions: `Set, ${name} switch it on.`,
-		id: `set-switch-on-${name}`,
+	...SuggestionService.createArray(TOGGLE_NAMES, pref => ({
+		cmdStr: `se[t] (${pref})`,
+		descriptions: `Set, ${pref} switch it on.`,
+		id: `set-switch-on-${pref}`,
 	})),
 	new SuggestionService({
 		cmdStr: 'se[t] {preference}',
@@ -59,10 +60,10 @@ export const SET_SUGGESTIONS: SuggestionService[] = [
 		],
 		id: 'set-switch-on-show',
 	}),
-	...SuggestionService.createArray(NON_TOGGLE_NAMES, name => ({
-		cmdStr: `se[t] (${name})`,
-		descriptions: `Show value of ${name}.`,
-		id: `set-show-b-${name}`,
+	...SuggestionService.createArray(NON_TOGGLE_NAMES, pref => ({
+		cmdStr: `se[t] (${pref})`,
+		descriptions: `Show value of ${pref}.`,
+		id: `set-show-b-${pref}`,
 	})),
 	new SuggestionService({
 		cmdStr: 'se[t]',
@@ -71,4 +72,32 @@ export const SET_SUGGESTIONS: SuggestionService[] = [
 	}),
 ]
 
-export const ALL_SUGGESTIONS = HELP_SUGGESTIONS.concat(SET_SUGGESTIONS)
+export const GAME_SUGGESTIONS: SuggestionService[] = [
+	...SuggestionService.createArray(DIFFICULTIES_NAMES, difficulty => ({
+		cmdStr: `st[art] (${difficulty})`,
+		descriptions: `Start new game with the "${difficulty}" difficulty.`,
+		id: `start-${difficulty}`,
+	})),
+	new SuggestionService({
+		cmdStr: 'st[art] {difficulty}',
+		descriptions: 'Start new game with the selected difficulty.',
+		id: 'start-difficulty',
+	}),
+	new SuggestionService({
+		cmdStr: 'pa[use]',
+		descriptions: 'Pause current game.',
+		id: 'pause',
+	}),
+	new SuggestionService({
+		cmdStr: 'w[rite]',
+		descriptions: 'Save current game.',
+		id: 'write',
+	}),
+	new SuggestionService({
+		cmdStr: 're[sume]',
+		descriptions: ['Resume the current game.', 'Resume the saved game only if no game active.'],
+		id: 'resume',
+	}),
+]
+
+export const ALL_SUGGESTIONS = HELP_SUGGESTIONS.concat(SET_SUGGESTIONS, GAME_SUGGESTIONS)

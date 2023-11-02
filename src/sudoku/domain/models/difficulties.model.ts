@@ -7,3 +7,5 @@ export enum DifficultyKinds {
 	Hard = '31',
 	Expert = '23',
 }
+
+export const DIFFICULTIES_NAMES = Object.keys(DifficultyKinds)

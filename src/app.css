@@ -94,7 +94,7 @@ h3 {
 }
 
 .optional {
-	color: rgb(130 115 109);
+	color: rgb(120 118 133);
 }
 
 .optional::before {
@@ -107,7 +107,7 @@ h3 {
 
 .holder {
 	font-style: italic;
-	color: rgb(114 107 122);
+	color: rgb(132 121 110);
 }
 
 .holder::before {
@@ -118,6 +118,10 @@ h3 {
 	content: '>';
 }
 
+.key {
+	color: rgb(190 155 137);
+}
+
 .special {
-	color: rgb(144 165 125);
+	color: rgb(153 166 97);
 }
