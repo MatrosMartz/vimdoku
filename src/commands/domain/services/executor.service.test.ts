@@ -1,5 +1,7 @@
 import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
+import { ALL_SUGGESTIONS } from '$cmd/infra/services'
+
 import type { IMediator, Mediator } from '../models'
 import { ExecutorService } from './executor.service'
 
@@ -25,7 +27,7 @@ beforeAll(() => {
 })
 
 beforeEach(() => {
-	executor = new ExecutorService({ mediator: mockMediator })
+	executor = new ExecutorService({ allSuggestions: ALL_SUGGESTIONS, mediator: mockMediator })
 })
 
 describe.concurrent('ExecutorService suggestions', () => {
