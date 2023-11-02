@@ -56,6 +56,11 @@ export class ExecutorService implements IExecutor {
 					kind: DialogKinds.Pref,
 					opts: { type: PrefDialogTypes.diff },
 				})
+			if (args === 'all')
+				this.#mediator.dispatch(ScreenActions.OpenDialog, {
+					kind: DialogKinds.Pref,
+					opts: { type: PrefDialogTypes.all },
+				})
 		}
 
 		return this

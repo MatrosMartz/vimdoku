@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { executor, mediator } from '$cmd/infra/services'
+	import { executor } from '$cmd/infra/services'
 	import { screenSvelte } from '$cmd/infra/stores'
-	import { DialogKinds, ScreenActions } from '$screen/domain/models'
+	import { DialogKinds } from '$screen/domain/models'
 
 	import { input } from './input.store'
 
 	let form: HTMLFormElement
 
 	function submitHandler() {
-		mediator.dispatch(ScreenActions.Exit)
+		if ($input != null) executor.exec($input.value)
 	}
 
 	function inputHandler({ currentTarget }: { currentTarget: HTMLInputElement }) {
