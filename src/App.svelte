@@ -1,7 +1,20 @@
 <script lang="ts">
+	import '@fontsource/poppins/400.css'
+	import '@fontsource/poppins/500.css'
+	import '@fontsource/poppins/600.css'
+	import '@fontsource/poppins/700.css'
+	import '@fontsource/poppins/400-italic.css'
+	import '@fontsource/poppins/500-italic.css'
+	import '@fontsource/poppins/600-italic.css'
+	import '@fontsource/poppins/700-italic.css'
+	import '@fontsource-variable/jetbrains-mono'
+	import '@fontsource-variable/jetbrains-mono/wght-italic.css'
+
 	import { mediator } from '$cmd/infra/services'
 	import { CmdDialogTypes, DialogKinds, ScreenActions } from '$screen/domain/models'
 	import { CommandDialog, PreferencesDialog } from '$screen/infra/components/svelte'
+
+	import { Header } from './share/infra/components/svelte'
 
 	function keydownHandler(ev: KeyboardEvent) {
 		if (ev.key === ':' && mediator.get('screen').dialog.kind !== DialogKinds.Cmd) {
@@ -14,6 +27,8 @@
 		}
 	}
 </script>
+
+<Header />
 
 <CommandDialog />
 <PreferencesDialog />

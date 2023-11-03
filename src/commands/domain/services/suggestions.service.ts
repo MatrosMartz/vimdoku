@@ -49,6 +49,7 @@ export class SuggestionService implements ISuggestion {
 	 */
 	static #createCmd(cmd: string, opt: string, arg: string) {
 		const h3 = document.createElement('h3')
+		h3.classList.add('monospace')
 		const cmdSpan = SuggestionService.#createSpan(cmd, 'command')
 		const optSpan = SuggestionService.#createSpan(opt, 'optional')
 		cmdSpan.appendChild(optSpan)

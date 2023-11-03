@@ -13,4 +13,3 @@
 		mediator.dispatch(PrefActions.Save, { type: 'all', replace: detail })
 	}}
 />
-data:

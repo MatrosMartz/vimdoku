@@ -48,5 +48,9 @@
 		"vite": "^4.4.5",
 		"vite-tsconfig-paths": "^4.2.0",
 		"vitest": "^0.34.6"
+	},
+	"dependencies": {
+		"@fontsource-variable/jetbrains-mono": "^5.0.18",
+		"@fontsource/poppins": "^5.0.8"
 	}
 }

@@ -1,6 +1,8 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@fontsource-variable/jetbrains-mono': ^5.0.18
+  '@fontsource/poppins': ^5.0.8
   '@sveltejs/vite-plugin-svelte': ^2.4.2
   '@testing-library/jest-dom': ^6.1.4
   '@testing-library/svelte': ^4.0.3
@@ -32,6 +34,10 @@ specifiers:
   vite: ^4.4.5
   vite-tsconfig-paths: ^4.2.0
   vitest: ^0.34.6
+
+dependencies:
+  '@fontsource-variable/jetbrains-mono': 5.0.18
+  '@fontsource/poppins': 5.0.8
 
 devDependencies:
   '@sveltejs/vite-plugin-svelte': 2.4.5_svelte@4.2.0+vite@4.4.9
@@ -382,6 +388,14 @@ packages:
     resolution: {integrity: sha512-ZSjtmelB7IJfWD2Fvb7+Z+ChTIKWq6kjda95fLcQKNS5aheVHn4IkfgRQE3sIIzTcSLwLcLZUD9UBt+V7+h+Pw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
+
+  /@fontsource-variable/jetbrains-mono/5.0.18:
+    resolution: {integrity: sha512-8qyD5zmaB4X9EQsGViwHGcQPjOGsHGxyJ+DuAxkXVyP+/Mzb5B9kYuG8+8a3vX/y0mZ81CUpbUWp0ik89c3dQw==}
+    dev: false
+
+  /@fontsource/poppins/5.0.8:
+    resolution: {integrity: sha512-P8owfYWluoUY5Nyzk4gT/L6LmLmseP6ezFWhj6VBUa5pRIdnCvNJpoQ6i/vhekjtJOfqX6nKlB+LCttoUl2GQQ==}
+    dev: false
 
   /@humanwhocodes/config-array/0.11.11:
     resolution: {integrity: sha512-N2brEuAadi0CcdeMXUkhbZB84eskAc8MEX1By6qEchoVywSgXPIjou4rYsl0V3Hj0ZnuGycGCjdNgockbzeWNA==}

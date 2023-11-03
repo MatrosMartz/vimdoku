@@ -40,7 +40,7 @@
 					<tr class="field" class:strike={!showAll && value !== getDefaultData(group, name)}>
 						<th class="key">{capitalCase(name)}</th>
 						<td
-							class="value"
+							class="monospace value"
 							class:str={typeof value === 'string'}
 							class:num={typeof value === 'number'}
 							class:bool={typeof value === 'boolean'}
@@ -146,7 +146,7 @@
 	}
 
 	.bool {
-		font-weight: 600;
+		font-style: italic;
 		color: rgb(156 95 105);
 	}
 </style>
