@@ -1,9 +1,11 @@
 <script lang="ts">
+	import type { Readable } from 'svelte/store'
+
 	import { createSelectedContext } from './tab.context'
 
-	export let selected: string
+	export let tabState: Readable<string>
 
-	createSelectedContext(selected, value => (selected = value))
+	createSelectedContext(tabState)
 </script>
 
 <slot />

@@ -2,11 +2,13 @@
 	import { Button, ButtonMenu } from '~/share/infra/components/svelte/buttons'
 	import type { Entries } from '~/share/types'
 	import { capitalCase } from '~/share/utils'
-	import { prefSvelte } from '$cmd/infra/stores'
+	import { mediator } from '$cmd/infra/services'
+	import { prefSvelte, screenSvelte } from '$cmd/infra/stores'
 	import type { Preferences, SudokuPreferences, UserPreferences, VimPreferences } from '$preferences/domain/models'
 	import { PreferencesService } from '$preferences/domain/services'
+	import { DialogKinds, PrefDialogTypes, ScreenActions } from '$screen/domain/models'
 
-	export let showAll = true
+	$: showAll = $screenSvelte.dialog.opts?.type === PrefDialogTypes.all
 
 	type PrefEntries =
 		| ['sudoku', Entries<SudokuPreferences>]
@@ -22,8 +24,10 @@
 		return (PreferencesService.DEFAULT_DATA[group] as Record<string, unknown>)[name]
 	}
 
-	function createHandleShow(setShow: boolean) {
-		return () => (showAll = setShow)
+	function createBtnHandler(type: PrefDialogTypes) {
+		return () => {
+			mediator.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.Pref, opts: { type } })
+		}
 	}
 </script>
 
@@ -53,8 +57,8 @@
 		</table>
 	{/each}
 	<ButtonMenu>
-		<Button on:click={createHandleShow(true)}>Show all.</Button>
-		<Button on:click={createHandleShow(false)}>Show different from default values.</Button>
+		<Button on:click={createBtnHandler(PrefDialogTypes.all)}>Show all.</Button>
+		<Button on:click={createBtnHandler(PrefDialogTypes.diff)}>Show different from default values.</Button>
 	</ButtonMenu>
 </article>
 

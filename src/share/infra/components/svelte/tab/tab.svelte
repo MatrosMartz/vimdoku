@@ -7,7 +7,7 @@
 </script>
 
 <li id="tab{key}" role="tab" aria-controls="panel{key}">
-	<button disabled={$selected === key} on:click={() => selected.set(key)}>
+	<button disabled={$selected === key} on:click>
 		<slot />
 	</button>
 </li>
