@@ -46,7 +46,7 @@
 	@keyframes hide {
 		to {
 			opacity: 0;
-			transform: translateY(-50%);
+			transform: translateY(50%);
 		}
 	}
 
