@@ -55,6 +55,7 @@ export class MediatorService implements IMediator {
 			else if (action === SudokuActions.Erase) this.#dCellErase()
 			else if (action === SudokuActions.Move) this.#dGameMove(data)
 			else if (action === SudokuActions.End) await this.#dGameEnd()
+			else if (action === SudokuActions.Resume) await this.#dGameResume()
 			else if (action === SudokuActions.Save) await this.#dGameSave()
 			else if (action === SudokuActions.Start) await this.#dGameStart(data)
 			else if (action === SudokuActions.Write) this.#dGameWrite(data)
@@ -117,6 +118,10 @@ export class MediatorService implements IMediator {
 		if (data.type === 'up') this.#game.moveUp(data.times)
 		if (data.type === 'set') this.#game.changePos(data.position)
 		this.#notify('board')
+	}
+
+	async #dGameResume() {
+		await this.#game.resume()
 	}
 
 	async #dGameSave() {
