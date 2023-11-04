@@ -10,7 +10,8 @@
 
 <style>
 	button {
-		width: min(calc(2rem + 15ch), max-content);
+		width: calc(2rem + 15ch);
+		min-width: max-content;
 		height: 48px;
 		padding-inline: 1rem;
 		overflow: hidden;
