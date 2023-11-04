@@ -28,6 +28,11 @@
 	margin: 0;
 }
 
+*::selection {
+	color: rgb(12 7 17);
+	background-color: var(--input-border);
+}
+
 legend {
 	font-size: 1.1rem;
 	font-weight: 500;

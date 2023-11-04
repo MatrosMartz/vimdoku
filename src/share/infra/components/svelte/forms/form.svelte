@@ -14,8 +14,12 @@
 	export let initialValues: SchemaToModel<Schema>
 	export let method: 'get' | 'post' | 'dialog' = 'dialog'
 
+	function schemaEntries(sch: FormSchema) {
+		return Object.entries(sch).map(([name, settings]) => [name, Object.entries(settings)] satisfies [string, unknown])
+	}
+
 	const dispatcher = createEventDispatcher<{ submit: SchemaToModel<Schema> }>()
-	const dataEntries = Object.entries(schema).map(([name, settings]) => [name, Object.entries(settings)] as const)
+	const dataEntries = schemaEntries(schema)
 
 	let values: any = structuredClone(initialValues)
 
