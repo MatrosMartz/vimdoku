@@ -1,7 +1,7 @@
 import type { RemoveObserver } from '~/share/domain/models'
 import { Observable } from '~/share/domain/services'
 import { runAsync } from '~/share/utils'
-import { type IPreferences, PrefActions, type PrefData } from '$preferences/domain/models'
+import { type IPreferences, PrefActions, type PrefData } from '$pref/domain/models'
 import { type DialogData, type IScreen, ScreenActions, type ScreenData } from '$screen/domain/models'
 import { type GameOpts, type IGame, SudokuActions, type SudokuData } from '$sudoku/domain/models'
 

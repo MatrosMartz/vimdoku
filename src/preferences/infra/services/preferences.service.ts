@@ -1,4 +1,4 @@
-import { PreferencesService } from '$preferences/domain/services'
+import { PreferencesService } from '$pref/domain/services'
 
 import { BrowserPreferencesRepo } from '../repositories'
 

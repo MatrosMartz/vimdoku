@@ -5,7 +5,7 @@
 	import { Tab, TabGroup, TabList, TabPanel } from '~/share/infra/components/svelte/tab'
 	import { mediator } from '$cmd/infra/services'
 	import { screenSvelte } from '$cmd/infra/stores/svelte'
-	import { PreferencesDisplay, PreferencesForm } from '$preferences/infra/components/svelte'
+	import { PreferencesDisplay, PreferencesForm } from '$pref/infra/components/svelte'
 	import { DialogKinds, PrefDialogTypes, ScreenActions } from '$screen/domain/models'
 
 	const dialogState = derived(screenSvelte, ({ dialog }) => dialog.kind === DialogKinds.Pref)

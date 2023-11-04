@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { Form } from '~/share/infra/components/svelte'
 	import { mediator } from '$cmd/infra/services'
-	import { PrefActions, preferencesFormSchema } from '$preferences/domain/models'
-	import { PreferencesService } from '$preferences/domain/services'
+	import { PrefActions, preferencesFormSchema } from '$pref/domain/models'
+	import { PreferencesService } from '$pref/domain/services'
 </script>
 
 <Form

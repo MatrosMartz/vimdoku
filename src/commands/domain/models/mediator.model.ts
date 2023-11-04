@@ -1,5 +1,5 @@
 import type { IObservable, Observer, Position, RemoveObserver } from '~/share/domain/models'
-import type { PrefDispatch, Preferences } from '$preferences/domain/models'
+import type { PrefDispatch, Preferences } from '$pref/domain/models'
 import type { ScreenDispatch, ScreenDispatchUnData, VimScreen } from '$screen/domain/models'
 import type { Board, ModeKinds, SudokuDispatch, SudokuDispatchUnData } from '$sudoku/domain/models'
 

@@ -3,7 +3,7 @@
 	import { capitalCase } from '~/share/utils'
 	import { mediator } from '$cmd/infra/services'
 	import { prefSvelte, screenSvelte } from '$cmd/infra/stores'
-	import { PreferencesService } from '$preferences/domain/services'
+	import { PreferencesService } from '$pref/domain/services'
 	import { DialogKinds, PrefDialogTypes, ScreenActions } from '$screen/domain/models'
 
 	$: showAll = $screenSvelte.dialog.opts?.type === PrefDialogTypes.all

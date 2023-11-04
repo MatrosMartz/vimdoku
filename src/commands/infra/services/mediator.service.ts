@@ -1,5 +1,5 @@
 import { MediatorService } from '$cmd/domain/services'
-import { preferences } from '$preferences/infra/services'
+import { preferences } from '$pref/infra/services'
 import { vimScreen } from '$screen/infra/services'
 import { game } from '$sudoku/infra/services'
 

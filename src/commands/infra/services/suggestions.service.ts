@@ -1,6 +1,6 @@
 import { COMMANDS_NAMES } from '$cmd/domain/models'
 import { SuggestionService } from '$cmd/domain/services'
-import { NON_TOGGLE_NAMES, PREFERENCES_NAMES, TOGGLE_NAMES } from '$preferences/domain/models'
+import { NON_TOGGLE_NAMES, PREFERENCES_NAMES, TOGGLE_NAMES } from '$pref/domain/models'
 import { DIFFICULTIES_NAMES } from '$sudoku/domain/models'
 
 export const HELP_SUGGESTIONS: SuggestionService[] = [

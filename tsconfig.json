@@ -15,7 +15,7 @@
 			"$cmd/*": ["./src/commands/*"],
 			"$screen/*": ["./src/screen/*"],
 			"$sudoku/*": ["./src/sudoku/*"],
-			"$preferences/*": ["./src/preferences/*"],
+			"$pref/*": ["./src/preferences/*"],
 			"~/*": ["./src/*"]
 		},
 		"resolveJsonModule": true,

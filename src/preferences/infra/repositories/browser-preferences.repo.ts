@@ -1,6 +1,6 @@
 import { createBrowserStorage } from '~/share/infra/repositories'
-import type { Preferences } from '$preferences/domain/models'
-import type { PreferencesRepo } from '$preferences/domain/repositories'
+import type { Preferences } from '$pref/domain/models'
+import type { PreferencesRepo } from '$pref/domain/repositories'
 
 export class BrowserPreferencesRepo implements PreferencesRepo {
 	#storage

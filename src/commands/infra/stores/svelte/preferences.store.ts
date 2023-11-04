@@ -1,7 +1,7 @@
 import type { Readable } from 'svelte/store'
 
 import { mediator } from '$cmd/infra/services'
-import type { Preferences } from '$preferences/domain/models'
+import type { Preferences } from '$pref/domain/models'
 
 function createPreferencesStore(): Readable<Preferences> {
 	return {

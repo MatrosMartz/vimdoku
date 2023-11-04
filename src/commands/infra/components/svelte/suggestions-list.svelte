@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { suggsSvelte } from '$cmd/infra/stores/svelte/suggestions.store'
+	import { suggsSvelte } from '$cmd/infra/stores/svelte'
 
 	import Suggestion from './suggestion.svelte'
 </script>
