@@ -1,4 +1,4 @@
-import type { FieldsToModel, FormGroup } from '~/share/domain/models'
+import type { FieldsEntries, FieldsToModel, FormGroup } from '~/share/domain/models'
 
 export const sudokuFields = {
 	automaticNoteDeletion: { type: 'toggle' },
@@ -8,3 +8,5 @@ export const sudokuFields = {
 } as const satisfies FormGroup
 
 export type SudokuPreferences = FieldsToModel<typeof sudokuFields>
+
+export type SudokuEntries = FieldsEntries<typeof sudokuFields>

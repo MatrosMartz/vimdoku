@@ -1,3 +1,5 @@
+export type BasicObj = Record<string | number | symbol, unknown>
+
 export type KeysByType<O, T> = {
 	[K in keyof O]: O[K] extends T ? K : never
 }[keyof O]

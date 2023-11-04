@@ -1,4 +1,4 @@
-import type { FieldsToModel, FormGroup } from '~/share/domain/models'
+import type { FieldsEntries, FieldsToModel, FormGroup } from '~/share/domain/models'
 
 export const vimFields = {
 	fontSize: { type: 'number' },
@@ -8,3 +8,5 @@ export const vimFields = {
 } as const satisfies FormGroup
 
 export type VimPreferences = FieldsToModel<typeof vimFields>
+
+export type VimEntries = FieldsEntries<typeof vimFields>

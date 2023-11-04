@@ -1,9 +1,9 @@
 import type { FormSchema } from '~/share/domain/models'
 import type { KeysByType } from '~/share/types'
 
-import { sudokuFields, type SudokuPreferences } from './sudoku.model'
-import { userFields, type UserPreferences } from './user.model'
-import { vimFields, type VimPreferences } from './vim.model'
+import { type SudokuEntries, sudokuFields, type SudokuPreferences } from './sudoku.model'
+import { type UserEntries, userFields, type UserPreferences } from './user.model'
+import { type VimEntries, vimFields, type VimPreferences } from './vim.model'
 
 export interface Preferences {
 	sudoku: SudokuPreferences
@@ -12,6 +12,8 @@ export interface Preferences {
 }
 
 export type AllPreferences = SudokuPreferences & UserPreferences & VimPreferences
+
+export type PreferencesEntries = [['sudoku', SudokuEntries], ['user', UserEntries], ['vim', VimEntries]]
 
 export const preferencesFormSchema = {
 	sudoku: sudokuFields,

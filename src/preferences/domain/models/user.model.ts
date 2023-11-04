@@ -1,4 +1,4 @@
-import type { FieldsToModel, FormGroup } from '~/share/domain/models'
+import type { FieldsEntries, FieldsToModel, FormGroup } from '~/share/domain/models'
 
 export enum Langs {
 	EN = 'en',
@@ -13,3 +13,5 @@ export const userFields = {
 } as const satisfies FormGroup
 
 export type UserPreferences = FieldsToModel<typeof userFields>
+
+export type UserEntries = FieldsEntries<typeof userFields>

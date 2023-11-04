@@ -1,28 +1,14 @@
 <script lang="ts">
 	import { Button, ButtonMenu } from '~/share/infra/components/svelte/buttons'
-	import type { Entries } from '~/share/types'
 	import { capitalCase } from '~/share/utils'
 	import { mediator } from '$cmd/infra/services'
 	import { prefSvelte, screenSvelte } from '$cmd/infra/stores'
-	import type { Preferences, SudokuPreferences, UserPreferences, VimPreferences } from '$preferences/domain/models'
 	import { PreferencesService } from '$preferences/domain/services'
 	import { DialogKinds, PrefDialogTypes, ScreenActions } from '$screen/domain/models'
 
 	$: showAll = $screenSvelte.dialog.opts?.type === PrefDialogTypes.all
 
-	type PrefEntries =
-		| ['sudoku', Entries<SudokuPreferences>]
-		| ['user', Entries<UserPreferences>]
-		| ['vim', Entries<VimPreferences>]
-
-	$: actualPreferences = Object.entries($prefSvelte).map<PrefEntries>(([group, fields]) => [
-		group,
-		Object.entries(fields),
-	])
-
-	function getDefaultData(group: keyof Preferences, name: string) {
-		return (PreferencesService.DEFAULT_DATA[group] as Record<string, unknown>)[name]
-	}
+	$: actualPreferences = PreferencesService.entries($prefSvelte)
 
 	function createBtnHandler(type: PrefDialogTypes) {
 		return () => {
@@ -41,7 +27,7 @@
 			</thead>
 			<tbody>
 				{#each fields as [name, value]}
-					<tr class="field" class:strike={!showAll && value !== getDefaultData(group, name)}>
+					<tr class="field" class:strike={!showAll && value !== PreferencesService.getDefaultValue(name)}>
 						<th class="key">{capitalCase(name)}</th>
 						<td
 							class="monospace value"
@@ -119,7 +105,6 @@
 	}
 
 	.key {
-		position: static;
 		overflow: hidden;
 		font-weight: 500;
 		text-align: left;

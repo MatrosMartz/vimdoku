@@ -38,3 +38,20 @@ export type FieldsToModel<F extends FormGroup> = {
 export type SchemaToModel<S extends FormSchema> = {
 	-readonly [P in keyof S]: FieldsToModel<S[P]>
 }
+
+export type FieldsEntries<F extends FormGroup> = Array<
+	{
+		[K in keyof F]: [
+			K,
+			F[K] extends NumberField
+				? number
+				: F[K] extends TextField
+				? string
+				: F[K] extends ToggleField
+				? boolean
+				: F[K] extends OptionField<infer Opts>
+				? Opts
+				: never,
+		]
+	}[keyof F]
+>

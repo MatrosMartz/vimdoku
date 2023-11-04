@@ -6,6 +6,7 @@ import {
 	type IPreferences,
 	Langs,
 	type Preferences,
+	type PreferencesEntries,
 	sudokuFields,
 	type SudokuPreferences,
 	userFields,
@@ -33,13 +34,13 @@ function createKeyError(key: string, value: unknown) {
 }
 
 const keyIn = {
-	sudoku(key: keyof AllPreferences): key is keyof SudokuPreferences {
+	sudoku(key: string): key is keyof SudokuPreferences {
 		return key in PreferencesService.DEFAULT_SUDOKU
 	},
-	user(key: keyof AllPreferences): key is keyof UserPreferences {
+	user(key: string): key is keyof UserPreferences {
 		return key in PreferencesService.DEFAULT_USER
 	},
-	vim(key: keyof AllPreferences): key is keyof VimPreferences {
+	vim(key: string): key is keyof VimPreferences {
 		return key in PreferencesService.DEFAULT_VIM
 	},
 }
@@ -111,8 +112,34 @@ export class PreferencesService implements IPreferences {
 		return structuredClone(this.#vim)
 	}
 
+	/**
+	 * Checks if the object has the structure of the preferences
+	 * @param preferences The object to checked.
+	 * @readonly True if it complies with the structure, False if it doesn't.
+	 */
 	static check(preferences: Preferences) {
 		return sameStructure(preferences, PreferencesService.DEFAULT_DATA)
+	}
+
+	/**
+	 * Get the entries of the preferences provided.
+	 * @param preferences The preferences provided.
+	 * @returns Preferences Entries
+	 */
+	static entries(preferences: Preferences) {
+		const entries = Object.entries(preferences) as Array<[string, unknown]>
+		return entries.map(([key, value]) => [key, Object.entries(value)]) as unknown as PreferencesEntries
+	}
+
+	/**
+	 * Get the default value some preference.
+	 * @param key The key of the preference.
+	 * @returns Default value of the specified preference.
+	 */
+	static getDefaultValue<K extends keyof AllPreferences>(key: K) {
+		if (keyIn.sudoku(key)) return PreferencesService.DEFAULT_SUDOKU[key]
+		if (keyIn.user(key)) return PreferencesService.DEFAULT_USER[key]
+		if (keyIn.vim(key)) return PreferencesService.DEFAULT_VIM[key]
 	}
 
 	async load() {
