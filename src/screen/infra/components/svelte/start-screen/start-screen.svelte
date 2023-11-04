@@ -1,3 +1,7 @@
+<script>
+	import StartGameMenu from './start-game-menu.svelte'
+</script>
+
 <section class="monospace">
 	<h2>VIMDOKU - VIM suDOKU</h2>
 
@@ -48,6 +52,7 @@
 			<td>for start game.</td>
 		</tr>
 	</table>
+	<StartGameMenu />
 </section>
 
 <style>
@@ -57,7 +62,7 @@
 		gap: 1.5rem;
 		align-items: center;
 		width: 93vw;
-		padding: 1rem 2ch;
+		padding: 1.5rem 2ch;
 		margin: auto;
 		color: rgb(204 184 221);
 		background-color: rgb(12 7 17);
@@ -72,9 +77,8 @@
 	.commands {
 		display: grid;
 		grid-template-columns: repeat(2, max-content);
-		row-gap: 0.5rem;
 		justify-content: space-between;
-		width: min(100%, 32ch);
+		width: min(100%, 34ch);
 	}
 
 	.commands tr {

@@ -7,7 +7,7 @@ export class ScreenService implements IScreen {
 	/** Define default values for screen. */
 	static readonly DEFAULT_SCREEN = _f<VimScreen>({
 		dialog: _f({ kind: DialogKinds.None, opts: null }),
-		main: MainScreenKinds.Init,
+		main: MainScreenKinds.Start,
 	})
 
 	#dialog: DialogData = ScreenService.DEFAULT_SCREEN.dialog
