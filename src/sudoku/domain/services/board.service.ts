@@ -19,7 +19,7 @@ export class BoardService implements IBoard {
 	}
 
 	get data(): Board {
-		return this.#grid.data
+		return this.#grid.mapGrid(cell => cell.data).data
 	}
 
 	/**
