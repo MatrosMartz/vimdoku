@@ -16,6 +16,12 @@
 	text-rendering: optimizelegibility;
 }
 
+#app {
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+}
+
 * {
 	box-sizing: border-box;
 	padding: 0;
@@ -51,6 +57,10 @@ select {
 	font-size: 0.9rem;
 }
 
+a {
+	color: rgb(141 171 200);
+}
+
 form .field :where(input:where([type='text'], [type='number']), select),
 .command-input {
 	width: calc(100% - 4rem);
@@ -84,45 +94,60 @@ h3 {
 	font-family: monospace;
 }
 
-.command {
+.highlight .command {
 	color: inherit;
 }
 
-.command::before {
-	color: rgb(138 154 232);
+.highlight .command::before {
+	font-weight: 700;
+	color: rgb(170 119 227);
 	content: ':';
 }
 
-.optional {
+.highlight .optional {
 	color: rgb(120 118 133);
 }
 
-.optional::before {
+.highlight .optional::before {
 	content: '[';
 }
 
-.optional::after {
+.highlight .optional::after {
 	content: ']';
 }
 
-.holder {
+.highlight .holder {
 	font-style: italic;
 	color: rgb(132 121 110);
+	text-transform: capitalize;
 }
 
-.holder::before {
+.highlight .holder::before {
+	content: '{';
+}
+
+.highlight .holder::after {
+	content: '}';
+}
+
+.highlight .key {
+	color: rgb(155 151 214);
+	text-transform: capitalize;
+}
+
+.highlight .key::before {
 	content: '<';
 }
 
-.holder::after {
+.highlight .key::after {
 	content: '>';
 }
 
-.key {
+.highlight .value {
 	color: rgb(190 155 137);
 }
 
-.special {
+.highlight .special {
 	color: rgb(153 166 97);
 }
 

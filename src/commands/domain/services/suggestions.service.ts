@@ -49,7 +49,7 @@ export class SuggestionService implements ISuggestion {
 	 */
 	static #createCmd(cmd: string, opt: string, arg: string) {
 		const h3 = document.createElement('h3')
-		h3.classList.add('monospace')
+		h3.classList.add('monospace', 'highlight')
 		const cmdSpan = SuggestionService.#createSpan(cmd, 'command')
 		const optSpan = SuggestionService.#createSpan(opt, 'optional')
 		cmdSpan.appendChild(optSpan)
@@ -63,7 +63,7 @@ export class SuggestionService implements ISuggestion {
 			if (section == null || section.length === 0) continue
 			if (/^'.*'$/.test(section)) h3.appendChild(SuggestionService.#createSpan(section.slice(1, -1), 'text'))
 			else if (/^\{\w+\}$/.test(arg)) h3.appendChild(SuggestionService.#createSpan(section.slice(1, -1), 'holder'))
-			else if (/^\(\w+\)$/.test(section)) h3.appendChild(SuggestionService.#createSpan(section.slice(1, -1), 'key'))
+			else if (/^\(\w+\)$/.test(section)) h3.appendChild(SuggestionService.#createSpan(section.slice(1, -1), 'value'))
 			else if (/^:\w+$/.test(section)) h3.appendChild(SuggestionService.#createSpan(section.slice(1), 'command'))
 			else if (/^<[^>]*>$/.test(section)) h3.appendChild(SuggestionService.#createSpan(section.slice(1, -1), 'special'))
 			else h3.appendChild(document.createTextNode(section))

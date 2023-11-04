@@ -45,7 +45,7 @@ const SUGGESTIONS_CASES: SuggestionsCase[] = [
 		cmdStr: 'se[t] (numbers)<?>',
 		expected: {
 			innerText:
-				'<span class="command">se<span class="optional">t</span></span> <span class="key">numbers</span><span class="special">?</span>',
+				'<span class="command">se<span class="optional">t</span></span> <span class="value">numbers</span><span class="special">?</span>',
 			input: 'set numbers?',
 		},
 	},
@@ -53,7 +53,7 @@ const SUGGESTIONS_CASES: SuggestionsCase[] = [
 		cmdStr: 'se[t] <inv>(numbers)',
 		expected: {
 			innerText:
-				'<span class="command">se<span class="optional">t</span></span> <span class="special">inv</span><span class="key">numbers</span>',
+				'<span class="command">se<span class="optional">t</span></span> <span class="special">inv</span><span class="value">numbers</span>',
 			input: 'set invnumbers',
 		},
 	},
