@@ -1,9 +1,10 @@
 <script lang="ts">
 	export let type: 'button' | 'submit' | 'reset' = 'button'
+	export let disabled = false
 </script>
 
 <li>
-	<button {type} on:click>
+	<button {type} on:click {disabled}>
 		<slot />
 	</button>
 </li>
