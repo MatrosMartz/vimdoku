@@ -21,7 +21,7 @@
 	}
 </script>
 
-<Dialog {dialogState}>
+<Dialog {dialogState} type="modal">
 	<div class="content">
 		<TabGroup {tabState}>
 			<TabList>

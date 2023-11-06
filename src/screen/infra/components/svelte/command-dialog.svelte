@@ -9,7 +9,7 @@
 	const dialogState = derived(screenSvelte, ({ dialog }) => dialog.kind === DialogKinds.Cmd)
 </script>
 
-<Dialog {dialogState}>
+<Dialog {dialogState} type="modal">
 	<div class="command-dialog">
 		<CommandInput />
 		<SuggestionsList />

@@ -2,12 +2,16 @@
 	import type { Readable } from 'svelte/store'
 
 	export let dialogState: Readable<boolean>
+	export let type: 'modal' | 'dialog'
 
 	let dialog: HTMLDialogElement
 
 	$: hide = !$dialogState
 
-	$: if ($dialogState) dialog.showModal()
+	$: if ($dialogState) {
+		if (type === 'modal') dialog.showModal()
+		else if (type === 'dialog') dialog.show()
+	}
 
 	function AnimationendHandler({ animationName }: AnimationEvent) {
 		if (/backdrop-hide$/.test(animationName)) dialog.close()
