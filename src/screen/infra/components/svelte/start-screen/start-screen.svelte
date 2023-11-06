@@ -65,7 +65,7 @@
 		padding: 1.5rem 2ch;
 		margin: auto;
 		color: rgb(204 184 221);
-		background-color: rgb(12 7 17);
+		background-color: var(--editor-background);
 		border-radius: 4px;
 		box-shadow: 0 6px 20px rgb(12 7 17);
 	}

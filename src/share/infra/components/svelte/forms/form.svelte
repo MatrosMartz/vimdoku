@@ -63,12 +63,13 @@
 	}
 
 	fieldset {
+		position: relative;
 		display: flex;
 		flex-wrap: wrap;
 		gap: 1rem 2rem;
 		justify-content: center;
 		padding: 1.5rem 0.5rem;
-		backdrop-filter: brightness(120%) saturate(120%);
+		background-color: var(--editor-background);
 		border: none;
 		border-radius: 8px;
 		box-shadow: 0 4px 16px rgb(19 15 24 / 50%);

@@ -19,6 +19,6 @@
 </script>
 
 <label class="field">
-	<span>{capitalCase(name)}</span>
+	<span class="secondary">{capitalCase(name)}</span>
 	<input id={name} {name} {...settings} {placeholder} required bind:value={parse.value} />
 </label>

@@ -1,15 +1,18 @@
 :root {
 	--surface: rgb(31 24 32);
 	--input-background: rgb(26 23 27);
-	--input-border: rgb(63 56 68);
-	--alternative-border: rgb(98 89 105);
-	--input-shadow: rgb(22 18 27);
+	--input-border: rgb(57 47 66);
+	--alternative-border: rgb(97 72 95);
+	--input-shadow: rgb(17 4 31);
 	--hover-shadow: rgb(117 16 255 / 8%);
+	--primary-color: rgb(255 255 255 / 87%);
+	--secondary-color: rgb(206 195 235);
+	--editor-background: rgb(12 6 17);
 
 	font-family: Poppins, sans-serif;
 	font-weight: 400;
 	line-height: 1.5;
-	color: rgb(255 255 255 / 87%);
+	color: var(--primary-color);
 	color-scheme: light dark;
 	background-color: var(--surface);
 	font-synthesis: none;
@@ -159,4 +162,8 @@ h3 {
 .monospace,
 input {
 	font-family: 'JetBrains Mono Variable', sans-serif;
+}
+
+.secondary {
+	color: var(--secondary-color);
 }

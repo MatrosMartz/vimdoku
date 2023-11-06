@@ -28,7 +28,7 @@
 			<tbody>
 				{#each fields as [name, value]}
 					<tr class="field" class:strike={!showAll && value !== PreferencesService.getDefaultValue(name)}>
-						<th class="key">{capitalCase(name)}</th>
+						<th class="key secondary">{capitalCase(name)}</th>
 						<td
 							class="monospace value"
 							class:str={typeof value === 'string'}
@@ -59,7 +59,7 @@
 		position: relative;
 		padding-block: 1.5rem 1rem;
 		padding-inline: 1rem;
-		backdrop-filter: brightness(120%) saturate(120%);
+		background-color: var(--editor-background);
 		border-radius: 8px;
 		box-shadow: 0 4px 16px rgb(19 15 24 / 50%);
 	}
@@ -85,7 +85,6 @@
 		width: min(100%, 40ch);
 		margin-inline: auto;
 		list-style: none;
-		backdrop-filter: brightness(120%) saturate(120%);
 	}
 
 	.field {
@@ -120,22 +119,22 @@
 	}
 
 	.str {
-		color: rgb(125 145 93);
+		color: rgb(143 162 112);
 	}
 
 	.str::before,
 	.str::after {
 		font-weight: 600;
-		color: rgb(121 170 151);
+		color: rgb(125 177 157);
 		content: '"';
 	}
 
 	.num {
-		color: rgb(173 117 92);
+		color: rgb(237 133 87);
 	}
 
 	.bool {
 		font-style: italic;
-		color: rgb(156 95 105);
+		color: rgb(196 91 108);
 	}
 </style>

@@ -7,7 +7,7 @@
 
 <label class="field">
 	<input type="checkbox" id={name} {name} bind:checked={value} />
-	<span>{capitalCase(name)}</span>
+	<span class="secondary">{capitalCase(name)}</span>
 	<div class="switch" aria-hidden></div>
 </label>
 
