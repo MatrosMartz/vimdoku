@@ -4,6 +4,8 @@ import type { IPosition, Position } from '../models'
 
 /** Represent a Position Service. */
 export class PositionService implements IPosition {
+	/** The default position value.. */
+	static readonly IDLE_POS: Position = { x: 0, y: 0 }
 	/** The maximum range for row and column coordinates. */
 	static readonly MAX_RANGE = 9
 	/** The minimum range for row and column coordinates. */

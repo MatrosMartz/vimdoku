@@ -13,6 +13,7 @@
 	import { mediator } from '$cmd/infra/services'
 	import { CmdDialogTypes, DialogKinds, ScreenActions } from '$screen/domain/models'
 	import { CommandDialog, PreferencesDialog, Screen } from '$screen/infra/components/svelte'
+	import { StatusBar } from '$screen/infra/components/svelte/status-bar'
 
 	import { Header } from './share/infra/components/svelte'
 
@@ -33,5 +34,7 @@
 <CommandDialog />
 <PreferencesDialog />
 <Screen />
+
+<StatusBar />
 
 <svelte:window on:keydown={keydownHandler} />
