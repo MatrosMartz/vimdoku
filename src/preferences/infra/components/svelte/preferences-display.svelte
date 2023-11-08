@@ -64,6 +64,10 @@
 		box-shadow: 0 4px 16px rgb(19 15 24 / 50%);
 	}
 
+	.preferences:not(:first-of-type) {
+		margin-top: 1rem;
+	}
+
 	thead th {
 		position: absolute;
 		top: 0;

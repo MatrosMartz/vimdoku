@@ -33,13 +33,13 @@
 	}
 
 	button:disabled {
-		backdrop-filter: brightness(125%);
+		backdrop-filter: brightness(130%);
 	}
 
 	button:not(:disabled):hover,
 	button:not(:disabled):focus {
 		color: var(--secondary-color);
-		backdrop-filter: brightness(107%);
+		backdrop-filter: brightness(110%);
 		outline: none;
 	}
 </style>
