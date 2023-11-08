@@ -8,7 +8,7 @@
 <label class="field">
 	<input type="checkbox" id={name} {name} bind:checked={value} />
 	<span class="secondary">{capitalCase(name)}</span>
-	<div class="switch" aria-hidden></div>
+	<div class="switch" aria-hidden="true"></div>
 </label>
 
 <style>
@@ -46,18 +46,22 @@
 	}
 
 	label:hover > .switch {
-		--input-shadow: var(--hover-shadow);
+		box-shadow: 0 0 16px var(--hover-shadow);
 	}
 
 	input {
-		display: none;
+		appearance: none;
 	}
 
 	label:has(input:checked) > .switch {
-		--input-border: var(--alternative-border);
+		--input-border: rgb(86 57 83);
 	}
 
 	label:has(input:checked) > .switch::after {
 		--x: 100%;
+	}
+
+	label:has(input:focus) > .switch {
+		border: 2px solid var(--alternative-border);
 	}
 </style>

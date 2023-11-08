@@ -2,11 +2,11 @@
 	--surface: rgb(31 24 32);
 	--input-background: rgb(26 23 27);
 	--input-border: rgb(57 47 66);
-	--alternative-border: rgb(116 91 113);
+	--alternative-border: rgb(141 95 136);
 	--input-shadow: rgb(17 4 31);
 	--hover-shadow: rgb(117 16 255 / 8%);
 	--primary-color: rgb(255 255 255 / 87%);
-	--secondary-color: rgb(192 182 219);
+	--secondary-color: rgb(194 182 226);
 	--editor-background: rgb(12 6 17);
 
 	font-family: Poppins, sans-serif;
@@ -92,6 +92,10 @@ form .field :where(input:where([type='text'], [type='number']), select):hover,
 form .field :where(input:where([type='text'], [type='number']), select):focus,
 .command-input:has(input:focus) {
 	--input-border: var(--alternative-border);
+}
+
+form .field:has(input:hover, select:hover) {
+	--secondary-color: rgb(171 154 247);
 }
 
 form .field select option {
