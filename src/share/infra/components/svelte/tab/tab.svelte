@@ -27,41 +27,19 @@
 		color: inherit;
 		background-color: transparent;
 		border: none;
-		border-bottom: 2px solid var(--border);
 		transition:
 			color 500ms,
-			filter 500ms,
-			border 250ms;
+			backdrop-filter 200ms;
 	}
 
 	button:disabled {
-		background-color: rgb(27 23 32);
+		backdrop-filter: brightness(125%);
 	}
 
-	button:focus {
-		backdrop-filter: brightness(85%) saturate(80%);
-		outline: none;
-	}
-
-	button:focus,
-	button:hover {
+	button:not(:disabled):hover,
+	button:not(:disabled):focus {
 		color: var(--secondary-color);
-	}
-
-	button:focus,
-	button:hover:not(:disabled) {
-		--border: currentcolor;
-
-		backdrop-filter: brightness(95%) saturate(80%);
-	}
-
-	button:not(:disabled)::after {
-		position: absolute;
-		top: 4px;
-		right: -1px;
-		width: 2px;
-		height: calc(100% - 8px);
-		content: '';
-		background-color: rgb(19 15 24 / 50%);
+		backdrop-filter: brightness(107%);
+		outline: none;
 	}
 </style>
