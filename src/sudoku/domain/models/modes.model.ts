@@ -1,6 +1,6 @@
 export enum ModeKinds {
-	Annotation = 'n',
-	Command = 'c',
-	Insert = 'i',
-	Normal = 'x',
+	A = 'annotation',
+	C = 'command',
+	I = 'insert',
+	X = 'normal',
 }

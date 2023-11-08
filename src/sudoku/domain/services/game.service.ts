@@ -13,11 +13,11 @@ import { TimerService } from './timer.service'
 const repo = Symbol('board-repo')
 
 abstract class GameService implements IGame {
-	abstract readonly mode?: ModeKinds | null
-	abstract readonly position?: Position | null
 	abstract readonly timer?: string | null
 	protected readonly [repo]: GameRepo
 	abstract readonly isStarted: boolean
+	abstract readonly mode: ModeKinds
+	abstract readonly position: Position
 
 	/**
 	 * Creates an instance of the NonStartedGameService class.
@@ -87,8 +87,8 @@ abstract class GameService implements IGame {
 export class NonStartedGameService extends GameService {
 	readonly board = null
 	readonly isStarted = false
-	readonly mode = null
-	readonly position = null
+	readonly mode = ModeKinds.X
+	readonly position = { ...PositionService.IDLE_POS }
 	readonly timer = null
 
 	async resume() {
@@ -123,7 +123,7 @@ class StartedGameData implements Game {
 	mode
 	readonly pos
 
-	constructor({ board, mode = ModeKinds.Normal, pos }: OptionalKeys<Game, 'mode'>) {
+	constructor({ board, mode = ModeKinds.X, pos }: OptionalKeys<Game, 'mode'>) {
 		this.board = board
 		this.mode = mode
 		this.pos = pos
@@ -244,13 +244,13 @@ abstract class GameState implements IGameState {
 	static create(data: StartedGameData, mode: ModeKinds): GameState {
 		data.mode = mode
 		switch (mode) {
-			case ModeKinds.Annotation:
+			case ModeKinds.A:
 				return new AnnotationGameState(data)
-			case ModeKinds.Command:
+			case ModeKinds.C:
 				return new CommandGameState(data)
-			case ModeKinds.Insert:
+			case ModeKinds.I:
 				return new InsertGameState(data)
-			case ModeKinds.Normal:
+			case ModeKinds.X:
 				return new NormalGameState(data)
 		}
 	}

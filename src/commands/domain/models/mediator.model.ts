@@ -15,9 +15,9 @@ export namespace Mediator {
 
 	export interface State {
 		board?: Board | null
-		modes?: ModeKinds | null
-		position?: Position | null
 		timer?: string | null
+		modes: ModeKinds
+		position: Position
 		preferences: Preferences
 		screen: VimScreen
 	}

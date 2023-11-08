@@ -78,9 +78,9 @@ export interface IGame {
 	/** Get the game board data as a JSON Object. */
 	readonly board?: Board | null
 	/** Get the game mode. */
-	readonly mode?: ModeKinds | null
+	readonly mode?: ModeKinds
 	/** Get the current position. */
-	readonly position?: Position | null
+	readonly position?: Position
 	/** Get the current value of timer. */
 	readonly timer?: string | null
 	/** Get if the game has started. */
