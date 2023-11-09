@@ -13,5 +13,5 @@
 
 <ButtonMenu>
 	<Button>Start new game.</Button>
-	<Button disabled={disabledResume} on:click={resumeHandler}>Resume game.</Button>
+	<Button reason="no saved game." disabled={disabledResume} on:click={resumeHandler}>Resume game.</Button>
 </ButtonMenu>
