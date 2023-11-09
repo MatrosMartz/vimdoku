@@ -14,8 +14,8 @@
 
 <footer class="monospace">
 	<section>
+		<button class="icon dialog" on:click={cmdHandler}><Icon id="cmd" /></button>
 		<p class="mode">{$modesSvelte.toUpperCase()}</p>
-		<button class="icon" on:click={cmdHandler}><Icon id="cmd" /></button>
 		<button class="icon">
 			<Icon id="errors" />
 			<span>0</span>
@@ -24,7 +24,7 @@
 	<section>
 		<p class="timer">00:00:00</p>
 		<p class="screen">{$screenSvelte.main}</p>
-		<button class="icon" on:click={prefHandler}><Icon id="pref" /></button>
+		<button class="icon dialog" on:click={prefHandler}><Icon id="pref" /></button>
 	</section>
 </footer>
 
@@ -65,15 +65,17 @@
 
 	p,
 	.icon:has(span) {
-		padding-inline: 1rem;
+		padding-inline: 0.5rem;
 	}
 
-	.icon:focus {
+	.icon:focus,
+	.icon:hover {
+		filter: brightness(125%);
 		outline: none;
 	}
 
-	.icon:hover {
-		filter: brightness(115%);
+	.icon.dialog {
+		background-color: rgb(39 31 63);
 	}
 
 	.mode {
