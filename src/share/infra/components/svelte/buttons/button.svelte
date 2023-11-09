@@ -36,4 +36,8 @@
 		--input-background: var(--alternative-border);
 		--input-border: var(--alternative-border);
 	}
+
+	button:focus {
+		--input-border: var(--alternative-border);
+	}
 </style>
