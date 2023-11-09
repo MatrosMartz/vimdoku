@@ -69,7 +69,7 @@ a {
 	color: rgb(141 171 200);
 }
 
-form .field :where(input:where([type='text'], [type='number']), select),
+form .field :where(input:where([type='text'], [type='number']), select, button),
 .command-input {
 	width: calc(100% - 4rem);
 	height: 40px;
@@ -84,12 +84,12 @@ form .field :where(input:where([type='text'], [type='number']), select),
 		box-shadow 200ms ease-out;
 }
 
-form .field :where(input:where([type='text'], [type='number']), select):hover,
+form .field :where(input:where([type='text'], [type='number']), select, button):hover,
 .command-input:has(input:hover) {
 	--input-shadow: var(--hover-shadow);
 }
 
-form .field :where(input:where([type='text'], [type='number']), select):focus,
+form .field :where(input:where([type='text'], [type='number']), select, button):focus,
 .command-input:has(input:focus) {
 	--input-border: var(--alternative-border);
 }

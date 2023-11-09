@@ -27,7 +27,9 @@
 			<TabList>
 				<Tab key="show" on:click={createTabHandler(PrefDialogTypes.all)}>Show</Tab>
 				<Tab key="edit" on:click={createTabHandler(PrefDialogTypes.edit)}>Edit</Tab>
-				<DialogClose />
+				<li class="close">
+					<DialogClose />
+				</li>
 			</TabList>
 			<TabPanel key="show">
 				<PreferencesDisplay />
@@ -49,5 +51,12 @@
 		overflow: hidden;
 		background-color: hsl(280deg 17% 14%);
 		border-radius: 8px;
+	}
+
+	.close {
+		position: absolute;
+		right: 0;
+		height: 100%;
+		aspect-ratio: 1 / 1;
 	}
 </style>

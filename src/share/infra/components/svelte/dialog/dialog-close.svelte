@@ -5,27 +5,20 @@
 	import Icon from '../icon.svelte'
 </script>
 
-<li>
-	<button on:click={() => mediator.dispatch(ScreenActions.Exit)}><Icon id="quit" /></button>
-</li>
+<button on:click={() => mediator.dispatch(ScreenActions.Exit)}><Icon id="quit" /></button>
 
 <style>
-	li {
-		position: absolute;
-		right: 0;
-		height: 100%;
-		aspect-ratio: 1 / 1;
-	}
-
 	button {
 		width: 100%;
 		height: 100%;
 		color: inherit;
-		background-color: transparent;
+		background-color: rgb(86 57 83);
 		border: none;
 	}
 
+	button:focus,
 	button:hover {
-		backdrop-filter: brightness(80%);
+		filter: brightness(80%);
+		outline: none;
 	}
 </style>

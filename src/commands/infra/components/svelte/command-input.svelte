@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { DialogClose } from '~/share/infra/components/svelte'
 	import { executor } from '$cmd/infra/services'
 	import { screenSvelte } from '$cmd/infra/stores'
 	import { DialogKinds } from '$screen/domain/models'
@@ -22,17 +23,22 @@
 	<label class="command-input">
 		<input type="text" on:input={inputHandler} bind:this={$input} />
 	</label>
+	<span class="close">
+		<DialogClose />
+	</span>
 </form>
 
 <style>
 	form {
 		display: flex;
+		gap: 1rem;
 		justify-content: center;
 	}
 
 	.command-input {
 		box-sizing: content-box;
 		display: flex;
+		flex-shrink: 20;
 		align-items: center;
 		width: 100%;
 		overflow: hidden;
@@ -60,5 +66,12 @@
 
 	input::selection {
 		background-color: var(--input-border);
+	}
+
+	.close {
+		height: 100%;
+		aspect-ratio: 1 / 1;
+		overflow: hidden;
+		border-radius: 8px;
 	}
 </style>
