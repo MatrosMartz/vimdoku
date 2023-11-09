@@ -2,7 +2,7 @@
 	import StartGameMenu from './start-game-menu.svelte'
 </script>
 
-<section class="monospace">
+<section class="monospace start-screen">
 	<h2>VIMDOKU - VIM suDOKU</h2>
 
 	<div class="data">
@@ -56,12 +56,13 @@
 </section>
 
 <style>
-	section {
+	.start-screen {
 		display: flex;
 		flex-direction: column;
 		gap: 1.5rem;
 		align-items: center;
 		width: 93vw;
+		max-width: 55rem;
 		padding: 1.5rem 2ch;
 		margin: auto;
 		color: rgb(204 184 221);
