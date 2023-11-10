@@ -53,7 +53,6 @@
 
 	button:focus {
 		filter: brightness(1.1) saturate(1.6) contrast(0.97);
-		outline: none;
 	}
 
 	li:not(:last-of-type)::after {

@@ -40,6 +40,5 @@
 	button:not(:disabled):focus {
 		color: var(--secondary-color);
 		backdrop-filter: brightness(110%);
-		outline: none;
 	}
 </style>

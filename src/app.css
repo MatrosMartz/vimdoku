@@ -36,6 +36,10 @@
 	background-color: var(--input-border);
 }
 
+*:focus {
+	outline: none;
+}
+
 legend {
 	font-size: 1.1rem;
 	font-weight: 500;
@@ -54,10 +58,6 @@ form .field {
 form .field span {
 	height: 1lh;
 	overflow: hidden;
-}
-
-:where(input, select):focus {
-	outline: none;
 }
 
 input,

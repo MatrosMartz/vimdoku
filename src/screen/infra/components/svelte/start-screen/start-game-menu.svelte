@@ -13,5 +13,11 @@
 
 <ButtonMenu>
 	<Button>Start new game.</Button>
-	<Button reason="no saved game." disabled={disabledResume} on:click={resumeHandler}>Resume game.</Button>
+	<Button
+		tooltipProps={{ id: 'resume-disable-reason', text: 'no saved game.' }}
+		disabled={disabledResume}
+		on:click={resumeHandler}
+	>
+		Resume game.
+	</Button>
 </ButtonMenu>

@@ -71,7 +71,6 @@
 	.icon:focus,
 	.icon:hover {
 		filter: brightness(125%);
-		outline: none;
 	}
 
 	.icon.dialog {

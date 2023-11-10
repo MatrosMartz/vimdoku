@@ -1,18 +1,31 @@
 <script lang="ts">
-	export let type: 'button' | 'submit' | 'reset' = 'button'
+	import { createEventDispatcher } from 'svelte'
+
+	import { tooltip, type TooltipProps } from '../tooltip'
+
+	export let tooltipProps: TooltipProps | null = null
 	export let disabled = false
-	export let reason = ''
+	export let type: 'button' | 'submit' | 'reset' = 'button'
+
+	const dispatch = createEventDispatcher<{ click: MouseEvent }>()
+
+	function clickHandler(ev: MouseEvent) {
+		if (!disabled) dispatch('click', ev)
+	}
 </script>
 
 <li>
-	<button style:--reason={reason.length > 0 ? `'${reason}'` : ''} {type} on:click {disabled}>
+	<button {type} on:click={clickHandler} aria-disabled={disabled} use:tooltip={tooltipProps}>
 		<slot />
 	</button>
 </li>
 
 <style>
-	button {
+	li {
 		position: relative;
+	}
+
+	button {
 		width: calc(2rem + 15ch);
 		min-width: max-content;
 		height: 48px;
@@ -22,7 +35,6 @@
 		background-color: var(--input-background);
 		border: 2px solid var(--input-border);
 		border-radius: 8px;
-		outline: none;
 		box-shadow: 0 0 12px var(--input-shadow);
 		transition:
 			background-color 200ms ease-out,
@@ -37,35 +49,11 @@
 		--input-border: var(--alternative-border);
 	}
 
-	button:disabled {
-		filter: opacity(80%);
+	button[aria-disabled='true'] {
+		filter: opacity(60%);
 	}
 
-	button:disabled::before {
-		position: absolute;
-		top: 125%;
-		left: 50%;
-		width: 10ch;
-		max-width: 45ch;
-		padding: 0.5rem 1rem;
-		overflow: hidden;
-		color: var(--primary-color);
-		text-overflow: ellipsis;
-		text-wrap: pretty;
-		content: var(--reason);
-		background-color: rgb(6 0 15);
-		border: 1px solid rgb(31 11 59);
-		border-radius: 8px;
-		opacity: 0;
-		transition: opacity 200ms;
-		transform: translateX(-50%);
-	}
-
-	button:disabled:hover::before {
-		opacity: 1;
-	}
-
-	button:not(:disabled):active {
+	button:not([aria-disabled='true']):active {
 		--input-background: var(--alternative-border);
 		--input-border: var(--alternative-border);
 	}
