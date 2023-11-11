@@ -50,6 +50,8 @@
 	}
 
 	.icon {
+		--border-color: transparent;
+
 		display: flex;
 		gap: 0.5rem;
 		align-items: center;
@@ -60,7 +62,7 @@
 		font-size: inherit;
 		color: inherit;
 		background-color: var(--input-background);
-		border: none;
+		border: 2px solid var(--border-color);
 	}
 
 	p,
@@ -68,9 +70,14 @@
 		padding-inline: 0.5rem;
 	}
 
-	.icon:focus,
 	.icon:hover {
 		filter: brightness(125%);
+	}
+
+	.icon:focus {
+		--border-color: rgb(141 95 136 / 50%);
+
+		color: var(--secondary-color);
 	}
 
 	.icon.dialog {
