@@ -32,8 +32,8 @@
 }
 
 *::selection {
-	color: rgb(12 7 17);
-	background-color: var(--input-border);
+	color: var(--editor-background);
+	background-color: rgb(68 39 64);
 }
 
 *:focus {
@@ -66,7 +66,35 @@ select {
 }
 
 a {
-	color: rgb(141 171 200);
+	position: relative;
+	z-index: 1;
+	overflow: hidden;
+	color: rgb(137 192 212);
+}
+
+a:visited {
+	color: rgb(193 148 230);
+}
+
+a:hover {
+	filter: brightness(105%) saturate(125%);
+}
+
+a::before {
+	position: absolute;
+	inset: -2px -4px;
+	z-index: -1;
+	width: calc(100% + 8px);
+	height: calc(100% + 4px);
+	content: '';
+	backdrop-filter: brightness(170%) saturate(130%);
+	border-radius: 4px;
+	transition: transform 200ms;
+	transform: scaleY(0);
+}
+
+a:focus::before {
+	transform: scaleY(100%);
 }
 
 form .field :where(input:where([type='text'], [type='number']), select, button),
