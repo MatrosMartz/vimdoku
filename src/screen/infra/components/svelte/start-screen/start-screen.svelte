@@ -1,58 +1,15 @@
-<script>
-	import StartGameMenu from './start-game-menu.svelte'
+<script lang="ts">
+	import SelectGame from './select-game.svelte'
+	import StartHub from './start-hub.svelte'
+	import { startType } from './start-screen.store'
 </script>
 
 <section class="monospace start-screen">
-	<h2>VIMDOKU - VIM suDOKU</h2>
-
-	<div class="data">
-		<p>Version 1.0</p>
-		<p>
-			by <a href="https://github.com/matrosmartz">MatrosMartz.</a>
-		</p>
-		<p>Vimdoku is sudoku game with VIM shortcuts</p>
-	</div>
-	<table class="commands">
-		<tr>
-			<th>type</th>
-			<td>
-				<p class="highlight">
-					<span class="command">quit</span>
-				</p>
-			</td>
-			<td>to exit.</td>
-		</tr>
-		<tr>
-			<th>type</th>
-			<td>
-				<p class="highlight">
-					<span class="command">help</span>
-				</p>
-			</td>
-			<td>for on-line help.</td>
-		</tr>
-		<tr>
-			<th>type</th>
-			<td>
-				<p class="highlight">
-					<span class="command">help</span>
-					<span class="command">start</span>
-				</p>
-			</td>
-			<td>for help to start game.</td>
-		</tr>
-		<tr>
-			<th>type</th>
-			<td>
-				<p class="highlight">
-					<span class="command">start</span>
-					<span class="holder">difficulty</span>
-				</p>
-			</td>
-			<td>for start game.</td>
-		</tr>
-	</table>
-	<StartGameMenu />
+	{#if $startType === 'hub'}
+		<StartHub />
+	{:else}
+		<SelectGame />
+	{/if}
 </section>
 
 <style>
@@ -61,61 +18,15 @@
 		flex-direction: column;
 		gap: 1.5rem;
 		align-items: center;
+		justify-content: center;
 		width: 93vw;
 		max-width: 55rem;
+		min-height: 70vh;
 		padding: 1.5rem 2ch;
 		margin: auto;
 		color: rgb(204 184 221);
 		background-color: var(--editor-background);
 		border-radius: 4px;
 		box-shadow: 0 6px 20px rgb(12 7 17);
-	}
-
-	.data {
-		text-align: center;
-	}
-
-	.commands {
-		display: grid;
-		grid-template-columns: repeat(2, max-content);
-		justify-content: space-between;
-		width: min(100%, 34ch);
-	}
-
-	.commands tr {
-		display: grid;
-		grid-template-columns: subgrid;
-		grid-row-end: span 2;
-		grid-column-end: span 2;
-	}
-
-	tr td {
-		grid-column: 2 / 3;
-	}
-
-	@media (width >= 768px) {
-		.commands {
-			grid-template-columns: repeat(3, max-content);
-			column-gap: 4ch;
-			width: max-content;
-		}
-
-		.commands tr {
-			grid-column-end: span 3;
-		}
-
-		.commands th,
-		td {
-			text-align: left;
-		}
-
-		tr td {
-			grid-column: span 1;
-		}
-	}
-
-	.highlight::after {
-		color: rgb(155 151 214);
-		content: '<Enter>';
 	}
 </style>
