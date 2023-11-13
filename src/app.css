@@ -42,7 +42,7 @@
 
 *::selection {
 	color: var(--editor-background);
-	background-color: rgb(68 39 64);
+	background-color: var(--focus-border);
 }
 
 *:focus {
