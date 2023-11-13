@@ -15,8 +15,8 @@
 <footer class="monospace">
 	<section>
 		<button class="icon dialog" on:click={cmdHandler}><Icon id="cmd" /></button>
-		<p class="mode">{$modesSvelte.toUpperCase()}</p>
-		<button class="icon">
+		<button class="icon mode"><span>{$modesSvelte.toUpperCase()}</span></button>
+		<button class="icon error">
 			<Icon id="errors" />
 			<span>0</span>
 		</button>
@@ -36,7 +36,7 @@
 		display: flex;
 		justify-content: space-between;
 		width: 100%;
-		background-color: rgb(21 19 25);
+		background-color: rgb(12 8 13);
 	}
 
 	section {
@@ -61,7 +61,7 @@
 		font-family: inherit;
 		font-size: inherit;
 		color: inherit;
-		background-color: var(--input-background);
+		background-color: inherit;
 		border: 2px solid var(--border-color);
 	}
 
@@ -72,29 +72,27 @@
 
 	.icon:hover {
 		filter: brightness(125%);
+		backdrop-filter: brightness(125%);
 	}
 
 	.icon:focus {
-		--border-color: rgb(141 95 136 / 50%);
+		--border-color: var(--focus-border);
+	}
 
-		color: var(--secondary-color);
+	.error {
+		color: var(--error-color);
 	}
 
 	.icon.dialog {
-		background-color: rgb(39 31 63);
+		background-color: var(--alternative-border);
 	}
 
 	.mode {
-		background-color: var(--input-border);
+		color: var(--value-color);
 	}
 
-	.mode::before {
-		padding-right: 1ch;
-		content: '--';
-	}
-
+	.mode::before,
 	.mode::after {
-		padding-left: 1ch;
 		content: '--';
 	}
 </style>

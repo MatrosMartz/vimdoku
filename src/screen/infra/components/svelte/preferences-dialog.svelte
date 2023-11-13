@@ -58,5 +58,6 @@
 		right: 0;
 		height: 100%;
 		aspect-ratio: 1 / 1;
+		border-top-right-radius: 8px;
 	}
 </style>

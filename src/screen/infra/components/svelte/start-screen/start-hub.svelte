@@ -98,7 +98,7 @@
 	}
 
 	.highlight::after {
-		color: rgb(155 151 214);
+		color: var(--key-color);
 		content: '<Enter>';
 	}
 </style>

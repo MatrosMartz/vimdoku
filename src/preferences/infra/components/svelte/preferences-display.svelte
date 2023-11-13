@@ -123,22 +123,22 @@
 	}
 
 	.str {
-		color: rgb(143 162 112);
+		color: var(--special-color);
 	}
 
 	.str::before,
 	.str::after {
 		font-weight: 600;
-		color: rgb(125 177 157);
+		color: var(--key-color);
 		content: '"';
 	}
 
 	.num {
-		color: rgb(237 133 87);
+		color: var(--number-color);
 	}
 
 	.bool {
 		font-style: italic;
-		color: rgb(196 91 108);
+		color: var(--boolean-color);
 	}
 </style>

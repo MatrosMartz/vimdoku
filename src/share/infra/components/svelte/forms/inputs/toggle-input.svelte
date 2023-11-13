@@ -14,6 +14,7 @@
 <style>
 	.switch {
 		--height: 40px;
+		--border: var(--input-border);
 
 		position: relative;
 		width: calc(var(--height) * 2.2);
@@ -21,7 +22,7 @@
 		margin-inline: auto;
 		overflow: hidden;
 		background-color: var(--input-border);
-		border: 2px solid var(--input-border);
+		border: 2px solid var(--border);
 		border-radius: var(--height);
 		box-shadow: 0 0 16px var(--input-shadow);
 		transition:
@@ -54,7 +55,7 @@
 	}
 
 	label:has(input:checked) > .switch {
-		--input-border: rgb(86 57 83);
+		--input-border: var(--alternative-border);
 	}
 
 	label:has(input:checked) > .switch::after {
@@ -62,6 +63,6 @@
 	}
 
 	label:has(input:focus) > .switch {
-		border: 2px solid var(--alternative-border);
+		--border: var(--focus-border);
 	}
 </style>

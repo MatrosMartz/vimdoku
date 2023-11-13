@@ -9,16 +9,22 @@
 
 <style>
 	button {
+		--border: var(--alternative-border);
+
 		width: 100%;
 		height: 100%;
 		color: inherit;
-		background-color: rgb(86 57 83);
+		background-color: var(--alternative-border);
 		border: none;
+		border: 2px solid var(--border);
+		border-radius: inherit;
 	}
 
-	button:focus,
+	button:focus {
+		--border: var(--focus-border);
+	}
+
 	button:hover {
 		filter: brightness(80%);
-		outline: none;
 	}
 </style>

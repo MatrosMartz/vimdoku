@@ -27,18 +27,20 @@
 		color: inherit;
 		background-color: transparent;
 		border: none;
-		transition:
-			color 500ms,
-			backdrop-filter 200ms;
+		transition: backdrop-filter 200ms;
 	}
 
 	button:disabled {
 		backdrop-filter: brightness(130%);
 	}
 
-	button:not(:disabled):hover,
 	button:not(:disabled):focus {
-		color: var(--secondary-color);
+		color: var(--focus-border);
+		text-decoration: underline 2px;
+	}
+
+	button:not(:disabled):hover {
+		filter: saturate(105%);
 		backdrop-filter: brightness(110%);
 	}
 </style>

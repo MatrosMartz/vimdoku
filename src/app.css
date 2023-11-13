@@ -1,13 +1,22 @@
 :root {
 	--surface: rgb(31 24 32);
 	--input-background: rgb(26 23 27);
-	--input-border: rgb(57 47 66);
-	--alternative-border: rgb(141 95 136);
+	--input-border: rgb(74 70 77);
+	--alternative-border: rgb(63 63 89);
+	--focus-border: rgb(133 136 166);
 	--input-shadow: rgb(17 4 31);
 	--hover-shadow: rgb(117 16 255 / 8%);
-	--primary-color: rgb(255 255 255 / 87%);
-	--secondary-color: rgb(194 182 226);
+	--primary-color: rgb(255 252 250);
+	--secondary-color: rgb(226 216 182);
 	--editor-background: rgb(12 6 17);
+	--error-color: rgb(240 117 107);
+	--value-color: rgb(230 185 143);
+	--key-color: rgb(136 190 184);
+	--holder-color: rgb(166 145 125);
+	--special-color: rgb(153 166 97);
+	--number-color: rgb(223 143 108);
+	--string-color: var(--special-color);
+	--boolean-color: var(--error-color);
 
 	font-family: Poppins, sans-serif;
 	font-weight: 400;
@@ -82,13 +91,14 @@ a:hover {
 
 a::before {
 	position: absolute;
-	inset: -2px -4px;
+	inset: -2px -6px;
 	z-index: -1;
-	width: calc(100% + 8px);
+	width: calc(100% + 12px);
 	height: calc(100% + 4px);
 	content: '';
-	backdrop-filter: brightness(170%) saturate(130%);
+	border: 1px solid currentcolor;
 	border-radius: 4px;
+	opacity: 0.25;
 	transition: transform 200ms;
 	transform: scaleY(0);
 }
@@ -119,11 +129,11 @@ form .field :where(input:where([type='text'], [type='number']), select, button):
 
 form .field :where(input:where([type='text'], [type='number']), select, button):focus,
 .command-input:has(input:focus) {
-	--input-border: var(--alternative-border);
+	--input-border: var(--focus-border);
 }
 
 form .field:has(input:hover, select:hover) {
-	--secondary-color: rgb(171 154 247);
+	--secondary-color: var(--holder-color);
 }
 
 form .field select option {
@@ -132,6 +142,10 @@ form .field select option {
 
 h3 {
 	font-family: monospace;
+}
+
+:where(h1, h2, h3):not(.highlight) {
+	color: var(--secondary-color);
 }
 
 .highlight .command {
@@ -171,7 +185,7 @@ h3 {
 }
 
 .highlight .key {
-	color: rgb(155 151 214);
+	color: var(--key-color);
 	text-transform: capitalize;
 }
 
@@ -184,11 +198,11 @@ h3 {
 }
 
 .highlight .value {
-	color: rgb(190 155 137);
+	color: var(--value-color);
 }
 
 .highlight .special {
-	color: rgb(153 166 97);
+	color: var(--special-color);
 }
 
 .monospace,

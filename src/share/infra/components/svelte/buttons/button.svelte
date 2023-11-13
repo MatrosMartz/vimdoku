@@ -46,7 +46,7 @@
 	}
 
 	button:focus {
-		--input-border: var(--alternative-border);
+		--input-border: var(--focus-border);
 	}
 
 	button[aria-disabled='true'] {
@@ -54,7 +54,7 @@
 	}
 
 	button:not([aria-disabled='true']):active {
-		--input-background: var(--alternative-border);
-		--input-border: var(--alternative-border);
+		--input-background: var(--focus-border);
+		--input-border: var(--focus-border);
 	}
 </style>
