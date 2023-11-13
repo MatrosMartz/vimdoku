@@ -17,6 +17,7 @@
 		<td>
 			<p class="highlight">
 				<span class="command">quit</span>
+				<span class="key">Enter</span>
 			</p>
 		</td>
 		<td>to exit.</td>
@@ -26,6 +27,7 @@
 		<td>
 			<p class="highlight">
 				<span class="command">help</span>
+				<span class="key">Enter</span>
 			</p>
 		</td>
 		<td>for on-line help.</td>
@@ -36,6 +38,7 @@
 			<p class="highlight">
 				<span class="command">help</span>
 				<span class="command">start</span>
+				<span class="key">Enter</span>
 			</p>
 		</td>
 		<td>for help to start game.</td>
@@ -46,6 +49,7 @@
 			<p class="highlight">
 				<span class="command">start</span>
 				<span class="holder">difficulty</span>
+				<span class="key">Enter</span>
 			</p>
 		</td>
 		<td>for start game.</td>
@@ -95,10 +99,5 @@
 		tr td {
 			grid-column: span 1;
 		}
-	}
-
-	.highlight::after {
-		color: var(--key-color);
-		content: '<Enter>';
 	}
 </style>
