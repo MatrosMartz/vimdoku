@@ -171,7 +171,7 @@ h3 {
 
 .highlight .holder {
 	font-style: italic;
-	color: rgb(132 121 110);
+	color: var(--holder-color);
 	text-transform: capitalize;
 }
 
