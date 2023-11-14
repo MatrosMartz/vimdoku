@@ -5,6 +5,8 @@
 	import { StartScreen } from './start-screen'
 </script>
 
-{#if $screenSvelte.main === MainScreenKinds.Start}
-	<StartScreen />
-{/if}
+<main>
+	{#if $screenSvelte.main === MainScreenKinds.Start}
+		<StartScreen />
+	{/if}
+</main>

@@ -9,5 +9,5 @@
 	"tabWidth": 2,
 	"trailingComma": "es5",
 	"useTabs": true,
-	"htmlWhitespaceSensitivity": "ignore"
+	"htmlWhitespaceSensitivity": "css"
 }
