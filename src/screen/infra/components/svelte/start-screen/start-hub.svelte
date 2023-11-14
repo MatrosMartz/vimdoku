@@ -16,8 +16,7 @@
 		<th>type</th>
 		<td>
 			<p class="highlight">
-				<span class="command">quit</span>
-				<span class="key">Enter</span>
+				<span class="command">quit</span><span class="key">Enter</span>
 			</p>
 		</td>
 		<td>to exit.</td>
@@ -26,8 +25,7 @@
 		<th>type</th>
 		<td>
 			<p class="highlight">
-				<span class="command">help</span>
-				<span class="key">Enter</span>
+				<span class="command">help</span><span class="key">Enter</span>
 			</p>
 		</td>
 		<td>for on-line help.</td>
@@ -37,8 +35,7 @@
 		<td>
 			<p class="highlight">
 				<span class="command">help</span>
-				<span class="command">start</span>
-				<span class="key">Enter</span>
+				<span class="command">start</span><span class="key">Enter</span>
 			</p>
 		</td>
 		<td>for help to start game.</td>
@@ -48,8 +45,7 @@
 		<td>
 			<p class="highlight">
 				<span class="command">start</span>
-				<span class="holder">difficulty</span>
-				<span class="key">Enter</span>
+				<span class="holder">difficulty</span><span class="key">Enter</span>
 			</p>
 		</td>
 		<td>for start game.</td>
