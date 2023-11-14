@@ -12,8 +12,7 @@
 
 	import { mediator } from '$cmd/infra/services'
 	import { CmdDialogTypes, DialogKinds, ScreenActions } from '$screen/domain/models'
-	import { CommandDialog, PreferencesDialog, Screen } from '$screen/infra/components/svelte'
-	import { StatusBar } from '$screen/infra/components/svelte/status-bar'
+	import { CommandDialog, PreferencesDialog, Screen, StatusBar } from '$screen/infra/components/svelte'
 
 	import { Header } from './share/infra/components/svelte'
 
