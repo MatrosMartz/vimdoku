@@ -31,7 +31,7 @@
 #app {
 	display: flex;
 	flex-direction: column;
-	gap: 2rem;
+	gap: 1.5rem;
 }
 
 * {
@@ -131,8 +131,8 @@ form .field :where(input:where([type='text'], [type='number']), select, button):
 	--input-border: var(--focus-border);
 }
 
-form .field:has(input:hover, select:hover) {
-	--secondary-color: var(--holder-color);
+form .field:has(input:hover, select:hover) span {
+	filter: brightness(90%) saturate(200%);
 }
 
 form .field select option {

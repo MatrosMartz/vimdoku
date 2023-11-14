@@ -23,6 +23,7 @@
 <style>
 	li {
 		position: relative;
+		height: min-content;
 	}
 
 	button {

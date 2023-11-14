@@ -1,12 +1,14 @@
-<script lang="ts">
+<script>
+	import GameMenu from './game-menu.svelte'
 	import SelectGame from './select-game.svelte'
-	import StartHub from './start-hub.svelte'
 	import { startType } from './start-screen.store'
+	import TitleGame from './title-game.svelte'
 </script>
 
 <section class="monospace start-screen">
-	{#if $startType === 'hub'}
-		<StartHub />
+	<TitleGame />
+	{#if $startType === 'start'}
+		<GameMenu />
 	{:else}
 		<SelectGame />
 	{/if}
@@ -16,13 +18,12 @@
 	.start-screen {
 		display: flex;
 		flex-direction: column;
-		gap: 1.5rem;
+		gap: 1rem;
 		align-items: center;
 		justify-content: center;
 		width: 93vw;
 		max-width: 55rem;
-		min-height: 70vh;
-		padding: 1.5rem 2ch;
+		padding: 2.2rem 2ch;
 		margin: auto;
 		color: rgb(204 184 221);
 		background-color: var(--editor-background);

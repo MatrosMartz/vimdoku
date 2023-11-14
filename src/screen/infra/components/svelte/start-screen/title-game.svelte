@@ -1,32 +1,22 @@
-<script>
-	import StartGameMenu from './start-game-menu.svelte'
-</script>
-
 <h2>VIMDOKU - VIM suDOKU</h2>
 
 <div class="data">
 	<p>Version 1.0</p>
-	<p>
-		by <a href="https://github.com/matrosmartz">MatrosMartz.</a>
-	</p>
+	<p>by <a href="https://github.com/matrosmartz">MatrosMartz.</a></p>
 	<p>Vimdoku is sudoku game with VIM shortcuts</p>
 </div>
 <table class="commands">
 	<tr>
 		<th>type</th>
 		<td>
-			<p class="highlight">
-				<span class="command">quit</span><span class="key">Enter</span>
-			</p>
+			<p class="highlight"><span class="command">quit</span><span class="key">Enter</span></p>
 		</td>
 		<td>to exit.</td>
 	</tr>
 	<tr>
 		<th>type</th>
 		<td>
-			<p class="highlight">
-				<span class="command">help</span><span class="key">Enter</span>
-			</p>
+			<p class="highlight"><span class="command">help</span><span class="key">Enter</span></p>
 		</td>
 		<td>for on-line help.</td>
 	</tr>
@@ -51,7 +41,6 @@
 		<td>for start game.</td>
 	</tr>
 </table>
-<StartGameMenu />
 
 <style>
 	.data {

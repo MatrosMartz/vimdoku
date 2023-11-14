@@ -17,13 +17,21 @@
 	}
 </script>
 
-<ButtonMenu>
-	<Button on:click={newGameHandler}>Start new game.</Button>
-	<Button
-		tooltipProps={{ id: 'resume-disable-reason', text: 'no saved game.' }}
-		disabled={disabledResume}
-		on:click={resumeHandler}
-	>
-		Resume game.
-	</Button>
-</ButtonMenu>
+<div class="menu">
+	<ButtonMenu>
+		<Button on:click={newGameHandler}>New game</Button>
+		<Button
+			tooltipProps={{ id: 'resume-disable-reason', text: 'no saved game.' }}
+			disabled={disabledResume}
+			on:click={resumeHandler}
+		>
+			Resume game
+		</Button>
+	</ButtonMenu>
+</div>
+
+<style>
+	.menu {
+		padding-top: 102px;
+	}
+</style>

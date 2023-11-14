@@ -8,7 +8,7 @@
 	let value: keyof typeof DifficultyKinds = 'Beginner'
 
 	function backHandler() {
-		startType.set('hub')
+		startType.set('start')
 	}
 
 	function submitHandler() {
@@ -19,7 +19,10 @@
 <form method="dialog" on:submit|preventDefault={submitHandler}>
 	<OptionsInput name="difficulty" options={DIFFICULTIES_NAMES} bind:value />
 
-	<ButtonMenu><Button on:click={backHandler}>Go back.</Button><Button type="submit">Start.</Button></ButtonMenu>
+	<ButtonMenu>
+		<Button on:click={backHandler}>Go back</Button>
+		<Button type="submit">Start</Button>
+	</ButtonMenu>
 </form>
 
 <style>

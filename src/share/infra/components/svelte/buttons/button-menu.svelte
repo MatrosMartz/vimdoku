@@ -1,9 +1,9 @@
-<menu>
+<menu class="btn-menu">
 	<slot />
 </menu>
 
 <style>
-	menu {
+	.btn-menu {
 		display: flex;
 		gap: 1rem;
 		justify-content: end;
