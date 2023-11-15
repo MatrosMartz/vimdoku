@@ -1,25 +1,23 @@
-import type { CmdDialogTypes, DialogKinds, HelpDialogTypes, PrefDialogTypes } from './dialog.model'
+import type { DialogKinds } from './dialog.model'
 import { type MainScreenKinds } from './main.model'
 
-export interface CmdDialogOpts {
-	type: CmdDialogTypes
-}
-
 export interface HelpDialogOpts {
-	type: HelpDialogTypes
+	search: string
 }
 
-export interface PrefDialogOpts {
-	type: PrefDialogTypes
+export interface InLnDialogOpts {
+	type: 'modes' | 'position'
 }
 
-export type DialogOpts = HelpDialogOpts | PrefDialogOpts | null | undefined
+export type DialogOpts = HelpDialogOpts | null | undefined
 
 export type DialogData =
-	| { kind: DialogKinds.Cmd; opts: CmdDialogOpts }
+	| {
+			opts?: null
+			kind: DialogKinds.Cmd | DialogKinds.None | DialogKinds.PrefAll | DialogKinds.PrefDiff | DialogKinds.PrefEdit
+	  }
+	| { kind: DialogKinds.InLn; opts: InLnDialogOpts }
 	| { kind: DialogKinds.Help; opts: HelpDialogOpts }
-	| { opts?: null; kind: DialogKinds.None }
-	| { kind: DialogKinds.Pref; opts: PrefDialogOpts }
 
 export interface VimScreen {
 	dialog: DialogData

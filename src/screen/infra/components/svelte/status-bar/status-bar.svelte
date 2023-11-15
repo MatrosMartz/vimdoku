@@ -1,28 +1,37 @@
 <script lang="ts">
 	import { Icon } from '~/share/infra/components/svelte'
+	import { tooltip } from '~/share/infra/components/svelte/tooltip'
 	import { mediator } from '$cmd/infra/services'
 	import { modesSvelte, posSvelte, screenSvelte } from '$cmd/infra/stores'
-	import { CmdDialogTypes, DialogKinds, PrefDialogTypes, ScreenActions } from '$screen/domain/models'
+	import { DialogKinds, ScreenActions } from '$screen/domain/models'
 
 	function cmdHandler() {
-		mediator.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.Cmd, opts: { type: CmdDialogTypes.Full } })
+		mediator.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.Cmd })
 	}
 	function prefHandler() {
-		mediator.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.Pref, opts: { type: PrefDialogTypes.edit } })
+		mediator.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.PrefEdit })
+	}
+
+	function modeHandler() {
+		mediator.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.InLn, opts: { type: 'modes' } })
 	}
 </script>
 
 <footer class="monospace">
 	<section>
 		<button class="icon dialog" on:click={cmdHandler}><Icon id="cmd" /></button>
-		<button class="icon mode"><span>{$modesSvelte.toUpperCase()}</span></button>
+		<button class="icon mode" on:click={modeHandler}><span>{$modesSvelte.toUpperCase()}</span></button>
 		<button class="icon error">
 			<Icon id="errors" />
 			<span>0</span>
 		</button>
 	</section>
 	<section>
-		<p class="posiyion">{$posSvelte.y}:{$posSvelte.x}</p>
+		<div class="position">
+			<p use:tooltip={{ id: 'describe-pos', text: `Row ${$posSvelte.y}, Col ${$posSvelte.x}` }}>
+				{$posSvelte.y},{$posSvelte.x}
+			</p>
+		</div>
 		<p class="timer">00:00:00</p>
 		<p class="screen">{$screenSvelte.main}</p>
 		<button class="icon dialog" on:click={prefHandler}><Icon id="pref" /></button>
@@ -95,5 +104,9 @@
 	.mode::before,
 	.mode::after {
 		content: '--';
+	}
+
+	.position {
+		position: relative;
 	}
 </style>

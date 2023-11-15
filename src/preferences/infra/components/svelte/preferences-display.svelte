@@ -4,15 +4,15 @@
 	import { mediator } from '$cmd/infra/services'
 	import { prefSvelte, screenSvelte } from '$cmd/infra/stores'
 	import { PreferencesService } from '$pref/domain/services'
-	import { DialogKinds, PrefDialogTypes, ScreenActions } from '$screen/domain/models'
+	import { DialogKinds, type DialogPref, ScreenActions } from '$screen/domain/models'
 
-	$: showAll = $screenSvelte.dialog.opts?.type === PrefDialogTypes.all
+	$: showAll = $screenSvelte.dialog.kind === DialogKinds.PrefAll
 
 	$: actualPreferences = PreferencesService.entries($prefSvelte)
 
-	function createBtnHandler(type: PrefDialogTypes) {
+	function createBtnHandler(kind: DialogPref) {
 		return () => {
-			mediator.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.Pref, opts: { type } })
+			mediator.dispatch(ScreenActions.OpenDialog, { kind })
 		}
 	}
 </script>
@@ -43,8 +43,8 @@
 		</table>
 	{/each}
 	<ButtonMenu>
-		<Button on:click={createBtnHandler(PrefDialogTypes.all)}>Show all.</Button>
-		<Button on:click={createBtnHandler(PrefDialogTypes.diff)}>Show different from default values.</Button>
+		<Button on:click={createBtnHandler(DialogKinds.PrefAll)}>Show all.</Button>
+		<Button on:click={createBtnHandler(DialogKinds.PrefDiff)}>Show different from default values.</Button>
 	</ButtonMenu>
 </article>
 

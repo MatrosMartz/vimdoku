@@ -1,6 +1,6 @@
 import type { RemoveObserver } from '~/share/domain/models'
 import { Observable } from '~/share/domain/services'
-import { DialogKinds, PrefDialogTypes, ScreenActions } from '$screen/domain/models'
+import { DialogKinds, ScreenActions } from '$screen/domain/models'
 import { DifficultyKinds, SudokuActions } from '$sudoku/domain/models'
 
 import type { Executor, IExecutor, IMediator, ISuggestion, Suggestion } from '../models'
@@ -53,13 +53,11 @@ export class ExecutorService implements IExecutor {
 		if (/^set?$/.test(command)) {
 			if (args.length === 0)
 				this.#mediator.dispatch(ScreenActions.OpenDialog, {
-					kind: DialogKinds.Pref,
-					opts: { type: PrefDialogTypes.diff },
+					kind: DialogKinds.PrefDiff,
 				})
 			if (args === 'all')
 				this.#mediator.dispatch(ScreenActions.OpenDialog, {
-					kind: DialogKinds.Pref,
-					opts: { type: PrefDialogTypes.all },
+					kind: DialogKinds.PrefAll,
 				})
 		}
 

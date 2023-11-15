@@ -6,17 +6,17 @@
 	import { mediator } from '$cmd/infra/services'
 	import { screenSvelte } from '$cmd/infra/stores/svelte'
 	import { PreferencesDisplay, PreferencesForm } from '$pref/infra/components/svelte'
-	import { DialogKinds, PrefDialogTypes, ScreenActions } from '$screen/domain/models'
+	import { DialogKinds, type DialogPref, dialogPref, ScreenActions } from '$screen/domain/models'
 
-	const dialogState = derived(screenSvelte, ({ dialog }) => dialog.kind === DialogKinds.Pref)
+	const dialogState = derived(screenSvelte, ({ dialog }) => dialogPref.includes(dialog.kind))
 	const tabState = derived<typeof screenSvelte, string>(screenSvelte, ({ dialog }, set) => {
-		if (dialog.kind !== DialogKinds.Pref) return
-		set(dialog.opts.type === PrefDialogTypes.edit ? 'edit' : 'show')
+		if (!dialogPref.includes(dialog.kind)) return
+		set(dialog.kind === DialogKinds.PrefEdit ? 'edit' : 'show')
 	})
 
-	function createTabHandler(type: PrefDialogTypes) {
+	function createTabHandler(kind: DialogPref) {
 		return () => {
-			mediator.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.Pref, opts: { type } })
+			mediator.dispatch(ScreenActions.OpenDialog, { kind })
 		}
 	}
 </script>
@@ -25,8 +25,8 @@
 	<div class="content">
 		<TabGroup {tabState}>
 			<TabList>
-				<Tab key="show" on:click={createTabHandler(PrefDialogTypes.all)}>Show</Tab>
-				<Tab key="edit" on:click={createTabHandler(PrefDialogTypes.edit)}>Edit</Tab>
+				<Tab key="show" on:click={createTabHandler(DialogKinds.PrefAll)}>Show</Tab>
+				<Tab key="edit" on:click={createTabHandler(DialogKinds.PrefEdit)}>Edit</Tab>
 				<li class="close">
 					<DialogClose />
 				</li>

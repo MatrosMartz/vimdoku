@@ -1,19 +1,13 @@
 export enum DialogKinds {
 	Cmd = 'command',
+	InLn = 'inline',
 	Help = 'help',
 	None = 'none',
-	Pref = 'preferences',
+	PrefAll = 'preferences-all',
+	PrefDiff = 'preferences-differ',
+	PrefEdit = 'preferences-edit',
 }
 
-export enum CmdDialogTypes {
-	Full = 'full',
-	InLine = 'in-line',
-}
+export const dialogPref = [DialogKinds.PrefAll, DialogKinds.PrefDiff, DialogKinds.PrefEdit]
 
-export enum HelpDialogTypes {}
-
-export enum PrefDialogTypes {
-	all = 'all',
-	diff = 'differ',
-	edit = 'edit',
-}
+export type DialogPref = DialogKinds.PrefAll | DialogKinds.PrefDiff | DialogKinds.PrefEdit
