@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Icon } from '~/share/infra/components/svelte'
 	import { mediator } from '$cmd/infra/services'
-	import { modesSvelte, screenSvelte } from '$cmd/infra/stores'
+	import { modesSvelte, posSvelte, screenSvelte } from '$cmd/infra/stores'
 	import { CmdDialogTypes, DialogKinds, PrefDialogTypes, ScreenActions } from '$screen/domain/models'
 
 	function cmdHandler() {
@@ -22,6 +22,7 @@
 		</button>
 	</section>
 	<section>
+		<p class="posiyion">{$posSvelte.y}:{$posSvelte.x}</p>
 		<p class="timer">00:00:00</p>
 		<p class="screen">{$screenSvelte.main}</p>
 		<button class="icon dialog" on:click={prefHandler}><Icon id="pref" /></button>

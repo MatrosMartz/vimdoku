@@ -117,7 +117,7 @@ export class MediatorService implements IMediator {
 		if (data.type === 'right') this.#game.moveRight(data.times)
 		if (data.type === 'up') this.#game.moveUp(data.times)
 		if (data.type === 'set') this.#game.changePos(data.position)
-		this.#notify('board')
+		this.#notify('position')
 	}
 
 	async #dGameResume() {

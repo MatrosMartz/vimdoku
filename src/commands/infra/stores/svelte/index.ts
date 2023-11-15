@@ -1,4 +1,5 @@
 export * from './modes.store'
+export * from './position.store'
 export * from './preferences.store'
 export * from './screen.store'
 export * from './sudoku.store'
