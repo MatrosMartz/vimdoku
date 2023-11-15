@@ -33,6 +33,10 @@ export function tooltip(node: HTMLElement, props: TooltipProps | null): ActionRe
 	tooltipComponent.$on('over', overHandler)
 	tooltipComponent.$on('leave', leaveHandler)
 	return {
+		update({ id, text }) {
+			if (props.id !== id) throw new Error('can not change id')
+			tooltipComponent.$set({ text })
+		},
 		destroy() {
 			node.removeEventListener('keydown', keyHandler)
 			node.removeEventListener('focusin', overHandler)
