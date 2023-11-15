@@ -192,7 +192,7 @@ abstract class CellState implements ICellState {
 
 class InitialCellState extends CellState {
 	constructor(data: CellEntity) {
-		data.kind = CellKinds.Incorrect
+		data.kind = CellKinds.Initial
 		super(data)
 	}
 }
