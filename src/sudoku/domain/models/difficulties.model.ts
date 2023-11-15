@@ -1,11 +1,11 @@
 export enum DifficultyKinds {
-	Beginner = '77',
-	Basic = '65',
-	Easy = '52',
-	Medium = '47',
-	Advanced = '39',
-	Hard = '31',
-	Expert = '23',
+	Beginner = '1.92',
+	Basic = '1.87',
+	Easy = '1.75',
+	Medium = '1.5',
+	Advanced = '1.4',
+	Hard = '1.3',
+	Expert = '1.2',
 }
 
 export const DIFFICULTIES_NAMES = Object.keys(DifficultyKinds)
