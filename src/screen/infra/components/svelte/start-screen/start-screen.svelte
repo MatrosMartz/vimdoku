@@ -24,7 +24,6 @@
 		width: 93vw;
 		max-width: 55rem;
 		padding: 2.2rem 2ch;
-		margin: auto;
 		color: rgb(204 184 221);
 		background-color: var(--editor-background);
 		border-radius: 4px;

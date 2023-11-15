@@ -4,8 +4,8 @@
 	--input-border: rgb(74 70 77);
 	--alternative-border: rgb(63 63 89);
 	--focus-border: rgb(133 136 166);
-	--input-shadow: rgb(17 4 31);
-	--hover-shadow: rgb(117 16 255 / 8%);
+	--input-shadow: rgb(39 22 57);
+	--hover-shadow: rgb(159 94 250 / 20%);
 	--primary-color: rgb(255 252 250);
 	--secondary-color: rgb(226 216 182);
 	--editor-background: rgb(12 6 17);
@@ -13,7 +13,8 @@
 	--value-color: rgb(230 185 143);
 	--key-color: rgb(136 190 184);
 	--holder-color: rgb(166 145 125);
-	--special-color: rgb(153 166 97);
+	--special-color: rgb(130 177 108);
+	--assert-color: var(--special-color);
 	--number-color: rgb(223 143 108);
 	--string-color: var(--special-color);
 	--boolean-color: var(--error-color);
