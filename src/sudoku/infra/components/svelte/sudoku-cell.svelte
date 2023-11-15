@@ -8,12 +8,12 @@
 
 	$: value = data.value > 0 ? String(data.value) : ''
 
-	function clickHandler() {
+	function focusHandler() {
 		mediator.dispatch(SudokuActions.Move, { type: 'set', position })
 	}
 </script>
 
-<td><button class="cell {data.kind}" on:click={clickHandler}>{value}</button></td>
+<td><button class="cell {data.kind}" on:focus={focusHandler}>{value}</button></td>
 
 <style>
 	td,
@@ -29,6 +29,21 @@
 		width: 48px;
 		aspect-ratio: 1 / 1;
 		color: var(--primary-color);
+		border: 2px solid transparent;
+	}
+
+	.cell:focus {
+		animation: blink-cursor 1s infinite alternate;
+	}
+
+	@keyframes blink-cursor {
+		from {
+			border: 2px solid transparent;
+		}
+
+		to {
+			border: 2px solid var(--alternative-border);
+		}
 	}
 
 	.incorrect {

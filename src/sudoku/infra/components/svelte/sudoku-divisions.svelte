@@ -6,8 +6,8 @@
 <style>
 	.division {
 		--height: 95%;
-		--width: 2px;
-		--calc-pos: calc((100% / 3) + 1px);
+		--width: 4px;
+		--calc-pos: calc(100% / 3);
 
 		position: absolute;
 		margin: auto;
