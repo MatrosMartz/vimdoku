@@ -13,12 +13,12 @@
 		else if (type === 'dialog') dialog.show()
 	}
 
-	function AnimationendHandler({ animationName }: AnimationEvent) {
+	function animationendHandler({ animationName }: AnimationEvent) {
 		if (/backdrop-hide$/.test(animationName)) dialog.close()
 	}
 </script>
 
-<dialog class="vim-dialog" class:hide bind:this={dialog} on:animationend={AnimationendHandler}>
+<dialog class="vim-dialog" class:hide bind:this={dialog} on:animationend={animationendHandler}>
 	<slot />
 </dialog>
 

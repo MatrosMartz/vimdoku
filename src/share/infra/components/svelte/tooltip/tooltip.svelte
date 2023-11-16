@@ -5,6 +5,10 @@
 	export let id: string
 	export let show = false
 
+	let hidden = true
+
+	$: if (show) hidden = false
+
 	const dispatcher = createEventDispatcher<{ leave: null; over: null }>()
 
 	function overHandler() {
@@ -14,6 +18,10 @@
 	function leaveHandler() {
 		dispatcher('leave')
 	}
+
+	function animationendHandler({ animationName }: AnimationEvent) {
+		if (/tooltip-hide$/.test(animationName)) hidden = true
+	}
 </script>
 
 <div
@@ -21,10 +29,12 @@
 	{id}
 	class="tooltip"
 	class:show
+	class:hidden
 	on:mouseover={overHandler}
 	on:mouseleave={leaveHandler}
 	on:focus={overHandler}
 	on:focusout={leaveHandler}
+	on:animationend={animationendHandler}
 >
 	{text}
 </div>
@@ -45,12 +55,25 @@
 		border: 1px solid rgb(31 11 59);
 		border-radius: 8px;
 		opacity: 0;
-		transition: opacity 200ms;
 		transform: translateX(-50%);
+		animation: tooltip-hide 250ms;
+	}
+
+	@keyframes tooltip-hide {
+		from {
+			opacity: 1;
+		}
 	}
 
 	.tooltip.show {
 		opacity: 1;
+		animation: tooltip-show 250ms;
+	}
+
+	@keyframes tooltip-show {
+		from {
+			opacity: 0;
+		}
 	}
 
 	.tooltip::after,
@@ -69,5 +92,9 @@
 		top: calc(100% + 1px);
 		width: 1.6rem;
 		background-color: rgb(31 11 59);
+	}
+
+	.tooltip.hidden {
+		display: none;
 	}
 </style>
