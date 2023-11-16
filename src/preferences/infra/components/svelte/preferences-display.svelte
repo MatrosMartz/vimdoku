@@ -2,13 +2,13 @@
 	import { Button, ButtonMenu } from '~/share/infra/components/svelte/buttons'
 	import { capitalCase } from '~/share/utils'
 	import { mediator } from '$cmd/infra/services'
-	import { prefSvelte, screenSvelte } from '$cmd/infra/stores'
+	import { prefState, screenState } from '$cmd/infra/stores/svelte'
 	import { PreferencesService } from '$pref/domain/services'
 	import { DialogKinds, type DialogPref, ScreenActions } from '$screen/domain/models'
 
-	$: showAll = $screenSvelte.dialog.kind === DialogKinds.PrefAll
+	$: showAll = $screenState.dialog.kind === DialogKinds.PrefAll
 
-	$: actualPreferences = PreferencesService.entries($prefSvelte)
+	$: actualPreferences = PreferencesService.entries($prefState)
 
 	function createBtnHandler(kind: DialogPref) {
 		return () => {

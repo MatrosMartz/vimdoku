@@ -83,6 +83,8 @@ export interface IGame {
 	readonly position?: Position
 	/** Get the current value of timer. */
 	readonly timer?: string | null
+	/** Get if there is a saved game. */
+	readonly isASaved: boolean
 	/** Get if the game has started. */
 	readonly isStarted: boolean
 	/**
@@ -107,6 +109,8 @@ export interface IGame {
 	 * @returns The new Non-started game.
 	 */
 	end(): Promise<IGame>
+	/** Load from the repo. */
+	load(): Promise<void>
 	/**
 	 * Move the current position down by a specified number of times.
 	 * @param times The number of times to move down.

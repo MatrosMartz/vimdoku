@@ -4,12 +4,12 @@
 	import { Dialog, DialogClose } from '~/share/infra/components/svelte/dialog'
 	import { Tab, TabGroup, TabList, TabPanel } from '~/share/infra/components/svelte/tab'
 	import { mediator } from '$cmd/infra/services'
-	import { screenSvelte } from '$cmd/infra/stores/svelte'
+	import { screenState } from '$cmd/infra/stores/svelte'
 	import { PreferencesDisplay, PreferencesForm } from '$pref/infra/components/svelte'
 	import { DialogKinds, type DialogPref, dialogPref, ScreenActions } from '$screen/domain/models'
 
-	const dialogState = derived(screenSvelte, ({ dialog }) => dialogPref.includes(dialog.kind))
-	const tabState = derived<typeof screenSvelte, string>(screenSvelte, ({ dialog }, set) => {
+	const dialogState = derived(screenState, ({ dialog }) => dialogPref.includes(dialog.kind))
+	const tabState = derived<typeof screenState, string>(screenState, ({ dialog }, set) => {
 		if (!dialogPref.includes(dialog.kind)) return
 		set(dialog.kind === DialogKinds.PrefEdit ? 'edit' : 'show')
 	})

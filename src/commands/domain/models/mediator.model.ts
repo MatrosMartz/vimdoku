@@ -16,6 +16,7 @@ export namespace Mediator {
 	export interface State {
 		board?: Board | null
 		timer?: string | null
+		boardSaved: boolean
 		modes: ModeKinds
 		position: Position
 		preferences: Preferences

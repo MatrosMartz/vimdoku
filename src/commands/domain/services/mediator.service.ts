@@ -16,6 +16,7 @@ interface MediatorDeps {
 function createObservables(): Mediator.Observables {
 	return {
 		board: new Observable(),
+		boardSaved: new Observable(),
 		modes: new Observable(),
 		position: new Observable(),
 		timer: new Observable(),
@@ -78,9 +79,10 @@ export class MediatorService implements IMediator {
 	async load() {
 		if (this.#hasLoaded) return
 
-		await Promise.all([this.#pref.load()])
+		await Promise.all([this.#pref.load(), this.#game.load()])
 		this.#observables.preferences.update(this.#pref.data)
 		this.#hasLoaded = true
+		this.#notify('boardSaved')
 	}
 
 	subscribe<K extends Mediator.Keys>(key: K, observer: Mediator.Observers[K]): RemoveObserver {

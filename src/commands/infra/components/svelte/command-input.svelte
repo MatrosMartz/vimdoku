@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { DialogClose } from '~/share/infra/components/svelte'
 	import { executor } from '$cmd/infra/services'
-	import { screenSvelte } from '$cmd/infra/stores'
+	import { screenState } from '$cmd/infra/stores/svelte'
 	import { DialogKinds } from '$screen/domain/models'
 
 	import { input } from './input.store'
@@ -16,7 +16,7 @@
 		executor.searchAutocomplete(currentTarget.value)
 	}
 
-	$: if ($screenSvelte.dialog.kind === DialogKinds.Cmd) form.reset()
+	$: if ($screenState.dialog.kind === DialogKinds.Cmd) form.reset()
 </script>
 
 <form method="dialog" on:submit|preventDefault={submitHandler} bind:this={form}>

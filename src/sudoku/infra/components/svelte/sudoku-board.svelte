@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { boardSvelte } from '$cmd/infra/stores'
+	import { boardState } from '$cmd/infra/stores/svelte'
 
 	import SudokuCell from './sudoku-cell.svelte'
 	import SudokuDivisions from './sudoku-divisions.svelte'
@@ -7,8 +7,8 @@
 
 <table class="board monospace">
 	<SudokuDivisions />
-	{#if $boardSvelte != null}
-		{#each $boardSvelte as row, y (y)}
+	{#if $boardState != null}
+		{#each $boardState as row, y (y)}
 			<tr class="row-{y}">
 				{#each row as cell, x (`${y},${x}`)}
 					<SudokuCell data={cell} position={{ y, x }} />

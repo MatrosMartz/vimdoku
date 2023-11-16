@@ -15,6 +15,7 @@ const repo = Symbol('board-repo')
 abstract class GameService implements IGame {
 	abstract readonly timer?: string | null
 	protected readonly [repo]: GameRepo
+	abstract readonly isASaved: boolean
 	abstract readonly isStarted: boolean
 	abstract readonly mode: ModeKinds
 	abstract readonly position: Position
@@ -43,6 +44,8 @@ abstract class GameService implements IGame {
 	async end(): Promise<IGame> {
 		return this
 	}
+
+	async load() {}
 
 	moveDown(times: number) {
 		return this
@@ -91,6 +94,16 @@ export class NonStartedGameService extends GameService {
 	readonly position = { ...PositionService.IDLE_POS }
 	readonly timer = null
 
+	#isASaved = false
+
+	get isASaved() {
+		return this.#isASaved
+	}
+
+	async load() {
+		this.#isASaved = await this[repo].hasBoard()
+	}
+
 	async resume() {
 		const boardData = await this[repo].getBoard()
 		const optsData = await this[repo].getOpts()
@@ -132,6 +145,7 @@ class StartedGameData implements Game {
 
 /** Represent a Started Sudoku Game Service. */
 class StartedGameService extends GameService {
+	readonly isASaved = true
 	readonly isStarted = true
 	#data
 	#state: IGameState

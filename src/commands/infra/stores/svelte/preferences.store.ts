@@ -3,7 +3,7 @@ import type { Readable } from 'svelte/store'
 import { mediator } from '$cmd/infra/services'
 import type { Preferences } from '$pref/domain/models'
 
-function createPreferencesStore(): Readable<Preferences> {
+function createPreferencesState(): Readable<Preferences> {
 	return {
 		subscribe(observer) {
 			void mediator.load()
@@ -12,4 +12,4 @@ function createPreferencesStore(): Readable<Preferences> {
 	}
 }
 
-export const prefSvelte = createPreferencesStore()
+export const prefState = createPreferencesState()

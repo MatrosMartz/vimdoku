@@ -2,7 +2,7 @@
 	import { Icon } from '~/share/infra/components/svelte'
 	import { tooltip } from '~/share/infra/components/svelte/tooltip'
 	import { mediator } from '$cmd/infra/services'
-	import { modesSvelte, posSvelte, screenSvelte } from '$cmd/infra/stores'
+	import { modesState, posState, screenState } from '$cmd/infra/stores/svelte'
 	import { DialogKinds, ScreenActions } from '$screen/domain/models'
 
 	function cmdHandler() {
@@ -20,7 +20,7 @@
 <footer class="monospace">
 	<section>
 		<button class="icon dialog" on:click={cmdHandler}><Icon id="cmd" /></button>
-		<button class="icon mode" on:click={modeHandler}><span>{$modesSvelte.toUpperCase()}</span></button>
+		<button class="icon mode" on:click={modeHandler}><span>{$modesState.toUpperCase()}</span></button>
 		<button class="icon error">
 			<Icon id="errors" />
 			<span>0</span>
@@ -28,12 +28,12 @@
 	</section>
 	<section>
 		<div class="position">
-			<p use:tooltip={{ id: 'describe-pos', text: `Row ${$posSvelte.y}, Col ${$posSvelte.x}` }}>
-				{$posSvelte.y},{$posSvelte.x}
+			<p use:tooltip={{ id: 'describe-pos', text: `Row ${$posState.y}, Col ${$posState.x}` }}>
+				{$posState.y},{$posState.x}
 			</p>
 		</div>
 		<p class="timer">00:00:00</p>
-		<p class="screen">{$screenSvelte.main}</p>
+		<p class="screen">{$screenState.main}</p>
 		<button class="icon dialog" on:click={prefHandler}><Icon id="pref" /></button>
 	</section>
 </footer>
