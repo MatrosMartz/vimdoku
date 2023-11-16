@@ -101,15 +101,15 @@ export class NonStartedGameService extends GameService {
 	}
 
 	async load() {
-		this.#isASaved = await this[repo].hasBoard()
+		this.#isASaved = (await this[repo].hasBoard()) || (await this[repo].hasOpts())
 	}
 
 	async resume() {
 		const boardData = await this[repo].getBoard()
 		const optsData = await this[repo].getOpts()
-		const timerData = await this[repo].getTimer()
+		const timerData = (await this[repo].getTimer()) ?? 0
 
-		if (boardData == null || optsData == null || timerData == null) return null
+		if (boardData == null || optsData == null) return null
 
 		const data = new StartedGameData({
 			board: BoardService.fromJSON(boardData, optsData.solution),

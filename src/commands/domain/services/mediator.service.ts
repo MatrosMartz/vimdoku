@@ -69,6 +69,7 @@ export class MediatorService implements IMediator {
 	get<K extends Mediator.Keys>(key: K): Mediator.State[K]
 	get<K extends Mediator.Keys>(key: K) {
 		if (key === 'board') return this.#game.board
+		if (key === 'boardSaved') return this.#game.isASaved
 		if (key === 'modes') return this.#game.mode
 		if (key === 'position') return this.#game.position
 		if (key === 'preferences') return this.#pref.data
@@ -123,7 +124,13 @@ export class MediatorService implements IMediator {
 	}
 
 	async #dGameResume() {
-		await this.#game.resume()
+		const newGame = await this.#game.resume()
+		if (newGame != null) {
+			this.#game = newGame
+			this.#notify('board')
+			this.#screen.setMain(MainScreenKinds.Game)
+			this.#notify('screen')
+		}
 	}
 
 	async #dGameSave() {

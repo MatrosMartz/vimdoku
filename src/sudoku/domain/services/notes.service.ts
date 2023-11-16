@@ -54,7 +54,7 @@ export class NotesService implements INotes {
 				notesLike /= NotesService.#PRIMES[i]
 			}
 
-		if (notesLike !== 0)
+		if (notesLike !== 1)
 			throw new InvalidNoteError(notes, `there is no note with the representation in primes: ${notesLike}`)
 
 		return new NotesService(notes)
