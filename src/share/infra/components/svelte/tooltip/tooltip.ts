@@ -7,43 +7,49 @@ export interface TooltipProps {
 	text: string
 }
 
-export function tooltip(node: HTMLElement, props: TooltipProps | null): ActionReturn<TooltipProps> {
-	if (props == null) return {}
-
+export function tooltip(node: HTMLElement, props: TooltipProps | null): ActionReturn<TooltipProps | null> {
 	const target = node.parentElement!
-	node.tabIndex = 0
-	const tooltipComponent = new Tooltip({ props, target })
-	node.setAttribute('aria-describedby', props.id)
+
+	let $tooltip: Tooltip | null = null
 
 	function overHandler() {
-		setTimeout(() => tooltipComponent.$set({ show: true }), 0)
+		setTimeout(() => $tooltip?.$set({ show: true }), 0)
 	}
 	function leaveHandler() {
-		setTimeout(() => tooltipComponent.$set({ show: false }), 0)
+		setTimeout(() => $tooltip?.$set({ show: false }), 0)
 	}
 	function keyHandler(ev: KeyboardEvent) {
 		if (ev.key === 'Escape') leaveHandler()
 	}
-
-	node.addEventListener('keydown', keyHandler)
-	node.addEventListener('focusin', overHandler)
-	node.addEventListener('focusout', leaveHandler)
-	node.addEventListener('mouseover', overHandler)
-	node.addEventListener('mouseleave', leaveHandler)
-	tooltipComponent.$on('over', overHandler)
-	tooltipComponent.$on('leave', leaveHandler)
-	return {
-		update({ id, text }) {
-			if (props.id !== id) throw new Error('can not change id')
-			tooltipComponent.$set({ text })
-		},
-		destroy() {
-			node.removeEventListener('keydown', keyHandler)
-			node.removeEventListener('focusin', overHandler)
-			node.removeEventListener('focusout', leaveHandler)
-			node.removeEventListener('mouseover', overHandler)
-			node.removeEventListener('mouseleave', leaveHandler)
-			tooltipComponent.$destroy()
-		},
+	function destroy() {
+		node.removeAttribute('aria-describedby')
+		node.removeEventListener('keydown', keyHandler)
+		node.removeEventListener('focusin', overHandler)
+		node.removeEventListener('focusout', leaveHandler)
+		node.removeEventListener('mouseover', overHandler)
+		node.removeEventListener('mouseleave', leaveHandler)
+		$tooltip?.$destroy()
+		$tooltip = null
 	}
+
+	function create(props: TooltipProps) {
+		$tooltip = new Tooltip({ target, props })
+		$tooltip.$on('over', overHandler)
+		$tooltip.$on('leave', leaveHandler)
+		node.setAttribute('aria-describedby', props.id)
+		node.addEventListener('keydown', keyHandler)
+		node.addEventListener('focusin', overHandler)
+		node.addEventListener('focusout', leaveHandler)
+		node.addEventListener('mouseover', overHandler)
+		node.addEventListener('mouseleave', leaveHandler)
+	}
+
+	function update(props: TooltipProps | null) {
+		if (props == null) destroy()
+		else create(props)
+	}
+
+	update(props)
+
+	return { destroy, update }
 }

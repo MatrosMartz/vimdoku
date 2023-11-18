@@ -5,6 +5,8 @@
 	import { modesState, posState, screenState } from '$cmd/infra/stores/svelte'
 	import { DialogKinds, ScreenActions } from '$screen/domain/models'
 
+	$: tooltipProps = { id: 'describe-pos', text: `Row ${$posState.y}, Col ${$posState.x}` }
+
 	function cmdHandler() {
 		mediator.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.Cmd })
 	}
@@ -28,7 +30,7 @@
 	</section>
 	<section>
 		<div class="position">
-			<p use:tooltip={{ id: 'describe-pos', text: `Row ${$posState.y}, Col ${$posState.x}` }}>
+			<p use:tooltip={tooltipProps}>
 				{$posState.y},{$posState.x}
 			</p>
 		</div>
