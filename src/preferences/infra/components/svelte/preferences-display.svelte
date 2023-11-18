@@ -3,6 +3,7 @@
 	import { capitalCase } from '~/share/utils'
 	import { mediator } from '$cmd/infra/services'
 	import { prefState, screenState } from '$cmd/infra/stores/svelte'
+	import type { AllPreferences } from '$pref/domain/models'
 	import { PreferencesService } from '$pref/domain/services'
 	import { DialogKinds, type DialogPref, ScreenActions } from '$screen/domain/models'
 
@@ -15,36 +16,36 @@
 			mediator.dispatch(ScreenActions.OpenDialog, { kind })
 		}
 	}
+
+	function isDefault(name: keyof AllPreferences, value: string | number | boolean) {
+		return value !== PreferencesService.getDefaultValue(name)
+	}
 </script>
 
 <article>
 	{#each actualPreferences as [group, fields]}
 		<table class="preferences">
 			<thead>
-				<tr>
-					<th colspan="2">{capitalCase(group)}</th>
-				</tr>
+				<tr><th colspan="2">{capitalCase(group)}</th> </tr>
 			</thead>
 			<tbody>
 				{#each fields as [name, value]}
-					<tr class="field" class:strike={!showAll && value !== PreferencesService.getDefaultValue(name)}>
+					<tr class="field" class:strike={!showAll && isDefault(name, value)}>
 						<th class="key secondary">{capitalCase(name)}</th>
 						<td
 							class="monospace value"
 							class:str={typeof value === 'string'}
 							class:num={typeof value === 'number'}
-							class:bool={typeof value === 'boolean'}
+							class:bool={typeof value === 'boolean'}>{value}</td
 						>
-							{value}
-						</td>
 					</tr>
 				{/each}
 			</tbody>
 		</table>
 	{/each}
 	<ButtonMenu>
-		<Button on:click={createBtnHandler(DialogKinds.PrefAll)}>Show all.</Button>
-		<Button on:click={createBtnHandler(DialogKinds.PrefDiff)}>Show different from default values.</Button>
+		<Button on:click={createBtnHandler(DialogKinds.PrefAll)}>Show all</Button>
+		<Button on:click={createBtnHandler(DialogKinds.PrefDiff)}>Show different from default values</Button>
 	</ButtonMenu>
 </article>
 
@@ -95,6 +96,7 @@
 		display: flex;
 		gap: 1ch;
 		align-items: center;
+		justify-content: space-between;
 	}
 
 	.field * {
@@ -115,11 +117,6 @@
 
 	.key::after {
 		content: ':';
-	}
-
-	.value {
-		flex-grow: 2;
-		text-align: right;
 	}
 
 	.str {
