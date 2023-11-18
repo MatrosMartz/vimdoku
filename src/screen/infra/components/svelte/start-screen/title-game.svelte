@@ -47,32 +47,37 @@
 		text-align: center;
 	}
 
+	.commands,
+	.commands tr {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
 	.commands {
-		display: grid;
-		grid-template-columns: repeat(2, max-content);
-		justify-content: space-between;
-		width: min(100%, 34ch);
+		gap: 1ch;
 	}
 
 	.commands tr {
-		display: grid;
-		grid-template-columns: subgrid;
-		grid-row-end: span 2;
-		grid-column-end: span 2;
+		width: 100%;
 	}
 
-	tr td {
-		grid-column: 2 / 3;
+	.commands tr td:last-of-type {
+		align-self: flex-end;
 	}
 
 	@media (width >= 768px) {
 		.commands {
+			display: grid;
 			grid-template-columns: repeat(3, max-content);
-			column-gap: 4ch;
+			gap: 0 4ch;
 			width: max-content;
 		}
 
 		.commands tr {
+			display: grid;
+			grid-template-columns: subgrid;
+			grid-row-end: span 2;
 			grid-column-end: span 3;
 		}
 
