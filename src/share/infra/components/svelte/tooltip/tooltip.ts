@@ -12,6 +12,8 @@ export function tooltip(node: HTMLElement, props: TooltipProps | null): ActionRe
 
 	let $tooltip: Tooltip | null = null
 
+	let initialID = props?.id
+
 	function overHandler() {
 		setTimeout(() => $tooltip?.$set({ show: true }), 0)
 	}
@@ -33,7 +35,11 @@ export function tooltip(node: HTMLElement, props: TooltipProps | null): ActionRe
 	}
 
 	function create(props: TooltipProps) {
-		$tooltip = new Tooltip({ target, props })
+		initialID ??= props.id
+		if (initialID !== props.id) throw new Error('can not change id')
+
+		if ($tooltip == null) $tooltip = new Tooltip({ target, props })
+		else $tooltip.$set({ text: props.text })
 		$tooltip.$on('over', overHandler)
 		$tooltip.$on('leave', leaveHandler)
 		node.setAttribute('aria-describedby', props.id)
