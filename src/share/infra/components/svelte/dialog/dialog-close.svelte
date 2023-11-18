@@ -5,7 +5,7 @@
 	import Icon from '../icon.svelte'
 </script>
 
-<button on:click={() => mediator.dispatch(ScreenActions.Exit)}><Icon id="quit" /></button>
+<button type="button" on:click={() => mediator.dispatch(ScreenActions.Exit)}><Icon id="quit" /></button>
 
 <style>
 	button {
