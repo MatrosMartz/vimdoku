@@ -5,20 +5,27 @@
 	import { prefState, screenState } from '$cmd/infra/stores/svelte'
 	import type { AllPreferences } from '$pref/domain/models'
 	import { PreferencesService } from '$pref/domain/services'
-	import { DialogKinds, type DialogPref, ScreenActions } from '$screen/domain/models'
+	import { DialogKinds, ScreenActions } from '$screen/domain/models'
+
+	const allTooltip = { id: 'all-disabled-describe', text: 'All preferences are being displayed.' }
+	const diffTooltip = {
+		id: 'diff-disabled-describe',
+		text: 'Only preferences with values different from the default values are being displayed.',
+	}
 
 	$: showAll = $screenState.dialog.kind === DialogKinds.PrefAll
 
 	$: actualPreferences = PreferencesService.entries($prefState)
 
-	function createBtnHandler(kind: DialogPref) {
-		return () => {
-			mediator.dispatch(ScreenActions.OpenDialog, { kind })
-		}
-	}
-
 	function isDefault(name: keyof AllPreferences, value: string | number | boolean) {
 		return value !== PreferencesService.getDefaultValue(name)
+	}
+
+	function allHandler() {
+		mediator.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.PrefAll })
+	}
+	function diffHandler() {
+		mediator.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.PrefDiff })
 	}
 </script>
 
@@ -44,8 +51,10 @@
 		</table>
 	{/each}
 	<ButtonMenu>
-		<Button on:click={createBtnHandler(DialogKinds.PrefAll)}>Show all</Button>
-		<Button on:click={createBtnHandler(DialogKinds.PrefDiff)}>Show different from default values</Button>
+		<Button disabled={showAll} tooltipProps={allTooltip} on:click={allHandler}>Show all</Button>
+		<Button disabled={!showAll} tooltipProps={diffTooltip} on:click={diffHandler}
+			>Show different from default values</Button
+		>
 	</ButtonMenu>
 </article>
 
