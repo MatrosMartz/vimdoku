@@ -13,7 +13,7 @@
 	}
 </script>
 
-<td><button class="cell {data.kind}" on:focus={focusHandler}>{value}</button></td>
+<td><button class="cell {data.kind}" tabindex="-1" on:focus={focusHandler}>{value}</button></td>
 
 <style>
 	td,
