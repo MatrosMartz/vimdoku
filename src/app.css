@@ -18,6 +18,7 @@
 	--number-color: rgb(223 143 108);
 	--string-color: var(--special-color);
 	--boolean-color: var(--error-color);
+	--status-bar-background: rgb(12 8 13);
 
 	font-family: Poppins, sans-serif;
 	font-weight: 400;
@@ -144,7 +145,7 @@ h3 {
 	font-family: monospace;
 }
 
-:where(h1, h2, h3):not(.highlight) {
+:where(h1, h2, h3):not(.highlight, .not-colorize) {
 	color: var(--secondary-color);
 }
 
@@ -212,4 +213,39 @@ input {
 
 .secondary {
 	color: var(--secondary-color);
+}
+
+.status-bar .icon {
+	--border-color: transparent;
+
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
+	justify-content: center;
+	min-width: 44px;
+	height: 44px;
+	font-family: inherit;
+	font-size: inherit;
+	color: inherit;
+	background-color: inherit;
+	border: 2px solid var(--border-color);
+}
+
+.status-bar p,
+.status-bar .icon:has(span),
+.status-bar summary.icon {
+	padding-inline: 0.5rem;
+}
+
+.status-bar .icon:hover {
+	filter: brightness(125%);
+	backdrop-filter: brightness(125%);
+}
+
+.status-bar .icon:focus {
+	--border-color: var(--focus-border);
+}
+
+.status-bar .icon.dialog {
+	background-color: var(--alternative-border);
 }

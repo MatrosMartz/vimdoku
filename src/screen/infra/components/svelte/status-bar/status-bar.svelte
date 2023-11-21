@@ -2,8 +2,10 @@
 	import { Icon } from '~/share/infra/components/svelte'
 	import { tooltip } from '~/share/infra/components/svelte/tooltip'
 	import { mediator } from '$cmd/infra/services'
-	import { modesState, posState, screenState } from '$cmd/infra/stores/svelte'
+	import { posState, screenState } from '$cmd/infra/stores/svelte'
 	import { DialogKinds, ScreenActions } from '$screen/domain/models'
+
+	import SelectMode from './select-mode.svelte'
 
 	$: tooltipProps = { id: 'describe-pos', text: `Row ${$posState.y}, Col ${$posState.x}` }
 
@@ -13,16 +15,12 @@
 	function prefHandler() {
 		mediator.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.PrefEdit })
 	}
-
-	function modeHandler() {
-		mediator.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.InLn, opts: { type: 'modes' } })
-	}
 </script>
 
-<footer class="monospace">
+<footer class="status-bar monospace">
 	<section>
 		<button class="icon dialog" on:click={cmdHandler}><Icon id="cmd" /></button>
-		<button class="icon mode" on:click={modeHandler}><span>{$modesState.toUpperCase()}</span></button>
+		<SelectMode />
 		<button class="icon error">
 			<Icon id="errors" />
 			<span>0</span>
@@ -41,14 +39,14 @@
 </footer>
 
 <style>
-	footer {
+	.status-bar {
 		position: fixed;
 		inset: auto 0 0;
 		z-index: 9999;
 		display: flex;
 		justify-content: space-between;
 		width: 100%;
-		background-color: rgb(12 8 13);
+		background-color: var(--status-bar-background);
 	}
 
 	section {
@@ -61,51 +59,8 @@
 		height: 100%;
 	}
 
-	.icon {
-		--border-color: transparent;
-
-		display: flex;
-		gap: 0.5rem;
-		align-items: center;
-		justify-content: center;
-		min-width: 44px;
-		height: 44px;
-		font-family: inherit;
-		font-size: inherit;
-		color: inherit;
-		background-color: inherit;
-		border: 2px solid var(--border-color);
-	}
-
-	p,
-	.icon:has(span) {
-		padding-inline: 0.5rem;
-	}
-
-	.icon:hover {
-		filter: brightness(125%);
-		backdrop-filter: brightness(125%);
-	}
-
-	.icon:focus {
-		--border-color: var(--focus-border);
-	}
-
 	.error {
 		color: var(--error-color);
-	}
-
-	.icon.dialog {
-		background-color: var(--alternative-border);
-	}
-
-	.mode {
-		color: var(--value-color);
-	}
-
-	.mode::before,
-	.mode::after {
-		content: '--';
 	}
 
 	.position {
