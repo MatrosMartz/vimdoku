@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Icon } from '~/share/infra/components/svelte'
+	import { tooltip, type TooltipProps } from '~/share/infra/components/svelte/tooltip'
 	import { mediator } from '$cmd/infra/services'
 	import { modesState, screenState } from '$cmd/infra/stores/svelte'
 	import { MainScreenKinds } from '$screen/domain/models'
@@ -11,6 +12,11 @@
 	let timeoutId: ReturnType<typeof setTimeout> | null = null
 
 	$: if (disabled) open = false
+
+	const tooltipProps: TooltipProps = {
+		id: 'disabled-mode-reason',
+		text: 'The insertion mode can only be changed on the game screen.',
+	}
 
 	function toggleHandler() {
 		open = disabled ? false : !open
@@ -42,7 +48,8 @@
 		aria-disabled={disabled}
 		on:focus={focusHandler}
 		on:focusout={focusoutHandler}
-		on:click={toggleHandler}>{$modesState.toUpperCase()}</button
+		on:click={toggleHandler}
+		use:tooltip={disabled ? tooltipProps : null}>{$modesState.toUpperCase()}</button
 	>
 	<form class="mode-selector" method="get">
 		{#each Object.values(ModeKinds) as mode (mode)}
