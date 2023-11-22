@@ -31,6 +31,7 @@ export class MediatorService implements IMediator {
 		this.#pref = preferences
 		this.#screen = screen
 		this.#state = state
+		void this.load()
 	}
 
 	dispatch<Action extends Mediator.UnDataActions>(action: Action): this
