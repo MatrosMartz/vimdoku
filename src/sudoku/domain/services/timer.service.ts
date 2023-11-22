@@ -2,6 +2,8 @@ import type { ITimer } from '../models'
 
 /** Represent a TimerBoard Service. */
 export class TimerService implements ITimer {
+	static IDLE_TIMER = TimerService.parseString(0)
+
 	#data
 
 	/**
@@ -52,9 +54,7 @@ export class TimerService implements ITimer {
 	 * @returns A string representation of the unit with the specified number of digits.
 	 */
 	static #parseUnit(unit: number, digits = 2) {
-		if (unit < 10 * (digits - 1)) return '0'.repeat(digits - 1) + unit
-
-		return String(unit)
+		return String(unit).padStart(digits, '0')
 	}
 
 	dec(): this {

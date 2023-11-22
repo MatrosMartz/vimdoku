@@ -11,18 +11,19 @@
 	import '@fontsource-variable/jetbrains-mono/wght-italic.css'
 
 	import { mediator } from '$cmd/infra/services'
+	import { screenCtx } from '$cmd/infra/stores'
 	import { DialogKinds, ScreenActions } from '$screen/domain/models'
 	import { CommandDialog, PreferencesDialog, Screen, StatusBar } from '$screen/infra/components/svelte'
 
 	import { Header } from './share/infra/components/svelte'
 
 	function keydownHandler(ev: KeyboardEvent) {
-		if (ev.key === ':' && mediator.get('screen').dialog.kind !== DialogKinds.Cmd) {
+		if (ev.key === ':' && screenCtx.data.dialog.kind !== DialogKinds.Cmd) {
 			ev.preventDefault()
 			mediator.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.Cmd })
 		}
 		if (ev.key === 'Escape') {
-			if (mediator.get('screen').dialog.kind !== DialogKinds.None) ev.preventDefault()
+			if (screenCtx.data.dialog.kind !== DialogKinds.None) ev.preventDefault()
 			mediator.dispatch(ScreenActions.Exit)
 		}
 	}

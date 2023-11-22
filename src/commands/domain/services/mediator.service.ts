@@ -1,5 +1,3 @@
-import type { RemoveObserver } from '~/share/domain/models'
-import { Observable } from '~/share/domain/services'
 import { runAsync } from '~/share/utils'
 import { type IPreferences, PrefActions, type PrefData } from '$pref/domain/models'
 import { type DialogData, type IScreen, MainScreenKinds, ScreenActions, type ScreenData } from '$screen/domain/models'
@@ -11,18 +9,7 @@ interface MediatorDeps {
 	game: IGame
 	preferences: IPreferences
 	screen: IScreen
-}
-
-function createObservables(): Mediator.Observables {
-	return {
-		board: new Observable(),
-		boardSaved: new Observable(),
-		modes: new Observable(),
-		position: new Observable(),
-		timer: new Observable(),
-		preferences: new Observable(),
-		screen: new Observable(),
-	}
+	state: Mediator.State
 }
 
 /** Represent a Mediator Service. */
@@ -30,19 +17,20 @@ export class MediatorService implements IMediator {
 	#game
 	#hasLoaded = false
 	#intervalId: ReturnType<typeof setInterval> | null = null
-	#observables = createObservables()
 	#pref
 	#screen
+	#state
 
 	/**
 	 * Creates an instance of the MediatorService class.
 	 * @param deps An Object contains deps that the state manages.
 	 */
 	constructor(deps: MediatorDeps)
-	constructor({ game, preferences, screen }: MediatorDeps) {
+	constructor({ game, preferences, screen, state }: MediatorDeps) {
 		this.#game = game
 		this.#pref = preferences
 		this.#screen = screen
+		this.#state = state
 	}
 
 	dispatch<Action extends Mediator.UnDataActions>(action: Action): this
@@ -66,30 +54,12 @@ export class MediatorService implements IMediator {
 		return this
 	}
 
-	get<K extends Mediator.Keys>(key: K): Mediator.State[K]
-	get<K extends Mediator.Keys>(key: K) {
-		if (key === 'board') return this.#game.board
-		if (key === 'boardSaved') return this.#game.isASaved
-		if (key === 'modes') return this.#game.mode
-		if (key === 'position') return this.#game.position
-		if (key === 'preferences') return this.#pref.data
-		if (key === 'screen') return this.#screen.data
-		if (key === 'timer') return this.#game.timer
-	}
-
 	async load() {
 		if (this.#hasLoaded) return
-
 		await Promise.all([this.#pref.load(), this.#game.load()])
-		this.#observables.preferences.update(this.#pref.data)
-		this.#hasLoaded = true
 		this.#notify('boardSaved')
-	}
-
-	subscribe<K extends Mediator.Keys>(key: K, observer: Mediator.Observers[K]): RemoveObserver {
-		this.#observables[key].add(observer)
-		observer(this.get(key))
-		return () => this.#observables[key].remove(observer)
+		this.#notify('preferences')
+		this.#hasLoaded = true
 	}
 
 	#dCellErase() {
@@ -99,7 +69,7 @@ export class MediatorService implements IMediator {
 
 	#dChangeMode(data: SudokuData.ChangeMode) {
 		this.#game.changeMode(data.mode)
-		this.#notify('modes')
+		this.#notify('mode')
 	}
 
 	#dExitScreen() {
@@ -183,6 +153,12 @@ export class MediatorService implements IMediator {
 	 * @param key The key to update in the observables.
 	 */
 	#notify<K extends Mediator.Keys>(key: K) {
-		this.#observables[key].update(this.get(key))
+		if (key === 'board') this.#state.board.push(this.#game.board)
+		else if (key === 'boardSaved') this.#state.boardSaved.push(this.#game.isASaved)
+		else if (key === 'mode') this.#state.mode.push(this.#game.mode)
+		else if (key === 'position') this.#state.position.push(this.#game.position)
+		else if (key === 'preferences') this.#state.preferences.push(this.#pref.data)
+		else if (key === 'screen') this.#state.screen.push(this.#screen.data)
+		else if (key === 'timer') this.#state.timer.push(this.#game.timer)
 	}
 }

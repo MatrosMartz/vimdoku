@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { suggsState } from '$cmd/infra/stores/svelte'
 
-	import Suggestion from './suggestion.svelte'
+	import SuggestionLi from './suggestion-li.svelte'
 </script>
 
 <section>
 	<ul>
 		{#each $suggsState as suggestion (suggestion.id)}
-			<Suggestion {suggestion} />
+			<SuggestionLi {suggestion} />
 		{/each}
 	</ul>
 </section>

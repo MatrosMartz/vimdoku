@@ -1,14 +1,4 @@
-import type { Readable } from 'svelte/store'
+import { modeCtx, modeObservable } from '../modes.store'
+import { createState } from './create-state'
 
-import { mediator } from '$cmd/infra/services'
-import type { ModeKinds } from '$sudoku/domain/models'
-
-function createModesState(): Readable<ModeKinds> {
-	return {
-		subscribe(observer) {
-			return mediator.subscribe('modes', observer)
-		},
-	}
-}
-
-export const modesState = createModesState()
+export const modeState = createState(modeObservable, modeCtx)

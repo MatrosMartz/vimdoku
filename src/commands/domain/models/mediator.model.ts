@@ -1,4 +1,4 @@
-import type { IObservable, Observer, Position, RemoveObserver } from '~/share/domain/models'
+import type { IAsyncContext, IContext, Position } from '~/share/domain/models'
 import type { PrefDispatch, Preferences } from '$pref/domain/models'
 import type { ScreenDispatch, ScreenDispatchUnData, VimScreen } from '$screen/domain/models'
 import type { Board, ModeKinds, SudokuDispatch, SudokuDispatchUnData } from '$sudoku/domain/models'
@@ -14,24 +14,16 @@ export namespace Mediator {
 	export type Actions = DataActions | UnDataActions
 
 	export interface State {
-		board?: Board | null
-		timer?: string | null
-		boardSaved: boolean
-		modes: ModeKinds
-		position: Position
-		preferences: Preferences
-		screen: VimScreen
+		board: IAsyncContext<Board | null>
+		boardSaved: IAsyncContext<boolean>
+		mode: IContext<ModeKinds>
+		position: IContext<Position>
+		preferences: IAsyncContext<Preferences>
+		screen: IContext<VimScreen>
+		timer: IAsyncContext<string>
 	}
 
 	export type Keys = keyof State
-
-	export type Observables = {
-		[K in Keys]: IObservable<State[K]>
-	}
-
-	export type Observers = {
-		[K in Keys]: Observer<State[K]>
-	}
 }
 
 export interface IMediator {
@@ -49,21 +41,8 @@ export interface IMediator {
 	 */
 	dispatch<Action extends Mediator.DataActions>(action: Action, data: Mediator.DataDispatch[Action]): this
 	/**
-	 * Retrieves the current state of a specific observable.
-	 * @param key The key of the observable from which to retrieve data.
-	 * @returns The data associated with the provided key.
-	 */
-	get<K extends Mediator.Keys>(key: K): Mediator.State[K]
-	/**
 	 * Asynchronously loads data.
 	 * @returns A promise that resolves when loading is complete.
 	 */
 	load(): Promise<void>
-	/**
-	 * Subscribes an observer to a specific observable.
-	 * @param key The key of the observable to which the observer should subscribe.
-	 * @param observer The observer function or object.
-	 * @returns A function to remove the observer's subscription.
-	 */
-	subscribe<K extends Mediator.Keys>(key: K, observer: Mediator.Observers[K]): RemoveObserver
 }

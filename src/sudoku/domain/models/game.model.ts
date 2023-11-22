@@ -86,7 +86,7 @@ export interface IGame {
 	/** Get the current position. */
 	readonly position: Position
 	/** Get the current value of timer. */
-	readonly timer: string | null
+	readonly timer: string
 	/**
 	 * Change the current mode within the game board.
 	 * @param mode The new mode.

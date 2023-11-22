@@ -2,7 +2,7 @@
 	import { Icon } from '~/share/infra/components/svelte'
 	import { tooltip, type TooltipProps } from '~/share/infra/components/svelte/tooltip'
 	import { mediator } from '$cmd/infra/services'
-	import { modesState, screenState } from '$cmd/infra/stores/svelte'
+	import { modeState, screenState } from '$cmd/infra/stores/svelte'
 	import { MainScreenKinds } from '$screen/domain/models'
 	import { ModeKinds, SudokuActions } from '$sudoku/domain/models'
 
@@ -49,7 +49,7 @@
 		on:focus={focusHandler}
 		on:focusout={focusoutHandler}
 		on:click={toggleHandler}
-		use:tooltip={disabled ? tooltipProps : null}>{$modesState.toUpperCase()}</button
+		use:tooltip={disabled ? tooltipProps : null}>{$modeState.toUpperCase()}</button
 	>
 	<form class="mode-selector" method="get">
 		{#each Object.values(ModeKinds) as mode (mode)}
@@ -59,7 +59,7 @@
 				id="mode-{mode}"
 				value={mode}
 				tabindex={open ? 0 : -1}
-				checked={mode === $modesState}
+				checked={mode === $modeState}
 				on:focus={focusHandler}
 				on:focusout={focusoutHandler}
 				on:change={modeHandler}

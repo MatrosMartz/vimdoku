@@ -19,7 +19,7 @@ abstract class GameService implements IGame {
 	abstract readonly isStarted: boolean
 	abstract readonly mode: ModeKinds
 	abstract readonly position: Position
-	abstract readonly timer: string | null
+	abstract readonly timer: string
 
 	/**
 	 * Creates an instance of the NonStartedGameService class.
@@ -92,7 +92,7 @@ export class NonStartedGameService extends GameService {
 	readonly isStarted = false
 	readonly mode = ModeKinds.X
 	readonly position = { ...PositionService.IDLE_POS }
-	readonly timer = null
+	readonly timer = TimerService.IDLE_TIMER
 
 	#isASaved = false
 

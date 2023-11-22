@@ -1,14 +1,4 @@
-import type { Readable } from 'svelte/store'
+import { suggsCtx, suggsObservable } from '../suggestions.store'
+import { createState } from './create-state'
 
-import type { Suggestion } from '$cmd/domain/models'
-import { executor } from '$cmd/infra/services'
-
-function createSuggestionsState(): Readable<Suggestion[]> {
-	return {
-		subscribe(observer) {
-			return executor.subscribe('suggestions', observer)
-		},
-	}
-}
-
-export const suggsState = createSuggestionsState()
+export const suggsState = createState(suggsObservable, suggsCtx)

@@ -1,22 +1,21 @@
-import type { RemoveObserver } from '~/share/domain/models'
-import { Observable } from '~/share/domain/services'
+import type { IContext } from '~/share/domain/models'
 import { DialogKinds, ScreenActions } from '$screen/domain/models'
 import { DifficultyKinds, SudokuActions } from '$sudoku/domain/models'
 
-import type { Executor, IExecutor, IMediator, ISuggestion, Suggestion } from '../models'
+import type { IExecutor, IMediator, ISuggestion, Suggestion } from '../models'
+import { SuggestionService } from '.'
 
 interface ExecutorDeps {
 	allSuggestions: ISuggestion[]
 	mediator: IMediator
+	suggsCtx: IContext<Suggestion[]>
 }
 
 /** Represent a Executor Service. */
 export class ExecutorService implements IExecutor {
 	readonly #allSuggestions
-	#history: string[] = []
 	#mediator
-	#observables = ExecutorService.#createObservables()
-	#suggestions: Suggestion[] = []
+	#suggsCtx
 	#timeoutID: ReturnType<typeof setTimeout> | null = null
 
 	/**
@@ -24,14 +23,10 @@ export class ExecutorService implements IExecutor {
 	 * @param deps An object contains mediator service and other dependencies.
 	 */
 	constructor(deps: ExecutorDeps)
-	constructor({ allSuggestions, mediator }: ExecutorDeps) {
+	constructor({ allSuggestions, mediator, suggsCtx: state }: ExecutorDeps) {
 		this.#mediator = mediator
 		this.#allSuggestions = allSuggestions
-	}
-
-	/** Creates the observables for history and suggestions. */
-	static #createObservables(): Executor.Observables {
-		return { history: new Observable(), suggestions: new Observable() }
+		this.#suggsCtx = state
 	}
 
 	exec(cmdLike: string) {
@@ -64,35 +59,15 @@ export class ExecutorService implements IExecutor {
 		return this
 	}
 
-	get<K extends Executor.Keys>(key: K): Executor.State[K]
-	get<K extends Executor.Keys>(key: K) {
-		if (key === 'history') return this.#history
-		if (key === 'suggestions') return this.#suggestions
-	}
-
 	searchAutocomplete(cmdLike: string) {
 		if (this.#timeoutID != null) clearTimeout(this.#timeoutID)
 
 		this.#timeoutID = setTimeout(() => {
-			this.#suggestions = this.#allSuggestions.filter(suggestions => suggestions.match(cmdLike)).map(({ data }) => data)
-			this.#update('suggestions')
+			const newSuggs = this.#allSuggestions.filter(suggs => suggs.match(cmdLike))
+			this.#suggsCtx.push(SuggestionService.getData(newSuggs))
 			this.#timeoutID = null
 		}, 500)
 
 		return this
-	}
-
-	subscribe<K extends keyof Executor.State>(key: K, observer: Executor.Observers[K]): RemoveObserver {
-		this.#observables[key].add(observer)
-		observer(this.get(key))
-		return () => this.#observables[key].remove(observer)
-	}
-
-	/**
-	 * Updates the specified key in the observables with the current value from the state.
-	 * @param key The key to update in the observables.
-	 */
-	#update<K extends Executor.Keys>(key: K) {
-		this.#observables[key].update(this.get(key))
 	}
 }

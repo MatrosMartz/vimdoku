@@ -32,6 +32,10 @@ export class SuggestionService implements ISuggestion {
 		return this.#data
 	}
 
+	static getData(suggs: ISuggestion[]) {
+		return suggs.map(({ data }) => data)
+	}
+
 	/**
 	 * Create an Array of SuggestionService instances from another Array to be mapped.
 	 * @param array The original array.

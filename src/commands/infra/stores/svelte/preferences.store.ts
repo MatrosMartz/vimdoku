@@ -1,15 +1,4 @@
-import type { Readable } from 'svelte/store'
+import { prefCtx, prefObservable } from '../preferences.store'
+import { createState } from './create-state'
 
-import { mediator } from '$cmd/infra/services'
-import type { Preferences } from '$pref/domain/models'
-
-function createPreferencesState(): Readable<Preferences> {
-	return {
-		subscribe(observer) {
-			void mediator.load()
-			return mediator.subscribe('preferences', observer)
-		},
-	}
-}
-
-export const prefState = createPreferencesState()
+export const prefState = createState(prefObservable, prefCtx)
