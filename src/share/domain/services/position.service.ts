@@ -109,7 +109,8 @@ export class PositionService implements IPosition {
 	}
 
 	moveDown(times: number) {
-		this.#y = Math.min(PositionService.MAX_RANGE, this.#y + times)
+		if (this.#y === PositionService.MAX_RANGE) this.#x = PositionService.MAX_RANGE
+		else this.#y = Math.min(PositionService.MAX_RANGE, this.#y + times)
 		return this
 	}
 
@@ -124,7 +125,8 @@ export class PositionService implements IPosition {
 	}
 
 	moveUp(times: number) {
-		this.#y = Math.max(PositionService.MIN_RANGE, this.#y - times)
+		if (this.#y === PositionService.MIN_RANGE) this.#x = PositionService.MIN_RANGE
+		else this.#y = Math.max(PositionService.MIN_RANGE, this.#y - times)
 		return this
 	}
 }
