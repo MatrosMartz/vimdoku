@@ -32,10 +32,6 @@ export class SuggestionService implements ISuggestion {
 		return this.#data
 	}
 
-	static getData(suggs: ISuggestion[]) {
-		return suggs.map(({ data }) => data)
-	}
-
 	/**
 	 * Create an Array of SuggestionService instances from another Array to be mapped.
 	 * @param array The original array.
@@ -43,6 +39,10 @@ export class SuggestionService implements ISuggestion {
 	 */
 	static createArray<T>(array: T[], fn: (value: T) => SuggestionsOpts) {
 		return array.map(value => new SuggestionService(fn(value)))
+	}
+
+	static getData(suggs: ISuggestion[]) {
+		return suggs.map(({ data }) => data)
 	}
 
 	/**

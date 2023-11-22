@@ -3,12 +3,12 @@ import type { IAsyncContext, IContext, IHistoryContext, IObservable, Observer } 
 export class Observable<T> implements IObservable<T> {
 	#observers = new Set<Observer<T>>()
 
-	add(sub: Observer<T>) {
-		this.#observers.add(sub)
+	add(observer: Observer<T>) {
+		this.#observers.add(observer)
 	}
 
-	remove(sub: Observer<T>) {
-		this.#observers.delete(sub)
+	remove(observer: Observer<T>) {
+		this.#observers.delete(observer)
 	}
 
 	update(data: T) {
@@ -19,10 +19,16 @@ export class Observable<T> implements IObservable<T> {
 /** Simulated key for protected field. */
 const observableKey = Symbol('observable')
 
-export class Context<T> implements IContext<T> {
+/** Represent a Context Service */
+export class ContextService<T> implements IContext<T> {
 	protected [observableKey]: IObservable<T>
 	#data: T
 
+	/**
+	 * Creates an instance of the ContextService class.
+	 * @param observable Subscriptions Handler.
+	 * @param initialData The value with which the context is to be created.
+	 */
 	constructor(observable: IObservable<T>, initialData: T) {
 		this.#data = initialData
 		this[observableKey] = observable
@@ -38,18 +44,28 @@ export class Context<T> implements IContext<T> {
 	}
 }
 
-export class AsyncContext<T> extends Context<T> implements IAsyncContext<T> {
+/** Represent a Async Context Service */
+export class AsyncContextService<T> extends ContextService<T> implements IAsyncContext<T> {
 	async load(cb: () => Promise<T>): Promise<void> {
 		this.push(await cb())
 	}
 }
 
-export class HistoryContext<T> extends AsyncContext<T> implements IHistoryContext<T> {
+/** Represent a History Context Service */
+export class HistoryContextService<T> extends AsyncContextService<T> implements IHistoryContext<T> {
 	#cursor: number
+	#emptyState: T
 	#history: T[]
 
-	constructor(observable: IObservable<T>, initialData: T, history: T[] = []) {
-		super(observable, initialData)
+	/**
+	 * Creates an instance of the HistoryContextService class.
+	 * @param observable Subscriptions Handler.
+	 * @param emptyState The value that will represent empty state.
+	 * @param history Optional history with which the context is to be created.
+	 */
+	constructor(observable: IObservable<T>, emptyState: T, history: T[] = []) {
+		super(observable, emptyState)
+		this.#emptyState = emptyState
 		this.#history = history
 		this.#cursor = this.#history.length
 	}
@@ -60,7 +76,7 @@ export class HistoryContext<T> extends AsyncContext<T> implements IHistoryContex
 
 	push(data: T): void {
 		this.#history.push(data)
-		super.push(data)
+		super.push(this.#emptyState)
 	}
 
 	redo(): void {

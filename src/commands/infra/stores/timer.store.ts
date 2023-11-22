@@ -1,6 +1,6 @@
-import { AsyncContext, Observable } from '~/share/domain/services'
+import { AsyncContextService, Observable } from '~/share/domain/services'
 import { TimerService } from '$sudoku/domain/services'
 
 export const timerObservable = new Observable<string>()
 
-export const timerCtx = new AsyncContext(timerObservable, TimerService.IDLE_TIMER)
+export const timerCtx = new AsyncContextService(timerObservable, TimerService.IDLE_TIMER)

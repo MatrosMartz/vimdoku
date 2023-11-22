@@ -1,7 +1,7 @@
 import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import type { IContext } from '~/share/domain/models'
-import { Context, Observable } from '~/share/domain/services'
+import { ContextService, Observable } from '~/share/domain/services'
 import { ALL_SUGGESTIONS } from '$cmd/infra/services'
 
 import type { IMediator, Mediator, Suggestion } from '../models'
@@ -24,7 +24,7 @@ beforeAll(() => {
 })
 
 beforeEach(() => {
-	suggsCtx = new Context(new Observable<Suggestion[]>(), [])
+	suggsCtx = new ContextService(new Observable<Suggestion[]>(), [])
 	executor = new ExecutorService({ allSuggestions: ALL_SUGGESTIONS, mediator: mockMediator, suggsCtx })
 })
 
