@@ -7,7 +7,7 @@ export class PositionService implements IPosition {
 	/** The default position value.. */
 	static readonly IDLE_POS: Position = { x: 0, y: 0 }
 	/** The maximum range for row and column coordinates. */
-	static readonly MAX_RANGE = 9
+	static readonly MAX_RANGE = 8
 	/** The minimum range for row and column coordinates. */
 	static readonly MIN_RANGE = 0
 
