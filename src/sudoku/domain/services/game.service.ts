@@ -2,7 +2,7 @@ import type { Position } from '~/share/domain/models'
 import { PositionService } from '~/share/domain/services'
 import type { OptionalKeys } from '~/share/types'
 
-import { DifficultyKinds, type GameOpts, type ITimer, ModeKinds, type ValidNumbers } from '../models'
+import { type Board, DifficultyKinds, type GameOpts, type ITimer, ModeKinds, type ValidNumbers } from '../models'
 import type { Game, IGame, IGameState, StartedGameOpts } from '../models/game.model'
 import type { GameRepo } from '../repositories'
 import { BoardService } from './board.service'
@@ -13,18 +13,18 @@ import { TimerService } from './timer.service'
 const repo = Symbol('board-repo')
 
 abstract class GameService implements IGame {
-	abstract readonly timer?: string | null
 	protected readonly [repo]: GameRepo
+	abstract readonly board: Board | null
 	abstract readonly isASaved: boolean
 	abstract readonly isStarted: boolean
 	abstract readonly mode: ModeKinds
 	abstract readonly position: Position
+	abstract readonly timer: string | null
 
 	/**
 	 * Creates an instance of the NonStartedGameService class.
 	 * @param repo The repository for game data.
 	 */
-	constructor(repo: GameRepo)
 	constructor(gRepo: GameRepo) {
 		this[repo] = gRepo
 	}

@@ -76,17 +76,17 @@ export interface IGameState {
 
 export interface IGame {
 	/** Get the game board data as a JSON Object. */
-	readonly board?: Board | null
-	/** Get the game mode. */
-	readonly mode?: ModeKinds
-	/** Get the current position. */
-	readonly position?: Position
-	/** Get the current value of timer. */
-	readonly timer?: string | null
+	readonly board: Board | null
 	/** Get if there is a saved game. */
 	readonly isASaved: boolean
 	/** Get if the game has started. */
 	readonly isStarted: boolean
+	/** Get the game mode. */
+	readonly mode: ModeKinds
+	/** Get the current position. */
+	readonly position: Position
+	/** Get the current value of timer. */
+	readonly timer: string | null
 	/**
 	 * Change the current mode within the game board.
 	 * @param mode The new mode.
