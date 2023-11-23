@@ -3,15 +3,16 @@
 	import { tooltip, type TooltipProps } from '~/share/infra/components/svelte/tooltip'
 	import { mediator } from '$cmd/infra/services'
 	import { modeState, screenState } from '$cmd/infra/stores/svelte'
-	import { MainScreenKinds } from '$screen/domain/models'
+	import { DialogKinds, MainScreenKinds, ScreenActions } from '$screen/domain/models'
 	import { ModeKinds, SudokuActions } from '$sudoku/domain/models'
 
 	$: disabled = $screenState.main !== MainScreenKinds.Game
 
-	let open = false
+	$: open = $screenState.dialog.kind === DialogKinds.InLn && $screenState.dialog.opts.type === 'modes'
+
 	let timeoutId: ReturnType<typeof setTimeout> | null = null
 
-	$: if (disabled) open = false
+	$: if (disabled) mediator.dispatch(ScreenActions.Exit)
 
 	const tooltipProps: TooltipProps = {
 		id: 'disabled-mode-reason',
@@ -19,7 +20,8 @@
 	}
 
 	function toggleHandler() {
-		open = disabled ? false : !open
+		if (disabled || open) mediator.dispatch(ScreenActions.Exit)
+		else mediator.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.InLn, opts: { type: 'modes' } })
 	}
 
 	function modeHandler({ currentTarget }: { currentTarget: HTMLInputElement }) {
