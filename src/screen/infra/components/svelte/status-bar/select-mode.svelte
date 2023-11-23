@@ -38,15 +38,11 @@
 	}
 
 	function focusoutHandler() {
-		timeoutId = setTimeout(() => {
-			mediator.dispatch(ScreenActions.Exit)
-		}, 150)
+		if (open) timeoutId = setTimeout(() => mediator.dispatch(ScreenActions.Exit), 150)
 	}
 
 	function keyupHandler({ key }: KeyboardEvent) {
-		if (key === 'Enter') {
-			mediator.dispatch(SudokuActions.Move, { type: 'set', position: posState.data })
-		}
+		if (key === 'Enter') mediator.dispatch(SudokuActions.Move, { type: 'set', position: posState.data })
 	}
 </script>
 
