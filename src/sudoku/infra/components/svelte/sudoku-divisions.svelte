@@ -6,13 +6,13 @@
 <style>
 	.division {
 		--height: 95%;
-		--width: 4px;
-		--calc-pos: calc(100% / 3);
+		--width: 2px;
+		--calc-pos: calc(100% / 3 + 1px);
 
 		position: absolute;
 		margin: auto;
-		background-color: var(--hover-shadow);
-		border-radius: 2px;
+		background-color: var(--alternative-border);
+		border-radius: 1px;
 	}
 
 	.horizontal {

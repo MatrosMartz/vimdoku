@@ -11,8 +11,9 @@
 	let btn: HTMLElement
 
 	$: value = data.value > 0 ? String(data.value) : ''
+	$: selected = PositionService.equalsPos($posState, position)
 
-	$: if (PositionService.equalsPos($posState, position)) btn?.focus()
+	$: if (selected) btn?.focus()
 
 	function focusHandler() {
 		if (PositionService.equalsPos($posState, position)) return
@@ -20,11 +21,15 @@
 	}
 </script>
 
-<td><button class="cell {data.kind}" tabindex="-1" on:focus={focusHandler} bind:this={btn}>{value}</button></td>
+<td
+	><button class="cell {data.kind}" class:selected tabindex="-1" on:focus={focusHandler} bind:this={btn}>{value}</button
+	></td
+>
 
 <style>
 	td,
 	.cell {
+		font-family: inherit;
 		background-color: transparent;
 		border: none;
 		border-radius: inherit;
@@ -36,7 +41,10 @@
 		width: 48px;
 		aspect-ratio: 1 / 1;
 		color: var(--primary-color);
-		border: 2px solid transparent;
+	}
+
+	.cell.selected {
+		backdrop-filter: brightness(150%);
 	}
 
 	.cell:focus {
@@ -45,16 +53,17 @@
 
 	@keyframes blink-cursor {
 		from {
-			border: 2px solid transparent;
+			backdrop-filter: brightness(100%);
 		}
 
 		to {
-			border: 2px solid var(--alternative-border);
+			backdrop-filter: brightness(150%);
 		}
 	}
 
 	.incorrect {
 		color: var(--error-color);
+		text-decoration: underline wavy;
 	}
 
 	.correct {
@@ -62,6 +71,7 @@
 	}
 
 	.initial {
-		color: var(--focus-border);
+		font-weight: 700;
+		color: var(--number-color);
 	}
 </style>
