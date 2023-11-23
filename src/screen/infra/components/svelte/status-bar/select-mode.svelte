@@ -2,7 +2,7 @@
 	import { Icon } from '~/share/infra/components/svelte'
 	import { tooltip, type TooltipProps } from '~/share/infra/components/svelte/tooltip'
 	import { mediator } from '$cmd/infra/services'
-	import { modeState, screenState } from '$cmd/infra/stores/svelte'
+	import { modeState, posState, screenState } from '$cmd/infra/stores/svelte'
 	import { DialogKinds, MainScreenKinds, ScreenActions } from '$screen/domain/models'
 	import { ModeKinds, SudokuActions } from '$sudoku/domain/models'
 
@@ -39,8 +39,14 @@
 
 	function focusoutHandler() {
 		timeoutId = setTimeout(() => {
-			open = false
+			mediator.dispatch(ScreenActions.Exit)
 		}, 150)
+	}
+
+	function keyupHandler({ key }: KeyboardEvent) {
+		if (key === 'Enter') {
+			mediator.dispatch(SudokuActions.Move, { type: 'set', position: posState.data })
+		}
 	}
 </script>
 
@@ -65,6 +71,7 @@
 				on:focus={focusHandler}
 				on:focusout={focusoutHandler}
 				on:change={modeHandler}
+				on:keyup={keyupHandler}
 			/>
 			<label for="mode-{mode}"><span>{mode.toUpperCase()}</span><Icon id="check" /></label>
 		{/each}
