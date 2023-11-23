@@ -1,19 +1,26 @@
 <script lang="ts">
 	import type { Position } from '~/share/domain/models'
+	import { PositionService } from '~/share/domain/services'
 	import { mediator } from '$cmd/infra/services'
+	import { posState } from '$cmd/infra/stores'
 	import { type Cell, SudokuActions } from '$sudoku/domain/models'
 
 	export let data: Cell
 	export let position: Position
 
+	let btn: HTMLElement
+
 	$: value = data.value > 0 ? String(data.value) : ''
 
+	$: if (PositionService.equalsPos($posState, position)) btn?.focus()
+
 	function focusHandler() {
+		if (PositionService.equalsPos($posState, position)) return
 		mediator.dispatch(SudokuActions.Move, { type: 'set', position })
 	}
 </script>
 
-<td><button class="cell {data.kind}" tabindex="-1" on:focus={focusHandler}>{value}</button></td>
+<td><button class="cell {data.kind}" tabindex="-1" on:focus={focusHandler} bind:this={btn}>{value}</button></td>
 
 <style>
 	td,
