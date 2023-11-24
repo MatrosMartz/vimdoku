@@ -4,7 +4,7 @@
 	import { mediator } from '$cmd/infra/services'
 	import { modeState, posState, screenState } from '$cmd/infra/stores/svelte'
 	import { DialogKinds, MainScreenKinds, ScreenActions } from '$screen/domain/models'
-	import { ModeKinds, SudokuActions } from '$sudoku/domain/models'
+	import { ModeKinds, MODES_KEYS, SudokuActions } from '$sudoku/domain/models'
 
 	$: disabled = $screenState.main !== MainScreenKinds.Game
 
@@ -13,6 +13,7 @@
 	let timeoutId: ReturnType<typeof setTimeout> | null = null
 
 	$: if (disabled) mediator.dispatch(ScreenActions.Exit)
+	$: if (open) document.getElementById(`mode-${modeState.data}`)?.focus()
 
 	const tooltipProps: TooltipProps = {
 		id: 'disabled-mode-reason',
@@ -46,30 +47,35 @@
 	}
 </script>
 
-<div class="mode-accordion" class:open>
+<div aria-expanded={open} class="mode-accordion" class:open>
 	<button
-		class="icon mode"
+		aria-label="Select mode"
+		aria-controls="mode-selector"
 		aria-disabled={disabled}
+		class="icon mode"
 		on:focus={focusHandler}
 		on:focusout={focusoutHandler}
 		on:click={toggleHandler}
 		use:tooltip={disabled ? tooltipProps : null}>{$modeState.toUpperCase()}</button
 	>
-	<form class="mode-selector" method="get">
+	<form id="mode-selector" method="get">
 		{#each Object.values(ModeKinds) as mode (mode)}
+		<label for="mode-{mode}">
 			<input
-				type="radio"
-				name="mode"
 				id="mode-{mode}"
-				value={mode}
+				name="mode"
+				type="radio"
 				tabindex={open ? 0 : -1}
+				value={mode}
 				checked={mode === $modeState}
 				on:focus={focusHandler}
 				on:focusout={focusoutHandler}
 				on:change={modeHandler}
 				on:keyup={keyupHandler}
+				use:tooltip={{id: `mode-${mode}-input-key-describe`,text: `<${MODES_KEYS[mode]}>` }}
 			/>
-			<label for="mode-{mode}"><span>{mode.toUpperCase()}</span><Icon id="check" /></label>
+			<span>{mode.toUpperCase()}</span><Icon id="check" />
+		</label>
 		{/each}
 	</form>
 </div>
@@ -81,23 +87,22 @@
 		color: var(--value-color);
 	}
 
-	.mode-selector {
+	#mode-selector {
 		position: relative;
-		bottom: 400%;
+		bottom: 0;
 		z-index: 0;
 		display: grid;
 		grid-template-columns: 1fr;
-		overflow: hidden;
 		background-color: var(--status-bar-background);
 		border: 1px solid rgb(31 11 59);
 		border-bottom: none;
 		border-radius: 8px 8px 0 0;
 		transition: transform 500ms;
-		transform: translateY(200%);
+		transform: translateY(100%);
 	}
 
-	.mode-accordion.open .mode-selector {
-		transform: translateY(0);
+	.mode-accordion.open #mode-selector {
+		transform: translateY(-100%);
 	}
 
 	input {
@@ -105,36 +110,36 @@
 	}
 
 	label {
+		position: relative;
 		display: grid;
 		gap: 0.5rem;
-		align-items: center;
-		justify-items: flex-start;
+		place-items: center flex-start;
 		width: 100%;
 		height: 44px;
 		padding-inline: 0.5rem;
 		opacity: 0.6;
 	}
 
-	input:hover + label {
+	label:has(input:hover) {
 		filter: brightness(120%);
 		backdrop-filter: brightness(120%);
 	}
 
-	input:focus + label {
+	label:has(input:focus) {
 		text-decoration: underline;
 		opacity: 1;
 	}
 
-	input + label :global(svg) {
+	label:has(input) :global(svg) {
 		display: none;
 		color: transparent;
 	}
 
-	input:checked + label :global(svg) {
+	label:has(input:checked) :global(svg) {
 		color: var(--input-border);
 	}
 
-	input:focus + label :global(svg) {
+	label:has(input:focus) :global(svg) {
 		color: var(--key-color);
 	}
 
@@ -155,7 +160,7 @@
 	}
 
 	@media (width >= 768px) {
-		.mode-selector {
+		#mode-selector {
 			grid-template-columns: 1fr auto;
 		}
 
@@ -164,7 +169,7 @@
 			grid-column: 1 / 3;
 		}
 
-		input + label :global(svg) {
+		label:has(input) :global(svg) {
 			display: initial;
 		}
 
