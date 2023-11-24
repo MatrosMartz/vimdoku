@@ -35,7 +35,7 @@ module.exports = {
 	rules: {
 		'@typescript-eslint/consistent-type-assertions': ['error', { assertionStyle: 'as' }],
 		'@typescript-eslint/explicit-function-return-type': 'off',
-		'@typescript-eslint/member-ordering': ['error', require('./eslint/member-ordering.cjs')],
+		'@typescript-eslint/member-ordering': 'error',
 		'@typescript-eslint/method-signature-style': ['error', 'method'],
 		'@typescript-eslint/no-confusing-void-expression': 'off',
 		'@typescript-eslint/no-namespace': ['error', { allowDeclarations: true }],
