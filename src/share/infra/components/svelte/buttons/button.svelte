@@ -15,7 +15,7 @@
 </script>
 
 <li>
-	<button {type} on:click={clickHandler} aria-disabled={disabled} use:tooltip={disabled ? tooltipProps : null}>
+	<button aria-disabled={disabled} {type} on:click={clickHandler} use:tooltip={disabled ? tooltipProps : null}>
 		<slot />
 	</button>
 </li>

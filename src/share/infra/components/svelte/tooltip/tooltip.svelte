@@ -25,11 +25,11 @@
 </script>
 
 <div
-	role="tooltip"
 	{id}
+	role="tooltip"
 	class="tooltip"
-	class:show
 	class:hidden
+	class:show
 	on:mouseover={overHandler}
 	on:mouseleave={leaveHandler}
 	on:focus={overHandler}

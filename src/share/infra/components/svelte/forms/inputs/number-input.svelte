@@ -20,5 +20,5 @@
 
 <label class="field">
 	<span class="secondary">{capitalCase(name)}</span>
-	<input id={name} {name} {...settings} {placeholder} required bind:value={parse.value} />
+	<input id={name} {name} {...settings} required {placeholder} bind:value={parse.value} />
 </label>

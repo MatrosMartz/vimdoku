@@ -9,7 +9,7 @@
 	const dialogState = derived(screenState, ({ dialog }) => dialog.kind === DialogKinds.Cmd)
 </script>
 
-<Dialog {dialogState} type="modal">
+<Dialog type="modal" {dialogState}>
 	<div class="command-dialog">
 		<CommandInput />
 		<SuggestionsList />

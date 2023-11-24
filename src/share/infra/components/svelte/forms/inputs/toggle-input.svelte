@@ -6,9 +6,9 @@
 </script>
 
 <label class="field">
-	<input type="checkbox" id={name} {name} bind:checked={value} />
+	<input id={name} {name} type="checkbox" bind:checked={value} />
 	<span class="secondary">{capitalCase(name)}</span>
-	<div class="switch" aria-hidden="true"></div>
+	<div aria-hidden="true" class="switch"></div>
 </label>
 
 <style>

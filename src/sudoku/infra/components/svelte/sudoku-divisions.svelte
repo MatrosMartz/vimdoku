@@ -1,7 +1,7 @@
-<div class="division horizontal one" aria-hidden="true" />
-<div class="division horizontal two" aria-hidden="true" />
-<div class="division vertical one" aria-hidden="true" />
-<div class="division vertical two" aria-hidden="true" />
+<div aria-hidden="true" class="division horizontal one" />
+<div aria-hidden="true" class="division horizontal two" />
+<div aria-hidden="true" class="division vertical one" />
+<div aria-hidden="true" class="division vertical two" />
 
 <style>
 	.division {

@@ -18,7 +18,7 @@
 	}
 </script>
 
-<dialog class="vim-dialog" class:hide bind:this={dialog} on:animationend={animationendHandler}>
+<dialog bind:this={dialog} class="vim-dialog" class:hide on:animationend={animationendHandler}>
 	<slot />
 </dialog>
 

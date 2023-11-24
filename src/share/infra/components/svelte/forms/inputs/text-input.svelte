@@ -11,5 +11,5 @@
 
 <label class="field">
 	<span class="secondary">{capitalCase(name)}</span>
-	<input id={name} {name} {...settings} {placeholder} required bind:value />
+	<input id={name} {name} {...settings} required {placeholder} bind:value />
 </label>

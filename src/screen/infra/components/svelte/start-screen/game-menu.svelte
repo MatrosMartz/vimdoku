@@ -23,7 +23,7 @@
 <div class="menu">
 	<ButtonMenu>
 		<Button on:click={newGameHandler}>New game</Button>
-		<Button {tooltipProps} {disabled} on:click={resumeHandler}>Resume game</Button>
+		<Button {disabled} {tooltipProps} on:click={resumeHandler}>Resume game</Button>
 	</ButtonMenu>
 </div>
 

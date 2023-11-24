@@ -7,9 +7,9 @@
 </script>
 
 <Form
-	schema={preferencesFormSchema}
 	defaultValues={PreferencesService.DEFAULT_DATA}
 	initialValues={prefState.data}
+	schema={preferencesFormSchema}
 	on:submit={({ detail }) => {
 		mediator.dispatch(PrefActions.Save, { type: 'all', replace: detail })
 	}}

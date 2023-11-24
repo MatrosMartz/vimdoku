@@ -22,7 +22,7 @@
 </script>
 
 <td
-	><button class="cell {data.kind}" class:selected tabindex="-1" on:focus={focusHandler} bind:this={btn}>{value}</button
+	><button bind:this={btn} tabindex="-1" class="cell {data.kind}" class:selected on:focus={focusHandler}>{value}</button
 	></td
 >
 

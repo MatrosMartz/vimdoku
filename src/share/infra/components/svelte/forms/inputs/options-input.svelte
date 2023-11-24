@@ -1,4 +1,4 @@
-<script lang="ts" generics="T extends string">
+<script generics="T extends string" lang="ts">
 	import { capitalCase } from '~/share/utils'
 
 	export let name: string
@@ -9,7 +9,7 @@
 <label class="field">
 	<span class="secondary">{capitalCase(name)}</span>
 
-	<select {name} id={name} required bind:value>
+	<select id={name} {name} required bind:value>
 		{#each options as option}
 			<option value={option}>{option}</option>
 		{/each}

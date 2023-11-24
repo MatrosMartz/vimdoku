@@ -6,7 +6,7 @@
 	const selected = getSelectedContext()
 </script>
 
-<div id="panel{key}" aria-labelledby="tab{key}" role="tabpanel" aria-hidden={$selected !== key}>
+<div id="panel{key}" role="tabpanel" aria-labelledby="tab{key}" aria-hidden={$selected !== key}>
 	<slot />
 </div>
 

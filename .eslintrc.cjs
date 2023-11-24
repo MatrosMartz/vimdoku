@@ -42,5 +42,6 @@ module.exports = {
 		'@typescript-eslint/no-non-null-assertion': 'off',
 		'simple-import-sort/exports': 'error',
 		'simple-import-sort/imports': 'error',
+		'svelte/sort-attributes': ['error', require('./eslint/sort-attributes.cjs')],
 	},
 }

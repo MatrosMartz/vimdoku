@@ -19,9 +19,9 @@
 	$: if ($screenState.dialog.kind === DialogKinds.Cmd) form.reset()
 </script>
 
-<form method="dialog" on:submit|preventDefault={submitHandler} bind:this={form}>
+<form bind:this={form} method="dialog" on:submit|preventDefault={submitHandler}>
 	<label class="command-input">
-		<input type="text" on:input={inputHandler} bind:this={$input} />
+		<input bind:this={$input} type="text" on:input={inputHandler} />
 	</label>
 	<span class="close">
 		<DialogClose />

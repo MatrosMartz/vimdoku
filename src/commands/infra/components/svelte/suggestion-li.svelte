@@ -24,7 +24,7 @@
 </script>
 
 <li>
-	<button tabindex="0" bind:this={btn} on:click={clickHandler}>
+	<button bind:this={btn} tabindex="0" on:click={clickHandler}>
 		{#each suggestion.descriptions as desc}
 			<p>{desc}</p>
 		{/each}

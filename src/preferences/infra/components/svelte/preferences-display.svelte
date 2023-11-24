@@ -41,9 +41,9 @@
 						<th class="key secondary">{capitalCase(name)}</th>
 						<td
 							class="monospace value"
-							class:str={typeof value === 'string'}
+							class:bool={typeof value === 'boolean'}
 							class:num={typeof value === 'number'}
-							class:bool={typeof value === 'boolean'}>{value}</td
+							class:str={typeof value === 'string'}>{value}</td
 						>
 					</tr>
 				{/each}
