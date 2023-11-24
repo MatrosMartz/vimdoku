@@ -36,7 +36,7 @@
 	on:focusout={leaveHandler}
 	on:animationend={animationendHandler}
 >
-	{text}
+	<p>{text}</p>
 </div>
 
 <style>
@@ -44,8 +44,6 @@
 		position: absolute;
 		bottom: calc(100% + 0.5rem);
 		left: 50%;
-		width: 20ch;
-		max-width: 45ch;
 		padding: 0.5rem 1rem;
 		color: var(--primary-color);
 		text-align: center;
@@ -57,6 +55,13 @@
 		opacity: 0;
 		transform: translateX(-50%);
 		animation: tooltip-hide 250ms;
+	}
+
+	p {
+		width: max-content;
+		max-width: min(35ch, 20vw);
+		text-align: initial;
+		text-wrap: balance;
 	}
 
 	@keyframes tooltip-hide {
