@@ -3,7 +3,7 @@ import { PositionService } from '~/share/domain/services'
 import type { Tuple } from '~/share/types'
 import { createArray, createMatrix, iterateArray, iterateMatrix } from '~/share/utils'
 
-import type { CBFn, CompareCBFn, CreateCBFn, GridData, IGrid } from '../models'
+import { type CBFn, type CompareCBFn, type CreateCBFn, type Grid, type IGrid } from '../models'
 
 /** Represent a Sudoku Grid Service. */
 export class GridService<T> implements IGrid<T> {
@@ -12,19 +12,19 @@ export class GridService<T> implements IGrid<T> {
 	/** The position of the last cell. */
 	static readonly LAST_POSITION: Position = { y: 8, x: 8 }
 
-	#data
+	readonly #data
 
 	/**
 	 * Creates an instance of the GridService class with the provided data.
 	 * @param data A two-dimensional array representing the Sudoku grid.
 	 * @throws {Error} If the data is invalid (not a 9x9 grid).
 	 */
-	constructor(data: GridData<T>) {
+	constructor(data: Grid<T>) {
 		this.#data = data
 	}
 
 	get data() {
-		return this.#data.map(row => row.map(cell => cell)) as GridData<T>
+		return this.#mapData(cell => cell)
 	}
 
 	/**
@@ -43,27 +43,24 @@ export class GridService<T> implements IGrid<T> {
 		const box = PositionService.getInitsBox(cellPos)
 		for (const pos of iterateMatrix(3)) {
 			const currPos = PositionService.sumPos(pos, box)
-			if (
-				!PositionService.equalsPos(cellPos, currPos) &&
-				!fn(this.#data[cellPos.y][cellPos.x], this.getCell(currPos), currPos)
-			)
+			if (!PositionService.equalsPos(cellPos, currPos) && !fn(this.getCell(cellPos), this.getCell(currPos), currPos))
 				return false
 		}
 
 		return true
 	}
 
-	compareWithCol(CellPos: Position, fn: CompareCBFn<T, boolean>): boolean
-	compareWithCol({ y: compareY, x }: Position, fn: CompareCBFn<T, boolean>) {
+	compareWithCol(cellPos: Position, fn: CompareCBFn<T, boolean>) {
+		const { x } = cellPos
 		for (const y of iterateArray(9))
-			if (y !== compareY && !fn(this.#data[compareY][x], this.#data[y][x], { y, x })) return false
+			if (y !== cellPos.y && !fn(this.getCell(cellPos), this.getCell({ y, x }), { y, x })) return false
 		return true
 	}
 
-	compareWithRow(cellPos: Position, fn: CompareCBFn<T, boolean>): boolean
-	compareWithRow({ y, x: compareX }: Position, fn: CompareCBFn<T, boolean>) {
+	compareWithRow(cellPos: Position, fn: CompareCBFn<T, boolean>) {
+		const { y } = cellPos
 		for (const x of iterateArray(9))
-			if (x !== compareX && !fn(this.#data[y][compareX], this.#data[y][x], { y, x })) return false
+			if (x !== cellPos.x && !fn(this.getCell(cellPos), this.getCell({ y, x }), { y, x })) return false
 		return true
 	}
 
@@ -72,9 +69,9 @@ export class GridService<T> implements IGrid<T> {
 	}
 
 	editCell<U>(cellPos: Position, fn: CBFn<T, U>) {
-		const newGrid: GridData<T | U> = this.data
-
-		newGrid[cellPos.y][cellPos.x] = fn(this.getCell(cellPos), cellPos)
+		const newGrid = this.#mapData((cell, pos) =>
+			PositionService.equalsPos(cellPos, pos) ? fn(this.getCell(cellPos), cellPos) : cell
+		)
 
 		return new GridService(newGrid)
 	}
@@ -82,8 +79,8 @@ export class GridService<T> implements IGrid<T> {
 	everyBox(box: number, fn: CBFn<T, boolean>) {
 		const boxPos = PositionService.getPosFromBox(box)
 		for (const pos of iterateMatrix(3)) {
-			const { y, x } = PositionService.sumPos(boxPos, pos)
-			if (!fn(this.#data[y][x], { y, x })) return false
+			const currPos = PositionService.sumPos(boxPos, pos)
+			if (!fn(this.getCell(currPos), currPos)) return false
 		}
 
 		return true
@@ -184,17 +181,13 @@ export class GridService<T> implements IGrid<T> {
 	}
 
 	mapGrid<U>(fn: CBFn<T, U>) {
-		const newData = this.#data.map((row, y) => row.map((cell, x) => fn(cell, { y, x }))) as GridData<U>
-		return new GridService(newData)
+		return new GridService(this.#mapData(fn))
 	}
 
 	mapRelated<U>(cellPos: Position, fn: CBFn<T, U>) {
-		const newData = createMatrix(9, currPos => {
-			const cell = this.getCell(currPos)
+		const newData = this.#mapData((cell, currPos) => {
 			if (PositionService.equalsPos(cellPos, currPos)) return cell
-			if (PositionService.equalsRow(cellPos, currPos)) return fn(cell, currPos)
-			if (PositionService.equalsCol(cellPos, currPos)) return fn(cell, currPos)
-			if (PositionService.equalsBox(cellPos, currPos)) return fn(cell, currPos)
+			if (PositionService.areRelated(cellPos, currPos)) return fn(cell, currPos)
 			return cell
 		})
 
@@ -241,5 +234,9 @@ export class GridService<T> implements IGrid<T> {
 	#mutateCell(pos: Position, newCell: T): void
 	#mutateCell({ y, x }: Position, newCell: T) {
 		this.#data[y][x] = newCell
+	}
+
+	#mapData<U>(fn: CBFn<T, U>) {
+		return this.#data.map((row, y) => row.map((cell, x) => fn(cell, { y, x }))) as Grid<U>
 	}
 }
