@@ -10,7 +10,7 @@ export function createArray<T, L extends number>(length: L, mapFn: (index: numbe
 }
 
 export function createMatrix<T, L extends number>(length: L, mapFn: (position: Position) => T) {
-	return createArray(length, x => createArray(length, y => mapFn({ y, x })))
+	return createArray(length, y => createArray(length, x => mapFn({ y, x })))
 }
 
 export function* iterateArray(length: number) {
