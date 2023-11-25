@@ -60,22 +60,22 @@
 	>
 	<form id="mode-selector" method="get">
 		{#each Object.values(ModeKinds) as mode (mode)}
-		<label for="mode-{mode}">
-			<input
-				id="mode-{mode}"
-				name="mode"
-				type="radio"
-				tabindex={open ? 0 : -1}
-				value={mode}
-				checked={mode === $modeState}
-				on:focus={focusHandler}
-				on:focusout={focusoutHandler}
-				on:change={modeHandler}
-				on:keyup={keyupHandler}
-				use:tooltip={{id: `mode-${mode}-input-key-describe`,text: `<${MODES_KEYS[mode]}>` }}
-			/>
-			<span>{mode.toUpperCase()}</span><Icon id="check" />
-		</label>
+			<label for="mode-{mode}">
+				<input
+					id="mode-{mode}"
+					name="mode"
+					type="radio"
+					tabindex={open ? 0 : -1}
+					value={mode}
+					checked={mode === $modeState}
+					on:focus={focusHandler}
+					on:focusout={focusoutHandler}
+					on:change={modeHandler}
+					on:keyup={keyupHandler}
+					use:tooltip={{ id: `mode-${mode}-input-key-describe`, text: `<${MODES_KEYS[mode]}>` }}
+				/>
+				<span>{mode.toUpperCase()}</span><Icon id="check" />
+			</label>
 		{/each}
 	</form>
 </div>
@@ -130,7 +130,7 @@
 		opacity: 1;
 	}
 
-	label:has(input) :global(svg) {
+	label :global(svg) {
 		display: none;
 		color: transparent;
 	}
@@ -144,6 +144,7 @@
 	}
 
 	label span {
+		grid-column: 1 / 2;
 		width: 100%;
 		text-align: center;
 	}
@@ -169,7 +170,7 @@
 			grid-column: 1 / 3;
 		}
 
-		label:has(input) :global(svg) {
+		label :global(svg) {
 			display: initial;
 		}
 
