@@ -16,7 +16,7 @@
 <label class="field">
 	<span class="secondary">{capitalCase(name)}</span>
 
-	<select id={name} {name} required bind:value>
+	<select bind:this={select} id={name} {name} required bind:value>
 		{#each options as option}
 			<option value={option}>{option}</option>
 		{/each}
