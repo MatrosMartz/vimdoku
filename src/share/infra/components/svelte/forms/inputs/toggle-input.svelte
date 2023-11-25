@@ -1,12 +1,19 @@
 <script lang="ts">
+	import { onMount } from 'svelte'
+
 	import { capitalCase } from '~/share/utils'
 
 	export let name: string
-	export let value = true
+	export let checked = true
+	export let defaultChecked: boolean
+
+	let input: HTMLInputElement
+
+	onMount(() => (input.defaultChecked = defaultChecked))
 </script>
 
 <label class="field">
-	<input id={name} {name} type="checkbox" bind:checked={value} />
+	<input bind:this={input} id={name} {name} type="checkbox" bind:checked />
 	<span class="secondary">{capitalCase(name)}</span>
 	<div aria-hidden="true" class="switch"></div>
 </label>

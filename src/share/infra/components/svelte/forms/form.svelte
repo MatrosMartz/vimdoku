@@ -2,7 +2,7 @@
 	import { createEventDispatcher } from 'svelte'
 
 	import type { FormSchema, SchemaToModel } from '~/share/domain/models'
-	import { capitalCase } from '~/share/utils'
+	import { capitalCase, typeFallback } from '~/share/utils'
 
 	import { Button, ButtonMenu } from '../buttons'
 	import { NumberInput, OptionsInput, TextInput, ToggleInput } from './inputs'
@@ -21,28 +21,27 @@
 	const dispatcher = createEventDispatcher<{ submit: SchemaToModel<Schema> }>()
 	const dataEntries = schemaEntries(schema)
 
-	let values: any = structuredClone(initialValues)
+	const values: any = structuredClone(initialValues)
 
 	function submitHandler() {
 		dispatcher('submit', values)
 	}
-
-	function resetHandler() {
-		values = structuredClone(defaultValues)
-	}
 </script>
 
-<form {method} on:submit|preventDefault={submitHandler} on:reset|preventDefault={resetHandler}>
+<form {method} on:submit|preventDefault={submitHandler}>
 	{#each dataEntries as [group, fields]}
 		<fieldset>
 			<legend>{capitalCase(group)}</legend>
 			{#each fields as [name, settings]}
 				{#if settings.type === 'text'}
-					<TextInput {name} {settings} bind:value={values[group][name]} />
+					{@const defaultValue = typeFallback('string', defaultValues[group][name], '')}
+					<TextInput {name} {defaultValue} {settings} bind:value={values[group][name]} />
 				{:else if settings.type === 'number'}
-					<NumberInput {name} {settings} bind:value={values[group][name]} />
+					{@const defaultValue = typeFallback('number', defaultValues[group][name], 0)}
+					<NumberInput {name} {defaultValue} {settings} bind:value={values[group][name]} />
 				{:else if settings.type === 'toggle'}
-					<ToggleInput {name} bind:value={values[group][name]} />
+					{@const defaultChecked = typeFallback('boolean', defaultValues[group][name], false)}
+					<ToggleInput {name} {defaultChecked} bind:checked={values[group][name]} />
 				{:else if settings.type === 'options'}
 					<OptionsInput {name} options={settings.opts} bind:value={values[group][name]} />
 				{/if}
