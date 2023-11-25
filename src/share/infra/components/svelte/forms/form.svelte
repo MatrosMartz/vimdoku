@@ -34,14 +34,25 @@
 			<legend>{capitalCase(group)}</legend>
 			{#each fields as [name, settings]}
 				{#if settings.type === 'text'}
-					{@const defaultValue = typeFallback('string', defaultValues[group][name], '')}
-					<TextInput {name} {defaultValue} {settings} bind:value={values[group][name]} />
+					<TextInput
+						{name}
+						defaultValue={typeFallback('string', defaultValues[group][name], '')}
+						{settings}
+						bind:value={values[group][name]}
+					/>
 				{:else if settings.type === 'number'}
-					{@const defaultValue = typeFallback('number', defaultValues[group][name], 0)}
-					<NumberInput {name} {defaultValue} {settings} bind:value={values[group][name]} />
+					<NumberInput
+						{name}
+						defaultValue={typeFallback('number', defaultValues[group][name], 0)}
+						{settings}
+						bind:value={values[group][name]}
+					/>
 				{:else if settings.type === 'toggle'}
-					{@const defaultChecked = typeFallback('boolean', defaultValues[group][name], false)}
-					<ToggleInput {name} {defaultChecked} bind:checked={values[group][name]} />
+					<ToggleInput
+						{name}
+						defaultChecked={typeFallback('boolean', defaultValues[group][name], false)}
+						bind:checked={values[group][name]}
+					/>
 				{:else if settings.type === 'options'}
 					<OptionsInput {name} options={settings.opts} bind:value={values[group][name]} />
 				{/if}
