@@ -147,9 +147,9 @@ class StartedGameData implements Game {
 class StartedGameService extends GameService {
 	readonly isASaved = true
 	readonly isStarted = true
-	#data
+	readonly #data
 	#state: IGameState
-	#timer: ITimer
+	readonly #timer: ITimer
 
 	/**
 	 * Creates an instance of the StartedGameService class.
@@ -260,8 +260,6 @@ abstract class GameState implements IGameState {
 		switch (mode) {
 			case ModeKinds.A:
 				return new AnnotationGameState(data)
-			case ModeKinds.C:
-				return new CommandGameState(data)
 			case ModeKinds.I:
 				return new InsertGameState(data)
 			case ModeKinds.X:
@@ -324,8 +322,6 @@ class AnnotationGameState extends EditedGameState {
 		return this
 	}
 }
-
-class CommandGameState extends GameState {}
 
 class InsertGameState extends EditedGameState {
 	write(num: ValidNumbers) {

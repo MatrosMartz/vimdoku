@@ -25,7 +25,6 @@ function movePosition(key: string) {
 function changeMode(key: string) {
 	if (modeState.data === ModeKinds.X) {
 		if (['a', 'A'].includes(key)) mediator.dispatch(SudokuActions.ChangeMode, { mode: ModeKinds.A })
-		if (['c', 'C'].includes(key)) mediator.dispatch(SudokuActions.ChangeMode, { mode: ModeKinds.C })
 		if (['i', 'I'].includes(key)) mediator.dispatch(SudokuActions.ChangeMode, { mode: ModeKinds.I })
 	} else if (key === 'Escape') mediator.dispatch(SudokuActions.ChangeMode, { mode: ModeKinds.X })
 }

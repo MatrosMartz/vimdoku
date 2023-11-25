@@ -17,9 +17,9 @@ export class MediatorService implements IMediator {
 	#game
 	#hasLoaded = false
 	#intervalId: ReturnType<typeof setInterval> | null = null
-	#pref
-	#screen
-	#state
+	readonly #pref
+	readonly #screen
+	readonly #state
 
 	/**
 	 * Creates an instance of the MediatorService class.
