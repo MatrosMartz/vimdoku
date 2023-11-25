@@ -29,12 +29,25 @@ export class PositionService implements IPosition {
 	}
 
 	/**
+	 * Check if two positions are related.
+	 * @param pos1 The first cell position.
+	 * @param pos2 The second cell position.
+	 */
+	static areRelated(pos1: Position, pos2: Position) {
+		return (
+			PositionService.equalsCol(pos1, pos2) ||
+			PositionService.equalsRow(pos1, pos2) ||
+			PositionService.equalsBox(pos1, pos2)
+		)
+	}
+
+	/**
 	 * Check if two cell positions are in the same box.
 	 * @param pos1 The first cell position.
 	 * @param pos2 The second cell position.
 	 */
 	static equalsBox(pos1: Position, pos2: Position) {
-		return PositionService.getBoxFromPos(pos1) === PositionService.getBoxFromPos(pos2)
+		return PositionService.equalsPos(PositionService.getInitsBox(pos1), PositionService.getInitsBox(pos2))
 	}
 
 	/**
