@@ -47,10 +47,12 @@
 	}
 </script>
 
-<div aria-expanded={open} class="mode-accordion" class:open>
+<div class="mode-accordion" class:open>
 	<button
+		id="mode-selector-header"
+		aria-expanded={open}
 		aria-label="Select mode"
-		aria-controls="mode-selector"
+		aria-controls="mode-selector-panel"
 		aria-disabled={disabled}
 		class="icon mode"
 		on:focus={focusHandler}
@@ -58,26 +60,28 @@
 		on:click={toggleHandler}
 		use:tooltip={disabled ? tooltipProps : null}>{$modeState.toUpperCase()}</button
 	>
-	<form id="mode-selector" method="get">
-		{#each Object.values(ModeKinds) as mode (mode)}
-			<label for="mode-{mode}">
-				<input
-					id="mode-{mode}"
-					name="mode"
-					type="radio"
-					tabindex={open ? 0 : -1}
-					value={mode}
-					checked={mode === $modeState}
-					on:focus={focusHandler}
-					on:focusout={focusoutHandler}
-					on:change={modeHandler}
-					on:keyup={keyupHandler}
-					use:tooltip={{ id: `mode-${mode}-input-key-describe`, text: `<${MODES_KEYS[mode]}>` }}
-				/>
-				<span>{mode.toUpperCase()}</span><Icon id="check" />
-			</label>
-		{/each}
-	</form>
+	<div id="mode-selector-panel" role="region" aria-labelledby="mode-selector-header">
+		<form method="get">
+			{#each Object.values(ModeKinds) as mode (mode)}
+				<label for="mode-{mode}">
+					<input
+						id="mode-{mode}"
+						name="mode"
+						type="radio"
+						tabindex={open ? 0 : -1}
+						value={mode}
+						checked={mode === $modeState}
+						on:focus={focusHandler}
+						on:focusout={focusoutHandler}
+						on:change={modeHandler}
+						on:keyup={keyupHandler}
+						use:tooltip={{ id: `mode-${mode}-input-key-describe`, text: `<${MODES_KEYS[mode]}>` }}
+					/>
+					<span>{mode.toUpperCase()}</span><Icon id="check" />
+				</label>
+			{/each}
+		</form>
+	</div>
 </div>
 
 <style>
@@ -87,7 +91,7 @@
 		color: var(--value-color);
 	}
 
-	#mode-selector {
+	#mode-selector-panel form {
 		position: relative;
 		bottom: 0;
 		z-index: 0;
@@ -101,7 +105,7 @@
 		transform: translateY(100%);
 	}
 
-	.mode-accordion.open #mode-selector {
+	.mode-accordion.open #mode-selector-panel form {
 		transform: translateY(-100%);
 	}
 
