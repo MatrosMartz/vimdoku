@@ -36,7 +36,12 @@ export class GridSvc<T> implements IGrid<T> {
 	}
 
 	compareRelated(cellPos: Pos, fn: CompareCBFn<T, boolean>) {
-		return this.compareWithBox(cellPos, fn) && this.compareWithCol(cellPos, fn) && this.compareWithRow(cellPos, fn)
+		for (const currPos of iterateMatrix(9)) {
+			if (PosSvc.areRelated(cellPos, currPos) && !fn(this.getCell(cellPos), this.getCell(currPos), currPos))
+				return false
+		}
+
+		return true
 	}
 
 	compareWithBox(cellPos: Pos, fn: CompareCBFn<T, boolean>) {
@@ -87,7 +92,7 @@ export class GridSvc<T> implements IGrid<T> {
 	}
 
 	everyCol(x: number, fn: CBFn<T, boolean>) {
-		for (const y of iterateArray(9)) if (!fn(this.#data[y][x], { y, x })) return false
+		for (const y of iterateArray(9)) if (!fn(this.getCell({ y, x }), { y, x })) return false
 		return true
 	}
 
@@ -155,27 +160,18 @@ export class GridSvc<T> implements IGrid<T> {
 	}
 
 	mapBox<U>(box: number, fn: CBFn<T, U>) {
-		const newData = createMatrix(9, currPos => {
-			const cell = this.getCell(currPos)
-			return PosSvc.getBoxFromPos(currPos) === box ? fn(cell, currPos) : cell
-		})
+		const newData = this.#mapData(this.#condMap(curr => PosSvc.getBoxFromPos(curr) === box, fn))
 
 		return new GridSvc(newData)
 	}
 
 	mapCol<U>(x: number, fn: CBFn<T, U>) {
-		const newData = createMatrix(9, currPos => {
-			const cell = this.getCell(currPos)
-			return currPos.x === x ? fn(cell, currPos) : cell
-		})
+		const newData = this.#mapData(this.#condMap(curr => curr.x === x, fn))
 		return new GridSvc(newData)
 	}
 
 	mapFiltered<U, S extends T>(filter: (cell: T, pos: Pos) => cell is S, map: CBFn<S, U>) {
-		const newData = createMatrix(9, currPos => {
-			const cell = this.getCell(currPos)
-			return filter(cell, currPos) ? map(cell, currPos) : cell
-		})
+		const newData = this.#mapData((cell, currPos) => (filter(cell, currPos) ? map(cell, currPos) : cell))
 
 		return new GridSvc(newData)
 	}
@@ -185,20 +181,15 @@ export class GridSvc<T> implements IGrid<T> {
 	}
 
 	mapRelated<U>(cellPos: Pos, fn: CBFn<T, U>) {
-		const newData = this.#mapData((cell, currPos) => {
-			if (PosSvc.equalsPos(cellPos, currPos)) return cell
-			if (PosSvc.areRelated(cellPos, currPos)) return fn(cell, currPos)
-			return cell
-		})
+		const newData = this.#mapData(
+			this.#condMap(curr => !PosSvc.equalsPos(cellPos, curr) && PosSvc.areRelated(cellPos, curr), fn)
+		)
 
 		return new GridSvc(newData)
 	}
 
 	mapRow<U>(y: number, fn: CBFn<T, U>) {
-		const newData = createMatrix(9, currPos => {
-			const cell = this.getCell(currPos)
-			return currPos.y === y ? fn(cell, currPos) : cell
-		})
+		const newData = this.#mapData(this.#condMap(curr => curr.y === y, fn))
 
 		return new GridSvc(newData)
 	}
@@ -238,5 +229,9 @@ export class GridSvc<T> implements IGrid<T> {
 
 	#mapData<U>(fn: CBFn<T, U>) {
 		return this.#data.map((row, y) => row.map((cell, x) => fn(cell, { y, x }))) as Grid<U>
+	}
+
+	#condMap<T, U>(cond: (curr: Pos) => boolean, map: CBFn<T, U>): CBFn<T, T | U> {
+		return (cell, pos) => (cond(pos) ? map(cell, pos) : cell)
 	}
 }
