@@ -7,11 +7,6 @@ import { type CBFn, type CompareCBFn, type CreateCBFn, type Grid, type IGrid } f
 
 /** Represent a Sudoku Grid Service. */
 export class GridSvc<T> implements IGrid<T> {
-	/** The position of the first cell. */
-	static readonly FIRST_POSITION: Pos = { y: 0, x: 0 }
-	/** The position of the last cell. */
-	static readonly LAST_POSITION: Pos = { y: 8, x: 8 }
-
 	readonly #data
 
 	/**
