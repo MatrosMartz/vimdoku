@@ -3,7 +3,7 @@
 
 	import { Dialog, DialogClose } from '~/share/infra/components/svelte/dialog'
 	import { Tab, TabGroup, TabList, TabPanel } from '~/share/infra/components/svelte/tab'
-	import { mediator } from '$cmd/infra/services'
+	import { med } from '$cmd/infra/services'
 	import { screenState } from '$cmd/infra/stores/svelte'
 	import { PreferencesDisplay, PreferencesForm } from '$pref/infra/components/svelte'
 	import { DialogKinds, type DialogPref, dialogPref, ScreenActions } from '$screen/domain/models'
@@ -16,7 +16,7 @@
 
 	function createTabHandler(kind: DialogPref) {
 		return () => {
-			mediator.dispatch(ScreenActions.OpenDialog, { kind })
+			med.dispatch(ScreenActions.OpenDialog, { kind })
 		}
 	}
 </script>

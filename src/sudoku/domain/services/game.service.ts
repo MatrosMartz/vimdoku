@@ -18,13 +18,14 @@ abstract class GameSvc implements IGame {
 	abstract readonly isASaved: boolean
 	abstract readonly isStarted: boolean
 	abstract readonly mode: ModeKinds
-	abstract readonly position: Pos
+	abstract readonly pos: Pos
 	abstract readonly timer: string
 
 	/**
 	 * Creates an instance of the NonStartedGameSvc class.
 	 * @param repo The repository for game data.
 	 */
+	constructor(repo: GameRepo)
 	constructor(gRepo: GameRepo) {
 		this[repo] = gRepo
 	}
@@ -91,7 +92,7 @@ export class NonStartedGameSvc extends GameSvc {
 	readonly board = null
 	readonly isStarted = false
 	readonly mode = ModeKinds.X
-	readonly position = { ...PosSvc.IDLE_POS }
+	readonly pos = { ...PosSvc.IDLE_POS }
 	readonly timer = TimerSvc.IDLE_TIMER
 
 	#isASaved = false
@@ -171,7 +172,7 @@ class StartedGameSvc extends GameSvc {
 		return this.#data.mode
 	}
 
-	get position() {
+	get pos() {
 		return this.#data.pos.data
 	}
 

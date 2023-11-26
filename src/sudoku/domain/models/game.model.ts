@@ -84,7 +84,7 @@ export interface IGame {
 	/** Get the game mode. */
 	readonly mode: ModeKinds
 	/** Get the current position. */
-	readonly position: Pos
+	readonly pos: Pos
 	/** Get the current value of timer. */
 	readonly timer: string
 	/**

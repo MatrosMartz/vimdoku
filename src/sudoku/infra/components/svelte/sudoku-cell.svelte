@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Pos } from '~/share/domain/models'
 	import { PosSvc } from '~/share/domain/services'
-	import { mediator } from '$cmd/infra/services'
+	import { med } from '$cmd/infra/services'
 	import { posState } from '$cmd/infra/stores'
 	import { type Cell, SudokuActions } from '$sudoku/domain/models'
 
@@ -17,7 +17,7 @@
 
 	function focusHandler() {
 		if (PosSvc.equalsPos($posState, position)) return
-		mediator.dispatch(SudokuActions.Move, { type: 'set', position })
+		med.dispatch(SudokuActions.Move, { type: 'set', position })
 	}
 </script>
 

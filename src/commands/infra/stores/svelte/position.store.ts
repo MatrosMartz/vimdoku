@@ -1,4 +1,4 @@
-import { posCtx, posObservable } from '../position.store'
+import { posObs } from '../position.store'
 import { createState } from './create-state'
 
-export const posState = createState(posObservable, posCtx)
+export const posState = createState(posObs)

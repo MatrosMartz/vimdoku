@@ -15,7 +15,7 @@ export class PosSvc implements IPos {
 	#y
 
 	/**
-	 * Creates an instance of the Position class.
+	 * Creates an instance of the PosSvc class.
 	 * @param pos Initial Sudoku board.
 	 */
 	constructor(pos?: Partial<Pos>)

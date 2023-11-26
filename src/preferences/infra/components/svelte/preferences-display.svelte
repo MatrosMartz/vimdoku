@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Button, ButtonMenu } from '~/share/infra/components/svelte/buttons'
 	import { capitalCase } from '~/share/utils'
-	import { mediator } from '$cmd/infra/services'
+	import { med } from '$cmd/infra/services'
 	import { prefsState, screenState } from '$cmd/infra/stores/svelte'
 	import type { AllPreferences } from '$pref/domain/models'
 	import { PrefsSvc } from '$pref/domain/services'
@@ -22,10 +22,10 @@
 	}
 
 	function allHandler() {
-		mediator.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.PrefAll })
+		med.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.PrefAll })
 	}
 	function diffHandler() {
-		mediator.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.PrefDiff })
+		med.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.PrefDiff })
 	}
 </script>
 

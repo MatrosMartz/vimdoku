@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button, ButtonMenu, OptionsInput } from '~/share/infra/components/svelte'
-	import { mediator } from '$cmd/infra/services'
+	import { med } from '$cmd/infra/services'
 	import { DIFFICULTIES_NAMES, DifficultyKinds, SudokuActions } from '$sudoku/domain/models'
 
 	import { startType } from './start-screen.store'
@@ -12,7 +12,7 @@
 	}
 
 	function submitHandler() {
-		mediator.dispatch(SudokuActions.Start, { difficulty: DifficultyKinds[value] })
+		med.dispatch(SudokuActions.Start, { difficulty: DifficultyKinds[value] })
 	}
 </script>
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Icon } from '~/share/infra/components/svelte'
 	import { tooltip, type TooltipProps } from '~/share/infra/components/svelte/tooltip'
-	import { mediator } from '$cmd/infra/services'
+	import { med } from '$cmd/infra/services'
 	import { modeState, posState, screenState } from '$cmd/infra/stores/svelte'
 	import { DialogKinds, MainScreenKinds, ScreenActions } from '$screen/domain/models'
 	import { ModeKinds, MODES_KEYS, SudokuActions } from '$sudoku/domain/models'
@@ -12,7 +12,7 @@
 
 	let timeoutId: ReturnType<typeof setTimeout> | null = null
 
-	$: if (disabled) mediator.dispatch(ScreenActions.Exit)
+	$: if (disabled) med.dispatch(ScreenActions.Exit)
 	$: if (open) document.getElementById(`mode-${modeState.data}`)?.focus()
 
 	const tooltipProps: TooltipProps = {
@@ -21,14 +21,14 @@
 	}
 
 	function toggleHandler() {
-		if (disabled || open) mediator.dispatch(ScreenActions.Exit)
-		else mediator.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.InLn, opts: { type: 'modes' } })
+		if (disabled || open) med.dispatch(ScreenActions.Exit)
+		else med.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.InLn, opts: { type: 'modes' } })
 	}
 
 	function modeHandler({ currentTarget }: { currentTarget: HTMLInputElement }) {
 		const mode = currentTarget.value as ModeKinds
 
-		mediator.dispatch(SudokuActions.ChangeMode, { mode })
+		med.dispatch(SudokuActions.ChangeMode, { mode })
 	}
 
 	function focusHandler() {
@@ -39,11 +39,11 @@
 	}
 
 	function focusoutHandler() {
-		if (open) timeoutId = setTimeout(() => mediator.dispatch(ScreenActions.Exit), 150)
+		if (open) timeoutId = setTimeout(() => med.dispatch(ScreenActions.Exit), 150)
 	}
 
 	function keyupHandler({ key }: KeyboardEvent) {
-		if (key === 'Enter') mediator.dispatch(SudokuActions.Move, { type: 'set', position: posState.data })
+		if (key === 'Enter') med.dispatch(SudokuActions.Move, { type: 'set', position: posState.data })
 	}
 </script>
 

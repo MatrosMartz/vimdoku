@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte'
 
 	import { type Sugg } from '$cmd/domain/models'
-	import { executor } from '$cmd/infra/services'
+	import { exec } from '$cmd/infra/services'
 
 	import { input } from './input.store'
 
@@ -12,7 +12,7 @@
 
 	function clickHandler() {
 		if ($input != null) {
-			executor.searchAutocomplete(suggestion.input)
+			exec.searchAutocomplete(suggestion.input)
 			$input.value = suggestion.input
 			$input.focus()
 		}

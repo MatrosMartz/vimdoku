@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { DialogClose } from '~/share/infra/components/svelte'
-	import { executor } from '$cmd/infra/services'
+	import { exec } from '$cmd/infra/services'
 	import { screenState } from '$cmd/infra/stores/svelte'
 	import { DialogKinds } from '$screen/domain/models'
 
@@ -9,11 +9,11 @@
 	let form: HTMLFormElement
 
 	function submitHandler() {
-		if ($input != null) executor.exec($input.value)
+		if ($input != null) exec.run($input.value)
 	}
 
 	function inputHandler({ currentTarget }: { currentTarget: HTMLInputElement }) {
-		executor.searchAutocomplete(currentTarget.value)
+		exec.searchAutocomplete(currentTarget.value)
 	}
 
 	$: if ($screenState.dialog.kind === DialogKinds.Cmd) form.reset()

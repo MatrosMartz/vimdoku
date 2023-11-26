@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Button, ButtonMenu } from '~/share/infra/components/svelte'
 	import type { TooltipProps } from '~/share/infra/components/svelte/tooltip'
-	import { mediator } from '$cmd/infra/services'
+	import { med } from '$cmd/infra/services'
 	import { boardSavedState } from '$cmd/infra/stores/svelte'
 	import { SudokuActions } from '$sudoku/domain/models'
 
@@ -16,7 +16,7 @@
 	}
 
 	function resumeHandler() {
-		mediator.dispatch(SudokuActions.Resume)
+		med.dispatch(SudokuActions.Resume)
 	}
 </script>
 

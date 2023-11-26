@@ -3,39 +3,39 @@ import { type IPrefs, PrefActions, type PrefData } from '$pref/domain/models'
 import { type DialogData, type IScreen, MainScreenKinds, ScreenActions, type ScreenData } from '$screen/domain/models'
 import { type GameOpts, type IGame, SudokuActions, type SudokuData } from '$sudoku/domain/models'
 
-import type { IMediator, Mediator } from '../models'
+import type { IMed, Med } from '../models'
 
 interface MediatorDeps {
 	game: IGame
-	preferences: IPrefs
+	prefs: IPrefs
 	screen: IScreen
-	state: Mediator.State
+	state: Med.State
 }
 
 /** Represent a Mediator Service. */
-export class MediatorSvc implements IMediator {
+export class MedSvc implements IMed {
 	#game
 	#hasLoaded = false
 	#intervalId: ReturnType<typeof setInterval> | null = null
-	readonly #pref
+	readonly #prefs
 	readonly #screen
 	readonly #state
 
 	/**
-	 * Creates an instance of the MediatorSvc class.
+	 * Creates an instance of the MedSvc class.
 	 * @param deps An Object contains deps that the state manages.
 	 */
 	constructor(deps: MediatorDeps)
-	constructor({ game, preferences, screen, state }: MediatorDeps) {
+	constructor({ game, prefs, screen, state }: MediatorDeps) {
 		this.#game = game
-		this.#pref = preferences
+		this.#prefs = prefs
 		this.#screen = screen
 		this.#state = state
 		void this.load()
 	}
 
-	dispatch<Action extends Mediator.UnDataActions>(action: Action): this
-	dispatch<Action extends Mediator.DataActions>(action: Action, data: Mediator.DataDispatch[Action]): this
+	dispatch<Action extends Med.UnDataActions>(action: Action): this
+	dispatch<Action extends Med.DataActions>(action: Action, data: Med.DataDispatch[Action]): this
 	dispatch(action: unknown, data?: any) {
 		runAsync(async () => {
 			if (action === ScreenActions.Exit) this.#dExitScreen()
@@ -57,9 +57,9 @@ export class MediatorSvc implements IMediator {
 
 	async load() {
 		if (this.#hasLoaded) return
-		await Promise.all([this.#pref.load(), this.#game.load()])
+		await Promise.all([this.#prefs.load(), this.#game.load()])
 		this.#notify('boardSaved')
-		this.#notify('preferences')
+		this.#notify('prefs')
 		this.#hasLoaded = true
 	}
 
@@ -91,7 +91,7 @@ export class MediatorSvc implements IMediator {
 		if (data.type === 'right') this.#game.moveRight(data.times)
 		if (data.type === 'up') this.#game.moveUp(data.times)
 		if (data.type === 'set') this.#game.changePos(data.position)
-		this.#notify('position')
+		this.#notify('pos')
 	}
 
 	async #dGameResume() {
@@ -114,7 +114,7 @@ export class MediatorSvc implements IMediator {
 		this.#game = await this.#game.start(data)
 		this.#notify('board')
 
-		if (this.#pref.user.timer) {
+		if (this.#prefs.user.timer) {
 			this.#intervalId = setInterval(() => {
 				this.#game.timerInc()
 				this.#notify('timer')
@@ -139,27 +139,27 @@ export class MediatorSvc implements IMediator {
 	}
 
 	async #dPrefReset(data: PrefData.Reset) {
-		if (data.type === 'all') await this.#pref.resetAll().save()
-		else await this.#pref.resetByKey(data.key).save()
+		if (data.type === 'all') await this.#prefs.resetAll().save()
+		else await this.#prefs.resetByKey(data.key).save()
 	}
 
 	async #dPrefSave(data: PrefData.Save) {
-		if (data.type === 'all') await this.#pref.setAll(data.replace).save()
-		else await this.#pref.setByKey(data.key, data.replace).save()
-		this.#notify('preferences')
+		if (data.type === 'all') await this.#prefs.setAll(data.replace).save()
+		else await this.#prefs.setByKey(data.key, data.replace).save()
+		this.#notify('prefs')
 	}
 
 	/**
 	 * Updates the specified key in the observables with the current value from the state.
 	 * @param key The key to update in the observables.
 	 */
-	#notify<K extends Mediator.Keys>(key: K) {
-		if (key === 'board') this.#state.board.push(this.#game.board)
-		else if (key === 'boardSaved') this.#state.boardSaved.push(this.#game.isASaved)
-		else if (key === 'mode') this.#state.mode.push(this.#game.mode)
-		else if (key === 'position') this.#state.position.push(this.#game.position)
-		else if (key === 'preferences') this.#state.preferences.push(this.#pref.data)
-		else if (key === 'screen') this.#state.screen.push(this.#screen.data)
-		else if (key === 'timer') this.#state.timer.push(this.#game.timer)
+	#notify<K extends Med.Keys>(key: K) {
+		if (key === 'board') this.#state.board.update(this.#game.board)
+		else if (key === 'boardSaved') this.#state.boardSaved.update(this.#game.isASaved)
+		else if (key === 'mode') this.#state.mode.update(this.#game.mode)
+		else if (key === 'pos') this.#state.pos.update(this.#game.pos)
+		else if (key === 'prefs') this.#state.prefs.update(this.#prefs.data)
+		else if (key === 'screen') this.#state.screen.update(this.#screen.data)
+		else if (key === 'timer') this.#state.timer.update(this.#game.timer)
 	}
 }

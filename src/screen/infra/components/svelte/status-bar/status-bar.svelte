@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Icon } from '~/share/infra/components/svelte'
 	import { tooltip } from '~/share/infra/components/svelte/tooltip'
-	import { mediator } from '$cmd/infra/services'
+	import { med } from '$cmd/infra/services'
 	import { posState, screenState } from '$cmd/infra/stores/svelte'
 	import { DialogKinds, ScreenActions } from '$screen/domain/models'
 
@@ -10,10 +10,10 @@
 	$: tooltipProps = { id: 'describe-pos', text: `Row ${$posState.y}, Col ${$posState.x}` }
 
 	function cmdHandler() {
-		mediator.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.Cmd })
+		med.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.Cmd })
 	}
 	function prefHandler() {
-		mediator.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.PrefEdit })
+		med.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.PrefEdit })
 	}
 </script>
 

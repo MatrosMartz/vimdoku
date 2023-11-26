@@ -1,18 +1,18 @@
 import { readable } from 'svelte/store'
 
-import type { IContext, IObservable } from '~/share/domain/models'
+import type { IObs } from '~/share/domain/models'
 
-export function createState<T>(observable: IObservable<T>, ctx: IContext<T>) {
-	const { subscribe } = readable(ctx.data, observer => {
-		observable.add(observer)
-		observer(ctx.data)
-		return () => observable.remove(observer)
+export function createState<T>(obs: IObs<T>) {
+	const { subscribe } = readable(obs.data, observer => {
+		obs.add(observer)
+		observer(obs.data)
+		return () => obs.remove(observer)
 	})
 
 	return {
 		subscribe,
 		get data() {
-			return ctx.data
+			return obs.data
 		},
 	}
 }

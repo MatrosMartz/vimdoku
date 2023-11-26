@@ -1,4 +1,4 @@
-import { modeCtx, modeObservable } from '../modes.store'
+import { modeObs } from '../modes.store'
 import { createState } from './create-state'
 
-export const modeState = createState(modeObservable, modeCtx)
+export const modeState = createState(modeObs)

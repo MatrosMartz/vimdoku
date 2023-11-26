@@ -1,19 +1,19 @@
-import type { Mediator } from '$cmd/domain/models'
-import { MediatorSvc } from '$cmd/domain/services'
+import type { Med } from '$cmd/domain/models'
+import { MedSvc } from '$cmd/domain/services'
 import { prefs } from '$pref/infra/services'
 import { vimScreen } from '$screen/infra/services'
 import { game } from '$sudoku/infra/services'
 
-import { boardCtx, boardSavedCtx, modeCtx, posCtx, prefsCtx, screenCtx, timerCtx } from '../stores'
+import { boardObs, boardSavedObs, modeObs, posObs, prefsObs, screenObs, timerObs } from '../stores'
 
-const state: Mediator.State = {
-	board: boardCtx,
-	boardSaved: boardSavedCtx,
-	mode: modeCtx,
-	position: posCtx,
-	preferences: prefsCtx,
-	screen: screenCtx,
-	timer: timerCtx,
+const state: Med.State = {
+	board: boardObs,
+	boardSaved: boardSavedObs,
+	mode: modeObs,
+	pos: posObs,
+	prefs: prefsObs,
+	screen: screenObs,
+	timer: timerObs,
 }
 
-export const mediator = new MediatorSvc({ game, preferences: prefs, screen: vimScreen, state })
+export const med = new MedSvc({ game, prefs, screen: vimScreen, state })

@@ -6,13 +6,13 @@ interface SuggOpts {
 	id: string
 }
 
-/** Represent a Suggestions Service. */
+/** Represent a Suggestion Service. */
 export class SuggSvc implements ISugg {
 	readonly #data: Sugg
 	readonly #rgxStr: string
 
 	/**
-	 * Creates an instance of the ExecutorSvc class.
+	 * Creates an instance of the SuggSvc class.
 	 * @param opts Options for create Suggestion.
 	 */
 	constructor(opts: SuggOpts)
@@ -41,7 +41,7 @@ export class SuggSvc implements ISugg {
 		return array.map(value => new SuggSvc(fn(value)))
 	}
 
-	static getData(suggs: ISugg[]) {
+	static getArrayData(suggs: ISugg[]) {
 		return suggs.map(({ data }) => data)
 	}
 

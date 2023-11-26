@@ -1,4 +1,4 @@
-import { timerCtx, timerObservable } from '../timer.store'
+import { timerObs } from '../timer.store'
 import { createState } from './create-state'
 
-export const timerState = createState(timerObservable, timerCtx)
+export const timerState = createState(timerObs)

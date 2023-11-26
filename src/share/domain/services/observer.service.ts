@@ -1,70 +1,57 @@
-import type { IAsyncContext, IContext, IHistoryContext, IObservable, Observer } from '../models'
+import type { IAsyncObs, IHistoryObs, IObs, Obsr } from '../models'
 
-export class Observable<T> implements IObservable<T> {
-	readonly #observers = new Set<Observer<T>>()
-
-	add(observer: Observer<T>) {
-		this.#observers.add(observer)
-	}
-
-	remove(observer: Observer<T>) {
-		this.#observers.delete(observer)
-	}
-
-	update(data: T) {
-		for (const sub of this.#observers) sub(data)
-	}
-}
-
-/** Simulated key for protected field. */
-const observableKey = Symbol('observable')
-
-/** Represent a Context Service */
-export class ContextSvc<T> implements IContext<T> {
-	protected [observableKey]: IObservable<T>
+/** Represent a Observable Service */
+export class ObsSvc<T> implements IObs<T> {
 	#data: T
+	readonly #observers = new Set<Obsr<T>>()
 
 	/**
-	 * Creates an instance of the ContextSvc class.
-	 * @param observable Subscriptions Handler.
-	 * @param initialData The value with which the context is to be created.
+	 * Creates an instance of the ObservableSvc class.
+	 * @param initialData The value with which the observable is to be created.
 	 */
-	constructor(observable: IObservable<T>, initialData: T) {
+	constructor(initialData: T) {
 		this.#data = initialData
-		this[observableKey] = observable
 	}
 
 	get data() {
 		return this.#data
 	}
 
-	push(data: T): void {
+	add(observer: Obsr<T>) {
+		this.#observers.add(observer)
+		observer(this.#data)
+	}
+
+	remove(observer: Obsr<T>) {
+		this.#observers.delete(observer)
+	}
+
+	update(data: T) {
 		this.#data = data
-		this[observableKey].update(data)
+		for (const sub of this.#observers) sub(data)
 	}
 }
 
-/** Represent a Async Context Service */
-export class AsyncContextSvc<T> extends ContextSvc<T> implements IAsyncContext<T> {
+/** Represent a Async Observable Service */
+export class AsyncObsSvc<T> extends ObsSvc<T> implements IAsyncObs<T> {
 	async load(cb: () => Promise<T>): Promise<void> {
-		this.push(await cb())
+		this.update(await cb())
 	}
 }
 
-/** Represent a History Context Service */
-export class HistoryContextSvc<T> extends AsyncContextSvc<T> implements IHistoryContext<T> {
+/** Represent a History Observable Service */
+export class HistoryObsSvc<T> extends AsyncObsSvc<T> implements IHistoryObs<T> {
 	#cursor: number
 	readonly #emptyState: T
 	readonly #history: T[]
 
 	/**
-	 * Creates an instance of the HistoryContextSvc class.
-	 * @param observable Subscriptions Handler.
+	 * Creates an instance of the HistoryObservableSvc class.
 	 * @param emptyState The value that will represent empty state.
 	 * @param history Optional history with which the context is to be created.
 	 */
-	constructor(observable: IObservable<T>, emptyState: T, history: T[] = []) {
-		super(observable, emptyState)
+	constructor(emptyState: T, history: T[] = []) {
+		super(emptyState)
 		this.#emptyState = emptyState
 		this.#history = history
 		this.#cursor = this.#history.length
@@ -74,18 +61,18 @@ export class HistoryContextSvc<T> extends AsyncContextSvc<T> implements IHistory
 		return [...this.#history]
 	}
 
-	push(data: T): void {
+	update(data: T): void {
 		this.#history.push(data)
-		super.push(this.#emptyState)
+		super.update(this.#emptyState)
 	}
 
 	redo(): void {
 		if (this.#cursor < this.#history.length) this.#cursor++
-		super.push(this.data)
+		super.update(this.data)
 	}
 
 	undo(): void {
 		if (this.#cursor > 0) this.#cursor--
-		super.push(this.data)
+		super.update(this.data)
 	}
 }

@@ -1,6 +1,6 @@
-import { boardCtx, boardObservable, boardSavedCtx, boardSavedObservable } from '../sudoku.store'
+import { boardObs, boardSavedObs } from '../sudoku.store'
 import { createState } from './create-state'
 
-export const boardState = createState(boardObservable, boardCtx)
+export const boardState = createState(boardObs)
 
-export const boardSavedState = createState(boardSavedObservable, boardSavedCtx)
+export const boardSavedState = createState(boardSavedObs)

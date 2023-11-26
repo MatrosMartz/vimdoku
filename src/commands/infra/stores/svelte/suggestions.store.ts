@@ -1,4 +1,4 @@
-import { suggsCtx, suggsObservable } from '../suggestions.store'
+import { suggsObs } from '../suggestions.store'
 import { createState } from './create-state'
 
-export const suggsState = createState(suggsObservable, suggsCtx)
+export const suggsState = createState(suggsObs)
