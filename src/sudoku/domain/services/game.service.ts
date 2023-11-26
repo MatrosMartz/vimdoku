@@ -1,28 +1,28 @@
-import type { Position } from '~/share/domain/models'
-import { PositionService } from '~/share/domain/services'
+import type { Pos } from '~/share/domain/models'
+import { PosSvc } from '~/share/domain/services'
 import type { OptionalKeys } from '~/share/types'
 
 import { type Board, DifficultyKinds, type GameOpts, type ITimer, ModeKinds, type ValidNumbers } from '../models'
 import type { Game, IGame, IGameState, StartedGameOpts } from '../models/game.model'
 import type { GameRepo } from '../repositories'
-import { BoardService } from './board.service'
-import { SolutionService } from './solution.service'
-import { TimerService } from './timer.service'
+import { BoardSvc } from './board.service'
+import { SolutionSvc } from './solution.service'
+import { TimerSvc } from './timer.service'
 
 /** Simulated key for protected field. */
 const repo = Symbol('board-repo')
 
-abstract class GameService implements IGame {
+abstract class GameSvc implements IGame {
 	protected readonly [repo]: GameRepo
 	abstract readonly board: Board | null
 	abstract readonly isASaved: boolean
 	abstract readonly isStarted: boolean
 	abstract readonly mode: ModeKinds
-	abstract readonly position: Position
+	abstract readonly position: Pos
 	abstract readonly timer: string
 
 	/**
-	 * Creates an instance of the NonStartedGameService class.
+	 * Creates an instance of the NonStartedGameSvc class.
 	 * @param repo The repository for game data.
 	 */
 	constructor(gRepo: GameRepo) {
@@ -33,7 +33,7 @@ abstract class GameService implements IGame {
 		return this
 	}
 
-	changePos(position: Position) {
+	changePos(position: Pos) {
 		return this
 	}
 
@@ -87,12 +87,12 @@ abstract class GameService implements IGame {
 }
 
 /** Represent a Non-started Sudoku Game Service. */
-export class NonStartedGameService extends GameService {
+export class NonStartedGameSvc extends GameSvc {
 	readonly board = null
 	readonly isStarted = false
 	readonly mode = ModeKinds.X
-	readonly position = { ...PositionService.IDLE_POS }
-	readonly timer = TimerService.IDLE_TIMER
+	readonly position = { ...PosSvc.IDLE_POS }
+	readonly timer = TimerSvc.IDLE_TIMER
 
 	#isASaved = false
 
@@ -112,22 +112,22 @@ export class NonStartedGameService extends GameService {
 		if (boardData == null || optsData == null) return null
 
 		const data = new StartedGameData({
-			board: BoardService.fromJSON(boardData, optsData.solution),
-			pos: new PositionService(),
+			board: BoardSvc.fromJSON(boardData, optsData.solution),
+			pos: new PosSvc(),
 		})
 
-		return new StartedGameService({ data, repo: this[repo], timer: Number(timerData) })
+		return new StartedGameSvc({ data, repo: this[repo], timer: Number(timerData) })
 	}
 
-	async start(opts?: Partial<GameOpts>): Promise<StartedGameService>
-	async start({ difficulty = DifficultyKinds.Beginner, solution = SolutionService.create() }: Partial<GameOpts> = {}) {
-		const board = BoardService.create({ difficulty, solution })
+	async start(opts?: Partial<GameOpts>): Promise<StartedGameSvc>
+	async start({ difficulty = DifficultyKinds.Beginner, solution = SolutionSvc.create() }: Partial<GameOpts> = {}) {
+		const board = BoardSvc.create({ difficulty, solution })
 
 		await this[repo].create({ difficulty, solution: solution.toJSON() }, board.toJSON())
 
-		const data = new StartedGameData({ board, pos: new PositionService() })
+		const data = new StartedGameData({ board, pos: new PosSvc() })
 
-		return new StartedGameService({ data, repo: this[repo], timer: 0 })
+		return new StartedGameSvc({ data, repo: this[repo], timer: 0 })
 	}
 }
 
@@ -144,7 +144,7 @@ class StartedGameData implements Game {
 }
 
 /** Represent a Started Sudoku Game Service. */
-class StartedGameService extends GameService {
+class StartedGameSvc extends GameSvc {
 	readonly isASaved = true
 	readonly isStarted = true
 	readonly #data
@@ -152,15 +152,15 @@ class StartedGameService extends GameService {
 	readonly #timer: ITimer
 
 	/**
-	 * Creates an instance of the StartedGameService class.
-	 * @param opts Options for th[StartedGam]eService (game data and repository).
+	 * Creates an instance of the StartedGameSvc class.
+	 * @param opts Options for th[StartedGam]eSvc (game data and repository).
 	 */
 	constructor(opts: StartedGameOpts)
 	constructor({ data, repo, timer }: StartedGameOpts) {
 		super(repo)
 		this.#data = data
 		this.#state = GameState.create(data, data.mode)
-		this.#timer = new TimerService(timer)
+		this.#timer = new TimerSvc(timer)
 	}
 
 	get board() {
@@ -184,7 +184,7 @@ class StartedGameService extends GameService {
 		return this
 	}
 
-	changePos(position: Position) {
+	changePos(position: Pos) {
 		this.#state.changePos(position)
 		return this
 	}
@@ -196,7 +196,7 @@ class StartedGameService extends GameService {
 
 	async end() {
 		await this[repo].delete()
-		return new NonStartedGameService(this[repo])
+		return new NonStartedGameSvc(this[repo])
 	}
 
 	moveDown(times: number) {
@@ -271,7 +271,7 @@ abstract class GameState implements IGameState {
 		return GameState.create(this[data], mode)
 	}
 
-	changePos(position: Position) {
+	changePos(position: Pos) {
 		this[data].pos.change(position)
 		return this
 	}

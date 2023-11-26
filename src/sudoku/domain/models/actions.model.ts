@@ -1,4 +1,4 @@
-import type { Position } from '~/share/domain/models'
+import type { Pos } from '~/share/domain/models'
 
 import type { GameOpts } from './game-options.model'
 import type { ModeKinds } from './modes.model'
@@ -27,7 +27,7 @@ export namespace SudokuData {
 	}
 
 	interface SetMove {
-		position: Position
+		position: Pos
 		type: 'set'
 	}
 

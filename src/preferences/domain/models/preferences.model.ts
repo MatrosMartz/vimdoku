@@ -1,35 +1,35 @@
-import type { FormSchema } from '~/share/domain/models'
+import type { FormGroup, FormSchema } from '~/share/domain/models'
 import type { KeysByType } from '~/share/types'
 
-import { type SudokuEntries, sudokuFields, type SudokuPreferences } from './sudoku.model'
-import { type UserEntries, userFields, type UserPreferences } from './user.model'
-import { type VimEntries, vimFields, type VimPreferences } from './vim.model'
+import { type SudokuEntries, sudokuFields, type SudokuPrefs } from './sudoku.model'
+import { type UserEntries, userFields, type UserPrefs } from './user.model'
+import { type VimEntries, vimFields, type VimPrefs } from './vim.model'
 
-export interface Preferences {
-	sudoku: SudokuPreferences
-	user: UserPreferences
-	vim: VimPreferences
+export interface Prefs {
+	sudoku: SudokuPrefs
+	user: UserPrefs
+	vim: VimPrefs
 }
 
-export type AllPreferences = SudokuPreferences & UserPreferences & VimPreferences
+export type AllPreferences = SudokuPrefs & UserPrefs & VimPrefs
 
-export type PreferencesEntries = [['sudoku', SudokuEntries], ['user', UserEntries], ['vim', VimEntries]]
+export type PrefsEntries = [['sudoku', SudokuEntries], ['user', UserEntries], ['vim', VimEntries]]
 
-export const preferencesFormSchema = {
+export const prefsFormSchema = {
 	sudoku: sudokuFields,
 	user: userFields,
 	vim: vimFields,
 } as const satisfies FormSchema
 
-export interface IPreferences {
+export interface IPrefs {
 	/** Get the current data of preferences. */
-	readonly data: Preferences
+	readonly data: Prefs
 	/** Get the current value of the Sudoku preferences. */
-	readonly sudoku: SudokuPreferences
+	readonly sudoku: SudokuPrefs
 	/** Get the current value of the User preferences. */
-	readonly user: UserPreferences
+	readonly user: UserPrefs
 	/** Get the current value of the VIM preferences. */
-	readonly vim: VimPreferences
+	readonly vim: VimPrefs
 	/** Load from the repo. */
 	load(): Promise<void>
 	/** Reset to default values all preferences. */
@@ -45,7 +45,7 @@ export interface IPreferences {
 	 * @param preferences The new value for all preferences.
 	 * @throws {InvalidPreferencesError} If preferences is invalid.
 	 */
-	setAll(preferences: Preferences): this
+	setAll(preferences: Prefs): this
 	/**
 	 * Set specific preference.
 	 * @param key The key preference to the establish.
@@ -54,24 +54,33 @@ export interface IPreferences {
 	 */
 	setByKey<K extends keyof AllPreferences>(key: K, value: AllPreferences[K]): this
 	/** Converts the Preferences instance in JSON. */
-	toJSON(): Preferences
+	toJSON(): Prefs
 	/** Converts the Preferences instance to a JSON string. */
 	toString(): string
 }
 
 const ALL_FIELDS = { ...sudokuFields, ...userFields, ...vimFields }
 
-export const PREFERENCES_NAMES = Object.keys(ALL_FIELDS)
+export const PREFS_NAMES = Object.keys(ALL_FIELDS)
 
-type AllNames = keyof AllPreferences
+type AllNames = (typeof PREFS_NAMES)[0]
 type ToggleNames = KeysByType<AllPreferences, boolean>
 type NonToggleNames = Exclude<AllNames, ToggleNames>
 
-export const { TOGGLE_NAMES, NON_TOGGLE_NAMES } = PREFERENCES_NAMES.reduce(
+interface Names {
+	TOGGLE_NAMES: ToggleNames[]
+	NON_TOGGLE_NAMES: NonToggleNames[]
+}
+
+function isTogglePref<FG extends FormGroup>(schema: FG, name: keyof FG): name is ToggleNames {
+	return schema[name].type === 'toggle'
+}
+
+export const { TOGGLE_NAMES, NON_TOGGLE_NAMES } = PREFS_NAMES.reduce<Names>(
 	(acc, name) => {
-		if (ALL_FIELDS[name].type === 'toggle') acc.TOGGLE_NAMES.push(name as ToggleNames)
-		else acc.NON_TOGGLE_NAMES.push(name as NonToggleNames)
+		if (isTogglePref(ALL_FIELDS, name)) acc.TOGGLE_NAMES.push(name)
+		else acc.NON_TOGGLE_NAMES.push(name)
 		return acc
 	},
-	{ TOGGLE_NAMES: [] as ToggleNames[], NON_TOGGLE_NAMES: [] as NonToggleNames[] }
+	{ TOGGLE_NAMES: [], NON_TOGGLE_NAMES: [] }
 )

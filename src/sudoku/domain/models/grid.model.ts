@@ -1,9 +1,9 @@
-import type { Position } from '~/share/domain/models'
+import type { Pos } from '~/share/domain/models'
 import type { Tuple } from '~/share/types'
 
-export type CompareCBFn<T, U> = (compareCell: T, currCell: T, position: Position) => U
-export type CBFn<T, U> = (value: T, position: Position) => U
-export type CreateCBFn<T> = (pos: Position) => T
+export type CompareCBFn<T, U> = (compareCell: T, currCell: T, position: Pos) => U
+export type CBFn<T, U> = (value: T, position: Pos) => U
+export type CreateCBFn<T> = (pos: Pos) => T
 export type SubGrids<U> = {
 	[K in keyof U]: IGrid<U[K]>
 }
@@ -19,28 +19,28 @@ export interface IGrid<T> {
 	 * @param fn The comparison function.
 	 * @returns True if the comparison function returns true for all related cells, false otherwise.
 	 */
-	compareRelated(cellPos: Position, fn: CompareCBFn<T, boolean>): boolean
+	compareRelated(cellPos: Pos, fn: CompareCBFn<T, boolean>): boolean
 	/**
 	 * Compare a function with cells in the same box of the specified cell.
 	 * @param cellPos The position of the cell to compare with.
 	 * @param fn The comparison function.
 	 * @returns True if the comparison function returns true for all cells in the same box, false otherwise.
 	 */
-	compareWithBox(cellPos: Position, fn: CompareCBFn<T, boolean>): boolean
+	compareWithBox(cellPos: Pos, fn: CompareCBFn<T, boolean>): boolean
 	/**
 	 * Compare a function with cells in the same column of the specified cell.
 	 * @param cellPos The position of the cell to compare with.
 	 * @param fn The comparison function.
 	 * @returns True if the comparison function returns true for all cells in the same column, false otherwise.
 	 */
-	compareWithCol(cellPos: Position, fn: CompareCBFn<T, boolean>): boolean
+	compareWithCol(cellPos: Pos, fn: CompareCBFn<T, boolean>): boolean
 	/**
 	 * Compare a function with cells in the same row of the specified cell.
 	 * @param cellPos The position of the cell to compare with.
 	 * @param fn The comparison function.
 	 * @returns True if the comparison function returns true for all cells in the same row, false otherwise.
 	 */
-	compareWithRow(cellPos: Position, fn: CompareCBFn<T, boolean>): boolean
+	compareWithRow(cellPos: Pos, fn: CompareCBFn<T, boolean>): boolean
 	/**
 	 * Return a copy of grid.
 	 * @returns A new grid with the same data.
@@ -52,7 +52,7 @@ export interface IGrid<T> {
 	 * @param fn The function to edit cell.
 	 * @returns A new grid with the edited cell.
 	 */
-	editCell<U>(cellPos: Position, fn: CBFn<T, U>): IGrid<T | U>
+	editCell<U>(cellPos: Pos, fn: CBFn<T, U>): IGrid<T | U>
 	/**
 	 * Check if a given function returns true for all cells in a specific box.
 	 * @param box The box number (0-8).
@@ -88,7 +88,7 @@ export interface IGrid<T> {
 	 * @param position The position of the cell to retrieve.
 	 * @returns The value of the cell.
 	 */
-	getCell(position: Position): T
+	getCell(position: Pos): T
 
 	/**
 	 * Group and transform subgrids using the provided function.
@@ -143,7 +143,7 @@ export interface IGrid<T> {
 	 * @param map The transformation function to apply to separated cells.
 	 * @returns A new grid with the transformed values based on the filter.
 	 */
-	mapFiltered<U, S extends T>(filter: (cell: T, pos: Position) => cell is S, map: CBFn<S, U>): IGrid<T | U>
+	mapFiltered<U, S extends T>(filter: (cell: T, pos: Pos) => cell is S, map: CBFn<S, U>): IGrid<T | U>
 	/**
 	 * Map the values of cells in the entire grid using a provided mapping function.
 	 * @param fn The mapping function.
@@ -156,7 +156,7 @@ export interface IGrid<T> {
 	 * @param fn The mapping function.
 	 * @returns A new grid with the mapped values related to the specified cell.
 	 */
-	mapRelated<U>(cellPos: Position, fn: CBFn<T, U>): IGrid<T | U>
+	mapRelated<U>(cellPos: Pos, fn: CBFn<T, U>): IGrid<T | U>
 	/**
 	 * Map the values of cells in a specific col using a provided mapping function.
 	 * @param row The col number (0-8).

@@ -1,7 +1,7 @@
 import type { IAsyncContext, IContext, IHistoryContext, IObservable, Observer } from '../models'
 
 export class Observable<T> implements IObservable<T> {
-	#observers = new Set<Observer<T>>()
+	readonly #observers = new Set<Observer<T>>()
 
 	add(observer: Observer<T>) {
 		this.#observers.add(observer)
@@ -20,12 +20,12 @@ export class Observable<T> implements IObservable<T> {
 const observableKey = Symbol('observable')
 
 /** Represent a Context Service */
-export class ContextService<T> implements IContext<T> {
+export class ContextSvc<T> implements IContext<T> {
 	protected [observableKey]: IObservable<T>
 	#data: T
 
 	/**
-	 * Creates an instance of the ContextService class.
+	 * Creates an instance of the ContextSvc class.
 	 * @param observable Subscriptions Handler.
 	 * @param initialData The value with which the context is to be created.
 	 */
@@ -45,20 +45,20 @@ export class ContextService<T> implements IContext<T> {
 }
 
 /** Represent a Async Context Service */
-export class AsyncContextService<T> extends ContextService<T> implements IAsyncContext<T> {
+export class AsyncContextSvc<T> extends ContextSvc<T> implements IAsyncContext<T> {
 	async load(cb: () => Promise<T>): Promise<void> {
 		this.push(await cb())
 	}
 }
 
 /** Represent a History Context Service */
-export class HistoryContextService<T> extends AsyncContextService<T> implements IHistoryContext<T> {
+export class HistoryContextSvc<T> extends AsyncContextSvc<T> implements IHistoryContext<T> {
 	#cursor: number
-	#emptyState: T
-	#history: T[]
+	readonly #emptyState: T
+	readonly #history: T[]
 
 	/**
-	 * Creates an instance of the HistoryContextService class.
+	 * Creates an instance of the HistoryContextSvc class.
 	 * @param observable Subscriptions Handler.
 	 * @param emptyState The value that will represent empty state.
 	 * @param history Optional history with which the context is to be created.

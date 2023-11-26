@@ -1,6 +1,6 @@
-import type { Position } from '~/share/domain/models'
-import { ContextService, Observable, PositionService } from '~/share/domain/services'
+import type { Pos } from '~/share/domain/models'
+import { ContextSvc, Observable, PosSvc } from '~/share/domain/services'
 
-export const posObservable = new Observable<Position>()
+export const posObservable = new Observable<Pos>()
 
-export const posCtx = new ContextService(posObservable, PositionService.IDLE_POS)
+export const posCtx = new ContextSvc(posObservable, PosSvc.IDLE_POS)

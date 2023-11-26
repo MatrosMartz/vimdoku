@@ -2,24 +2,24 @@ import type { IContext } from '~/share/domain/models'
 import { DialogKinds, ScreenActions } from '$screen/domain/models'
 import { DifficultyKinds, SudokuActions } from '$sudoku/domain/models'
 
-import type { IExecutor, IMediator, ISuggestion, Suggestion } from '../models'
-import { SuggestionService } from '.'
+import type { IExecutor, IMediator, ISugg, Sugg } from '../models'
+import { SuggSvc } from '.'
 
 interface ExecutorDeps {
-	allSuggestions: ISuggestion[]
+	allSuggestions: ISugg[]
 	mediator: IMediator
-	suggsCtx: IContext<Suggestion[]>
+	suggsCtx: IContext<Sugg[]>
 }
 
 /** Represent a Executor Service. */
-export class ExecutorService implements IExecutor {
+export class ExecutorSvc implements IExecutor {
 	readonly #allSuggestions
-	#mediator
-	#suggsCtx
+	readonly #mediator
+	readonly #suggsCtx
 	#timeoutID: ReturnType<typeof setTimeout> | null = null
 
 	/**
-	 * Creates an instance of the ExecutorService class.
+	 * Creates an instance of the ExecutorSvc class.
 	 * @param deps An object contains mediator service and other dependencies.
 	 */
 	constructor(deps: ExecutorDeps)
@@ -64,7 +64,7 @@ export class ExecutorService implements IExecutor {
 
 		this.#timeoutID = setTimeout(() => {
 			const newSuggs = this.#allSuggestions.filter(suggs => suggs.match(cmdLike))
-			this.#suggsCtx.push(SuggestionService.getData(newSuggs))
+			this.#suggsCtx.push(SuggSvc.getData(newSuggs))
 			this.#timeoutID = null
 		}, 500)
 

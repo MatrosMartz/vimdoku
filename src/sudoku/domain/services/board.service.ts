@@ -1,17 +1,17 @@
-import type { Position } from '~/share/domain/models'
+import type { Pos } from '~/share/domain/models'
 import { InvalidBoardError } from '~/share/utils'
 
 import { CellKinds, type GameOpts, type ICell, type IGrid, type SolutionJSON, type ValidNumbers } from '../models'
 import { type Board, type BoardJSON, type IBoard } from '../models/board.model'
-import { CellService } from './cell.service'
-import { GridService } from './grid.service'
+import { CellSvc } from './cell.service'
+import { GridSvc } from './grid.service'
 
 /** Represent a Sudoku Board Service. */
-export class BoardService implements IBoard {
+export class BoardSvc implements IBoard {
 	#grid
 
 	/**
-	 * Creates an instance of the BoardService class.
+	 * Creates an instance of the BoardSvc class.
 	 * @param grid Initial Sudoku board.
 	 */
 	constructor(grid: IGrid<ICell>) {
@@ -23,22 +23,22 @@ export class BoardService implements IBoard {
 	}
 
 	/**
-	 * Create an instance of BoardService with options.
+	 * Create an instance of BoardSvc with options.
 	 * @param opts Options for create board (optional).
 	 */
-	static create(opts: GameOpts): BoardService
+	static create(opts: GameOpts): BoardSvc
 	static create({ difficulty, solution }: GameOpts) {
 		const diffNum = Number(difficulty)
-		const grid = GridService.create<ICell>(pos => {
+		const grid = GridSvc.create<ICell>(pos => {
 			const isInitial = Boolean(Math.floor(Math.random() * diffNum))
-			return CellService.create({ isInitial, solution: solution.grid.getCell(pos) })
+			return CellSvc.create({ isInitial, solution: solution.grid.getCell(pos) })
 		})
 
-		return new BoardService(grid)
+		return new BoardSvc(grid)
 	}
 
 	/**
-	 * Create an instance of BoardService from a JSON string
+	 * Create an instance of BoardSvc from a JSON string
 	 * @param boardLike JSON representation of board.
 	 * @param solution JSON representation of solutions.
 	 * @throws {InvalidBoardError} If `boardLike` is not a valid JSON.
@@ -46,10 +46,8 @@ export class BoardService implements IBoard {
 	static fromJSON(boardLike: BoardJSON, solution: SolutionJSON) {
 		try {
 			if (Array.isArray(boardLike)) {
-				const data = new GridService(boardLike).mapGrid<ICell>((json, { y, x }) =>
-					CellService.fromJSON(json, solution[y][x])
-				)
-				return new BoardService(data)
+				const data = new GridSvc(boardLike).mapGrid<ICell>((json, { y, x }) => CellSvc.fromJSON(json, solution[y][x]))
+				return new BoardSvc(data)
 			} else throw new InvalidBoardError(boardLike)
 		} catch (err) {
 			throw err instanceof InvalidBoardError ? err : new InvalidBoardError(boardLike, err)
@@ -57,7 +55,7 @@ export class BoardService implements IBoard {
 	}
 
 	/**
-	 * Create an instance of BoardService from a JSON string
+	 * Create an instance of BoardSvc from a JSON string
 	 * @param boardLike JSON representation of board.
 	 * @param solution JSON representation of solutions.
 	 * @throws {InvalidBoardError} If `boardLike` is not a valid JSON string.
@@ -72,7 +70,7 @@ export class BoardService implements IBoard {
 		}
 	}
 
-	clear(cellPos: Position) {
+	clear(cellPos: Pos) {
 		this.#grid = this.#grid.editCell(cellPos, cell => cell.clear())
 
 		return this
@@ -86,13 +84,13 @@ export class BoardService implements IBoard {
 		return JSON.stringify(this.toJSON())
 	}
 
-	toggleNotes(cellPos: Position, num: ValidNumbers) {
+	toggleNotes(cellPos: Pos, num: ValidNumbers) {
 		this.#grid = this.#grid.editCell(cellPos, cell => cell.toggleNote(num))
 
 		return this
 	}
 
-	write(cellPos: Position, num: ValidNumbers) {
+	write(cellPos: Pos, num: ValidNumbers) {
 		if (this.#grid.getCell(cellPos).kind !== CellKinds.Initial)
 			this.#grid = this.#grid
 				.editCell(cellPos, cell => cell.writeValue(num))

@@ -1,20 +1,20 @@
-import type { Position } from '~/share/domain/models'
+import type { Pos } from '~/share/domain/models'
 import type { Tuple } from '~/share/types'
 import { box, createMatrix, InvalidSolutionError, iterateMatrix, randomNumbers } from '~/share/utils'
 
 import { type ISolution, type SolutionGrid, type SolutionJSON, type ValidNumbers } from '../models'
-import { GridService } from './grid.service'
+import { GridSvc } from './grid.service'
 
 function notArrayErrorMsgRgx() {
 	return /^Cannot read properties of undefined \(reading '[0-8]'\)/
 }
 
 /** Represent a Sudoku Solution Service. */
-export class SolutionService implements ISolution {
-	#grid
+export class SolutionSvc implements ISolution {
+	readonly #grid
 
 	/**
-	 * Creates an instance of the SolutionService class.
+	 * Creates an instance of the SolutionSvc class.
 	 * @param grid Solution Data.
 	 */
 	constructor(grid: SolutionGrid) {
@@ -44,13 +44,13 @@ export class SolutionService implements ISolution {
 		}
 	}
 
-	/** Create an instance of the SolutionService. */
+	/** Create an instance of the SolutionSvc. */
 	static create() {
-		return new SolutionService(SolutionService.#fillSolution())
+		return new SolutionSvc(SolutionSvc.#fillSolution())
 	}
 
 	/**
-	 * Create an instance of the SolutionService from a JSON string.
+	 * Create an instance of the SolutionSvc from a JSON string.
 	 * @param solutionLike JSON representation of solution.
 	 * @throws {InvalidSolutionError} If `solutionLike` is not a valid JSON string.
 	 * @example
@@ -60,7 +60,7 @@ export class SolutionService implements ISolution {
 	static fromString(solutionLike: string) {
 		try {
 			const initSolution = JSON.parse(solutionLike)
-			return new SolutionService(new GridService(initSolution))
+			return new SolutionSvc(new GridSvc(initSolution))
 		} catch (err) {
 			throw new InvalidSolutionError(solutionLike, err)
 		}
@@ -73,7 +73,7 @@ export class SolutionService implements ISolution {
 	 * @param position The position of the cell to check.
 	 * @private
 	 */
-	static #cellIsSafe(value: number[][], num: number, { y, x }: Position) {
+	static #cellIsSafe(value: number[][], num: number, { y, x }: Pos) {
 		if (value[y][x] !== 0) return false
 
 		for (let i = 0; i < 9; i++) {
@@ -105,7 +105,7 @@ export class SolutionService implements ISolution {
 				}
 			}
 		}
-		return new GridService(value as Tuple<Tuple<ValidNumbers, 9>, 9>)
+		return new GridSvc(value as Tuple<Tuple<ValidNumbers, 9>, 9>)
 	}
 
 	toJSON(): SolutionJSON {

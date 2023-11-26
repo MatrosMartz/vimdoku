@@ -1,18 +1,18 @@
 import type { RequireOne } from '~/share/types'
 
-export interface Position {
+export interface Pos {
 	x: number
 	y: number
 }
 
-export interface IPosition {
+export interface IPos {
 	/**
 	 * Change the current position by updating the row and/or column.
 	 * @param pos An object containing row and/or col properties to update the position.
 	 */
-	change(pos: RequireOne<Position>): this
+	change(pos: RequireOne<Pos>): this
 	/** Get the current data of position. */
-	get data(): Position
+	get data(): Pos
 	/**
 	 * Move the position down by a specified number of times within the valid range.
 	 * @param times The number of times to move down.

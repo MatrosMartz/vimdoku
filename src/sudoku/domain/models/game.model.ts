@@ -1,4 +1,4 @@
-import type { IPosition, Position } from '~/share/domain/models'
+import type { IPos, Pos } from '~/share/domain/models'
 
 import type { GameRepo } from '../repositories'
 import type { Board, IBoard } from './board.model'
@@ -9,7 +9,7 @@ import type { ValidNumbers } from './notes.model'
 export interface Game {
 	readonly board: IBoard
 	mode: ModeKinds
-	readonly pos: IPosition
+	readonly pos: IPos
 }
 
 export interface StartedGameOpts {
@@ -30,7 +30,7 @@ export interface IGameState {
 	 * @param position The new position.
 	 * @returns The updated game state.
 	 */
-	changePos(position: Position): this
+	changePos(position: Pos): this
 	/**
 	 * Clear the value and notes at the selected cell on the game.
 	 * @returns The updated game state object.
@@ -84,7 +84,7 @@ export interface IGame {
 	/** Get the game mode. */
 	readonly mode: ModeKinds
 	/** Get the current position. */
-	readonly position: Position
+	readonly position: Pos
 	/** Get the current value of timer. */
 	readonly timer: string
 	/**
@@ -98,7 +98,7 @@ export interface IGame {
 	 * @param position The new position.
 	 * @returns The updated game.
 	 */
-	changePos(position: Position): this
+	changePos(position: Pos): this
 	/**
 	 * Clear the value and notes at the current position on the game board.
 	 * @returns The updated game.

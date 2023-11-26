@@ -1,7 +1,7 @@
-import { ContextService, Observable } from '~/share/domain/services'
+import { ContextSvc, Observable } from '~/share/domain/services'
 import type { VimScreen } from '$screen/domain/models'
-import { ScreenService } from '$screen/domain/services'
+import { ScreenSvc } from '$screen/domain/services'
 
 export const screenObservable = new Observable<VimScreen>()
 
-export const screenCtx = new ContextService(screenObservable, ScreenService.DEFAULT_SCREEN)
+export const screenCtx = new ContextSvc(screenObservable, ScreenSvc.DEFAULT_SCREEN)

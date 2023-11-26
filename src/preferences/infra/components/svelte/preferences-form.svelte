@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { Form } from '~/share/infra/components/svelte'
 	import { mediator } from '$cmd/infra/services'
-	import { prefState } from '$cmd/infra/stores/svelte'
-	import { PrefActions, preferencesFormSchema } from '$pref/domain/models'
-	import { PreferencesService } from '$pref/domain/services'
+	import { prefsState } from '$cmd/infra/stores/svelte'
+	import { PrefActions, prefsFormSchema } from '$pref/domain/models'
+	import { PrefsSvc } from '$pref/domain/services'
 </script>
 
 <Form
-	defaultValues={PreferencesService.DEFAULT_DATA}
-	initialValues={prefState.data}
-	schema={preferencesFormSchema}
+	defaultValues={PrefsSvc.DEFAULT_DATA}
+	initialValues={prefsState.data}
+	schema={prefsFormSchema}
 	on:submit={({ detail }) => {
 		mediator.dispatch(PrefActions.Save, { type: 'all', replace: detail })
 	}}

@@ -1,47 +1,27 @@
 import type { Field } from '~/share/domain/models'
 import { InvalidPreferencesError, sameStructure } from '~/share/utils'
 
-import {
-	type AllPreferences,
-	type IPreferences,
-	Langs,
-	type Preferences,
-	type PreferencesEntries,
-	sudokuFields,
-	type SudokuPreferences,
-	userFields,
-	type UserPreferences,
-	vimFields,
-	type VimPreferences,
-} from '../models'
-import type { PreferencesRepo } from '../repositories'
+import { type AllPreferences, type IPrefs, type Prefs, type PrefsEntries } from '../models'
+import { sudokuFields, type SudokuPrefs } from '../models/sudoku.model'
+import { Langs, userFields, type UserPrefs } from '../models/user.model'
+import { vimFields, type VimPrefs } from '../models/vim.model'
+import type { PrefsRepo } from '../repositories'
 
 const { freeze: _f } = Object
-
-const sudoku: SudokuPreferences = {
-	automaticNoteDeletion: true,
-	automaticValidation: true,
-	highlightNumber: true,
-	remainingNumbers: true,
-}
-
-const user: UserPreferences = { animations: true, language: Langs.EN, theme: 'default', timer: true }
-
-const vim: VimPreferences = { fontSize: 16, history: 100, numbers: true, relativeNumbers: false }
 
 function createKeyError(key: string, value: unknown) {
 	return new InvalidPreferencesError(`the key "${key}" in sudoku can not have the value "${JSON.stringify(value)}"`)
 }
 
 const keyIn = {
-	sudoku(key: string): key is keyof SudokuPreferences {
-		return key in PreferencesService.DEFAULT_SUDOKU
+	sudoku(key: string): key is keyof SudokuPrefs {
+		return key in PrefsSvc.DEFAULT_SUDOKU
 	},
-	user(key: string): key is keyof UserPreferences {
-		return key in PreferencesService.DEFAULT_USER
+	user(key: string): key is keyof UserPrefs {
+		return key in PrefsSvc.DEFAULT_USER
 	},
-	vim(key: string): key is keyof VimPreferences {
-		return key in PreferencesService.DEFAULT_VIM
+	vim(key: string): key is keyof VimPrefs {
+		return key in PrefsSvc.DEFAULT_VIM
 	},
 }
 
@@ -61,42 +41,59 @@ function validateField(value: unknown, field: Field) {
 }
 
 const validatePref = {
-	sudoku<K extends keyof SudokuPreferences>(key: K, value: unknown): value is SudokuPreferences[K] {
+	sudoku<K extends keyof SudokuPrefs>(key: K, value: unknown): value is SudokuPrefs[K] {
 		return validateField(value, sudokuFields[key])
 	},
-	user<K extends keyof UserPreferences>(key: K, value: unknown): value is UserPreferences[K] {
+	user<K extends keyof UserPrefs>(key: K, value: unknown): value is UserPrefs[K] {
 		return validateField(value, userFields[key])
 	},
-	vim<K extends keyof VimPreferences>(key: K, value: unknown): value is VimPreferences[K] {
+	vim<K extends keyof VimPrefs>(key: K, value: unknown): value is VimPrefs[K] {
 		return validateField(value, vimFields[key])
 	},
 }
 
 /** Represent a Preferences Service for game. */
-export class PreferencesService implements IPreferences {
+export class PrefsSvc implements IPrefs {
 	/** Default all Preferences. */
-	static readonly DEFAULT_DATA = _f<Preferences>({ sudoku, user, vim })
+	static readonly DEFAULT_DATA: Readonly<Prefs>
 	/** Default Sudoku Preferences. */
-	static readonly DEFAULT_SUDOKU = _f(sudoku)
-	/** Default User Preferences. */
-	static readonly DEFAULT_USER = _f(user)
-	/** Default VIM preferences. */
-	static readonly DEFAULT_VIM = _f(vim)
+	static readonly DEFAULT_SUDOKU: Readonly<SudokuPrefs> = _f({
+		automaticNoteDeletion: true,
+		automaticValidation: true,
+		highlightNumber: true,
+		remainingNumbers: true,
+	})
 
-	#repo
-	#sudoku: SudokuPreferences = { ...PreferencesService.DEFAULT_SUDOKU }
-	#user: UserPreferences = { ...PreferencesService.DEFAULT_USER }
-	#vim: VimPreferences = { ...PreferencesService.DEFAULT_VIM }
+	/** Default User Preferences. */
+	static readonly DEFAULT_USER: Readonly<UserPrefs> = _f({
+		animations: true,
+		language: Langs.EN,
+		theme: 'default',
+		timer: true,
+	})
+
+	/** Default VIM preferences. */
+	static readonly DEFAULT_VIM: Readonly<VimPrefs> = _f({
+		fontSize: 16,
+		history: 100,
+		numbers: true,
+		relativeNumbers: false,
+	})
+
+	readonly #repo
+	#sudoku: SudokuPrefs = { ...PrefsSvc.DEFAULT_SUDOKU }
+	#user: UserPrefs = { ...PrefsSvc.DEFAULT_USER }
+	#vim: VimPrefs = { ...PrefsSvc.DEFAULT_VIM }
 
 	/**
-	 * Create an instance of the PreferencesService class.
+	 * Create an instance of the PreferencesSvc class.
 	 * @param repo Initial Sudoku board.
 	 */
-	constructor(repo: PreferencesRepo) {
+	constructor(repo: PrefsRepo) {
 		this.#repo = repo
 	}
 
-	get data(): Preferences {
+	get data(): Prefs {
 		return { sudoku: this.sudoku, user: this.user, vim: this.vim }
 	}
 
@@ -117,8 +114,8 @@ export class PreferencesService implements IPreferences {
 	 * @param preferences The object to checked.
 	 * @readonly True if it complies with the structure, False if it doesn't.
 	 */
-	static check(preferences: Preferences) {
-		return sameStructure(preferences, PreferencesService.DEFAULT_DATA)
+	static check(preferences: Prefs) {
+		return sameStructure(preferences, PrefsSvc.DEFAULT_DATA)
 	}
 
 	/**
@@ -126,9 +123,9 @@ export class PreferencesService implements IPreferences {
 	 * @param preferences The preferences provided.
 	 * @returns Preferences Entries
 	 */
-	static entries(preferences: Preferences) {
+	static entries(preferences: Prefs) {
 		const entries = Object.entries(preferences) as Array<[string, unknown]>
-		return entries.map(([key, value]) => [key, Object.entries(value)]) as unknown as PreferencesEntries
+		return entries.map(([key, value]) => [key, Object.entries(value)]) as unknown as PrefsEntries
 	}
 
 	/**
@@ -137,9 +134,9 @@ export class PreferencesService implements IPreferences {
 	 * @returns Default value of the specified preference.
 	 */
 	static getDefaultValue<K extends keyof AllPreferences>(key: K) {
-		if (keyIn.sudoku(key)) return PreferencesService.DEFAULT_SUDOKU[key]
-		if (keyIn.user(key)) return PreferencesService.DEFAULT_USER[key]
-		if (keyIn.vim(key)) return PreferencesService.DEFAULT_VIM[key]
+		if (keyIn.sudoku(key)) return PrefsSvc.DEFAULT_SUDOKU[key]
+		if (keyIn.user(key)) return PrefsSvc.DEFAULT_USER[key]
+		if (keyIn.vim(key)) return PrefsSvc.DEFAULT_VIM[key]
 	}
 
 	async load() {
@@ -153,16 +150,16 @@ export class PreferencesService implements IPreferences {
 	}
 
 	resetAll() {
-		this.#sudoku = { ...PreferencesService.DEFAULT_SUDOKU }
-		this.#user = { ...PreferencesService.DEFAULT_USER }
-		this.#vim = { ...PreferencesService.DEFAULT_VIM }
+		this.#sudoku = { ...PrefsSvc.DEFAULT_SUDOKU }
+		this.#user = { ...PrefsSvc.DEFAULT_USER }
+		this.#vim = { ...PrefsSvc.DEFAULT_VIM }
 		return this
 	}
 
 	resetByKey<K extends keyof AllPreferences>(key: K) {
-		if (keyIn.sudoku(key)) this.#sudoku = { ...this.#sudoku, [key]: PreferencesService.DEFAULT_SUDOKU[key] }
-		if (keyIn.user(key)) this.#user = { ...this.#user, [key]: PreferencesService.DEFAULT_USER[key] }
-		if (keyIn.vim(key)) this.#vim = { ...this.#vim, [key]: PreferencesService.DEFAULT_VIM[key] }
+		if (keyIn.sudoku(key)) this.#sudoku = { ...this.#sudoku, [key]: PrefsSvc.DEFAULT_SUDOKU[key] }
+		if (keyIn.user(key)) this.#user = { ...this.#user, [key]: PrefsSvc.DEFAULT_USER[key] }
+		if (keyIn.vim(key)) this.#vim = { ...this.#vim, [key]: PrefsSvc.DEFAULT_VIM[key] }
 		return this
 	}
 
@@ -170,8 +167,8 @@ export class PreferencesService implements IPreferences {
 		await this.#repo.save(this.data)
 	}
 
-	setAll(preferences: Preferences) {
-		if (!PreferencesService.check(preferences)) throw new InvalidPreferencesError(preferences)
+	setAll(preferences: Prefs) {
+		if (!PrefsSvc.check(preferences)) throw new InvalidPreferencesError(preferences)
 
 		this.#sudoku = preferences.sudoku
 		this.#user = preferences.user

@@ -3,15 +3,15 @@ import { type DialogData, DialogKinds, type IScreen, MainScreenKinds, type VimSc
 const { freeze: _f } = Object
 
 /** Represent a VIM-like Screen Service for Sudoku game. */
-export class ScreenService implements IScreen {
+export class ScreenSvc implements IScreen {
 	/** Define default values for screen. */
 	static readonly DEFAULT_SCREEN = _f<VimScreen>({
 		dialog: _f({ kind: DialogKinds.None, opts: null }),
 		main: MainScreenKinds.Start,
 	})
 
-	#dialog: DialogData = ScreenService.DEFAULT_SCREEN.dialog
-	#main = ScreenService.DEFAULT_SCREEN.main
+	#dialog: DialogData = ScreenSvc.DEFAULT_SCREEN.dialog
+	#main = ScreenSvc.DEFAULT_SCREEN.main
 	#prev: null | MainScreenKinds = null
 
 	get data(): VimScreen {
@@ -27,7 +27,7 @@ export class ScreenService implements IScreen {
 	}
 
 	close() {
-		if (this.#dialog.kind !== DialogKinds.None) this.#dialog = structuredClone(ScreenService.DEFAULT_SCREEN.dialog)
+		if (this.#dialog.kind !== DialogKinds.None) this.#dialog = structuredClone(ScreenSvc.DEFAULT_SCREEN.dialog)
 		else if (this.#prev != null) {
 			this.#main = structuredClone(this.#prev)
 			this.#prev = null

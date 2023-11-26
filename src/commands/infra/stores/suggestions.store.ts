@@ -1,6 +1,6 @@
-import { ContextService, Observable } from '~/share/domain/services'
-import type { Suggestion } from '$cmd/domain/models'
+import { ContextSvc, Observable } from '~/share/domain/services'
+import type { Sugg } from '$cmd/domain/models'
 
-export const suggsObservable = new Observable<Suggestion[]>()
+export const suggsObservable = new Observable<Sugg[]>()
 
-export const suggsCtx = new ContextService(suggsObservable, [])
+export const suggsCtx = new ContextSvc(suggsObservable, [])

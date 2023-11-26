@@ -1,5 +1,5 @@
 import { runAsync } from '~/share/utils'
-import { type IPreferences, PrefActions, type PrefData } from '$pref/domain/models'
+import { type IPrefs, PrefActions, type PrefData } from '$pref/domain/models'
 import { type DialogData, type IScreen, MainScreenKinds, ScreenActions, type ScreenData } from '$screen/domain/models'
 import { type GameOpts, type IGame, SudokuActions, type SudokuData } from '$sudoku/domain/models'
 
@@ -7,13 +7,13 @@ import type { IMediator, Mediator } from '../models'
 
 interface MediatorDeps {
 	game: IGame
-	preferences: IPreferences
+	preferences: IPrefs
 	screen: IScreen
 	state: Mediator.State
 }
 
 /** Represent a Mediator Service. */
-export class MediatorService implements IMediator {
+export class MediatorSvc implements IMediator {
 	#game
 	#hasLoaded = false
 	#intervalId: ReturnType<typeof setInterval> | null = null
@@ -22,7 +22,7 @@ export class MediatorService implements IMediator {
 	readonly #state
 
 	/**
-	 * Creates an instance of the MediatorService class.
+	 * Creates an instance of the MediatorSvc class.
 	 * @param deps An Object contains deps that the state manages.
 	 */
 	constructor(deps: MediatorDeps)

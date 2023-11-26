@@ -1,18 +1,18 @@
 import { describe, expect, test } from 'vitest'
 
-import { SuggestionService } from './suggestions.service'
+import { SuggSvc } from './suggestions.service'
 
-interface SuggestionExpect {
+interface SuggExpect {
 	innerText: string
 	input: string
 }
 
-interface SuggestionsCase {
+interface SuggCase {
 	cmdStr: string
-	expected: SuggestionExpect
+	expected: SuggExpect
 }
 
-const SUGGESTIONS_CASES: SuggestionsCase[] = [
+const SUGGESTIONS_CASES: SuggCase[] = [
 	{
 		cmdStr: 'h[elp]',
 		expected: {
@@ -59,9 +59,9 @@ const SUGGESTIONS_CASES: SuggestionsCase[] = [
 	},
 ]
 
-describe.concurrent('SuggestionService', () => {
+describe.concurrent('SuggestionSvc', () => {
 	describe.each(SUGGESTIONS_CASES)('`cmdStr` is $cmdStr', ({ cmdStr, expected }) => {
-		const suggestion = new SuggestionService({ cmdStr, descriptions: 'some', id: 'some' })
+		const suggestion = new SuggSvc({ cmdStr, descriptions: 'some', id: 'some' })
 		test(`\`data.input\` Should be '${expected.input}'`, () => {
 			expect(suggestion.data.input).toBe(expected.input)
 		})

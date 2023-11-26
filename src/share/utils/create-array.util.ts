@@ -1,4 +1,4 @@
-import type { Position } from '../domain/models'
+import type { Pos } from '../domain/models'
 import type { Tuple } from '../types'
 
 export function createArray<T, L extends number>(length: L, mapFn: (index: number) => T) {
@@ -9,7 +9,7 @@ export function createArray<T, L extends number>(length: L, mapFn: (index: numbe
 	return array as Tuple<T, L>
 }
 
-export function createMatrix<T, L extends number>(length: L, mapFn: (position: Position) => T) {
+export function createMatrix<T, L extends number>(length: L, mapFn: (position: Pos) => T) {
 	return createArray(length, y => createArray(length, x => mapFn({ y, x })))
 }
 

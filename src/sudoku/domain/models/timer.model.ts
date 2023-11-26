@@ -3,17 +3,17 @@ export interface ITimer {
 	readonly data: number
 	/**
 	 * Decrements the current time value by 1 second.
-	 * @returns This TimerService instance after decrementing the time value.
+	 * @returns This TimerSvc instance after decrementing the time value.
 	 */
 	dec(): this
 	/**
 	 * Increments the current time value by 1 second.
-	 * @returns This TimerService instance after incrementing the time value.
+	 * @returns This TimerSvc instance after incrementing the time value.
 	 */
 	inc(): this
 	/**
 	 * Resets the current time value to 0 seconds.
-	 * @returns This TimerService instance after resetting the time value.
+	 * @returns This TimerSvc instance after resetting the time value.
 	 */
 	reset(): this
 	/**

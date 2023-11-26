@@ -7,6 +7,6 @@ export const vimFields = {
 	relativeNumbers: { type: 'toggle' },
 } as const satisfies FormGroup
 
-export type VimPreferences = FieldsToModel<typeof vimFields>
+export type VimPrefs = FieldsToModel<typeof vimFields>
 
 export type VimEntries = FieldsEntries<typeof vimFields>

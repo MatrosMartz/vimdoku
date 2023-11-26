@@ -1,3 +1,3 @@
-import { ScreenService } from '$screen/domain/services'
+import { ScreenSvc } from '$screen/domain/services'
 
-export const vimScreen = new ScreenService()
+export const vimScreen = new ScreenSvc()

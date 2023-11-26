@@ -1,9 +1,9 @@
 import { createBrowserStorage } from '~/share/infra/repositories'
-import type { Preferences } from '$pref/domain/models'
-import type { PreferencesRepo } from '$pref/domain/repositories'
+import type { Prefs } from '$pref/domain/models'
+import type { PrefsRepo } from '$pref/domain/repositories'
 
-export class BrowserPreferencesRepo implements PreferencesRepo {
-	#storage
+export class BrowserPrefsRepo implements PrefsRepo {
+	readonly #storage
 
 	constructor(name = 'preferences') {
 		this.#storage = createBrowserStorage(name)
@@ -20,10 +20,10 @@ export class BrowserPreferencesRepo implements PreferencesRepo {
 	async load() {
 		const data = this.#storage.get()
 
-		return data == null ? null : (JSON.parse(data) as Preferences)
+		return data == null ? null : (JSON.parse(data) as Prefs)
 	}
 
-	async save(preferences: Preferences) {
+	async save(preferences: Prefs) {
 		this.#storage.set(JSON.stringify(preferences))
 	}
 }

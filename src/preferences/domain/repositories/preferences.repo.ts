@@ -1,8 +1,8 @@
-import type { Preferences } from '../models'
+import type { Prefs } from '../models'
 
-export interface PreferencesRepo {
+export interface PrefsRepo {
 	delete(): Promise<void>
 	has(): Promise<boolean>
-	load(): Promise<Preferences | null>
-	save(preferences: Preferences): Promise<void>
+	load(): Promise<Prefs | null>
+	save(preferences: Prefs): Promise<void>
 }

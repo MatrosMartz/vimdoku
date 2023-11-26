@@ -12,6 +12,6 @@ export const userFields = {
 	timer: { type: 'toggle' },
 } as const satisfies FormGroup
 
-export type UserPreferences = FieldsToModel<typeof userFields>
+export type UserPrefs = FieldsToModel<typeof userFields>
 
 export type UserEntries = FieldsEntries<typeof userFields>

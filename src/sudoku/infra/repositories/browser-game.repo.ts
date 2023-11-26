@@ -2,7 +2,7 @@ import { createBrowserStorage } from '~/share/infra/repositories'
 import { createMatrix } from '~/share/utils'
 import type { BoardJSON, CellJSON, GameOptsJSON } from '$sudoku/domain/models'
 import type { GameRepo } from '$sudoku/domain/repositories'
-import { GridService } from '$sudoku/domain/services'
+import { GridSvc } from '$sudoku/domain/services'
 
 interface StorageNames {
 	board?: string
@@ -14,10 +14,10 @@ interface StorageNames {
 type CellJSONStore = Omit<CellJSON, 'notes'>
 
 export class BrowserGameRepo implements GameRepo {
-	#boardStorage
-	#notesStorage
-	#optsStorage
-	#timerStorage
+	readonly #boardStorage
+	readonly #notesStorage
+	readonly #optsStorage
+	readonly #timerStorage
 
 	constructor({ board = 'board', notes = 'notes', opts = 'opts', timer = 'game-timer' }: StorageNames = {}) {
 		this.#boardStorage = createBrowserStorage(board)
@@ -28,7 +28,7 @@ export class BrowserGameRepo implements GameRepo {
 
 	async create(opts: GameOptsJSON, board: BoardJSON): Promise<void>
 	async create({ difficulty, solution }: GameOptsJSON, board: BoardJSON) {
-		const { boardJSON, notes } = new GridService(board).groupSubgrids(({ notes, ...boardJSON }) => ({
+		const { boardJSON, notes } = new GridSvc(board).groupSubgrids(({ notes, ...boardJSON }) => ({
 			boardJSON,
 			notes,
 		}))

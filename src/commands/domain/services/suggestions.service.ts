@@ -1,28 +1,28 @@
-import { type ISuggestion, type Suggestion } from '../models'
+import { type ISugg, type Sugg } from '../models'
 
-interface SuggestionsOpts {
+interface SuggOpts {
 	cmdStr: string
 	descriptions: string | [string, ...string[]]
 	id: string
 }
 
 /** Represent a Suggestions Service. */
-export class SuggestionService implements ISuggestion {
-	#data: Suggestion
-	#rgxStr: string
+export class SuggSvc implements ISugg {
+	readonly #data: Sugg
+	readonly #rgxStr: string
 
 	/**
-	 * Creates an instance of the ExecutorService class.
+	 * Creates an instance of the ExecutorSvc class.
 	 * @param opts Options for create Suggestion.
 	 */
-	constructor(opts: SuggestionsOpts)
-	constructor({ cmdStr, descriptions, id }: SuggestionsOpts) {
+	constructor(opts: SuggOpts)
+	constructor({ cmdStr, descriptions, id }: SuggOpts) {
 		const [cmd, opt, arg = ''] = cmdStr.split(/(\[\w+\] ?)/)
 		const parseOpt = opt.replace(/(\[|\]|\s)/g, '')
 
-		this.#rgxStr = SuggestionService.#createRgxStr(cmd, parseOpt, arg)
-		const header = SuggestionService.#createCmd(cmd, parseOpt, arg)
-		const input = SuggestionService.#createInput(cmd, parseOpt, arg)
+		this.#rgxStr = SuggSvc.#createRgxStr(cmd, parseOpt, arg)
+		const header = SuggSvc.#createCmd(cmd, parseOpt, arg)
+		const input = SuggSvc.#createInput(cmd, parseOpt, arg)
 		const dataDescriptions = Array.isArray(descriptions) ? descriptions : ([descriptions] as [string])
 
 		this.#data = { header, descriptions: dataDescriptions, id, input }
@@ -33,15 +33,15 @@ export class SuggestionService implements ISuggestion {
 	}
 
 	/**
-	 * Create an Array of SuggestionService instances from another Array to be mapped.
+	 * Create an Array of SuggestionSvc instances from another Array to be mapped.
 	 * @param array The original array.
 	 * @param fn Function to be executed for each iteration of the original array, and which returns the options to create an instance.
 	 */
-	static createArray<T>(array: T[], fn: (value: T) => SuggestionsOpts) {
-		return array.map(value => new SuggestionService(fn(value)))
+	static createArray<T>(array: T[], fn: (value: T) => SuggOpts) {
+		return array.map(value => new SuggSvc(fn(value)))
 	}
 
-	static getData(suggs: ISuggestion[]) {
+	static getData(suggs: ISugg[]) {
 		return suggs.map(({ data }) => data)
 	}
 
@@ -54,8 +54,8 @@ export class SuggestionService implements ISuggestion {
 	static #createCmd(cmd: string, opt: string, arg: string) {
 		const h3 = document.createElement('h3')
 		h3.classList.add('monospace', 'highlight')
-		const cmdSpan = SuggestionService.#createSpan(cmd, 'command')
-		const optSpan = SuggestionService.#createSpan(opt, 'optional')
+		const cmdSpan = SuggSvc.#createSpan(cmd, 'command')
+		const optSpan = SuggSvc.#createSpan(opt, 'optional')
 		cmdSpan.appendChild(optSpan)
 		h3.appendChild(cmdSpan)
 
@@ -65,11 +65,11 @@ export class SuggestionService implements ISuggestion {
 
 		for (const section of arg.split(/(?=\{)|(?='[^']+')|(?=\()|(?=<)/)) {
 			if (section == null || section.length === 0) continue
-			if (/^'.*'$/.test(section)) h3.appendChild(SuggestionService.#createSpan(section.slice(1, -1), 'text'))
-			else if (/^\{\w+\}$/.test(arg)) h3.appendChild(SuggestionService.#createSpan(section.slice(1, -1), 'holder'))
-			else if (/^\(\w+\)$/.test(section)) h3.appendChild(SuggestionService.#createSpan(section.slice(1, -1), 'value'))
-			else if (/^:\w+$/.test(section)) h3.appendChild(SuggestionService.#createSpan(section.slice(1), 'command'))
-			else if (/^<[^>]*>$/.test(section)) h3.appendChild(SuggestionService.#createSpan(section.slice(1, -1), 'special'))
+			if (/^'.*'$/.test(section)) h3.appendChild(SuggSvc.#createSpan(section.slice(1, -1), 'text'))
+			else if (/^\{\w+\}$/.test(arg)) h3.appendChild(SuggSvc.#createSpan(section.slice(1, -1), 'holder'))
+			else if (/^\(\w+\)$/.test(section)) h3.appendChild(SuggSvc.#createSpan(section.slice(1, -1), 'value'))
+			else if (/^:\w+$/.test(section)) h3.appendChild(SuggSvc.#createSpan(section.slice(1), 'command'))
+			else if (/^<[^>]*>$/.test(section)) h3.appendChild(SuggSvc.#createSpan(section.slice(1, -1), 'special'))
 			else h3.appendChild(document.createTextNode(section))
 		}
 

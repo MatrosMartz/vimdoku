@@ -1,22 +1,22 @@
 <script lang="ts">
-	import type { Position } from '~/share/domain/models'
-	import { PositionService } from '~/share/domain/services'
+	import type { Pos } from '~/share/domain/models'
+	import { PosSvc } from '~/share/domain/services'
 	import { mediator } from '$cmd/infra/services'
 	import { posState } from '$cmd/infra/stores'
 	import { type Cell, SudokuActions } from '$sudoku/domain/models'
 
 	export let data: Cell
-	export let position: Position
+	export let position: Pos
 
 	let btn: HTMLElement
 
 	$: value = data.value > 0 ? String(data.value) : ''
-	$: selected = PositionService.equalsPos($posState, position)
+	$: selected = PosSvc.equalsPos($posState, position)
 
 	$: if (selected) btn?.focus()
 
 	function focusHandler() {
-		if (PositionService.equalsPos($posState, position)) return
+		if (PosSvc.equalsPos($posState, position)) return
 		mediator.dispatch(SudokuActions.Move, { type: 'set', position })
 	}
 </script>

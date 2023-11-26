@@ -1,13 +1,13 @@
-export interface Suggestion {
+export interface Sugg {
 	descriptions: [string, ...string[]]
 	header: HTMLHeadingElement
 	id: string
 	input: string
 }
 
-export interface ISuggestion {
+export interface ISugg {
 	/** Get the current Suggestion data. */
-	readonly data: Suggestion
+	readonly data: Sugg
 	/**
 	 * Check if the given command matches the suggestion based on the regular expression.
 	 * @param cmd The command to be matched.

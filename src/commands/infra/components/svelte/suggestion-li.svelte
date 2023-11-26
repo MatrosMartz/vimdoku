@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 
-	import { type Suggestion } from '$cmd/domain/models'
+	import { type Sugg } from '$cmd/domain/models'
 	import { executor } from '$cmd/infra/services'
 
 	import { input } from './input.store'
 
-	export let suggestion: Suggestion
+	export let suggestion: Sugg
 
 	let btn: HTMLButtonElement
 

@@ -1,4 +1,4 @@
-import type { AllPreferences, Preferences } from './preferences.model'
+import type { AllPreferences, Prefs } from './preferences.model'
 
 export enum PrefActions {
 	Reset = 'reset-preferences',
@@ -10,7 +10,7 @@ export namespace PrefData {
 	export type Reset = { type: 'all' } | { key: keyof AllPreferences; type: 'by-key' }
 
 	interface SaveAll {
-		replace: Preferences
+		replace: Prefs
 		type: 'all'
 	}
 

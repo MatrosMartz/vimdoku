@@ -1,4 +1,4 @@
-import type { Position } from '~/share/domain/models'
+import type { Pos } from '~/share/domain/models'
 import type { Tuple } from '~/share/types'
 
 import { type Cell, type CellJSON } from './cell.model'
@@ -13,7 +13,7 @@ export interface IBoard {
 	 * Remove cell value and clear note set.
 	 * @param cellPos Position of the cell to be cleared.
 	 */
-	clear(cellPos: Position): this
+	clear(cellPos: Pos): this
 	/** Get the current cells of board. */
 	get data(): Board
 	/** Converts Board instance in JSON. */
@@ -25,11 +25,11 @@ export interface IBoard {
 	 * @param cellPos Position of the cell to which the notes are to be toggled.
 	 * @param num The note to toggle (1-9).
 	 */
-	toggleNotes(cellPos: Position, num: ValidNumbers): this
+	toggleNotes(cellPos: Pos, num: ValidNumbers): this
 	/**
 	 * Toggle a cell value (add if not present, remove if present).
 	 * @param cellPos Position of the cell to which the value is changed.
 	 * @param num The note add (1-9).
 	 */
-	write(cellPos: Position, num: ValidNumbers): this
+	write(cellPos: Pos, num: ValidNumbers): this
 }

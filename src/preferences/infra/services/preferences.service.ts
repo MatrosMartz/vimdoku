@@ -1,5 +1,5 @@
-import { PreferencesService } from '$pref/domain/services'
+import { PrefsSvc } from '$pref/domain/services'
 
-import { BrowserPreferencesRepo } from '../repositories'
+import { BrowserPrefsRepo } from '../repositories'
 
-export const preferences = new PreferencesService(new BrowserPreferencesRepo())
+export const prefs = new PrefsSvc(new BrowserPrefsRepo())

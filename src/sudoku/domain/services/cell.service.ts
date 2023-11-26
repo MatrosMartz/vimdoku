@@ -8,7 +8,7 @@ import {
 	type INotes,
 	type ValidNumbers,
 } from '../models'
-import { NotesService } from './notes.service'
+import { NotesSvc } from './notes.service'
 
 /** Represents a Sudoku Cell Entity.  */
 class CellEntity implements CellData {
@@ -31,12 +31,12 @@ interface CellOpts {
 }
 
 /** Represents a Sudoku Cell Service.  */
-export class CellService implements ICell {
-	#data: CellEntity
-	#state: ICellState
+export class CellSvc implements ICell {
+	readonly #data: CellEntity
+	readonly #state: ICellState
 
 	/**
-	 * Creates an instance of CellService class.
+	 * Creates an instance of CellSvc class.
 	 * @param data Kind, notes, solution and value for cell.
 	 */
 	constructor(data: CellEntity) {
@@ -65,29 +65,29 @@ export class CellService implements ICell {
 	}
 
 	/**
-	 * Create an instance of CellService with options.
+	 * Create an instance of CellSvc with options.
 	 * @param opts Options for create cell (optional).
 	 */
-	static create(opts: CellOpts): CellService
+	static create(opts: CellOpts): CellSvc
 	static create({ isInitial, solution }: CellOpts) {
-		const baseData: Omit<CellData, 'kind' | 'value'> = { notes: NotesService.create(), solution }
+		const baseData: Omit<CellData, 'kind' | 'value'> = { notes: NotesSvc.create(), solution }
 
 		const specificData: Pick<CellData, 'kind' | 'value'> = isInitial
 			? { kind: CellKinds.Initial, value: solution }
 			: { kind: CellKinds.Empty, value: CellState.EMPTY_VALUE }
 
-		return new CellService(new CellEntity({ ...baseData, ...specificData }))
+		return new CellSvc(new CellEntity({ ...baseData, ...specificData }))
 	}
 
 	/**
-	 * Create an instance of BoardService from a JSON string
+	 * Create an instance of BoardSvc from a JSON string
 	 * @param cellLike JSON representation of cell.
 	 * @param solution Value for  solution of cell.
 	 */
-	static fromJSON(cellLike: CellJSON, solution: ValidNumbers): CellService
+	static fromJSON(cellLike: CellJSON, solution: ValidNumbers): CellSvc
 	static fromJSON({ kind, notes, value }: CellJSON, solution: ValidNumbers) {
-		const data = new CellEntity({ kind, notes: NotesService.fromNumber(notes), solution, value })
-		return new CellService(data)
+		const data = new CellEntity({ kind, notes: NotesSvc.fromNumber(notes), solution, value })
+		return new CellSvc(data)
 	}
 
 	addNote(num: ValidNumbers) {

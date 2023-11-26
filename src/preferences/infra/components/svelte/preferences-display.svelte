@@ -2,9 +2,9 @@
 	import { Button, ButtonMenu } from '~/share/infra/components/svelte/buttons'
 	import { capitalCase } from '~/share/utils'
 	import { mediator } from '$cmd/infra/services'
-	import { prefState, screenState } from '$cmd/infra/stores/svelte'
+	import { prefsState, screenState } from '$cmd/infra/stores/svelte'
 	import type { AllPreferences } from '$pref/domain/models'
-	import { PreferencesService } from '$pref/domain/services'
+	import { PrefsSvc } from '$pref/domain/services'
 	import { DialogKinds, ScreenActions } from '$screen/domain/models'
 
 	const allTooltip = { id: 'all-disabled-describe', text: 'All preferences are being displayed.' }
@@ -15,10 +15,10 @@
 
 	$: showAll = $screenState.dialog.kind === DialogKinds.PrefAll
 
-	$: actualPreferences = PreferencesService.entries($prefState)
+	$: actualPreferences = PrefsSvc.entries($prefsState)
 
 	function isDefault(name: keyof AllPreferences, value: string | number | boolean) {
-		return value !== PreferencesService.getDefaultValue(name)
+		return value !== PrefsSvc.getDefaultValue(name)
 	}
 
 	function allHandler() {

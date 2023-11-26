@@ -1,5 +1,5 @@
-import type { IAsyncContext, IContext, Position } from '~/share/domain/models'
-import type { PrefDispatch, Preferences } from '$pref/domain/models'
+import type { IAsyncContext, IContext, Pos } from '~/share/domain/models'
+import type { PrefDispatch, Prefs } from '$pref/domain/models'
 import type { ScreenDispatch, ScreenDispatchUnData, VimScreen } from '$screen/domain/models'
 import type { Board, ModeKinds, SudokuDispatch, SudokuDispatchUnData } from '$sudoku/domain/models'
 
@@ -17,8 +17,8 @@ export namespace Mediator {
 		board: IAsyncContext<Board | null>
 		boardSaved: IAsyncContext<boolean>
 		mode: IContext<ModeKinds>
-		position: IContext<Position>
-		preferences: IAsyncContext<Preferences>
+		position: IContext<Pos>
+		preferences: IAsyncContext<Prefs>
 		screen: IContext<VimScreen>
 		timer: IAsyncContext<string>
 	}

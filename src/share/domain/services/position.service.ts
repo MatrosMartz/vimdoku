@@ -1,11 +1,11 @@
 import type { RequireOne } from '~/share/types'
 
-import type { IPosition, Position } from '../models'
+import type { IPos, Pos } from '../models'
 
 /** Represent a Position Service. */
-export class PositionService implements IPosition {
+export class PosSvc implements IPos {
 	/** The default position value.. */
-	static readonly IDLE_POS: Position = { x: 0, y: 0 }
+	static readonly IDLE_POS: Pos = { x: 0, y: 0 }
 	/** The maximum range for row and column coordinates. */
 	static readonly MAX_RANGE = 8
 	/** The minimum range for row and column coordinates. */
@@ -18,13 +18,13 @@ export class PositionService implements IPosition {
 	 * Creates an instance of the Position class.
 	 * @param pos Initial Sudoku board.
 	 */
-	constructor(pos?: Partial<Position>)
-	constructor({ y = 0, x = 0 }: Partial<Position> = {}) {
+	constructor(pos?: Partial<Pos>)
+	constructor({ y = 0, x = 0 }: Partial<Pos> = {}) {
 		this.#x = x
 		this.#y = y
 	}
 
-	get data(): Position {
+	get data(): Pos {
 		return { y: this.#y, x: this.#x }
 	}
 
@@ -33,12 +33,8 @@ export class PositionService implements IPosition {
 	 * @param pos1 The first cell position.
 	 * @param pos2 The second cell position.
 	 */
-	static areRelated(pos1: Position, pos2: Position) {
-		return (
-			PositionService.equalsCol(pos1, pos2) ||
-			PositionService.equalsRow(pos1, pos2) ||
-			PositionService.equalsBox(pos1, pos2)
-		)
+	static areRelated(pos1: Pos, pos2: Pos) {
+		return PosSvc.equalsCol(pos1, pos2) || PosSvc.equalsRow(pos1, pos2) || PosSvc.equalsBox(pos1, pos2)
 	}
 
 	/**
@@ -46,8 +42,8 @@ export class PositionService implements IPosition {
 	 * @param pos1 The first cell position.
 	 * @param pos2 The second cell position.
 	 */
-	static equalsBox(pos1: Position, pos2: Position) {
-		return PositionService.equalsPos(PositionService.getInitsBox(pos1), PositionService.getInitsBox(pos2))
+	static equalsBox(pos1: Pos, pos2: Pos) {
+		return PosSvc.equalsPos(PosSvc.getInitsBox(pos1), PosSvc.getInitsBox(pos2))
 	}
 
 	/**
@@ -55,7 +51,7 @@ export class PositionService implements IPosition {
 	 * @param pos1 The first cell position.
 	 * @param pos2 The second cell position.
 	 */
-	static equalsCol(pos1: Position, pos2: Position) {
+	static equalsCol(pos1: Pos, pos2: Pos) {
 		return pos1.x === pos2.x
 	}
 
@@ -64,7 +60,7 @@ export class PositionService implements IPosition {
 	 * @param pos1 The first cell position.
 	 * @param pos2 The second cell position.
 	 */
-	static equalsPos(pos1: Position, pos2: Position) {
+	static equalsPos(pos1: Pos, pos2: Pos) {
 		return pos1.y === pos2.y && pos1.x === pos2.x
 	}
 
@@ -73,7 +69,7 @@ export class PositionService implements IPosition {
 	 * @param pos1 The first cell position.
 	 * @param pos2 The second cell position.
 	 */
-	static equalsRow(pos1: Position, pos2: Position) {
+	static equalsRow(pos1: Pos, pos2: Pos) {
 		return pos1.y === pos2.y
 	}
 
@@ -82,8 +78,8 @@ export class PositionService implements IPosition {
 	 * @param pos The position of the cell.
 	 * @returns The box number for the cell.
 	 */
-	static getBoxFromPos(pos: Position) {
-		const { y, x } = PositionService.getInitsBox(pos)
+	static getBoxFromPos(pos: Pos) {
+		const { y, x } = PosSvc.getInitsBox(pos)
 		return y + (x + 3)
 	}
 
@@ -92,8 +88,8 @@ export class PositionService implements IPosition {
 	 * @param position The position of the cell.
 	 * @returns The initial position of the box.
 	 */
-	static getInitsBox(position: Position): Position
-	static getInitsBox({ y, x }: Position): Position {
+	static getInitsBox(position: Pos): Pos
+	static getInitsBox({ y, x }: Pos): Pos {
 		return { y: Math.ceil(y / 3) * 3, x: Math.ceil(x / 3) * 3 }
 	}
 
@@ -102,7 +98,7 @@ export class PositionService implements IPosition {
 	 * @param index The box index of the cell.
 	 * @returns The initial position of the box.
 	 */
-	static getPosFromBox(index: number): Position {
+	static getPosFromBox(index: number): Pos {
 		return { y: index % 3, x: Math.ceil(index / 3) }
 	}
 
@@ -111,35 +107,35 @@ export class PositionService implements IPosition {
 	 * @param pos1 The first cell position.
 	 * @param pos2 The second cell position.
 	 */
-	static sumPos(pos1: Position, pos2: Position): Position {
+	static sumPos(pos1: Pos, pos2: Pos): Pos {
 		return { y: pos1.y + pos2.y, x: pos1.x + pos2.x }
 	}
 
-	change({ y, x }: RequireOne<Position>) {
+	change({ y, x }: RequireOne<Pos>) {
 		if (x != null) this.#x = x
 		if (y != null) this.#y = y
 		return this
 	}
 
 	moveDown(times: number) {
-		if (this.#y === PositionService.MAX_RANGE) this.#x = PositionService.MAX_RANGE
-		else this.#y = Math.min(PositionService.MAX_RANGE, this.#y + times)
+		if (this.#y === PosSvc.MAX_RANGE) this.#x = PosSvc.MAX_RANGE
+		else this.#y = Math.min(PosSvc.MAX_RANGE, this.#y + times)
 		return this
 	}
 
 	moveLeft(times: number) {
-		this.#x = Math.max(PositionService.MIN_RANGE, this.#x - times)
+		this.#x = Math.max(PosSvc.MIN_RANGE, this.#x - times)
 		return this
 	}
 
 	moveRight(times: number) {
-		this.#x = Math.min(PositionService.MAX_RANGE, this.#x + times)
+		this.#x = Math.min(PosSvc.MAX_RANGE, this.#x + times)
 		return this
 	}
 
 	moveUp(times: number) {
-		if (this.#y === PositionService.MIN_RANGE) this.#x = PositionService.MIN_RANGE
-		else this.#y = Math.max(PositionService.MIN_RANGE, this.#y - times)
+		if (this.#y === PosSvc.MIN_RANGE) this.#x = PosSvc.MIN_RANGE
+		else this.#y = Math.max(PosSvc.MIN_RANGE, this.#y - times)
 		return this
 	}
 }

@@ -1,4 +1,4 @@
-import { prefCtx, prefObservable } from '../preferences.store'
+import { prefsCtx, prefsObservable } from '../preferences.store'
 import { createState } from './create-state'
 
-export const prefState = createState(prefObservable, prefCtx)
+export const prefsState = createState(prefsObservable, prefsCtx)

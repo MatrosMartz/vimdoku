@@ -1,11 +1,11 @@
 import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import type { IContext } from '~/share/domain/models'
-import { ContextService, Observable } from '~/share/domain/services'
-import { ALL_SUGGESTIONS } from '$cmd/infra/services'
+import { ContextSvc, Observable } from '~/share/domain/services'
+import { ALL_SUGGS } from '$cmd/infra/services'
 
-import type { IMediator, Mediator, Suggestion } from '../models'
-import { ExecutorService } from './executor.service'
+import type { IMediator, Mediator, Sugg } from '../models'
+import { ExecutorSvc } from './executor.service'
 
 const mockMediator: IMediator = {
 	dispatch(action: Mediator.Actions, data?: Record<string, unknown>) {
@@ -14,8 +14,8 @@ const mockMediator: IMediator = {
 	async load() {},
 }
 
-let suggsCtx: IContext<Suggestion[]>
-let executor: ExecutorService
+let suggsCtx: IContext<Sugg[]>
+let executor: ExecutorSvc
 
 beforeAll(() => {
 	vi.useFakeTimers()
@@ -24,11 +24,11 @@ beforeAll(() => {
 })
 
 beforeEach(() => {
-	suggsCtx = new ContextService(new Observable<Suggestion[]>(), [])
-	executor = new ExecutorService({ allSuggestions: ALL_SUGGESTIONS, mediator: mockMediator, suggsCtx })
+	suggsCtx = new ContextSvc(new Observable<Sugg[]>(), [])
+	executor = new ExecutorSvc({ allSuggestions: ALL_SUGGS, mediator: mockMediator, suggsCtx })
 })
 
-describe.concurrent('ExecutorService suggestions', () => {
+describe.concurrent('ExecutorSvc suggestions', () => {
 	test('Should be the initial suggestions length are zero', () => {
 		expect(suggsCtx.data).length(0)
 	})
