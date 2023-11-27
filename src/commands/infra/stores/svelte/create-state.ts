@@ -5,7 +5,6 @@ import type { IObs } from '~/share/domain/models'
 export function createState<T>(obs: IObs<T>) {
 	const { subscribe } = readable(obs.data, observer => {
 		obs.add(observer)
-		observer(obs.data)
 		return () => obs.remove(observer)
 	})
 

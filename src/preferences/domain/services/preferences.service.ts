@@ -54,8 +54,6 @@ const validatePref = {
 
 /** Represent a Preferences Service for game. */
 export class PrefsSvc implements IPrefs {
-	/** Default all Preferences. */
-	static readonly DEFAULT_DATA: Readonly<Prefs>
 	/** Default Sudoku Preferences. */
 	static readonly DEFAULT_SUDOKU: Readonly<SudokuPrefs> = _f({
 		automaticNoteDeletion: true,
@@ -78,6 +76,13 @@ export class PrefsSvc implements IPrefs {
 		history: 100,
 		numbers: true,
 		relativeNumbers: false,
+	})
+
+	/** Default all Preferences. */
+	static readonly DEFAULT_DATA: Readonly<Prefs> = _f({
+		sudoku: this.DEFAULT_SUDOKU,
+		user: this.DEFAULT_USER,
+		vim: this.DEFAULT_VIM,
 	})
 
 	readonly #repo
