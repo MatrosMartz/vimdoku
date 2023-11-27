@@ -26,6 +26,7 @@
 		gap: 4px;
 		width: fit-content;
 		padding: 8px;
+		margin: min(48px, 8vmin) 0 0 min(48px, 8vmin);
 		background-color: var(--editor-background);
 		border-radius: 8px;
 	}

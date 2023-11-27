@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Pos } from '~/share/domain/models'
 	import { PosSvc } from '~/share/domain/services'
+	import { Icon } from '~/share/infra/components/svelte'
 	import { med } from '$cmd/infra/services'
 	import { posState } from '$cmd/infra/stores'
 	import { type Cell, SudokuActions } from '$sudoku/domain/models'
@@ -21,10 +22,12 @@
 	}
 </script>
 
-<td
-	><button bind:this={btn} tabindex="-1" class="cell {data.kind}" class:selected on:focus={focusHandler}>{value}</button
-	></td
->
+<td>
+	<button bind:this={btn} tabindex="-1" class="cell {data.kind}" class:selected on:focus={focusHandler}>
+		<span class="value">{value}</span>
+		<span class="note-icon"><Icon id="note" /></span>
+	</button>
+</td>
 
 <style>
 	td,
@@ -38,7 +41,8 @@
 	.cell {
 		display: grid;
 		place-content: center;
-		width: 48px;
+		width: 44px;
+		max-width: 8vmin;
 		aspect-ratio: 1 / 1;
 		color: var(--primary-color);
 	}
@@ -73,5 +77,17 @@
 	.initial {
 		font-weight: 700;
 		color: var(--number-color);
+	}
+
+	.notes {
+		color: var(--command-color);
+	}
+
+	.note-icon {
+		display: none;
+	}
+
+	.notes .note-icon {
+		display: initial;
 	}
 </style>
