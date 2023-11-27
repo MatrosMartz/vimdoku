@@ -33,7 +33,7 @@ interface CellOpts {
 /** Represents a Sudoku Cell Service.  */
 export class CellSvc implements ICell {
 	readonly #data: CellEntity
-	readonly #state: ICellState
+	#state: ICellState
 
 	/**
 	 * Creates an instance of CellSvc class.
@@ -91,17 +91,17 @@ export class CellSvc implements ICell {
 	}
 
 	addNote(num: ValidNumbers) {
-		this.#state.addNote(num)
+		this.#state = this.#state.addNote(num)
 		return this
 	}
 
 	clear() {
-		this.#state.clear()
+		this.#state = this.#state.clear()
 		return this
 	}
 
 	removeNote(num: ValidNumbers) {
-		this.#state.removeNote(num)
+		this.#state = this.#state.removeNote(num)
 		return this
 	}
 
@@ -114,17 +114,17 @@ export class CellSvc implements ICell {
 	}
 
 	toggleNote(num: ValidNumbers) {
-		this.#state.toggleNote(num)
+		this.#state = this.#state.toggleNote(num)
 		return this
 	}
 
 	verify() {
-		this.#state.verify()
+		this.#state = this.#state.verify()
 		return this
 	}
 
 	writeValue(num: ValidNumbers) {
-		this.#state.writeValue(num)
+		this.#state = this.#state.writeValue(num)
 		return this
 	}
 
@@ -198,7 +198,7 @@ class InitialCellState extends CellState {
 }
 
 abstract class WritableCellState extends CellState {
-	addNote(num: ValidNumbers) {
+	addNote(num: ValidNumbers): CellState {
 		this[data].notes.add(num)
 		this[data].value = CellState.EMPTY_VALUE
 
@@ -210,6 +210,10 @@ abstract class WritableCellState extends CellState {
 		this[data].value = CellState.EMPTY_VALUE
 
 		return new EmptyCellState(this[data])
+	}
+
+	toggleNote(num: ValidNumbers) {
+		return this.addNote(num)
 	}
 
 	writeValue(num: ValidNumbers) {
@@ -269,6 +273,6 @@ class NotesCellState extends WritableCellState {
 	toggleNote(num: ValidNumbers) {
 		this[data].notes.toggle(num)
 
-		return this
+		return this[data].notes.isEmpty ? new EmptyCellState(this[data]) : this
 	}
 }
