@@ -45,7 +45,7 @@ export class CellSvc implements ICell {
 	}
 
 	get data(): Cell {
-		return { ...this.#data, notes: this.#data.notes.toJSON() }
+		return { ...this.#data, notes: this.#data.notes.data }
 	}
 
 	get kind() {
