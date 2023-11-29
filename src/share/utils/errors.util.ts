@@ -27,3 +27,10 @@ export class LocalStorageEntryMissingError extends Error {
 		super(`Missing Entry: "${entryName}" in localStore`)
 	}
 }
+
+export class RepoItemNotFoundError extends Error {
+	constructor(itemName: string, cause?: unknown) {
+		super(`Could not find the requested item: "${itemName}" in the repository`, { cause })
+		this.name = 'RepoItemNotFoundError'
+	}
+}

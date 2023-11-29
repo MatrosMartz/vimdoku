@@ -79,6 +79,7 @@ export class PrefsSvc implements IPrefs {
 	})
 
 	/** Default all Preferences. */
+	// eslint-disable-next-line @typescript-eslint/member-ordering
 	static readonly DEFAULT_DATA: Readonly<Prefs> = _f({
 		sudoku: this.DEFAULT_SUDOKU,
 		user: this.DEFAULT_USER,
@@ -145,9 +146,9 @@ export class PrefsSvc implements IPrefs {
 	}
 
 	async load() {
-		const value = await this.#repo.load()
+		if (!(await this.#repo.has())) return
 
-		if (value == null) return
+		const value = await this.#repo.load()
 
 		this.#sudoku = value.sudoku
 		this.#user = value.user

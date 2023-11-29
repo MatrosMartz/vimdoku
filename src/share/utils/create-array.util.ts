@@ -1,16 +1,16 @@
 import type { Pos } from '../domain/models'
 import type { Tuple } from '../types'
 
-export function createArray<T, L extends number>(length: L, mapFn: (index: number) => T) {
+export function createArray<const L extends number, MapFn extends (index: number) => any>(length: L, mapFn: MapFn) {
 	const array = new Array(length)
 
 	for (let i = 0; i < length; i++) array[i] = mapFn(i)
 
-	return array as Tuple<T, L>
+	return array as Tuple<ReturnType<MapFn>, L>
 }
 
-export function createMatrix<T, L extends number>(length: L, mapFn: (position: Pos) => T) {
-	return createArray(length, y => createArray(length, x => mapFn({ y, x })))
+export function createMatrix<const L extends number, MapFn extends (pos: Pos) => any>(length: L, mapFn: MapFn) {
+	return createArray(length, y => createArray(length, (x): ReturnType<MapFn> => mapFn({ y, x })))
 }
 
 export function* iterateArray(length: number) {

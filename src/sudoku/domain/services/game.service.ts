@@ -127,9 +127,9 @@ export class NonStartedGameSvc extends GameSvc {
 	async resume() {
 		if (!(await this[repo].hasData())) return null
 
-		const boardData = (await this[repo].getBoard())!
-		const optsData = (await this[repo].getOpts())!
-		const infoData = (await this[repo].getInfo())!
+		const boardData = await this[repo].getBoard()
+		const optsData = await this[repo].getOpts()
+		const infoData = await this[repo].getInfo()
 
 		const data = new StartedGameData({
 			board: BoardSvc.fromJSON(boardData, optsData.solution),

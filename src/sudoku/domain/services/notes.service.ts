@@ -46,7 +46,7 @@ export class NotesSvc implements INotes {
 	 * @throws {InvalidBoardError} If `solutionLike` is not a valid JSON string.
 	 */
 	static fromNumber(notesLike: number) {
-		const notes = createArray<ValidNumbers | null, 9>(9, () => null)
+		const notes = createArray(9, (): ValidNumbers | null => null)
 
 		for (let i = 0; i < NotesSvc.#PRIMES.length; i++)
 			if (notesLike % NotesSvc.#PRIMES[i] === 0) {

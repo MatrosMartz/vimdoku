@@ -1,23 +1,23 @@
 import { createBrowserStorage } from '~/share/infra/repositories'
-import { createMatrix } from '~/share/utils'
+import { _throw, createMatrix, RepoItemNotFoundError } from '~/share/utils'
 import type { BoardJSON, CellJSON, GameInfo, GameOptsJSON } from '$sudoku/domain/models'
 import type { GameRepo } from '$sudoku/domain/repositories'
 import { GridSvc } from '$sudoku/domain/services'
 
 interface StorageNames {
 	board?: string
+	info?: string
 	notes?: string
 	opts?: string
-	info?: string
 }
 
 type CellJSONStore = Omit<CellJSON, 'notes'>
 
 export class BrowserGameRepo implements GameRepo {
 	readonly #boardStorage
+	readonly #infoStorage
 	readonly #notesStorage
 	readonly #optsStorage
-	readonly #infoStorage
 
 	constructor({ board = 'board', notes = 'notes', opts = 'opts', info = 'game-info' }: StorageNames = {}) {
 		this.#boardStorage = createBrowserStorage(board)
@@ -45,24 +45,25 @@ export class BrowserGameRepo implements GameRepo {
 	}
 
 	async getBoard() {
-		const board: CellJSONStore[][] = JSON.parse(this.#boardStorage.get()!)
-		const notes: number[][] = JSON.parse(this.#notesStorage.get()!)
+		const [boardRaw, notesRaw] = [this.#boardStorage.get(), this.#notesStorage.get()]
 
-		if (board == null || notes == null) return null
+		const board =
+			boardRaw != null ? (JSON.parse(boardRaw) as CellJSONStore[][]) : _throw(new RepoItemNotFoundError('board'))
+		const notes = notesRaw != null ? (JSON.parse(notesRaw) as number[][]) : _throw(new RepoItemNotFoundError('notes'))
 
-		return createMatrix<CellJSON, 9>(9, ({ y, x }) => ({ ...board[y][x], notes: notes[y][x] }))
-	}
-
-	async getOpts() {
-		const opts: GameOptsJSON | null = JSON.parse(this.#optsStorage.get()!)
-
-		return opts
+		return createMatrix(9, ({ y, x }): CellJSON => ({ ...board[y][x], notes: notes[y][x] }))
 	}
 
 	async getInfo() {
-		const timer: GameInfo | null = JSON.parse(this.#infoStorage.get()!)
+		const infoRaw = this.#infoStorage.get()
 
-		return timer
+		return infoRaw != null ? (JSON.parse(infoRaw) as GameInfo) : _throw(new RepoItemNotFoundError('info'))
+	}
+
+	async getOpts() {
+		const optsRaw = this.#optsStorage.get()
+
+		return optsRaw != null ? (JSON.parse(optsRaw) as GameOptsJSON) : _throw(new RepoItemNotFoundError('boardOpts'))
 	}
 
 	async hasData() {
