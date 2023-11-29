@@ -54,7 +54,7 @@
 	}
 
 	label:hover > .switch {
-		box-shadow: 0 0 16px var(--hover-shadow);
+		filter: brightness(120%);
 	}
 
 	input {

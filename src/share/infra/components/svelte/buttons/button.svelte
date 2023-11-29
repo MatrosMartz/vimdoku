@@ -43,7 +43,7 @@
 	}
 
 	button:hover {
-		--input-shadow: var(--hover-shadow);
+		filter: brightness(120%);
 	}
 
 	button:focus {

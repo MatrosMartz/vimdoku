@@ -25,6 +25,6 @@
 	}
 
 	button:hover {
-		filter: brightness(80%);
+		filter: brightness(120%);
 	}
 </style>

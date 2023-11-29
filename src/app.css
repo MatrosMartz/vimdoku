@@ -4,7 +4,7 @@
 	--input-border: rgb(74 70 77);
 	--alternative-border: rgb(63 63 89);
 	--focus-border: rgb(133 136 166);
-	--input-shadow: rgb(39 22 57);
+	--input-shadow: rgb(24 15 34);
 	--hover-shadow: rgb(159 94 250 / 20%);
 	--primary-color: rgb(255 252 250);
 	--secondary-color: rgb(226 216 182);
@@ -127,7 +127,7 @@ form .field :where(input:where([type='text'], [type='number']), select, button),
 
 form .field :where(input:where([type='text'], [type='number']), select, button):hover,
 .command-input:has(input:hover) {
-	--input-shadow: var(--hover-shadow);
+	filter: brightness(120%);
 }
 
 form .field :where(input:where([type='text'], [type='number']), select, button):focus,
