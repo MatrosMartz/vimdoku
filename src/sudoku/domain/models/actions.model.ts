@@ -6,6 +6,7 @@ import type { ValidNumbers } from './notes.model'
 
 export enum SudokuActions {
 	ChangeMode = 'change-mode',
+	Check = 'check-game',
 	End = 'end-game',
 	Erase = 'erase',
 	Move = 'move',
@@ -40,7 +41,12 @@ export namespace SudokuData {
 	}
 }
 
-export type SudokuDispatchUnData = SudokuActions.End | SudokuActions.Erase | SudokuActions.Resume | SudokuActions.Save
+export type SudokuDispatchUnData =
+	| SudokuActions.Check
+	| SudokuActions.End
+	| SudokuActions.Erase
+	| SudokuActions.Resume
+	| SudokuActions.Save
 
 export interface SudokuDispatch {
 	[SudokuActions.ChangeMode]: SudokuData.ChangeMode

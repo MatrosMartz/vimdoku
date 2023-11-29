@@ -1,6 +1,6 @@
 import { createBrowserStorage } from '~/share/infra/repositories'
 import { createMatrix } from '~/share/utils'
-import type { BoardJSON, CellJSON, GameOptsJSON } from '$sudoku/domain/models'
+import type { BoardJSON, CellJSON, GameInfo, GameOptsJSON } from '$sudoku/domain/models'
 import type { GameRepo } from '$sudoku/domain/repositories'
 import { GridSvc } from '$sudoku/domain/services'
 
@@ -8,7 +8,7 @@ interface StorageNames {
 	board?: string
 	notes?: string
 	opts?: string
-	timer?: string
+	info?: string
 }
 
 type CellJSONStore = Omit<CellJSON, 'notes'>
@@ -17,13 +17,13 @@ export class BrowserGameRepo implements GameRepo {
 	readonly #boardStorage
 	readonly #notesStorage
 	readonly #optsStorage
-	readonly #timerStorage
+	readonly #infoStorage
 
-	constructor({ board = 'board', notes = 'notes', opts = 'opts', timer = 'game-timer' }: StorageNames = {}) {
+	constructor({ board = 'board', notes = 'notes', opts = 'opts', info = 'game-info' }: StorageNames = {}) {
 		this.#boardStorage = createBrowserStorage(board)
 		this.#notesStorage = createBrowserStorage(notes)
 		this.#optsStorage = createBrowserStorage(opts)
-		this.#timerStorage = createBrowserStorage(timer)
+		this.#infoStorage = createBrowserStorage(info)
 	}
 
 	async create(opts: GameOptsJSON, board: BoardJSON): Promise<void>
@@ -41,7 +41,7 @@ export class BrowserGameRepo implements GameRepo {
 		this.#boardStorage.del()
 		this.#notesStorage.del()
 		this.#optsStorage.del()
-		this.#timerStorage.del()
+		this.#infoStorage.del()
 	}
 
 	async getBoard() {
@@ -59,23 +59,20 @@ export class BrowserGameRepo implements GameRepo {
 		return opts
 	}
 
-	async getTimer() {
-		const timer: number | null = JSON.parse(this.#timerStorage.get()!)
+	async getInfo() {
+		const timer: GameInfo | null = JSON.parse(this.#infoStorage.get()!)
 
 		return timer
 	}
 
-	async hasBoard() {
-		return this.#boardStorage.get() != null && this.#notesStorage.get() != null
+	async hasData() {
+		return (
+			this.#boardStorage.get() != null &&
+			this.#notesStorage.get() != null &&
+			this.#infoStorage.get() != null &&
+			this.#optsStorage.get() != null
+		)
 	}
 
-	async hasOpts() {
-		return this.#optsStorage.get() != null
-	}
-
-	async hasTimer() {
-		return this.#timerStorage.get() != null
-	}
-
-	async save(data: { board: BoardJSON; timer: number }) {}
+	async save(data: { board: BoardJSON; info: GameInfo }) {}
 }

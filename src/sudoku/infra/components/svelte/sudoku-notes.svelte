@@ -54,6 +54,7 @@
 	}
 
 	table {
+		width: max-content;
 		background-color: var(--status-bar-background);
 		border-radius: 8px;
 	}

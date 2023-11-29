@@ -2,7 +2,7 @@ import type { IPos, Pos } from '~/share/domain/models'
 
 import type { GameRepo } from '../repositories'
 import type { Board, IBoard } from './board.model'
-import type { GameOpts } from './game-options.model'
+import type { GameInfo, GameOpts } from './game-options.model'
 import type { ModeKinds } from './modes.model'
 import type { ValidNumbers } from './notes.model'
 
@@ -14,8 +14,8 @@ export interface Game {
 
 export interface StartedGameOpts {
 	data: Game
+	info: GameInfo
 	repo: GameRepo
-	timer: number
 }
 
 export interface IGameState {
@@ -77,6 +77,8 @@ export interface IGameState {
 export interface IGame {
 	/** Get the game board data as a JSON Object. */
 	readonly board: Board | null
+	/** Get the errors that have been found in the current game. */
+	readonly errors: number
 	/** Get if there is a saved game. */
 	readonly isASaved: boolean
 	/** Get if the game has started. */
@@ -150,6 +152,11 @@ export interface IGame {
 	start(opts?: Partial<GameOpts>): Promise<IGame>
 	timerDec(): this
 	timerInc(): this
+	/**
+	 * Check if any cell values are incorrect.
+	 * @requires The updated game.
+	 */
+	verify(): this
 	/**
 	 * Write a valid number as value or notes depending on the game mode in the current position cell.
 	 * @param num The valid number to write.

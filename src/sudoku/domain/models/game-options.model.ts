@@ -12,3 +12,8 @@ export interface GameOptsJSON {
 	difficulty: DifficultyKinds
 	solution: SolutionJSON
 }
+
+export interface GameInfo {
+	errors: number
+	timer: number
+}

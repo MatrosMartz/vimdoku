@@ -2,12 +2,25 @@ import type { Pos } from '~/share/domain/models'
 import { PosSvc } from '~/share/domain/services'
 import type { OptionalKeys } from '~/share/types'
 
-import { type Board, DifficultyKinds, type GameOpts, type ITimer, ModeKinds, type ValidNumbers } from '../models'
-import type { Game, IGame, IGameState, StartedGameOpts } from '../models/game.model'
+import {
+	type Board,
+	DifficultyKinds,
+	type Game,
+	type GameInfo,
+	type GameOpts,
+	type IGame,
+	type IGameState,
+	type ITimer,
+	ModeKinds,
+	type StartedGameOpts,
+	type ValidNumbers,
+} from '../models'
 import type { GameRepo } from '../repositories'
 import { BoardSvc } from './board.service'
 import { SolutionSvc } from './solution.service'
 import { TimerSvc } from './timer.service'
+
+const DEFAULT_INFO: GameInfo = { errors: 0, timer: 0 }
 
 /** Simulated key for protected field. */
 const repo = Symbol('board-repo')
@@ -15,6 +28,7 @@ const repo = Symbol('board-repo')
 abstract class GameSvc implements IGame {
 	protected readonly [repo]: GameRepo
 	abstract readonly board: Board | null
+	abstract readonly errors: number
 	abstract readonly isASaved: boolean
 	abstract readonly isStarted: boolean
 	abstract readonly mode: ModeKinds
@@ -82,6 +96,10 @@ abstract class GameSvc implements IGame {
 		return this
 	}
 
+	verify() {
+		return this
+	}
+
 	write(num: ValidNumbers) {
 		return this
 	}
@@ -90,6 +108,7 @@ abstract class GameSvc implements IGame {
 /** Represent a Non-started Sudoku Game Service. */
 export class NonStartedGameSvc extends GameSvc {
 	readonly board = null
+	readonly errors = 0
 	readonly isStarted = false
 	readonly mode = ModeKinds.X
 	readonly pos = { ...PosSvc.IDLE_POS }
@@ -102,22 +121,22 @@ export class NonStartedGameSvc extends GameSvc {
 	}
 
 	async load() {
-		this.#isASaved = (await this[repo].hasBoard()) || (await this[repo].hasOpts())
+		this.#isASaved = await this[repo].hasData()
 	}
 
 	async resume() {
-		const boardData = await this[repo].getBoard()
-		const optsData = await this[repo].getOpts()
-		const timerData = (await this[repo].getTimer()) ?? 0
+		if (!(await this[repo].hasData())) return null
 
-		if (boardData == null || optsData == null) return null
+		const boardData = (await this[repo].getBoard())!
+		const optsData = (await this[repo].getOpts())!
+		const infoData = (await this[repo].getInfo())!
 
 		const data = new StartedGameData({
 			board: BoardSvc.fromJSON(boardData, optsData.solution),
 			pos: new PosSvc(),
 		})
 
-		return new StartedGameSvc({ data, repo: this[repo], timer: Number(timerData) })
+		return new StartedGameSvc({ data, info: infoData, repo: this[repo] })
 	}
 
 	async start(opts?: Partial<GameOpts>): Promise<StartedGameSvc>
@@ -128,7 +147,7 @@ export class NonStartedGameSvc extends GameSvc {
 
 		const data = new StartedGameData({ board, pos: new PosSvc() })
 
-		return new StartedGameSvc({ data, repo: this[repo], timer: 0 })
+		return new StartedGameSvc({ data, info: DEFAULT_INFO, repo: this[repo] })
 	}
 }
 
@@ -149,6 +168,7 @@ class StartedGameSvc extends GameSvc {
 	readonly isASaved = true
 	readonly isStarted = true
 	readonly #data
+	readonly #errors
 	#state: IGameState
 	readonly #timer: ITimer
 
@@ -157,15 +177,20 @@ class StartedGameSvc extends GameSvc {
 	 * @param opts Options for th[StartedGam]eSvc (game data and repository).
 	 */
 	constructor(opts: StartedGameOpts)
-	constructor({ data, repo, timer }: StartedGameOpts) {
+	constructor({ data, info, repo }: StartedGameOpts) {
 		super(repo)
 		this.#data = data
+		this.#errors = info.errors
 		this.#state = GameState.create(data, data.mode)
-		this.#timer = new TimerSvc(timer)
+		this.#timer = new TimerSvc(info.timer)
 	}
 
 	get board() {
 		return this.#data.board.data
+	}
+
+	get errors() {
+		return this.#errors
 	}
 
 	get mode() {
@@ -221,7 +246,7 @@ class StartedGameSvc extends GameSvc {
 	}
 
 	async save(): Promise<void> {
-		await this[repo].save({ board: this.#data.board.toJSON(), timer: this.#timer.data })
+		await this[repo].save({ board: this.#data.board.toJSON(), info: { errors: this.#errors, timer: this.#timer.data } })
 	}
 
 	timerDec() {
