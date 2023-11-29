@@ -33,9 +33,9 @@
 	td,
 	.cell {
 		font-family: inherit;
+		font-size: 1em;
 		background-color: transparent;
 		border: none;
-		border-radius: inherit;
 	}
 
 	.cell {
@@ -45,6 +45,7 @@
 		max-width: 8vw;
 		aspect-ratio: 1 / 1;
 		color: var(--primary-color);
+		border-radius: 8px;
 	}
 
 	.cell.selected {

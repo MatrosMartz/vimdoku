@@ -24,6 +24,7 @@
 		inset: 0 auto auto 0;
 		display: flex;
 		gap: 4px;
+		color: var(--key-color);
 		background-color: var(--editor-background);
 	}
 
@@ -47,10 +48,11 @@
 		width: 44px;
 		max-width: 8vw;
 		aspect-ratio: 1 /1;
-		opacity: 0.5;
+		opacity: 0.4;
 	}
 
 	.number.selected {
+		font-weight: 600;
 		opacity: 1;
 	}
 </style>
