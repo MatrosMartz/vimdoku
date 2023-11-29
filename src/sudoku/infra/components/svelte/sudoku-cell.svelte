@@ -42,7 +42,7 @@
 		display: grid;
 		place-content: center;
 		width: 44px;
-		max-width: 8vmin;
+		max-width: 8vw;
 		aspect-ratio: 1 / 1;
 		color: var(--primary-color);
 	}

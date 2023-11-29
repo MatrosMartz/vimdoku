@@ -1,1 +1,1 @@
-export { default as SudokuBoard } from './sudoku-board.svelte'
+export { default as SudokuGame } from './sudoku-game.svelte'

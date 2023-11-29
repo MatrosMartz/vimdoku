@@ -7,7 +7,7 @@
 
 	import SelectMode from './select-mode.svelte'
 
-	$: tooltipProps = { id: 'describe-pos', text: `Row ${$posState.y}, Col ${$posState.x}` }
+	$: tooltipProps = { id: 'describe-pos', text: `Row ${$posState.y + 1}, Col ${$posState.x + 1}` }
 
 	function cmdHandler() {
 		med.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.Cmd })
@@ -29,7 +29,7 @@
 	<section>
 		<div class="position">
 			<p use:tooltip={tooltipProps}>
-				{$posState.y},{$posState.x}
+				{$posState.y + 1},{$posState.x + 1}
 			</p>
 		</div>
 		<p class="timer">00:00:00</p>
