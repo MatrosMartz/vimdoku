@@ -154,7 +154,7 @@ export interface IGame {
 	timerInc(): this
 	/**
 	 * Check if any cell values are incorrect.
-	 * @requires The updated game.
+	 * @returns The updated game.
 	 */
 	verify(): this
 	/**

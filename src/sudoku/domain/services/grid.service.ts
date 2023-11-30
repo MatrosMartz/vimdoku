@@ -68,6 +68,13 @@ export class GridSvc<T> implements IGrid<T> {
 		return new GridSvc(this.data)
 	}
 
+	count(fnCond: CBFn<T, boolean>) {
+		let asserts = 0
+		for (const pos of iterateMatrix(9)) if (fnCond(this.getCell(pos), pos)) asserts++
+
+		return asserts
+	}
+
 	editCell<U>(cellPos: Pos, fn: CBFn<T, U>) {
 		const newGrid = this.#mapData((cell, pos) =>
 			PosSvc.equalsPos(cellPos, pos) ? fn(this.getCell(cellPos), cellPos) : cell
@@ -213,6 +220,25 @@ export class GridSvc<T> implements IGrid<T> {
 	}
 
 	/**
+	 * Returns another function that transforms the given value if the condition is met; otherwise, it returns the value unchanged.
+	 * @param cond The conditional function, if true, will execute the mapping function; if false, nothing will be done.
+	 * @param map The mapping function only executes if the condition is true.
+	 * @returns A function that runs the mapping function only if the condition is met; otherwise, it does nothing.
+	 */
+	#condMap<T, U>(cond: (curr: Pos) => boolean, map: CBFn<T, U>): CBFn<T, T | U> {
+		return (cell, pos) => (cond(pos) ? map(cell, pos) : cell)
+	}
+
+	/**
+	 * Map each of the cells in the data.
+	 * @param mapFn The mapping function.
+	 * @returns The mapped data.
+	 */
+	#mapData<U>(mapFn: CBFn<T, U>) {
+		return this.#data.map((row, y) => row.map((cell, x) => mapFn(cell, { y, x }))) as Grid<U>
+	}
+
+	/**
 	 * Change the content of the specific cell.
 	 * @param pos Position of cell to be mutate.
 	 * @param newCell The new Cell content.
@@ -220,13 +246,5 @@ export class GridSvc<T> implements IGrid<T> {
 	#mutateCell(pos: Pos, newCell: T): void
 	#mutateCell({ y, x }: Pos, newCell: T) {
 		this.#data[y][x] = newCell
-	}
-
-	#mapData<U>(fn: CBFn<T, U>) {
-		return this.#data.map((row, y) => row.map((cell, x) => fn(cell, { y, x }))) as Grid<U>
-	}
-
-	#condMap<T, U>(cond: (curr: Pos) => boolean, map: CBFn<T, U>): CBFn<T, T | U> {
-		return (cell, pos) => (cond(pos) ? map(cell, pos) : cell)
 	}
 }

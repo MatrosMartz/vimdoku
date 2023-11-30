@@ -47,6 +47,12 @@ export interface IGrid<T> {
 	 */
 	copy(): IGrid<T>
 	/**
+	 * Counts the cells that meet the condition.
+	 * @param fnCond The function that holds the condition.
+	 * @returns The number of cells that meet the condition.
+	 */
+	count(fnCond: CBFn<T, boolean>): number
+	/**
 	 * Edit selected Cell.
 	 * @param cellPos Position of the cell to be edited.
 	 * @param fn The function to edit cell.
