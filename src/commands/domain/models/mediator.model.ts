@@ -1,4 +1,5 @@
 import type { IAsyncObs, IObs, Pos } from '~/share/domain/models'
+import type { I18nData } from '$i18n/domain/models'
 import type { PrefDispatch, Prefs } from '$pref/domain/models'
 import type { ScreenDispatch, ScreenDispatchUnData, VimScreen } from '$screen/domain/models'
 import type { Board, ModeKinds, SudokuDispatch, SudokuDispatchUnData } from '$sudoku/domain/models'
@@ -16,6 +17,7 @@ export namespace Med {
 	export interface State {
 		board: IAsyncObs<Board | null>
 		boardSaved: IAsyncObs<boolean>
+		i18n: IAsyncObs<I18nData>
 		mode: IObs<ModeKinds>
 		pos: IObs<Pos>
 		prefs: IAsyncObs<Prefs>

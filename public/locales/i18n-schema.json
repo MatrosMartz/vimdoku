@@ -1,0 +1,283 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Vimdoku-I18n",
+	"description": "Scheme for the internalization of the vimdoku web application.",
+	"type": "object",
+	"properties": {
+		"titleScreen": {
+			"type": "object",
+			"properties": {
+				"version": { "type": "string" },
+				"createBy": { "type": "string" },
+				"desc": { "type": "string" },
+				"cmd": {
+					"type": "object",
+					"properties": {
+						"quit": { "type": "string" },
+						"help": { "type": "string" },
+						"type": { "type": "string" },
+						"startHelp": { "type": "string" },
+						"startGame": { "type": "string" }
+					},
+					"required": ["quit", "help", "type", "startHelp", "startGame"]
+				}
+			},
+			"required": ["createBy", "cmd", "desc", "version"]
+		},
+		"gameBtn": {
+			"type": "object",
+			"properties": {
+				"new": { "type": "object", "properties": { "text": { "type": "string" } }, "required": ["text"] },
+				"resume": {
+					"type": "object",
+					"properties": {
+						"text": { "type": "string" },
+						"disabledReason": { "type": "string" }
+					},
+					"required": ["text", "disabledReason"]
+				},
+				"goBack": { "type": "string" },
+				"start": { "type": "string" },
+				"selectDifficulty": { "type": "string" }
+			},
+			"required": ["new", "goBack", "resume", "start", "selectDifficulty"]
+		},
+		"prefs": {
+			"type": "object",
+			"properties": {
+				"devicePref": {
+					"type": "object",
+					"properties": {
+						"deviceValue": { "type": "string" },
+						"less": { "type": "string" },
+						"more": { "type": "string" }
+					},
+					"required": ["deviceValue", "less", "more"]
+				},
+				"groups": {
+					"type": "object",
+					"properties": {
+						"sudoku": { "type": "string" },
+						"user": { "type": "string" },
+						"vim": { "type": "string" }
+					},
+					"required": ["sudoku", "user", "vim"]
+				},
+				"names": {
+					"type": "object",
+					"properties": {
+						"autoNoteDeletion": { "type": "string" },
+						"autoSave": { "type": "string" },
+						"autoValidation": { "type": "string" },
+						"markRelatedNumbers": { "type": "string" },
+						"remainingNumbers": { "type": "string" },
+						"timer": { "type": "string" },
+						"contrast": { "type": "string" },
+						"colorSchema": { "type": "string" },
+						"colorTheme": { "type": "string" },
+						"iconTheme": { "type": "string" },
+						"motionReduce": { "type": "string" },
+						"language": { "type": "string" },
+						"cursorBox": { "type": "string" },
+						"cursorColumn": { "type": "string" },
+						"cursorRow": { "type": "string" },
+						"highlight": { "type": "string" },
+						"history": { "type": "string" },
+						"numbers": { "type": "string" },
+						"relativeNumbers": { "type": "string" }
+					},
+					"required": [
+						"autoNoteDeletion",
+						"autoSave",
+						"autoValidation",
+						"markRelatedNumbers",
+						"remainingNumbers",
+						"timer",
+						"contrast",
+						"colorSchema",
+						"colorTheme",
+						"iconTheme",
+						"motionReduce",
+						"language",
+						"cursorBox",
+						"cursorColumn",
+						"cursorRow",
+						"highlight",
+						"history",
+						"numbers",
+						"relativeNumbers"
+					]
+				},
+				"btn": {
+					"type": "object",
+					"properties": {
+						"showAll": {
+							"type": "object",
+							"properties": {
+								"text": { "type": "string" },
+								"disabledReason": { "type": "string" }
+							},
+							"required": ["text", "disabledReason"]
+						},
+						"showDiffer": {
+							"type": "object",
+							"properties": {
+								"text": { "type": "string" },
+								"disabledReason": { "type": "string" }
+							},
+							"required": ["text", "disabledReason"]
+						}
+					},
+					"required": ["showAll", "showDiffer"]
+				},
+				"tabs": {
+					"type": "object",
+					"properties": { "show": { "type": "string" }, "edit": { "type": "string" } },
+					"required": ["show", "edit"]
+				}
+			},
+			"required": ["devicePref", "groups", "names", "btn", "tabs"]
+		},
+		"langName": { "type": "string" },
+		"cmdDesc": {
+			"type": "object",
+			"properties": {
+				"help": {
+					"type": "object",
+					"properties": {
+						"main": { "type": "string" },
+						"suggest": { "type": "string" },
+						"withArg": {
+							"type": "object",
+							"properties": { "head": { "type": "string" }, "tail": { "type": "string" } },
+							"required": ["head", "tail"]
+						}
+					},
+					"required": ["main", "suggest", "withArg"]
+				},
+				"pause": { "type": "string" },
+				"quit": { "type": "string" },
+				"resume": { "type": "array", "items": { "type": "string" } },
+				"set": {
+					"type": "object",
+					"properties": {
+						"showDiffer": { "type": "string" },
+						"showAll": { "type": "string" },
+						"resetAll": { "type": "string" },
+						"showPref": {
+							"type": "object",
+							"properties": { "head": { "type": "string" }, "tail": { "type": "string" } },
+							"required": ["head", "tail"]
+						},
+						"resetPref": {
+							"type": "object",
+							"properties": { "head": { "type": "string" }, "tail": { "type": "string" } },
+							"required": ["head", "tail"]
+						},
+						"resetSuggest": { "type": "string" },
+						"suggest": { "type": "array", "items": { "type": "string" } },
+						"toggleOnPref": {
+							"type": "object",
+							"properties": { "head": { "type": "string" }, "tail": { "type": "string" } },
+							"required": ["head", "tail"]
+						},
+						"showNonToggle": {
+							"type": "object",
+							"properties": { "head": { "type": "string" }, "tail": { "type": "string" } },
+							"required": ["head", "tail"]
+						},
+						"toggleOffPref": {
+							"type": "object",
+							"properties": { "head": { "type": "string" }, "tail": { "type": "string" } },
+							"required": ["head", "tail"]
+						},
+						"toggleOffSuggest": { "type": "string" },
+						"toggleInvPref": {
+							"type": "object",
+							"properties": { "head": { "type": "string" }, "tail": { "type": "string" } },
+							"required": ["head", "tail"]
+						},
+						"toggleInvSuggest": { "type": "string" },
+						"setNonToggle": {
+							"type": "object",
+							"properties": { "head": { "type": "string" }, "tail": { "type": "string" } },
+							"required": ["head", "tail"]
+						},
+						"setNonToggleSuggest": { "type": "string" }
+					},
+					"required": [
+						"showDiffer",
+						"suggest",
+						"showAll",
+						"resetAll",
+						"showPref",
+						"resetPref",
+						"resetSuggest",
+						"toggleOnPref",
+						"showNonToggle",
+						"toggleOffPref",
+						"toggleInvPref",
+						"setNonToggle"
+					]
+				},
+				"start": {
+					"type": "object",
+					"properties": {
+						"subject": { "type": "string" },
+						"difficulty": {
+							"type": "object",
+							"properties": { "head": { "type": "string" }, "tail": { "type": "string" } },
+							"required": ["head", "tail"]
+						}
+					},
+					"required": ["subject", "difficulty"]
+				},
+				"write": { "type": "string" },
+				"writeAndQuit": { "type": "string" }
+			},
+			"required": ["help", "pause", "quit", "resume", "set", "start", "write"]
+		},
+		"form": {
+			"type": "object",
+			"properties": {
+				"save": { "type": "string" },
+				"reset": { "type": "string" }
+			},
+			"required": ["save", "reset"]
+		},
+		"statusBar": {
+			"type": "object",
+			"properties": {
+				"modesDisabledReason": { "type": "string" },
+				"posDesc": {
+					"type": "object",
+					"properties": {
+						"head": { "type": "string" },
+						"body": { "type": "string" },
+						"tail": { "type": "string" }
+					},
+					"required": ["head", "body", "tail"]
+				}
+			},
+			"required": ["modesDisabledReason", "posDesc"]
+		},
+		"help": {
+			"type": "object",
+			"properties": {
+				"cmd": { "type": "string" },
+				"mode": { "type": "string" },
+				"pref": { "type": "string" }
+			},
+			"required": ["cmd", "mode", "pref"]
+		},
+		"modes": {
+			"type": "object",
+			"properties": {
+				"normal": { "type": "string" },
+				"annotation": { "type": "string" },
+				"insert": { "type": "string" }
+			}
+		}
+	},
+	"required": ["titleScreen", "gameBtn", "prefs", "langName", "cmdDesc", "form", "statusBar", "help", "modes"]
+}

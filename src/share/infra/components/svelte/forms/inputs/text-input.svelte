@@ -5,6 +5,7 @@
 	import { capitalCase } from '~/share/utils'
 
 	export let name: string
+	export let label = capitalCase(name)
 	export let settings: TextField
 	export let defaultValue: string
 	export let value: string
@@ -19,6 +20,6 @@
 </script>
 
 <label class="field">
-	<span class="secondary">{capitalCase(name)}</span>
+	<span class="secondary">{label}</span>
 	<input bind:this={input} id={name} {name} {...settings} required {placeholder} bind:value />
 </label>

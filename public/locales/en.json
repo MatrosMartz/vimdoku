@@ -1,0 +1,150 @@
+{
+	"$schema": "./i18n-schema.json",
+	"langName": "english",
+	"titleScreen": {
+		"version": "Version",
+		"createBy": "Created by",
+		"desc": "Vimdoku is sudoku game with VIM shortcuts.",
+		"cmd": {
+			"help": "to on-line help.",
+			"quit": "for exit.",
+			"type": "Type",
+			"startHelp": "for start command help.",
+			"startGame": "for start game."
+		}
+	},
+	"gameBtn": {
+		"new": { "text": "New game" },
+		"goBack": "Go back",
+		"resume": { "text": "Resume game", "disabledReason": "No saved game." },
+		"start": "Start new game",
+		"selectDifficulty": "Select difficulty"
+	},
+	"prefs": {
+		"devicePref": {
+			"deviceValue": "Device value",
+			"less": "Less",
+			"more": "More"
+		},
+		"groups": {
+			"sudoku": "Sudoku",
+			"user": "User",
+			"vim": "Vim"
+		},
+		"names": {
+			"autoNoteDeletion": "Auto note deletion",
+			"autoSave": "Auto save",
+			"autoValidation": "Auto Validation",
+			"markRelatedNumbers": "mark Related Numbers",
+			"remainingNumbers": "Count remain Numbers",
+			"timer": "Timer",
+			"colorSchema": "Color Schema",
+			"colorTheme": "Color Theme",
+			"contrast": "Contrast",
+			"iconTheme": "Icon Theme",
+
+			"language": "Language",
+			"motionReduce": "Motion reduce",
+			"cursorBox": "Cursor box",
+			"cursorColumn": "Cursor column",
+			"cursorRow": "Cursor row",
+			"highlight": "Highlight",
+			"history": "history",
+			"numbers": "Numbers",
+			"relativeNumbers": "Relative numbers"
+		},
+		"btn": {
+			"showAll": { "text": "Show All", "disabledReason": "All preferences are being displayed." },
+			"showDiffer": {
+				"text": "Show different from default values",
+				"disabledReason": "Only preferences with values different from the default values are being displayed."
+			}
+		},
+		"tabs": {
+			"edit": "Edit",
+			"show": "Show"
+		}
+	},
+	"cmdDesc": {
+		"help": {
+			"main": "Open dialog and display the help app.",
+			"suggest": "Like \":help\", additionally jump to the tag {subject}.",
+			"withArg": {
+				"head": "Open dialog and display the help of",
+				"tail": "."
+			}
+		},
+		"pause": "Pause the current game.",
+		"quit": "Close the current screen or dialog.",
+		"resume": ["Resume the current game.", "Resume the saved game only if no game active."],
+		"set": {
+			"showAll": "Show all preferences.",
+			"resetAll": "Reset all preferences.",
+			"showPref": {
+				"head": "Show value of",
+				"tail": "."
+			},
+			"resetPref": {
+				"head": "Reset value of",
+				"tail": "."
+			},
+			"resetSuggest": "Reset {option} to it's default value.",
+			"toggleOnPref": {
+				"head": "Set,",
+				"tail": "to switch it on."
+			},
+			"showNonToggle": {
+				"head": "Show value of",
+				"tail": "."
+			},
+			"suggest": ["Toggle preference: Set, switch it on.", "String or Number preference: Shows it's value"],
+			"toggleOffPref": {
+				"head": "Set,",
+				"tail": "to switch off."
+			},
+			"toggleOffSuggest": "Toggle preference: Set, switch it off.",
+			"toggleInvPref": {
+				"head": "Invert value of",
+				"tail": "."
+			},
+			"toggleInvSuggest": "Toggle preference: Invert value.",
+			"setNonToggle": {
+				"head": "Set",
+				"tail": "to {value}."
+			},
+			"setNonToggleSuggest": "Sets a new value for the preference.",
+			"showDiffer": "Show all preferences that differ from their default value."
+		},
+		"start": {
+			"subject": "Start new game with the selected difficulty.",
+			"difficulty": {
+				"head": "Start new game with the",
+				"tail": "difficulty."
+			}
+		},
+		"write": "Save the current game.",
+		"writeAndQuit": "Save the current game and close the current screen or dialog."
+	},
+	"form": {
+		"reset": "Reset to default values",
+		"save": "Save all"
+	},
+	"statusBar": {
+		"modesDisabledReason": "The insertion mode can only be changed on the game screen.",
+		"posDesc": {
+			"head": "Row",
+			"body": ", Col",
+			"tail": "."
+		}
+	},
+	"help": {
+		"cmd": "command",
+		"mode": "mode",
+		"pref": "preference"
+	},
+	"modes": {
+		"annotation": "ANNOTATION",
+		"insert": "INSERT",
+		"normal": "NORMAL"
+	}
+}

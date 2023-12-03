@@ -4,7 +4,7 @@
 	import { Dialog, DialogClose } from '~/share/infra/components/svelte/dialog'
 	import { Tab, TabGroup, TabList, TabPanel } from '~/share/infra/components/svelte/tab'
 	import { med } from '$cmd/infra/services'
-	import { screenState } from '$cmd/infra/stores/svelte'
+	import { i18nState, screenState } from '$cmd/infra/stores/svelte'
 	import { PreferencesDisplay, PreferencesForm } from '$pref/infra/components/svelte'
 	import { DialogKinds, type DialogPref, dialogPref, ScreenActions } from '$screen/domain/models'
 
@@ -25,8 +25,12 @@
 	<div class="content">
 		<TabGroup {tabState}>
 			<TabList>
-				<Tab key="show" on:click={createTabHandler(DialogKinds.PrefAll)}>Show</Tab>
-				<Tab key="edit" on:click={createTabHandler(DialogKinds.PrefEdit)}>Edit</Tab>
+				<Tab key="show" on:click={createTabHandler(DialogKinds.PrefAll)}
+					>{$i18nState.get('prefs-tabs-show', 'Show')}</Tab
+				>
+				<Tab key="edit" on:click={createTabHandler(DialogKinds.PrefEdit)}
+					>{$i18nState.get('prefs-tabs-edit', 'Edit')}</Tab
+				>
 				<li class="close">
 					<DialogClose />
 				</li>

@@ -2,7 +2,7 @@
 	import { Icon } from '~/share/infra/components/svelte'
 	import { tooltip, type TooltipProps } from '~/share/infra/components/svelte/tooltip'
 	import { med } from '$cmd/infra/services'
-	import { modeState, posState, screenState } from '$cmd/infra/stores/svelte'
+	import { i18nState, modeState, posState, screenState } from '$cmd/infra/stores/svelte'
 	import { DialogKinds, MainScreenKinds, ScreenActions } from '$screen/domain/models'
 	import { ModeKinds, MODES_KEYS, SudokuActions } from '$sudoku/domain/models'
 
@@ -15,10 +15,10 @@
 	$: if (disabled) med.dispatch(ScreenActions.Exit)
 	$: if (open) document.getElementById(`mode-${modeState.data}`)?.focus()
 
-	const tooltipProps: TooltipProps = {
+	$: tooltipProps = {
 		id: 'disabled-mode-reason',
-		text: 'The insertion mode can only be changed on the game screen.',
-	}
+		text: $i18nState.get('statusBar-modesDisabledReason', 'The insertion mode can only be changed on the game screen.'),
+	} satisfies TooltipProps
 
 	function toggleHandler() {
 		if (disabled || open) med.dispatch(ScreenActions.Exit)
@@ -77,7 +77,7 @@
 						on:keyup={keyupHandler}
 						use:tooltip={{ id: `mode-${mode}-input-key-describe`, text: `<${MODES_KEYS[mode]}>` }}
 					/>
-					<span>{mode.toUpperCase()}</span><Icon id="check" />
+					<span>{$i18nState.get(`modes-${mode}`, mode.toUpperCase())}</span><Icon id="check" />
 				</label>
 			{/each}
 		</form>

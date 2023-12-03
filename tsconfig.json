@@ -16,6 +16,8 @@
 			"$screen/*": ["./src/screen/*"],
 			"$sudoku/*": ["./src/sudoku/*"],
 			"$pref/*": ["./src/preferences/*"],
+			"$i18n/*": ["./src/i18n/*"],
+			"@/*": ["./public/*"],
 			"~/*": ["./src/*"]
 		},
 		"resolveJsonModule": true,

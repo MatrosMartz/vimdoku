@@ -2,15 +2,21 @@
 	import { Button, ButtonMenu } from '~/share/infra/components/svelte/buttons'
 	import { capitalCase } from '~/share/utils'
 	import { med } from '$cmd/infra/services'
-	import { prefsState, screenState } from '$cmd/infra/stores/svelte'
+	import { i18nState, prefsState, screenState } from '$cmd/infra/stores/svelte'
 	import type { AllPreferences } from '$pref/domain/models'
 	import { PrefsSvc } from '$pref/domain/services'
 	import { DialogKinds, ScreenActions } from '$screen/domain/models'
 
-	const allTooltip = { id: 'all-disabled-describe', text: 'All preferences are being displayed.' }
+	const allTooltip = {
+		id: 'all-disabled-describe',
+		text: $i18nState.get('prefs-btn-showAll-disabledReason', 'All preferences are being displayed.'),
+	}
 	const diffTooltip = {
 		id: 'diff-disabled-describe',
-		text: 'Only preferences with values different from the default values are being displayed.',
+		text: $i18nState.get(
+			'prefs-btn-showDiffer-disabledReason',
+			'Only preferences with values different from the default values are being displayed.'
+		),
 	}
 
 	$: showAll = $screenState.dialog.kind === DialogKinds.PrefAll
@@ -33,12 +39,12 @@
 	{#each actualPreferences as [group, fields]}
 		<table class="preferences">
 			<thead>
-				<tr><th colspan="2">{capitalCase(group)}</th> </tr>
+				<tr><th colspan="2">{$i18nState.get(`prefs-groups-${group}`, capitalCase(group))}</th> </tr>
 			</thead>
 			<tbody>
 				{#each fields as [name, value]}
 					<tr class="field" class:strike={!showAll && isDefault(name, value)}>
-						<th class="key secondary">{capitalCase(name)}</th>
+						<th class="key secondary">{$i18nState.get(`prefs-names-${name}`, capitalCase(name))}</th>
 						<td
 							class="monospace value"
 							class:bool={typeof value === 'boolean'}
@@ -51,9 +57,11 @@
 		</table>
 	{/each}
 	<ButtonMenu>
-		<Button disabled={showAll} tooltipProps={allTooltip} on:click={allHandler}>Show all</Button>
+		<Button disabled={showAll} tooltipProps={allTooltip} on:click={allHandler}
+			>{$i18nState.get('prefs-btn-showAll-text', 'Show all')}</Button
+		>
 		<Button disabled={!showAll} tooltipProps={diffTooltip} on:click={diffHandler}
-			>Show different from default values</Button
+			>{$i18nState.get('prefs-btn-showDiffer-text', 'Show different from default values')}</Button
 		>
 	</ButtonMenu>
 </article>

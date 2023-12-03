@@ -1,9 +1,9 @@
 import type { FieldsEntries, FieldsToModel, FormGroup } from '~/share/domain/models'
 
 export const sudokuFields = {
-	automaticNoteDeletion: { type: 'toggle' },
-	automaticValidation: { type: 'toggle' },
-	highlightNumber: { type: 'toggle' },
+	autoNoteDeletion: { type: 'toggle' },
+	autoValidation: { type: 'toggle' },
+	markRelatedNumbers: { type: 'toggle' },
 	remainingNumbers: { type: 'toggle' },
 } as const satisfies FormGroup
 

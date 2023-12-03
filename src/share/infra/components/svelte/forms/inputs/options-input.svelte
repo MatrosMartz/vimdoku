@@ -4,6 +4,7 @@
 	import { capitalCase } from '~/share/utils'
 
 	export let name: string
+	export let label = capitalCase(name)
 	export let options: readonly T[]
 	export let defaultValue = options[0]
 	export let value = options[0]
@@ -14,7 +15,7 @@
 </script>
 
 <label class="field">
-	<span class="secondary">{capitalCase(name)}</span>
+	<span class="secondary">{label}</span>
 
 	<select bind:this={select} id={name} {name} required bind:value>
 		{#each options as option}

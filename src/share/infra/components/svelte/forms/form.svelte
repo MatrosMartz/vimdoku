@@ -3,6 +3,7 @@
 
 	import type { FormSchema, SchemaToModel } from '~/share/domain/models'
 	import { capitalCase, typeFallback } from '~/share/utils'
+	import { i18nState } from '$cmd/infra/stores'
 
 	import { Button, ButtonMenu } from '../buttons'
 	import { NumberInput, OptionsInput, TextInput, ToggleInput } from './inputs'
@@ -13,13 +14,29 @@
 	export let defaultValues: SchemaToModel<Schema>
 	export let initialValues: SchemaToModel<Schema>
 	export let method: 'get' | 'post' | 'dialog' = 'dialog'
+	export let labels: {
+		[K in keyof Schema]: {
+			names: { [S in keyof Schema[K]]: (fallback: string) => string }
+			fallback(fallback: string): string
+		}
+	}
 
-	function schemaEntries(sch: FormSchema) {
-		return Object.entries(sch).map(([name, settings]) => [name, Object.entries(settings)] satisfies [string, unknown])
+	function schemaEntries(sch: FormSchema, l: typeof labels) {
+		return Object.entries(sch).map(
+			([group, settings]) =>
+				[
+					group,
+					l[group].fallback,
+					Object.entries(settings).map(
+						([name, settings]) =>
+							[name, l[group].names[name], settings] satisfies [string, (a: string) => string, unknown]
+					),
+				] satisfies [string, (a: string) => string, unknown]
+		)
 	}
 
 	const dispatcher = createEventDispatcher<{ submit: SchemaToModel<Schema> }>()
-	const dataEntries = schemaEntries(schema)
+	$: dataEntries = schemaEntries(schema, labels)
 
 	const values: any = structuredClone(initialValues)
 
@@ -29,14 +46,15 @@
 </script>
 
 <form {method} on:submit|preventDefault={submitHandler}>
-	{#each dataEntries as [group, fields]}
+	{#each dataEntries as [group, fallbackGroup, fields] (group)}
 		<fieldset>
-			<legend>{capitalCase(group)}</legend>
-			{#each fields as [name, settings]}
+			<legend>{fallbackGroup(capitalCase(group))}</legend>
+			{#each fields as [name, fallbackName, settings] (name)}
 				{#if settings.type === 'text'}
 					<TextInput
 						{name}
 						defaultValue={typeFallback('string', defaultValues[group][name], '')}
+						label={fallbackName(capitalCase(name))}
 						{settings}
 						bind:value={values[group][name]}
 					/>
@@ -44,6 +62,7 @@
 					<NumberInput
 						{name}
 						defaultValue={typeFallback('number', defaultValues[group][name], 0)}
+						label={fallbackName(capitalCase(name))}
 						{settings}
 						bind:value={values[group][name]}
 					/>
@@ -51,17 +70,23 @@
 					<ToggleInput
 						{name}
 						defaultChecked={typeFallback('boolean', defaultValues[group][name], false)}
+						label={fallbackName(capitalCase(name))}
 						bind:checked={values[group][name]}
 					/>
 				{:else if settings.type === 'options'}
-					<OptionsInput {name} options={settings.opts} bind:value={values[group][name]} />
+					<OptionsInput
+						{name}
+						label={fallbackName(capitalCase(name))}
+						options={settings.opts}
+						bind:value={values[group][name]}
+					/>
 				{/if}
 			{/each}
 		</fieldset>
 	{/each}
 	<ButtonMenu>
-		<Button type="reset">Reset to default.</Button>
-		<Button type="submit">Save all.</Button>
+		<Button type="reset">{$i18nState.get('form-reset', 'Reset to default')}</Button>
+		<Button type="submit">{$i18nState.get('form-save', 'Save al')}</Button>
 	</ButtonMenu>
 </form>
 

@@ -1,5 +1,6 @@
 import { runAsync } from '~/share/utils'
-import { type IPrefs, PrefActions, type PrefData } from '$pref/domain/models'
+import type { II18n } from '$i18n/domain/models'
+import { type IPrefs, type Langs, PrefActions, type PrefData } from '$pref/domain/models'
 import { type DialogData, type IScreen, MainScreenKinds, ScreenActions, type ScreenData } from '$screen/domain/models'
 import { type GameOpts, type IGame, SudokuActions, type SudokuData } from '$sudoku/domain/models'
 
@@ -7,6 +8,7 @@ import type { IMed, Med } from '../models'
 
 interface MediatorDeps {
 	game: IGame
+	i18n: II18n
 	prefs: IPrefs
 	screen: IScreen
 	state: Med.State
@@ -16,6 +18,7 @@ interface MediatorDeps {
 export class MedSvc implements IMed {
 	#game
 	#hasLoaded = false
+	readonly #i18n
 	#intervalId: ReturnType<typeof setInterval> | null = null
 	readonly #prefs
 	readonly #screen
@@ -26,8 +29,9 @@ export class MedSvc implements IMed {
 	 * @param deps An Object contains deps that the state manages.
 	 */
 	constructor(deps: MediatorDeps)
-	constructor({ game, prefs, screen, state }: MediatorDeps) {
+	constructor({ game, i18n, prefs, screen, state }: MediatorDeps) {
 		this.#game = game
+		this.#i18n = i18n
 		this.#prefs = prefs
 		this.#screen = screen
 		this.#state = state
@@ -60,7 +64,16 @@ export class MedSvc implements IMed {
 		await Promise.all([this.#prefs.load(), this.#game.load()])
 		this.#notify('boardSaved')
 		this.#notify('prefs')
+		await this.#changeLang(this.#prefs.data.user.language)
 		this.#hasLoaded = true
+	}
+
+	async #changeLang(lang: Langs) {
+		if (this.#i18n.actualLang === lang) return
+
+		await this.#i18n.changeLang(lang)
+
+		this.#notify('i18n')
 	}
 
 	#dCellErase() {
@@ -141,12 +154,15 @@ export class MedSvc implements IMed {
 	async #dPrefReset(data: PrefData.Reset) {
 		if (data.type === 'all') await this.#prefs.resetAll().save()
 		else await this.#prefs.resetByKey(data.key).save()
+	this.#notify('prefs')
+	await this.#changeLang(this.#prefs.data.user.language)
 	}
 
 	async #dPrefSave(data: PrefData.Save) {
 		if (data.type === 'all') await this.#prefs.setAll(data.replace).save()
 		else await this.#prefs.setByKey(data.key, data.replace).save()
-		this.#notify('prefs')
+	this.#notify('prefs')
+	await this.#changeLang(this.#prefs.data.user.language)
 	}
 
 	/**
@@ -156,6 +172,7 @@ export class MedSvc implements IMed {
 	#notify<K extends Med.Keys>(key: K) {
 		if (key === 'board') this.#state.board.update(this.#game.board)
 		else if (key === 'boardSaved') this.#state.boardSaved.update(this.#game.isASaved)
+		else if (key === 'i18n') this.#state.i18n.update(this.#i18n.data)
 		else if (key === 'mode') this.#state.mode.update(this.#game.mode)
 		else if (key === 'pos') this.#state.pos.update(this.#game.pos)
 		else if (key === 'prefs') this.#state.prefs.update(this.#prefs.data)

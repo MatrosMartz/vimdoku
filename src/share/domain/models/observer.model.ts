@@ -31,15 +31,15 @@ export interface IAsyncObs<T> extends IObs<T> {
 export interface IHistoryObs<T> extends IAsyncObs<T> {
 	/** Get the current value of the entire history. */
 	readonly history: T[]
+	/** Navigate backwards in history. */
+	redo(): void
+	/** Navigate forwards in history. */
+	undo(): void
 	/**
 	 * Adds a new entry to the history and set the current data value to an empty state.
 	 * @param data The new entry of the history.
 	 */
 	update(data: T): void
-	/** Navigate backwards in history. */
-	redo(): void
-	/** Navigate forwards in history. */
-	undo(): void
 }
 
 export type Store<State extends Record<string, IObs<unknown>>> = {

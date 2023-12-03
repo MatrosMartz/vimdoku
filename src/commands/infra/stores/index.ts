@@ -1,3 +1,4 @@
+export * from './i18n.store'
 export * from './modes.store'
 export * from './position.store'
 export * from './preferences.store'

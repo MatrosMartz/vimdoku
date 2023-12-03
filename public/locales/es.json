@@ -1,0 +1,152 @@
+{
+	"$schema": "./i18n-schema.json",
+	"langName": "español",
+	"titleScreen": {
+		"version": "Versión",
+		"createBy": "Creado por",
+		"desc": "Vimdoku es un juego de sudoku con atajos de VIM.",
+		"cmd": {
+			"help": "para las instrucciones en linea.",
+			"quit": "para salir.",
+			"type": "Inserte",
+			"startHelp": "para las instrucciones del comando start.",
+			"startGame": "para iniciar la partida."
+		}
+	},
+	"gameBtn": {
+		"new": { "text": "Nuevo juego" },
+		"goBack": "Regresar",
+		"resume": { "text": "Continuar la partida", "disabledReason": "No hay partidas guardadas." },
+		"start": "Iniciar nueva partida",
+		"selectDifficulty": "Seleccionar dificultad"
+	},
+	"prefs": {
+		"devicePref": {
+			"deviceValue": "Valor del dispositivo",
+			"less": "Lo mínimo",
+			"more": "Lo máximo"
+		},
+		"groups": {
+			"sudoku": "Sudoku",
+			"user": "Usuario",
+			"vim": "Vim"
+		},
+		"names": {
+			"autoNoteDeletion": "Notas auto eliminadas",
+			"autoSave": "Auto guardado",
+			"autoValidation": "Validación automática",
+			"markRelatedNumbers": "Marcar notas relacionadas",
+			"remainingNumbers": "Ver números restantes",
+			"timer": "Temporizador",
+			"colorSchema": "Esquema de color",
+			"colorTheme": "Tema de colores",
+			"contrast": "Contraste",
+			"iconTheme": "Tema de iconos",
+			"language": "Lenguaje",
+			"motionReduce": "Reducción de movimiento",
+			"cursorBox": "Caja de cursor",
+			"cursorColumn": "Columna de cursor",
+			"cursorRow": "Fila de cursor",
+			"highlight": "Resaltado",
+			"history": "Historial",
+			"numbers": "Números",
+			"relativeNumbers": "Números relativos"
+		},
+		"btn": {
+			"showAll": { "text": "Mostrar todas", "disabledReason": "Todas las preferencias se están mostrando." },
+			"showDiffer": {
+				"text": "Mostrar las diferentes de los valores por defecto",
+				"disabledReason": "Se están mostrando solo las preferencias que difieren con el valor por defecto."
+			}
+		},
+		"tabs": {
+			"edit": "Editar",
+			"show": "Visualizar"
+		}
+	},
+	"cmdDesc": {
+		"help": {
+			"main": "Abre un dialogo y muestra las instrucciones de la aplicación.",
+			"suggest": "Parecido a \":help\", con la adicción de brincar a la etiqueta {subject}",
+			"withArg": {
+				"head": "Abre un dialogo y muestra las instrucciones sobre",
+				"tail": "."
+			}
+		},
+		"pause": "Pausa la partida actual.",
+		"quit": "Cierra la ventana o dialog actual.",
+		"resume": ["Continua con la partida actual.", "Continua con la partida guardada."],
+		"set": {
+			"showAll": "Muestra todas las preferencias.",
+			"resetAll": "Restablece todas las preferencias",
+			"showPref": {
+				"head": "Muestra el valor de",
+				"tail": "."
+			},
+			"resetPref": {
+				"head": "Restablece el valor de",
+				"tail": "."
+			},
+			"resetSuggest": "Restablece la {option} a su valor por defecto.",
+			"toggleOnPref": {
+				"head": "Establece",
+				"tail": "a verdadero."
+			},
+			"showNonToggle": {
+				"head": "Muestra el valor de",
+				"tail": "."
+			},
+			"suggest": [
+				"Preferencia de interruptor: La establece a verdadero.",
+				"Preferencia de texto o numero: Muestra su valor."
+			],
+			"toggleOffPref": {
+				"head": "Establece",
+				"tail": "a falso."
+			},
+			"toggleOffSuggest": "Preferencia de interruptor: La establece a falso.",
+			"toggleInvPref": {
+				"head": "Invierte el valor de",
+				"tail": "."
+			},
+			"toggleInvSuggest": "Preferencia de interruptor: Invierte el valor.",
+			"setNonToggle": {
+				"head": "Establece",
+				"tail": "al valor definido."
+			},
+			"setNonToggleSuggest": "Establece un nuevo valor para la preferencia.",
+			"showDiffer": "Muestra todas las preferencias que difieren con el valor por defecto."
+		},
+		"start": {
+			"subject": "Inicia una nueva partida con la dificultad seleccionada.",
+			"difficulty": {
+				"head": "Inicia una nueva partida en la dificultad:",
+				"tail": "."
+			}
+		},
+		"write": "Guarda la partida actual.",
+		"writeAndQuit": "Guarda la partida actual y cierra la ventana o dialogo actual."
+	},
+	"form": {
+		"reset": "Restablece a los valores por defecto",
+		"save": "Guarda Todo"
+	},
+	"statusBar": {
+		"modesDisabledReason": "El modo de inserción solo puede ser cambiado en la pantalla de juego.",
+		"posDesc": {
+			"head": "Fila",
+			"body": ", Col",
+			"tail": "."
+		}
+	},
+	"help": {
+		"cmd": "commando",
+		"mode": "modo",
+		"pref": "preferencia"
+	},
+	"modes": {
+		"annotation": "ANOTACIÓN",
+		"insert": "INSERCIÓN",
+		"normal": "NORMAL"
+	}
+}

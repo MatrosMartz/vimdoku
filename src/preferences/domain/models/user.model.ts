@@ -5,10 +5,16 @@ export enum Langs {
 	ES = 'es',
 }
 
+export enum DevicePref {
+	DEVICE = 'deviceValue',
+	MORE = 'more',
+	LESS = 'less',
+}
+
 export const userFields = {
-	animations: { type: 'toggle' },
+	motionReduce: { type: 'options', opts: Object.values(DevicePref) },
 	language: { type: 'options', opts: Object.values(Langs) },
-	theme: { type: 'text' },
+	colorTheme: { type: 'text' },
 	timer: { type: 'toggle' },
 } as const satisfies FormGroup
 

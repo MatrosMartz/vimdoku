@@ -4,6 +4,7 @@
 	import { capitalCase } from '~/share/utils'
 
 	export let name: string
+	export let label = capitalCase(name)
 	export let checked = true
 	export let defaultChecked: boolean
 
@@ -14,7 +15,7 @@
 
 <label class="field">
 	<input bind:this={input} id={name} {name} type="checkbox" bind:checked />
-	<span class="secondary">{capitalCase(name)}</span>
+	<span class="secondary">{label}</span>
 	<div aria-hidden="true" class="switch"></div>
 </label>
 

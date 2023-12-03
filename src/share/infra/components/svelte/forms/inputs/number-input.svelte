@@ -5,6 +5,7 @@
 	import { capitalCase } from '~/share/utils'
 
 	export let name: string
+	export let label = capitalCase(name)
 	export let settings: NumberField
 	export let defaultValue: number
 	export let value: number
@@ -24,6 +25,6 @@
 </script>
 
 <label class="field">
-	<span class="secondary">{capitalCase(name)}</span>
+	<span class="secondary">{label}</span>
 	<input bind:this={input} id={name} {name} {...settings} required {placeholder} on:input={inputHandler} />
 </label>

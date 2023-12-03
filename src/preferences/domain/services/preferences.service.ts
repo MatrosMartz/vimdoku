@@ -3,7 +3,7 @@ import { InvalidPreferencesError, sameStructure } from '~/share/utils'
 
 import { type AllPreferences, type IPrefs, type Prefs, type PrefsEntries } from '../models'
 import { sudokuFields, type SudokuPrefs } from '../models/sudoku.model'
-import { Langs, userFields, type UserPrefs } from '../models/user.model'
+import { DevicePref, Langs, userFields, type UserPrefs } from '../models/user.model'
 import { vimFields, type VimPrefs } from '../models/vim.model'
 import type { PrefsRepo } from '../repositories'
 
@@ -55,24 +55,23 @@ const validatePref = {
 /** Represent a Preferences Service for game. */
 export class PrefsSvc implements IPrefs {
 	/** Default Sudoku Preferences. */
-	static readonly DEFAULT_SUDOKU: Readonly<SudokuPrefs> = _f({
-		automaticNoteDeletion: true,
-		automaticValidation: true,
-		highlightNumber: true,
+	static readonly DEFAULT_SUDOKU = _f<SudokuPrefs>({
+		autoNoteDeletion: true,
+		autoValidation: true,
+		markRelatedNumbers: true,
 		remainingNumbers: true,
 	})
 
 	/** Default User Preferences. */
-	static readonly DEFAULT_USER: Readonly<UserPrefs> = _f({
-		animations: true,
+	static readonly DEFAULT_USER = _f<UserPrefs>({
+		motionReduce: DevicePref.DEVICE,
 		language: Langs.EN,
-		theme: 'default',
+		colorTheme: 'default',
 		timer: true,
 	})
 
 	/** Default VIM preferences. */
-	static readonly DEFAULT_VIM: Readonly<VimPrefs> = _f({
-		fontSize: 16,
+	static readonly DEFAULT_VIM = _f<VimPrefs>({
 		history: 100,
 		numbers: true,
 		relativeNumbers: false,

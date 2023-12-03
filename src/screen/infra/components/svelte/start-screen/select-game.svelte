@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Button, ButtonMenu, OptionsInput } from '~/share/infra/components/svelte'
 	import { med } from '$cmd/infra/services'
+	import { i18nState } from '$cmd/infra/stores'
 	import { DIFFICULTIES_NAMES, DifficultyKinds, SudokuActions } from '$sudoku/domain/models'
 
 	import { startType } from './start-screen.store'
@@ -17,11 +18,16 @@
 </script>
 
 <form method="dialog" on:submit|preventDefault={submitHandler}>
-	<OptionsInput name="difficulty" options={DIFFICULTIES_NAMES} bind:value />
+	<OptionsInput
+		name="difficulty-selector"
+		label={$i18nState.get('gameBtn-selectDifficulty', 'Select difficulty')}
+		options={DIFFICULTIES_NAMES}
+		bind:value
+	/>
 
 	<ButtonMenu>
-		<Button on:click={backHandler}>Go back</Button>
-		<Button type="submit">Start</Button>
+		<Button on:click={backHandler}>{$i18nState.get('gameBtn-goBack', 'Go back')}</Button>
+		<Button type="submit">{$i18nState.get('gameBtn-start', 'Start new game')}</Button>
 	</ButtonMenu>
 </form>
 

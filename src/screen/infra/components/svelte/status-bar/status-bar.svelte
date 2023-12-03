@@ -2,12 +2,18 @@
 	import { Icon } from '~/share/infra/components/svelte'
 	import { tooltip } from '~/share/infra/components/svelte/tooltip'
 	import { med } from '$cmd/infra/services'
-	import { posState, screenState } from '$cmd/infra/stores/svelte'
+	import { i18nState, posState, screenState } from '$cmd/infra/stores/svelte'
 	import { DialogKinds, ScreenActions } from '$screen/domain/models'
 
 	import SelectMode from './select-mode.svelte'
 
-	$: tooltipProps = { id: 'describe-pos', text: `Row ${$posState.y + 1}, Col ${$posState.x + 1}` }
+	$: tooltipProps = {
+		id: 'describe-pos',
+		text: `${$i18nState.get('statusBar-posDesc-head', 'Row')} ${$posState.y + 1}${$i18nState.get(
+			'statusBar-posDesc-body',
+			', Col'
+		)} ${$posState.x + 1}${$i18nState.get('statusBar-posDesc-tail', '.')}`,
+	}
 
 	function cmdHandler() {
 		med.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.Cmd })
