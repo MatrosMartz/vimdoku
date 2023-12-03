@@ -16,10 +16,13 @@
 	import '@fontsource-variable/jetbrains-mono'
 	import '@fontsource-variable/jetbrains-mono/wght-italic.css'
 
+	import { prefsState } from '$cmd/infra/stores'
 	import { CommandDialog, PreferencesDialog, Screen, StatusBar } from '$screen/infra/components/svelte'
 
 	import { keydownHandler } from './keydown-handler'
 	import { Header } from './share/infra/components/svelte'
+
+	$: document.documentElement.lang = $prefsState.user.language
 </script>
 
 <Header />
