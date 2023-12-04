@@ -44,6 +44,7 @@
 		position: absolute;
 		bottom: calc(100% + 0.5rem);
 		left: 50%;
+		z-index: 100;
 		padding: 0.5rem 1rem;
 		color: var(--primary-color);
 		text-align: center;
