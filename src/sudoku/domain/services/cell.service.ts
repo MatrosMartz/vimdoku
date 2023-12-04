@@ -208,8 +208,11 @@ abstract class WritableCellState extends CellState {
 		return new EmptyCellState(this[data])
 	}
 
-	toggleNote(num: ValidNumbers) {
-		return this.addNote(num)
+	toggleNote(num: ValidNumbers): CellState {
+		this[data].notes.add(num)
+		this[data].value = CellState.EMPTY_VALUE
+
+		return new NotesCellState(this[data])
 	}
 
 	writeValue(num: ValidNumbers) {
@@ -263,12 +266,11 @@ class NotesCellState extends WritableCellState {
 	removeNote(num: ValidNumbers) {
 		this[data].notes.remove(num)
 
-		return this
+		return this[data].notes.isEmpty ? new EmptyCellState(this[data]) : this
 	}
 
 	toggleNote(num: ValidNumbers) {
 		this[data].notes.toggle(num)
-
 		return this[data].notes.isEmpty ? new EmptyCellState(this[data]) : this
 	}
 }
