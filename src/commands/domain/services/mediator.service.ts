@@ -1,4 +1,4 @@
-import { runAsync } from '~/share/utils'
+import { match } from '~/share/utils'
 import type { II18n } from '$i18n/domain/models'
 import { type IPrefs, type Langs, PrefActions, type PrefData } from '$pref/domain/models'
 import { type DialogData, type IScreen, MainScreenKinds, ScreenActions, type ScreenData } from '$screen/domain/models'
@@ -28,7 +28,6 @@ export class MedSvc implements IMed {
 	 * Creates an instance of the MedSvc class.
 	 * @param deps An Object contains deps that the state manages.
 	 */
-	constructor(deps: MediatorDeps)
 	constructor({ game, i18n, prefs, screen, state }: MediatorDeps) {
 		this.#game = game
 		this.#i18n = i18n
@@ -40,22 +39,24 @@ export class MedSvc implements IMed {
 
 	dispatch<Action extends Med.UnDataActions>(action: Action): this
 	dispatch<Action extends Med.DataActions>(action: Action, data: Med.DataDispatch[Action]): this
-	dispatch(action: unknown, data?: any) {
-		runAsync(async () => {
-			if (action === ScreenActions.Exit) this.#dExitScreen()
-			else if (action === ScreenActions.OpenDialog) this.#dOpenDialog(data)
-			else if (action === ScreenActions.OpenScreen) this.#dOpenScreen(data)
-			else if (action === SudokuActions.ChangeMode) this.#dChangeMode(data)
-			else if (action === SudokuActions.Erase) this.#dCellErase()
-			else if (action === SudokuActions.Move) this.#dGameMove(data)
-			else if (action === SudokuActions.End) await this.#dGameEnd()
-			else if (action === SudokuActions.Resume) await this.#dGameResume()
-			else if (action === SudokuActions.Save) await this.#dGameSave()
-			else if (action === SudokuActions.Start) await this.#dGameStart(data)
-			else if (action === SudokuActions.Write) this.#dGameWrite(data)
-			else if (action === PrefActions.Reset) await this.#dPrefReset(data)
-			else if (action === PrefActions.Save) await this.#dPrefSave(data)
+	dispatch(action: Med.Actions, data?: any) {
+		match(action, {
+			[ScreenActions.Exit]: () => this.#dExitScreen(),
+			[ScreenActions.OpenDialog]: () => this.#dOpenDialog(data),
+			[ScreenActions.OpenScreen]: () => this.#dOpenScreen(data),
+			[SudokuActions.ChangeMode]: () => this.#dChangeMode(data),
+			[SudokuActions.Check]: () => this.#dSudokuCheck(),
+			[SudokuActions.Erase]: () => this.#dCellErase(),
+			[SudokuActions.Move]: () => this.#dSudokuMove(data),
+			[SudokuActions.End]: async () => await this.#dSudokuEnd(),
+			[SudokuActions.Resume]: async () => await this.#dSudokuResume(),
+			[SudokuActions.Save]: async () => await this.#dSudokuSave(),
+			[SudokuActions.Start]: async () => await this.#dSudokuStart(data),
+			[SudokuActions.Write]: () => this.#dSudokuWrite(data),
+			[PrefActions.Reset]: async () => await this.#dPrefReset(data),
+			[PrefActions.Save]: async () => await this.#dPrefSave(data),
 		})
+
 		return this
 	}
 
@@ -91,56 +92,6 @@ export class MedSvc implements IMed {
 		this.#notify('screen')
 	}
 
-	async #dGameEnd() {
-		this.#game = await this.#game.end()
-		this.#notify('board')
-		clearInterval(this.#intervalId ?? 0)
-		this.#intervalId = null
-	}
-
-	#dGameMove(data: SudokuData.Move) {
-		if (data.type === 'down') this.#game.moveDown(data.times)
-		if (data.type === 'left') this.#game.moveLeft(data.times)
-		if (data.type === 'right') this.#game.moveRight(data.times)
-		if (data.type === 'up') this.#game.moveUp(data.times)
-		if (data.type === 'set') this.#game.changePos(data.position)
-		this.#notify('pos')
-	}
-
-	async #dGameResume() {
-		const newGame = await this.#game.resume()
-		if (newGame != null) {
-			this.#game = newGame
-			this.#notify('board')
-			this.#screen.setMain(MainScreenKinds.Game)
-			this.#notify('screen')
-		}
-	}
-
-	async #dGameSave() {
-		await this.#game.save()
-	}
-
-	async #dGameStart(data: Partial<GameOpts>) {
-		this.#screen.setMain(MainScreenKinds.Game)
-		this.#notify('screen')
-		this.#game = await this.#game.start(data)
-		this.#notify('board')
-
-		if (this.#prefs.user.timer) {
-			this.#intervalId = setInterval(() => {
-				this.#game.timerInc()
-				this.#notify('timer')
-			}, 1000)
-		}
-	}
-
-	#dGameWrite(data: SudokuData.Write) {
-		if (data.value === 0) this.#game.clear()
-		else this.#game.write(data.value)
-		this.#notify('board')
-	}
-
 	#dOpenDialog(data: DialogData) {
 		this.#screen.setDialog(data)
 		this.#notify('screen')
@@ -154,15 +105,67 @@ export class MedSvc implements IMed {
 	async #dPrefReset(data: PrefData.Reset) {
 		if (data.type === 'all') await this.#prefs.resetAll().save()
 		else await this.#prefs.resetByKey(data.key).save()
-	this.#notify('prefs')
-	await this.#changeLang(this.#prefs.data.user.language)
+		this.#notify('prefs')
+		await this.#changeLang(this.#prefs.data.user.language)
 	}
 
 	async #dPrefSave(data: PrefData.Save) {
 		if (data.type === 'all') await this.#prefs.setAll(data.replace).save()
 		else await this.#prefs.setByKey(data.key, data.replace).save()
-	this.#notify('prefs')
-	await this.#changeLang(this.#prefs.data.user.language)
+		this.#notify('prefs')
+		await this.#changeLang(this.#prefs.data.user.language)
+	}
+
+	#dSudokuCheck() {}
+
+	async #dSudokuEnd() {
+		this.#game = await this.#game.end()
+		this.#notify('board')
+		clearInterval(this.#intervalId ?? 0)
+		this.#intervalId = null
+	}
+
+	#dSudokuMove(data: SudokuData.Move) {
+		if (data.type === 'down') this.#game.moveDown(data.times)
+		if (data.type === 'left') this.#game.moveLeft(data.times)
+		if (data.type === 'right') this.#game.moveRight(data.times)
+		if (data.type === 'up') this.#game.moveUp(data.times)
+		if (data.type === 'set') this.#game.changePos(data.position)
+		this.#notify('pos')
+	}
+
+	async #dSudokuResume() {
+		const newGame = await this.#game.resume()
+		if (newGame != null) {
+			this.#game = newGame
+			this.#notify('board')
+			this.#screen.setMain(MainScreenKinds.Game)
+			this.#notify('screen')
+		}
+	}
+
+	async #dSudokuSave() {
+		await this.#game.save()
+	}
+
+	async #dSudokuStart(data: Partial<GameOpts>) {
+		this.#screen.setMain(MainScreenKinds.Game)
+		this.#notify('screen')
+		this.#game = await this.#game.start(data)
+		this.#notify('board')
+
+		if (this.#prefs.user.timer) {
+			this.#intervalId = setInterval(() => {
+				this.#game.timerInc()
+				this.#notify('timer')
+			}, 1000)
+		}
+	}
+
+	#dSudokuWrite(data: SudokuData.Write) {
+		if (data.value === 0) this.#game.clear()
+		else this.#game.write(data.value)
+		this.#notify('board')
 	}
 
 	/**
@@ -170,13 +173,15 @@ export class MedSvc implements IMed {
 	 * @param key The key to update in the observables.
 	 */
 	#notify<K extends Med.Keys>(key: K) {
-		if (key === 'board') this.#state.board.update(this.#game.board)
-		else if (key === 'boardSaved') this.#state.boardSaved.update(this.#game.isASaved)
-		else if (key === 'i18n') this.#state.i18n.update(this.#i18n.data)
-		else if (key === 'mode') this.#state.mode.update(this.#game.mode)
-		else if (key === 'pos') this.#state.pos.update(this.#game.pos)
-		else if (key === 'prefs') this.#state.prefs.update(this.#prefs.data)
-		else if (key === 'screen') this.#state.screen.update(this.#screen.data)
-		else if (key === 'timer') this.#state.timer.update(this.#game.timer)
+		match<Med.Keys>(key, {
+			board: () => this.#state.board.update(this.#game.board),
+			boardSaved: () => this.#state.boardSaved.update(this.#game.isASaved),
+			i18n: () => this.#state.i18n.update(this.#i18n.data),
+			mode: () => this.#state.mode.update(this.#game.mode),
+			pos: () => this.#state.pos.update(this.#game.pos),
+			prefs: () => this.#state.prefs.update(this.#prefs.data),
+			screen: () => this.#state.screen.update(this.#screen.data),
+			timer: () => this.#state.timer.update(this.#game.timer),
+		})
 	}
 }

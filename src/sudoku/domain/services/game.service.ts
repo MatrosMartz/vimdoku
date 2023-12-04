@@ -1,6 +1,7 @@
 import type { Pos } from '~/share/domain/models'
 import { PosSvc } from '~/share/domain/services'
 import type { OptionalKeys } from '~/share/types'
+import { match } from '~/share/utils'
 
 import {
 	type Board,
@@ -283,14 +284,11 @@ abstract class GameState implements IGameState {
 	 */
 	static create(data: StartedGameData, mode: ModeKinds): GameState {
 		data.mode = mode
-		switch (mode) {
-			case ModeKinds.A:
-				return new AnnotationGameState(data)
-			case ModeKinds.I:
-				return new InsertGameState(data)
-			case ModeKinds.X:
-				return new NormalGameState(data)
-		}
+		return match(mode, {
+			[ModeKinds.A]: () => new AnnotationGameState(data),
+			[ModeKinds.I]: () => new InsertGameState(data),
+			[ModeKinds.X]: () => new NormalGameState(data),
+		})
 	}
 
 	changeMode(mode: ModeKinds) {

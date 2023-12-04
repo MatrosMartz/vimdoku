@@ -1,3 +1,5 @@
+import { match } from '~/share/utils'
+
 import {
 	type Cell,
 	type CellData,
@@ -129,20 +131,14 @@ export class CellSvc implements ICell {
 	}
 
 	#stateForKind(data: CellData) {
-		switch (data.kind) {
-			case CellKinds.Correct:
-				return new CorrectCellState(data)
-			case CellKinds.Empty:
-				return new EmptyCellState(data)
-			case CellKinds.Incorrect:
-				return new IncorrectCellState(data)
-			case CellKinds.Initial:
-				return new InitialCellState(data)
-			case CellKinds.Unverified:
-				return new UnverifiedCellState(data)
-			case CellKinds.WhitNotes:
-				return new NotesCellState(data)
-		}
+		return match(data.kind, {
+			[CellKinds.Correct]: () => new CorrectCellState(data),
+			[CellKinds.Empty]: () => new EmptyCellState(data),
+			[CellKinds.Incorrect]: () => new IncorrectCellState(data),
+			[CellKinds.Initial]: () => new InitialCellState(data),
+			[CellKinds.Unverified]: () => new UnverifiedCellState(data),
+			[CellKinds.WhitNotes]: () => new NotesCellState(data),
+		})
 	}
 }
 
