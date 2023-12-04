@@ -49,8 +49,8 @@
 		text-align: center;
 		text-overflow: ellipsis;
 		content: var(--reason);
-		background-color: rgb(6 0 15);
-		border: 1px solid rgb(31 11 59);
+		background-color: var(--tooltip-background);
+		border: 1px solid var(--tooltip-border);
 		border-radius: 8px;
 		opacity: 0;
 		transform: translateX(-50%);
@@ -90,13 +90,13 @@
 		margin-inline: auto;
 		clip-path: polygon(0 0, 100% 0, 50% 100%);
 		content: '';
-		background-color: rgb(6 0 15);
+		background-color: var(--tooltip-background);
 	}
 
 	.tooltip::before {
 		top: calc(100% + 1px);
 		width: 1.6rem;
-		background-color: rgb(31 11 59);
+		background-color: var(--tooltip-border);
 	}
 
 	.tooltip.hidden {

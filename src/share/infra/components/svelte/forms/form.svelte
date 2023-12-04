@@ -107,7 +107,7 @@
 		background-color: var(--editor-background);
 		border: none;
 		border-radius: 8px;
-		box-shadow: 0 4px 16px rgb(19 15 24 / 50%);
+		box-shadow: 0 4px 16px var(--card-head-shadow);
 	}
 
 	fieldset:not(:first-of-type) {
@@ -123,7 +123,7 @@
 		padding: 4px 2rem;
 		font-size: 1rem;
 		font-weight: bold;
-		background-color: rgb(19 15 24);
+		background-color: var(--card-head-background);
 		border-radius: 0 8px 8px 0;
 		transform: translateY(-50%);
 	}

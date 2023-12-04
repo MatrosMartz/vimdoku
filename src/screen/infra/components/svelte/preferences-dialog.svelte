@@ -53,7 +53,7 @@
 		max-width: 600px;
 		height: 90vh;
 		overflow: hidden;
-		background-color: hsl(280deg 17% 14%);
+		background-color: var(--dialog-background);
 		border-radius: 8px;
 	}
 

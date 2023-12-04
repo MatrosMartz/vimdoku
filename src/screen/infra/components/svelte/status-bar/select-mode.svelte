@@ -99,7 +99,7 @@
 		display: grid;
 		grid-template-columns: 1fr;
 		background-color: var(--status-bar-background);
-		border: 1px solid rgb(31 11 59);
+		border: 1px solid var(--tooltip-border);
 		border-bottom: none;
 		border-radius: 8px 8px 0 0;
 		transition: transform 500ms;
@@ -162,7 +162,7 @@
 	}
 
 	.mode[aria-disabled='true'] {
-		filter: opacity(60%);
+		opacity: 0.75;
 	}
 
 	@media (width >= 768px) {

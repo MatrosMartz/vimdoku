@@ -40,9 +40,9 @@
 		width: 100%;
 		min-height: 48px;
 		padding: 12px 1rem;
-		color: rgb(204 184 221);
+		color: var(--primary-color);
 		text-align: left;
-		background-color: rgb(12 7 17);
+		background-color: var(--editor-background);
 		border: none;
 		transition: filter 200ms;
 	}

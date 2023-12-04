@@ -24,9 +24,9 @@
 		width: 93vw;
 		max-width: 55rem;
 		padding: 2.2rem 2ch;
-		color: rgb(204 184 221);
+		color: var(--primary-color);
 		background-color: var(--editor-background);
 		border-radius: 4px;
-		box-shadow: 0 6px 20px rgb(12 7 17);
+		box-shadow: 0 6px 20px var(--editor-background);
 	}
 </style>

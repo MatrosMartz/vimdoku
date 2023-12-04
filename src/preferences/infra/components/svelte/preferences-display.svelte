@@ -79,7 +79,7 @@
 		padding-inline: 1rem;
 		background-color: var(--editor-background);
 		border-radius: 8px;
-		box-shadow: 0 4px 16px rgb(19 15 24 / 50%);
+		box-shadow: 0 4px 16px var(--card-head-shadow);
 	}
 
 	.preferences:not(:first-of-type) {
@@ -95,7 +95,7 @@
 		max-width: 12rem;
 		padding: 4px 2rem;
 		text-align: start;
-		background-color: rgb(19 15 24);
+		background-color: var(--card-head-background);
 		border-radius: 0 8px 8px 0;
 		transform: translateY(-50%);
 	}
