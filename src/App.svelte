@@ -17,12 +17,19 @@
 	import '@fontsource-variable/jetbrains-mono/wght-italic.css'
 
 	import { prefsState } from '$cmd/infra/stores'
+	import { Schema } from '$pref/domain/models'
 	import { CommandDialog, PreferencesDialog, Screen, StatusBar } from '$screen/infra/components/svelte'
 
 	import { keydownHandler } from './keydown-handler'
 	import { Header } from './share/infra/components/svelte'
 
 	$: document.documentElement.lang = $prefsState.user.language
+	$: if (
+		$prefsState.user.colorSchema === Schema.DARK_MODE ||
+		($prefsState.user.colorSchema === Schema.SYSTEM && window.matchMedia('(prefers-color-scheme: dark)').matches)
+	)
+		document.documentElement.classList.add('dark')
+	else document.documentElement.classList.remove('dark')
 </script>
 
 <Header />

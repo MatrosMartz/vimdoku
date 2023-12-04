@@ -23,6 +23,7 @@
 			fallback: fb => $i18nState.get('prefs-groups-user', fb),
 			names: {
 				colorTheme: fb => $i18nState.get('prefs-names-colorTheme', fb),
+				colorSchema: fb => $i18nState.get('prefs-names-colorSchema', fb),
 				language: fb => $i18nState.get('prefs-names-language', fb),
 				motionReduce: fb => $i18nState.get('prefs-names-motionReduce', fb),
 				timer: fb => $i18nState.get('prefs-names-timer', fb),

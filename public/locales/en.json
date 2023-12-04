@@ -21,10 +21,15 @@
 		"selectDifficulty": "Select difficulty"
 	},
 	"prefs": {
-		"devicePref": {
-			"deviceValue": "Device value",
+		"accessibility": {
+			"systemValue": "System value",
 			"less": "Less",
 			"more": "More"
+		},
+		"schema": {
+			"systemValue": "System Value",
+			"darkMode": "dark mode",
+			"lightMode": "Light mode"
 		},
 		"groups": {
 			"sudoku": "Sudoku",

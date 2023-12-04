@@ -5,14 +5,21 @@ export enum Langs {
 	ES = 'es',
 }
 
-export enum DevicePref {
-	DEVICE = 'deviceValue',
+export enum Accessibility {
+	SYSTEM = 'systemValue',
 	MORE = 'more',
 	LESS = 'less',
 }
 
+export enum Schema {
+	SYSTEM = 'systemValue',
+	DARK_MODE = 'darkMode',
+	LIGHT_MODE = 'lightMode',
+}
+
 export const userFields = {
-	motionReduce: { type: 'options', opts: Object.values(DevicePref) },
+	motionReduce: { type: 'options', opts: Object.values(Accessibility) },
+	colorSchema: { type: 'options', opts: Object.values(Schema) },
 	language: { type: 'options', opts: Object.values(Langs) },
 	colorTheme: { type: 'text' },
 	timer: { type: 'toggle' },

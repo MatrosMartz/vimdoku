@@ -45,14 +45,23 @@
 		"prefs": {
 			"type": "object",
 			"properties": {
-				"devicePref": {
+				"accessibility": {
 					"type": "object",
 					"properties": {
-						"deviceValue": { "type": "string" },
+						"systemValue": { "type": "string" },
 						"less": { "type": "string" },
 						"more": { "type": "string" }
 					},
-					"required": ["deviceValue", "less", "more"]
+					"required": ["systemValue", "less", "more"]
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"systemValue": { "type": "string" },
+						"darkMode": { "type": "string" },
+						"lightMode": { "type": "string" }
+					},
+					"required": ["systemValue", "darkMode", "lightMode"]
 				},
 				"groups": {
 					"type": "object",
@@ -136,7 +145,7 @@
 					"required": ["show", "edit"]
 				}
 			},
-			"required": ["devicePref", "groups", "names", "btn", "tabs"]
+			"required": ["accessibility", "schema", "groups", "names", "btn", "tabs"]
 		},
 		"langName": { "type": "string" },
 		"cmdDesc": {

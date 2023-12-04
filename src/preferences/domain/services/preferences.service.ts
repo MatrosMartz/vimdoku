@@ -3,7 +3,7 @@ import { InvalidPreferencesError, sameStructure } from '~/share/utils'
 
 import { type AllPreferences, type IPrefs, type Prefs, type PrefsEntries } from '../models'
 import { sudokuFields, type SudokuPrefs } from '../models/sudoku.model'
-import { DevicePref, Langs, userFields, type UserPrefs } from '../models/user.model'
+import { Accessibility, Langs, Schema, userFields, type UserPrefs } from '../models/user.model'
 import { vimFields, type VimPrefs } from '../models/vim.model'
 import type { PrefsRepo } from '../repositories'
 
@@ -64,7 +64,8 @@ export class PrefsSvc implements IPrefs {
 
 	/** Default User Preferences. */
 	static readonly DEFAULT_USER = _f<UserPrefs>({
-		motionReduce: DevicePref.DEVICE,
+		motionReduce: Accessibility.SYSTEM,
+		colorSchema: Schema.SYSTEM,
 		language: Langs.EN,
 		colorTheme: 'default',
 		timer: true,
