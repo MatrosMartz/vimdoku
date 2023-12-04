@@ -1,4 +1,4 @@
-import { match } from '~/share/utils'
+import { match, unPromise } from '~/share/utils'
 import type { II18n } from '$i18n/domain/models'
 import { type IPrefs, type Langs, PrefActions, type PrefData } from '$pref/domain/models'
 import { type DialogData, type IScreen, MainScreenKinds, ScreenActions, type ScreenData } from '$screen/domain/models'
@@ -48,13 +48,13 @@ export class MedSvc implements IMed {
 			[SudokuActions.Check]: () => this.#dSudokuCheck(),
 			[SudokuActions.Erase]: () => this.#dCellErase(),
 			[SudokuActions.Move]: () => this.#dSudokuMove(data),
-			[SudokuActions.End]: async () => await this.#dSudokuEnd(),
-			[SudokuActions.Resume]: async () => await this.#dSudokuResume(),
-			[SudokuActions.Save]: async () => await this.#dSudokuSave(),
-			[SudokuActions.Start]: async () => await this.#dSudokuStart(data),
+			[SudokuActions.End]: unPromise(async () => await this.#dSudokuEnd()),
+			[SudokuActions.Resume]: unPromise(async () => await this.#dSudokuResume()),
+			[SudokuActions.Save]: unPromise(async () => await this.#dSudokuSave()),
+			[SudokuActions.Start]: unPromise(async () => await this.#dSudokuStart(data)),
 			[SudokuActions.Write]: () => this.#dSudokuWrite(data),
-			[PrefActions.Reset]: async () => await this.#dPrefReset(data),
-			[PrefActions.Save]: async () => await this.#dPrefSave(data),
+			[PrefActions.Reset]: unPromise(async () => await this.#dPrefReset(data)),
+			[PrefActions.Save]: unPromise(async () => await this.#dPrefSave(data)),
 		})
 
 		return this
@@ -164,7 +164,7 @@ export class MedSvc implements IMed {
 
 	#dSudokuWrite(data: SudokuData.Write) {
 		if (data.value === 0) this.#game.clear()
-		else this.#game.write(data.value)
+		else this.#game.write(data.value, this.#prefs.data.sudoku.autoNoteDeletion)
 		this.#notify('board')
 	}
 
@@ -172,8 +172,8 @@ export class MedSvc implements IMed {
 	 * Updates the specified key in the observables with the current value from the state.
 	 * @param key The key to update in the observables.
 	 */
-	#notify<K extends Med.Keys>(key: K) {
-		match<Med.Keys>(key, {
+	#notify(key: Med.Keys) {
+		match(key, {
 			board: () => this.#state.board.update(this.#game.board),
 			boardSaved: () => this.#state.boardSaved.update(this.#game.isASaved),
 			i18n: () => this.#state.i18n.update(this.#i18n.data),

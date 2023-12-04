@@ -16,6 +16,12 @@ export interface IBoard {
 	clear(cellPos: Pos): this
 	/** Get the current cells of board. */
 	get data(): Board
+	/**
+	 * Removes the specified note from among the cells related to the given position.
+	 * @param cellPos Position of the origin.
+	 * @param num The note remove (1-9).
+	 */
+	noteDeletion(cellPos: Pos, num: ValidNumbers): this
 	/** Converts Board instance in JSON. */
 	toJSON(): BoardJSON
 	/** Converts the Board instance to a JSON string. */
@@ -29,7 +35,7 @@ export interface IBoard {
 	/**
 	 * Toggle a cell value (add if not present, remove if present).
 	 * @param cellPos Position of the cell to which the value is changed.
-	 * @param num The note add (1-9).
+	 * @param num The note to add (1-9).
 	 */
 	write(cellPos: Pos, num: ValidNumbers): this
 }

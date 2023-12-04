@@ -76,6 +76,13 @@ export class BoardSvc implements IBoard {
 		return this
 	}
 
+	noteDeletion(cellPos: Pos, num: ValidNumbers) {
+		if (this.#grid.getCell(cellPos).kind !== CellKinds.Initial)
+			this.#grid = this.#grid.mapRelated(cellPos, cell => cell.removeNote(num))
+
+		return this
+	}
+
 	toJSON(): BoardJSON {
 		return this.#grid.mapGrid(cell => cell.toJSON()).data
 	}
@@ -92,9 +99,7 @@ export class BoardSvc implements IBoard {
 
 	write(cellPos: Pos, num: ValidNumbers) {
 		if (this.#grid.getCell(cellPos).kind !== CellKinds.Initial)
-			this.#grid = this.#grid
-				.editCell(cellPos, cell => cell.writeValue(num))
-				.mapRelated(cellPos, cell => cell.removeNote(num))
+			this.#grid = this.#grid.editCell(cellPos, cell => cell.writeValue(num))
 
 		return this
 	}

@@ -101,7 +101,7 @@ abstract class GameSvc implements IGame {
 		return this
 	}
 
-	write(num: ValidNumbers) {
+	write(num: ValidNumbers, removeNotes?: boolean) {
 		return this
 	}
 }
@@ -260,8 +260,8 @@ class StartedGameSvc extends GameSvc {
 		return this
 	}
 
-	write(num: ValidNumbers) {
-		this.#state.write(num)
+	write(num: ValidNumbers, removeNotes?: boolean) {
+		this.#state.write(num, removeNotes)
 		return this
 	}
 }
@@ -329,7 +329,7 @@ abstract class GameState implements IGameState {
 		return this
 	}
 
-	write(num: ValidNumbers) {
+	write(num: ValidNumbers, removeNotes?: boolean) {
 		return this
 	}
 }
@@ -349,8 +349,9 @@ class AnnotationGameState extends EditedGameState {
 }
 
 class InsertGameState extends EditedGameState {
-	write(num: ValidNumbers) {
+	write(num: ValidNumbers, removeNotes = false) {
 		this[data].board.write(this[data].pos.data, num)
+		if (removeNotes) this[data].board.noteDeletion(this[data].pos.data, num)
 		return this
 	}
 }

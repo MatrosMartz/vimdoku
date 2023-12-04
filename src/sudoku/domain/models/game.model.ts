@@ -67,11 +67,11 @@ export interface IGameState {
 	 */
 	verify(): this
 	/**
-	 * Write a valid number as value or notes depending on the game mode in the selected cell.
+	 * Write a valid number as value or notes depending on the game mode in the current position cell.
 	 * @param num The valid number to write.
-	 * @returns The updated game state.
+	 * @param removeNotes Indicates if it should remove the related notes.
 	 */
-	write(num: ValidNumbers): this
+	write(num: ValidNumbers, removeNotes?: boolean): this
 }
 
 export interface IGame {
@@ -160,6 +160,7 @@ export interface IGame {
 	/**
 	 * Write a valid number as value or notes depending on the game mode in the current position cell.
 	 * @param num The valid number to write.
+	 * @param removeNotes Indicates if it should remove the related notes.
 	 */
-	write(num: ValidNumbers): this
+	write(num: ValidNumbers, removeNotes?: boolean): this
 }

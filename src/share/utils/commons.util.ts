@@ -22,6 +22,12 @@ export function runAsync(fn: () => Promise<void>) {
 	void fn()
 }
 
+export function unPromise(fn: () => Promise<void>) {
+	return () => {
+		void fn()
+	}
+}
+
 type StrTypes = 'bigint' | 'boolean' | 'function' | 'number' | 'object' | 'string' | 'symbol' | 'undefined'
 
 type StrToType<T extends StrTypes> = T extends 'string'
