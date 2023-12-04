@@ -81,7 +81,12 @@
 	}
 
 	.notes {
-		color: var(--command-color);
+		color: var(--notes-color);
+	}
+
+	.unverified {
+		font-style: italic;
+		color: var(--unverified-color);
 	}
 
 	.note-icon {

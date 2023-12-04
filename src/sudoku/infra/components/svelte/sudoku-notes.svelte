@@ -40,7 +40,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
-		color: var(--command-color);
+		color: var(--notes-color);
 	}
 
 	h3 {

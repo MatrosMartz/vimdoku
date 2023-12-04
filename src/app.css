@@ -14,12 +14,14 @@
 	--key-color: rgb(136 190 184);
 	--holder-color: rgb(166 145 125);
 	--special-color: rgb(130 177 108);
+	--unverified-color: rgb(103 109 112);
 	--assert-color: var(--special-color);
 	--number-color: rgb(219 150 88);
 	--string-color: var(--special-color);
 	--boolean-color: var(--error-color);
 	--status-bar-background: rgb(12 8 13);
 	--command-color: rgb(172 173 123);
+	--notes-color: var(--command-color);
 
 	font-family: Poppins, sans-serif;
 	font-weight: 400;
