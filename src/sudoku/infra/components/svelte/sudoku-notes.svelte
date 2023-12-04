@@ -5,7 +5,7 @@
 	import { boardState, posState } from '$cmd/infra/stores/svelte'
 	import type { ValidNumbers } from '$sudoku/domain/models'
 
-	$: notes = $boardState![$posState.y][$posState.x].notes ?? Array(9).fill(null)
+	$: notes = $boardState?.[$posState.y]?.[$posState.x]?.notes ?? (Array(9).fill(null) as Tuple<null, 9>)
 
 	$: empty = notes.every(note => note == null)
 
