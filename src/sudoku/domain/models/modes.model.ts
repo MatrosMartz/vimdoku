@@ -8,6 +8,6 @@ export enum ModeKinds {
 export const MODES_KEYS: Record<ModeKinds, string> = {
 	[ModeKinds.N]: 'KeyN',
 	[ModeKinds.I]: 'KeyI',
-	[ModeKinds.V]: 'KeyA',
+	[ModeKinds.V]: 'KeyV',
 	[ModeKinds.X]: 'Esc',
 }
