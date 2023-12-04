@@ -144,7 +144,7 @@ export class NonStartedGameSvc extends GameSvc {
 	async start({ difficulty = DifficultyKinds.Beginner, solution = SolutionSvc.create() }: Partial<GameOpts> = {}) {
 		const board = BoardSvc.create({ difficulty, solution })
 
-		await this[repo].create({ difficulty, solution: solution.toJSON() }, board.toJSON())
+		await this[repo].create({ board: board.toJSON(), opts: { difficulty, solution: solution.toJSON() } })
 
 		const data = new StartedGameData({ board, pos: new PosSvc() })
 
