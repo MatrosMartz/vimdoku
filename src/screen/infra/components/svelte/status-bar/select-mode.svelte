@@ -58,7 +58,8 @@
 		on:focus={focusHandler}
 		on:focusout={focusoutHandler}
 		on:click={toggleHandler}
-		use:tooltip={disabled ? tooltipProps : null}>{$modeState.toUpperCase()}</button
+		use:tooltip={disabled ? tooltipProps : null}
+		>{$i18nState.get(`modes-${$modeState}`, $modeState.toUpperCase())}</button
 	>
 	<div id="mode-selector-panel" role="region" aria-labelledby="mode-selector-header">
 		<form method="get">
