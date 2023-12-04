@@ -275,8 +275,10 @@
 			"properties": {
 				"normal": { "type": "string" },
 				"annotation": { "type": "string" },
+				"visual": { "type": "string" },
 				"insert": { "type": "string" }
-			}
+			},
+			"required": ["normal", "annotation", "visual", "insert"]
 		}
 	},
 	"required": ["titleScreen", "gameBtn", "prefs", "langName", "cmdDesc", "form", "statusBar", "help", "modes"]

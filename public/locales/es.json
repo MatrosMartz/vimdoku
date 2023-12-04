@@ -147,6 +147,7 @@
 	"modes": {
 		"annotation": "ANOTACIÓN",
 		"insert": "INSERCIÓN",
+		"visual": "VISUAL",
 		"normal": "NORMAL"
 	}
 }

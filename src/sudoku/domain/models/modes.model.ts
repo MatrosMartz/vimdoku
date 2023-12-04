@@ -1,11 +1,13 @@
 export enum ModeKinds {
-	A = 'annotation',
+	N = 'annotation',
 	I = 'insert',
+	V = 'visual',
 	X = 'normal',
 }
 
 export const MODES_KEYS: Record<ModeKinds, string> = {
-	[ModeKinds.A]: 'KeyA',
+	[ModeKinds.N]: 'KeyN',
 	[ModeKinds.I]: 'KeyI',
+	[ModeKinds.V]: 'KeyA',
 	[ModeKinds.X]: 'Esc',
 }

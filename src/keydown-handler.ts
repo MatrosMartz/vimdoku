@@ -24,14 +24,15 @@ function movePosition(key: string) {
 
 function changeMode(key: string) {
 	if (modeState.data === ModeKinds.X) {
-		if (['a', 'A'].includes(key)) med.dispatch(SudokuActions.ChangeMode, { mode: ModeKinds.A })
+		if (['n', 'N'].includes(key)) med.dispatch(SudokuActions.ChangeMode, { mode: ModeKinds.N })
 		if (['i', 'I'].includes(key)) med.dispatch(SudokuActions.ChangeMode, { mode: ModeKinds.I })
+		if (['v', 'V'].includes(key)) med.dispatch(SudokuActions.ChangeMode, { mode: ModeKinds.V })
 	} else if (key === 'Escape') med.dispatch(SudokuActions.ChangeMode, { mode: ModeKinds.X })
 }
 
 function pressNum(value: ValidNumbers) {
 	if (Number.isNaN(value)) moves = 0
-	else if ([ModeKinds.A, ModeKinds.I].includes(modeState.data)) {
+	else if ([ModeKinds.N, ModeKinds.I].includes(modeState.data)) {
 		med.dispatch(SudokuActions.Write, { value })
 		moves = 0
 	} else moves = moves * 10 + value
