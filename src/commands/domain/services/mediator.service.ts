@@ -119,6 +119,7 @@ export class MedSvc implements IMed {
 	#dSudokuCheck() {
 		this.#game.verify()
 		this.#notify('board')
+		this.#notify('errors')
 	}
 
 	async #dSudokuEnd() {
@@ -142,8 +143,16 @@ export class MedSvc implements IMed {
 		if (newGame != null) {
 			this.#game = newGame
 			this.#notify('board')
+			this.#notify('errors')
 			this.#screen.setMain(MainScreenKinds.Game)
+			this.#notify('timer')
 			this.#notify('screen')
+			if (this.#prefs.user.timer) {
+				this.#intervalId = setInterval(() => {
+					this.#game.timerInc()
+					this.#notify('timer')
+				}, 1000)
+			}
 		}
 	}
 
@@ -169,6 +178,7 @@ export class MedSvc implements IMed {
 		if (data.value === 0) this.#game.clear()
 		else this.#game.write(data.value, this.#prefs.data.sudoku.autoNoteDeletion, this.#prefs.sudoku.autoValidation)
 		this.#notify('board')
+		this.#notify('errors')
 	}
 
 	/**
@@ -179,6 +189,7 @@ export class MedSvc implements IMed {
 		match(key, {
 			board: () => this.#state.board.update(this.#game.board),
 			boardSaved: () => this.#state.boardSaved.update(this.#game.isASaved),
+			errors: () => this.#state.errors.update(this.#game.errors),
 			i18n: () => this.#state.i18n.update(this.#i18n.data),
 			mode: () => this.#state.mode.update(this.#game.mode),
 			pos: () => this.#state.pos.update(this.#game.pos),

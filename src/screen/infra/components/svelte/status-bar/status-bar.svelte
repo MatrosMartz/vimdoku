@@ -2,7 +2,7 @@
 	import { Icon } from '~/share/infra/components/svelte'
 	import { tooltip } from '~/share/infra/components/svelte/tooltip'
 	import { med } from '$cmd/infra/services'
-	import { i18nState, posState, screenState } from '$cmd/infra/stores/svelte'
+	import { errorsState, i18nState, posState, screenState, timerState } from '$cmd/infra/stores/svelte'
 	import { DialogKinds, ScreenActions } from '$screen/domain/models'
 
 	import SelectMode from './select-mode.svelte'
@@ -29,7 +29,7 @@
 		<SelectMode />
 		<button class="icon error">
 			<Icon id="errors" />
-			<span>0</span>
+			<span>{$errorsState}</span>
 		</button>
 	</section>
 	<section>
@@ -38,7 +38,7 @@
 				{$posState.y + 1},{$posState.x + 1}
 			</p>
 		</div>
-		<p class="timer">00:00:00</p>
+		<p class="timer">{$timerState}</p>
 		<p class="screen">{$screenState.main}</p>
 		<button class="icon dialog" on:click={prefHandler}><Icon id="pref" /></button>
 	</section>

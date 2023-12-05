@@ -2,20 +2,21 @@ import type { IPos, Pos } from '~/share/domain/models'
 
 import type { GameRepo } from '../repositories'
 import type { Board, IBoard } from './board.model'
-import type { GameInfo, GameOpts } from './game-options.model'
+import type { GameOpts } from './game-options.model'
 import type { ModeKinds } from './modes.model'
 import type { ValidNumbers } from './notes.model'
+import type { ITimer } from './timer.model'
 
 export interface Game {
 	readonly board: IBoard
 	errors: number
 	mode: ModeKinds
 	readonly pos: IPos
+	timer: ITimer
 }
 
 export interface StartedGameOpts {
 	data: Game
-	info: GameInfo
 	repo: GameRepo
 }
 

@@ -17,6 +17,7 @@ export namespace Med {
 	export interface State {
 		board: IAsyncObs<Board | null>
 		boardSaved: IAsyncObs<boolean>
+		errors: IAsyncObs<number>
 		i18n: IAsyncObs<I18nData>
 		mode: IObs<ModeKinds>
 		pos: IObs<Pos>

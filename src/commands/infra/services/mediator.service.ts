@@ -5,11 +5,12 @@ import { prefs } from '$pref/infra/services'
 import { vimScreen } from '$screen/infra/services'
 import { game } from '$sudoku/infra/services'
 
-import { boardObs, boardSavedObs, i18nObs, modeObs, posObs, prefsObs, screenObs, timerObs } from '../stores'
+import { boardObs, boardSavedObs, errorsObs, i18nObs, modeObs, posObs, prefsObs, screenObs, timerObs } from '../stores'
 
 const state: Med.State = {
 	board: boardObs,
 	boardSaved: boardSavedObs,
+	errors: errorsObs,
 	i18n: i18nObs,
 	mode: modeObs,
 	pos: posObs,

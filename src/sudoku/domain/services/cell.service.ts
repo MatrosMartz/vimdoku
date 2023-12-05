@@ -229,9 +229,9 @@ class UnverifiedCellState extends WritableCellState {
 		super(data)
 	}
 
-	verify(effect: (retult: boolean) => void) {
+	verify(effect: (result: boolean) => void) {
 		const result = this[data].solution === this[data].value
-		effect(result)
+		effect(!result)
 
 		return result ? new CorrectCellState(this[data]) : new IncorrectCellState(this[data])
 	}
