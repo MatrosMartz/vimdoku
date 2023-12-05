@@ -120,8 +120,8 @@ export class CellSvc implements ICell {
 		return this
 	}
 
-	verify() {
-		this.#state = this.#state.verify()
+	verify(effect: (result: boolean) => void) {
+		this.#state = this.#state.verify(effect)
 		return this
 	}
 
@@ -177,7 +177,7 @@ abstract class CellState implements ICellState {
 		return this
 	}
 
-	verify(): ICellState {
+	verify(effect: (result: boolean) => void): ICellState {
 		return this
 	}
 
@@ -229,10 +229,11 @@ class UnverifiedCellState extends WritableCellState {
 		super(data)
 	}
 
-	verify() {
-		return this[data].solution === this[data].value
-			? new CorrectCellState(this[data])
-			: new IncorrectCellState(this[data])
+	verify(effect: (retult: boolean) => void) {
+		const result = this[data].solution === this[data].value
+		effect(result)
+
+		return result ? new CorrectCellState(this[data]) : new IncorrectCellState(this[data])
 	}
 }
 

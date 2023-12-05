@@ -8,6 +8,7 @@ import type { ValidNumbers } from './notes.model'
 
 export interface Game {
 	readonly board: IBoard
+	errors: number
 	mode: ModeKinds
 	readonly pos: IPos
 }
@@ -60,6 +61,11 @@ export interface IGameState {
 	 * @returns The updated game.
 	 */
 	moveUp(times: number): this
+	/**
+	 * check if the number in the current position is correct.
+	 * @returns The updated game.
+	 */
+	validateWrite(): this
 	/**
 	 * Checks if the value of the selected cell is correct.
 	 * @param Solution for this Cell.
@@ -161,6 +167,8 @@ export interface IGame {
 	 * Write a valid number as value or notes depending on the game mode in the current position cell.
 	 * @param num The valid number to write.
 	 * @param removeNotes Indicates if it should remove the related notes.
+	 * @param validate Indicates if it should validate after write number.
+	 * @returns The updated game.
 	 */
-	write(num: ValidNumbers, removeNotes?: boolean): this
+	write(num: ValidNumbers, removeNotes?: boolean, validate?: boolean): this
 }

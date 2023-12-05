@@ -9,6 +9,10 @@ export enum CellKinds {
 	WhitNotes = 'notes',
 }
 
+export type InsertKinds = CellKinds.Correct | CellKinds.Incorrect | CellKinds.Unverified
+
+export const INSERT_KINDS: InsertKinds[] = [CellKinds.Correct, CellKinds.Incorrect, CellKinds.Unverified]
+
 export interface CellData {
 	kind: CellKinds
 	notes: INotes
@@ -56,7 +60,7 @@ export interface ICellState {
 	 * Change kind if value is the correct or incorrect.
 	 * @returns The updated cell state.
 	 */
-	verify(): ICellState
+	verify(effect: (result: boolean) => void): ICellState
 	/**
 	 * Toggle a cell value (add if not present, remove if present).
 	 * @param num The note add (1-9).
@@ -89,7 +93,7 @@ export interface ICell extends ICellState {
 	/** @returns The updated cell. */
 	toggleNote(num: ValidNumbers): this
 	/** @returns The updated cell. */
-	verify(): this
+	verify(effect: (result: boolean) => void): this
 	/** @returns The updated cell. */
 	writeValue(num: ValidNumbers): this
 }

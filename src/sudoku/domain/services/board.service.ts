@@ -1,8 +1,9 @@
 import type { Pos } from '~/share/domain/models'
 import { InvalidBoardError } from '~/share/utils'
 
-import { CellKinds, type GameOpts, type ICell, type IGrid, type SolutionJSON, type ValidNumbers } from '../models'
+import { type GameOpts, type IGrid, type SolutionJSON, type ValidNumbers } from '../models'
 import { type Board, type BoardJSON, type IBoard } from '../models/board.model'
+import { CellKinds, type ICell, INSERT_KINDS } from '../models/cell.model'
 import { CellSvc } from './cell.service'
 import { GridSvc } from './grid.service'
 
@@ -94,6 +95,16 @@ export class BoardSvc implements IBoard {
 	toggleNotes(cellPos: Pos, num: ValidNumbers) {
 		this.#grid = this.#grid.editCell(cellPos, cell => cell.toggleNote(num))
 
+		return this
+	}
+
+	validate(cellPos: Pos, effect: (result: boolean) => void) {
+		this.#grid = this.#grid.editCell(cellPos, cell => cell.verify(effect))
+		return this
+	}
+
+	validateAllBoard(effect: (result: boolean) => void) {
+		this.#grid = this.#grid.mapGrid(cell => (INSERT_KINDS.includes(cell.kind) ? cell.verify(effect) : cell))
 		return this
 	}
 

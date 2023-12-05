@@ -116,7 +116,10 @@ export class MedSvc implements IMed {
 		await this.#changeLang(this.#prefs.data.user.language)
 	}
 
-	#dSudokuCheck() {}
+	#dSudokuCheck() {
+		this.#game.verify()
+		this.#notify('board')
+	}
 
 	async #dSudokuEnd() {
 		this.#game = await this.#game.end()
@@ -164,7 +167,7 @@ export class MedSvc implements IMed {
 
 	#dSudokuWrite(data: SudokuData.Write) {
 		if (data.value === 0) this.#game.clear()
-		else this.#game.write(data.value, this.#prefs.data.sudoku.autoNoteDeletion)
+		else this.#game.write(data.value, this.#prefs.data.sudoku.autoNoteDeletion, this.#prefs.sudoku.autoValidation)
 		this.#notify('board')
 	}
 

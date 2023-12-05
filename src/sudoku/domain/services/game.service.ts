@@ -3,19 +3,9 @@ import { PosSvc } from '~/share/domain/services'
 import type { OptionalKeys } from '~/share/types'
 import { match } from '~/share/utils'
 
-import {
-	type Board,
-	DifficultyKinds,
-	type Game,
-	type GameInfo,
-	type GameOpts,
-	type IGame,
-	type IGameState,
-	type ITimer,
-	ModeKinds,
-	type StartedGameOpts,
-	type ValidNumbers,
-} from '../models'
+import { type Board, DifficultyKinds, type ITimer, ModeKinds, type ValidNumbers } from '../models'
+import { type Game, type IGame, type IGameState, type StartedGameOpts } from '../models/game.model'
+import { type GameInfo, type GameOpts } from '../models/game-options.model'
 import type { GameRepo } from '../repositories'
 import { BoardSvc } from './board.service'
 import { SolutionSvc } from './solution.service'
@@ -101,7 +91,7 @@ abstract class GameSvc implements IGame {
 		return this
 	}
 
-	write(num: ValidNumbers, removeNotes?: boolean) {
+	write(num: ValidNumbers, removeNotes?: boolean, validate?: boolean) {
 		return this
 	}
 }
@@ -154,11 +144,13 @@ export class NonStartedGameSvc extends GameSvc {
 
 class StartedGameData implements Game {
 	readonly board
+	errors
 	mode
 	readonly pos
 
-	constructor({ board, mode = ModeKinds.X, pos }: OptionalKeys<Game, 'mode'>) {
+	constructor({ board, errors = 0, mode = ModeKinds.X, pos }: OptionalKeys<Game, 'mode' | 'errors'>) {
 		this.board = board
+		this.errors = errors
 		this.mode = mode
 		this.pos = pos
 	}
@@ -260,8 +252,14 @@ class StartedGameSvc extends GameSvc {
 		return this
 	}
 
-	write(num: ValidNumbers, removeNotes?: boolean) {
-		this.#state.write(num, removeNotes)
+	verify() {
+		this.#state = this.#state.verify()
+		return this
+	}
+
+	write(num: ValidNumbers, removeNotes = false, validate = false) {
+		this.#state = this.#state.write(num, removeNotes)
+		if (validate) this.#state.validateWrite()
 		return this
 	}
 }
@@ -325,7 +323,14 @@ abstract class GameState implements IGameState {
 		return this
 	}
 
+	validateWrite() {
+		return this
+	}
+
 	verify() {
+		this[data].board.validateAllBoard(result => {
+			if (result) this[data].errors++
+		})
 		return this
 	}
 
@@ -349,6 +354,14 @@ class AnnotationGameState extends EditedGameState {
 }
 
 class InsertGameState extends EditedGameState {
+	validateWrite() {
+		this[data].board.validate(this[data].pos.data, result => {
+			if (result) this[data].errors++
+		})
+
+		return this
+	}
+
 	write(num: ValidNumbers, removeNotes = false) {
 		this[data].board.write(this[data].pos.data, num)
 		if (removeNotes) this[data].board.noteDeletion(this[data].pos.data, num)
