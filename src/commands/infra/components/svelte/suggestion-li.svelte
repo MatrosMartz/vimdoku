@@ -48,11 +48,11 @@
 	}
 
 	button:hover {
-		filter: brightness(0.9) saturate(2) contrast(1.1);
+		filter: var(--focus-brightness);
 	}
 
 	button:focus {
-		filter: brightness(1.1) saturate(1.6) contrast(0.97);
+		filter: brightness(80%) saturate(2) contrast(1.1);
 	}
 
 	li:not(:last-of-type)::after {

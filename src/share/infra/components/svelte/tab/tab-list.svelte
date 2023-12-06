@@ -23,6 +23,6 @@
 		width: 100%;
 		height: 0.5rem;
 		content: '';
-		backdrop-filter: brightness(130%);
+		backdrop-filter: var(--focus-brightness);
 	}
 </style>

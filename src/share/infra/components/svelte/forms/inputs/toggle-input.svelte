@@ -55,7 +55,7 @@
 	}
 
 	label:hover > .switch {
-		filter: brightness(120%);
+		filter: var(--focus-brightness);
 	}
 
 	input {

@@ -31,7 +31,7 @@
 	}
 
 	button:disabled {
-		backdrop-filter: brightness(130%);
+		backdrop-filter: var(--focus-brightness);
 	}
 
 	button:not(:disabled):focus {
@@ -41,6 +41,10 @@
 
 	button:not(:disabled):hover {
 		filter: saturate(105%);
+		backdrop-filter: brightness(105%);
+	}
+
+	:global(.dark) button:not(:disabled):hover {
 		backdrop-filter: brightness(110%);
 	}
 </style>

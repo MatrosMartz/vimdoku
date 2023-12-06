@@ -4,8 +4,6 @@
 	--input-border: rgb(74 70 77);
 	--alternative-border: rgb(63 63 89);
 	--focus-border: rgb(133 136 166);
-	--input-shadow: rgb(24 15 34);
-	--hover-shadow: rgb(159 94 250 / 20%);
 	--primary-color: rgb(216 200 231);
 	--secondary-color: rgb(226 216 182);
 	--editor-background: rgb(12 6 17);
@@ -13,15 +11,11 @@
 	--value-color: rgb(230 185 143);
 	--key-color: rgb(136 190 184);
 	--holder-color: rgb(166 145 125);
-	--special-color: rgb(130 177 108);
+	--special-color: rgb(173 225 149);
 	--unverified-color: rgb(103 109 112);
-	--assert-color: var(--special-color);
 	--number-color: rgb(196 114 43);
-	--string-color: var(--special-color);
-	--boolean-color: var(--error-color);
 	--status-bar-background: rgb(12 8 13);
-	--command-color: rgb(172 173 123);
-	--notes-color: var(--command-color);
+	--command-color: rgb(177 179 83);
 	--anchor-color: rgb(137 192 212);
 	--visited-color: rgb(174 137 255);
 	--tooltip-background: rgb(6 0 15);
@@ -29,31 +23,32 @@
 	--card-head-background: rgb(19 15 24);
 	--card-shadow: rgb(19 15 24 / 50%);
 	--dialog-background: rgb(38 30 42);
+	--input-shadow: rgb(3 3 5 / 80%);
+	--hover-shadow: rgb(9 0 20 / 75%);
+	--focus-brightness: brightness(120%);
 }
 
 :root {
-	--surface: rgb(255 255 255);
-	--input-background: rgb(245 245 245);
-	--input-border: rgb(150 150 150);
-	--alternative-border: rgb(152 152 214);
-	--focus-border: rgb(109 109 124);
-	--input-shadow: rgb(0 0 0 / 10%);
-	--hover-shadow: rgb(0 0 0 / 10%);
+	--surface: rgb(254 250 254);
+	--input-background: rgb(227 225 227);
+	--input-border: rgb(137 134 139);
+	--alternative-border: rgb(152 152 192);
+	--focus-border: rgb(105 82 119);
 	--primary-color: rgb(36 26 37);
-	--secondary-color: rgb(51 51 51);
-	--editor-background: rgb(227 213 241);
+	--secondary-color: rgb(31 29 31);
+	--editor-background: rgb(244 239 252);
 	--error-color: rgb(184 39 26);
 	--value-color: rgb(102 66 29);
 	--key-color: rgb(34 105 105);
 	--holder-color: rgb(139 125 111);
-	--special-color: rgb(15 112 32);
+	--special-color: rgb(23 101 37);
 	--unverified-color: rgb(69 84 99);
 	--assert-color: var(--special-color);
 	--number-color: rgb(177 92 27);
 	--string-color: var(--special-color);
 	--boolean-color: var(--error-color);
 	--status-bar-background: rgb(240 240 240);
-	--command-color: rgb(83 83 29);
+	--command-color: rgb(88 62 15);
 	--notes-color: var(--command-color);
 	--anchor-color: rgb(36 74 88);
 	--visited-color: rgb(52 33 92);
@@ -61,7 +56,10 @@
 	--tooltip-border: rgb(145 104 196);
 	--card-head-background: rgb(170 152 192);
 	--card-shadow: rgb(170 152 192 / 50%);
-	--dialog-background: rgb(189 181 194);
+	--dialog-background: rgb(202 195 206);
+	--input-shadow: rgb(15 17 34 / 50%);
+	--hover-shadow: rgb(49 2 114 / 20%);
+	--focus-brightness: brightness(120%);
 
 	font-family: Poppins, sans-serif;
 	font-weight: 400;
@@ -170,7 +168,7 @@ form .field :where(input:where([type='text'], [type='number']), select, button),
 
 form .field :where(input:where([type='text'], [type='number']), select, button):hover,
 .command-input:has(input:hover) {
-	filter: brightness(120%);
+	filter: var(--focus-brightness);
 }
 
 form .field :where(input:where([type='text'], [type='number']), select, button):focus,

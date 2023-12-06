@@ -52,7 +52,7 @@
 	}
 
 	.cell.selected {
-		backdrop-filter: brightness(150%);
+		backdrop-filter: var(--focus-brightness);
 	}
 
 	.cell:focus {
@@ -65,7 +65,7 @@
 		}
 
 		to {
-			backdrop-filter: brightness(150%);
+			backdrop-filter: var(--focus-brightness);
 		}
 	}
 

@@ -126,8 +126,8 @@
 	}
 
 	label:has(input:hover) {
-		filter: brightness(120%);
-		backdrop-filter: brightness(120%);
+		filter: var(--focus-brightness);
+		backdrop-filter: var(--focus-brightness);
 	}
 
 	label:has(input:focus) {

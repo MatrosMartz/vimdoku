@@ -43,7 +43,7 @@
 	}
 
 	button:hover {
-		filter: brightness(120%);
+		filter: var(--focus-brightness);
 	}
 
 	button:focus {
