@@ -11,6 +11,6 @@ export function randomNumbers() {
 }
 
 export const box = {
-	y: (i: number, y: number) => (i % 3) + Math.trunc(y / 3) * 3,
-	x: (i: number, x: number) => Math.trunc(i / 3) + Math.trunc(x / 3) * 3,
+	y: (i: number, y: number) => (i % 3) + Math.floor(y / 3) * 3,
+	x: (i: number, x: number) => Math.floor(i / 3) + Math.floor(x / 3) * 3,
 }

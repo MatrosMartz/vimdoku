@@ -90,7 +90,7 @@ export class PosSvc implements IPos {
 	 */
 	static getInitsBox(position: Pos): Pos
 	static getInitsBox({ y, x }: Pos): Pos {
-		return { y: Math.ceil(y / 3) * 3, x: Math.ceil(x / 3) * 3 }
+		return { y: Math.floor(y / 3) * 3, x: Math.floor(x / 3) * 3 }
 	}
 
 	/**
@@ -99,7 +99,7 @@ export class PosSvc implements IPos {
 	 * @returns The initial position of the box.
 	 */
 	static getPosFromBox(index: number): Pos {
-		return { y: index % 3, x: Math.ceil(index / 3) }
+		return { y: index % 3, x: Math.floor(index / 3) }
 	}
 
 	/**
