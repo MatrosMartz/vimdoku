@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { onDestroy } from 'svelte'
+
 	import { Icon } from '~/share/infra/components/svelte'
 	import { tooltip } from '~/share/infra/components/svelte/tooltip'
 	import { med } from '$cmd/infra/services'
@@ -15,19 +17,32 @@
 		)} ${$posState.x + 1}${$i18nState.get('statusBar-posDesc-tail', '.')}`,
 	}
 
+	let errorsShake = false
+	let animationTimeoutId: ReturnType<typeof setTimeout> | null = null
+
+	const errorsUnsubscribe = errorsState.subscribe(() => {
+		if (animationTimeoutId != null) clearTimeout(animationTimeoutId)
+		errorsShake = true
+		animationTimeoutId = setTimeout(() => (errorsShake = false), 500)
+	})
+
 	function cmdHandler() {
 		med.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.Cmd })
 	}
 	function prefHandler() {
 		med.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.PrefEdit })
 	}
+
+	onDestroy(() => {
+		errorsUnsubscribe()
+	})
 </script>
 
 <footer class="status-bar monospace">
 	<section>
 		<button class="icon dialog" on:click={cmdHandler}><Icon id="cmd" /></button>
 		<SelectMode />
-		<button class="icon error">
+		<button class="icon error" class:shake={errorsShake}>
 			<Icon id="errors" />
 			<span>{$errorsState}</span>
 		</button>
@@ -67,6 +82,32 @@
 
 	.error {
 		color: var(--error-color);
+	}
+
+	:global(:not(.motion-reduce)) .shake {
+		animation: shake 300ms infinite;
+	}
+
+	@keyframes shake {
+		0% {
+			transform: rotate(0);
+		}
+
+		25% {
+			transform: rotate(10deg);
+		}
+
+		50% {
+			transform: rotate(0);
+		}
+
+		75% {
+			transform: rotate(-10deg);
+		}
+
+		100% {
+			transform: rotate(0);
+		}
 	}
 
 	.position {
