@@ -48,11 +48,12 @@
 		max-width: 8vw;
 		aspect-ratio: 1 / 1;
 		color: var(--primary-color);
+		background-color: var(--editor-background);
 		border-radius: 8px;
 	}
 
 	.cell.selected {
-		backdrop-filter: var(--focus-brightness);
+		background-color: var(--blink-background);
 	}
 
 	.cell:focus {
@@ -61,11 +62,11 @@
 
 	@keyframes blink-cursor {
 		from {
-			backdrop-filter: brightness(100%);
+			background-color: var(--editor-background);
 		}
 
 		to {
-			backdrop-filter: var(--focus-brightness);
+			background-color: var(--blink-background);
 		}
 	}
 
