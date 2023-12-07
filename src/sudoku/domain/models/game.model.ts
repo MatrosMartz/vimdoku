@@ -157,8 +157,22 @@ export interface IGame {
 	 * @returns The new started game.
 	 */
 	start(opts?: Partial<GameOpts>): Promise<IGame>
-	timerDec(): this
-	timerInc(): this
+	/**
+	 * Pause the increase or decrease of time.
+	 * @returns This TimerSvc instance after freezing the time value.
+	 */
+	timerPause(): this
+	/**
+	 * Resets the current time value to 0 seconds.
+	 * @returns This TimerSvc instance after resetting the time value.
+	 */
+	timerReset(): this
+	/**
+	 * Start the timer.
+	 * @param effect Function to be executed each time the timer value changes.
+	 * @returns This TimerSvc instance after start the timer.
+	 */
+	timerStart(effect: () => void): this
 	/**
 	 * Check if any cell values are incorrect.
 	 * @returns The updated game.

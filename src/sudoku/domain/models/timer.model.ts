@@ -1,21 +1,23 @@
 export interface ITimer {
 	/** Get the current time value in seconds. */
 	readonly data: number
+
 	/**
-	 * Decrements the current time value by 1 second.
-	 * @returns This TimerSvc instance after decrementing the time value.
+	 * Pause the increase or decrease of time.
+	 * @returns This TimerSvc instance after freezing the time value.
 	 */
-	dec(): this
-	/**
-	 * Increments the current time value by 1 second.
-	 * @returns This TimerSvc instance after incrementing the time value.
-	 */
-	inc(): this
+	pause(): this
 	/**
 	 * Resets the current time value to 0 seconds.
 	 * @returns This TimerSvc instance after resetting the time value.
 	 */
 	reset(): this
+	/**
+	 * Start the timer.
+	 * @param effect Function to be executed each time the timer value changes.
+	 * @returns This TimerSvc instance after start the timer.
+	 */
+	start(effect: () => void): this
 	/**
 	 * Converts the current time value to a string representation in the "HH:MM:SS" format.
 	 * @returns A string representing the current time value in "HH:MM:SS" format.

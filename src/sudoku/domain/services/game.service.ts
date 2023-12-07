@@ -77,11 +77,15 @@ abstract class GameSvc implements IGame {
 		return this
 	}
 
-	timerDec() {
+	timerPause() {
 		return this
 	}
 
-	timerInc() {
+	timerReset() {
+		return this
+	}
+
+	timerStart(effect: () => void) {
 		return this
 	}
 
@@ -101,7 +105,7 @@ export class NonStartedGameSvc extends GameSvc {
 	readonly isStarted = false
 	readonly mode = ModeKinds.X
 	readonly pos = { ...PosSvc.IDLE_POS }
-	readonly timer = TimerSvc.IDLE_TIMER
+	readonly timer = TimerSvc.IDLE_STR
 
 	#isASaved = false
 
@@ -249,13 +253,18 @@ class StartedGameSvc extends GameSvc {
 		})
 	}
 
-	timerDec() {
-		this.#data.timer.dec()
+	timerPause() {
+		this.#data.timer.pause()
 		return this
 	}
 
-	timerInc() {
-		this.#data.timer.inc()
+	timerReset() {
+		this.#data.timer.reset()
+		return this
+	}
+
+	timerStart(effect: () => void) {
+		this.#data.timer.start(effect)
 		return this
 	}
 

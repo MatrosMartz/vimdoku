@@ -2,9 +2,10 @@ import type { ITimer } from '../models'
 
 /** Represent a TimerBoard Service. */
 export class TimerSvc implements ITimer {
-	static IDLE_TIMER = TimerSvc.parseString(0)
+	static IDLE_STR = TimerSvc.parseString(0)
 
 	#data
+	#intervalID: ReturnType<typeof setInterval> | null = null
 
 	/**
 	 * Creates an instance of the TimerSvc class.
@@ -57,13 +58,12 @@ export class TimerSvc implements ITimer {
 		return String(unit).padStart(digits, '0')
 	}
 
-	dec(): this {
-		this.#data--
-		return this
-	}
+	pause() {
+		if (this.#intervalID != null) {
+			clearInterval(this.#intervalID)
+			this.#intervalID = null
+		}
 
-	inc(): this {
-		this.#data++
 		return this
 	}
 
@@ -72,7 +72,29 @@ export class TimerSvc implements ITimer {
 		return this
 	}
 
+	start(effect: () => void) {
+		if (this.#intervalID != null) return this
+
+		this.#intervalID = setInterval(() => {
+			this.#inc()
+			effect()
+		}, 1000)
+
+		return this
+	}
+
 	toString(): string {
 		return TimerSvc.parseString(this.#data)
+	}
+
+	/** Decrements the current time value by 1 second. */
+	#dec() {
+		this.#data--
+	}
+
+	/** Increments the current time value by 1 second. */
+	#inc(): this {
+		this.#data++
+		return this
 	}
 }
