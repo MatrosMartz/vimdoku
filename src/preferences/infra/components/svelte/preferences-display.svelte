@@ -6,11 +6,11 @@
 	import { prefsEntries } from '$pref/domain/models'
 	import { DialogKinds, ScreenActions } from '$screen/domain/models'
 
-	const allTooltip = {
+	$: allTooltip = {
 		id: 'all-disabled-describe',
 		text: $i18nState.get('prefs-btn-showAll-disabledReason', 'All preferences are being displayed.'),
 	}
-	const diffTooltip = {
+	$: diffTooltip = {
 		id: 'diff-disabled-describe',
 		text: $i18nState.get(
 			'prefs-btn-showDiffer-disabledReason',
