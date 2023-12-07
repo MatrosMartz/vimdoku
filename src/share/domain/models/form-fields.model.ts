@@ -1,4 +1,5 @@
 export interface OptionField<T = string> {
+	default: T
 	opts: readonly T[]
 	type: 'options'
 }
@@ -6,15 +7,18 @@ export interface OptionField<T = string> {
 export interface NumberField {
 	max?: number
 	min?: number
+	default: number
 	type: 'number'
 }
 
 export interface TextField {
 	regex?: RegExp
+	default: string
 	type: 'text'
 }
 
 export interface ToggleField {
+	default: boolean
 	type: 'toggle'
 }
 
@@ -55,3 +59,5 @@ export type FieldsEntries<F extends FormGroup> = Array<
 		]
 	}[keyof F]
 >
+
+export type SchemaEntries = Array<[string, [string, Field]]>

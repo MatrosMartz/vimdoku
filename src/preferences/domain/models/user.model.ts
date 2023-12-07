@@ -1,4 +1,4 @@
-import type { FieldsEntries, FieldsToModel, FormGroup } from '~/share/domain/models'
+import type { FieldsToModel, FormGroup } from '~/share/domain/models'
 
 export enum Langs {
 	EN = 'en',
@@ -18,13 +18,12 @@ export enum Schema {
 }
 
 export const userFields = {
-	motionReduce: { type: 'options', opts: Object.values(Accessibility) },
-	colorSchema: { type: 'options', opts: Object.values(Schema) },
-	language: { type: 'options', opts: Object.values(Langs) },
-	colorTheme: { type: 'text' },
-	timer: { type: 'toggle' },
+	colorSchema: { type: 'options', opts: Object.values(Schema), default: Schema.SYSTEM },
+	colorTheme: { type: 'text', default: 'default' },
+	contrast: { type: 'options', opts: Object.values(Accessibility), default: Accessibility.SYSTEM },
+	iconTheme: { type: 'text', default: 'default' },
+	language: { type: 'options', opts: Object.values(Langs), default: Langs.EN },
+	motionReduce: { type: 'options', opts: Object.values(Accessibility), default: Accessibility.SYSTEM },
 } as const satisfies FormGroup
 
 export type UserPrefs = FieldsToModel<typeof userFields>
-
-export type UserEntries = FieldsEntries<typeof userFields>

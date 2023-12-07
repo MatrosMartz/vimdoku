@@ -43,15 +43,16 @@
 			"markRelatedNumbers": "mark Related Numbers",
 			"remainingNumbers": "Count remain Numbers",
 			"timer": "Timer",
+
 			"colorSchema": "Color Schema",
 			"colorTheme": "Color Theme",
 			"contrast": "Contrast",
 			"iconTheme": "Icon Theme",
-
 			"language": "Language",
 			"motionReduce": "Motion reduce",
+
 			"cursorBox": "Cursor box",
-			"cursorColumn": "Cursor column",
+			"cursorCol": "Cursor column",
 			"cursorRow": "Cursor row",
 			"highlight": "Highlight",
 			"history": "history",

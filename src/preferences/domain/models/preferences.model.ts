@@ -1,19 +1,19 @@
 import type { FormGroup, FormSchema } from '~/share/domain/models'
 import type { KeysByType } from '~/share/types'
 
-import { type SudokuEntries, sudokuFields, type SudokuPrefs } from './sudoku.model'
-import { type UserEntries, userFields, type UserPrefs } from './user.model'
-import { type VimEntries, vimFields, type VimPrefs } from './vim.model'
+import { sudokuFields, type SudokuPrefs } from './sudoku.model'
+import { userFields, type UserPrefs } from './user.model'
+import { vimFields, type VimPrefs } from './vim.model'
 
-export interface Prefs {
-	sudoku: SudokuPrefs
-	user: UserPrefs
-	vim: VimPrefs
-}
+export type Prefs = SudokuPrefs & UserPrefs & VimPrefs
 
-export type AllPreferences = SudokuPrefs & UserPrefs & VimPrefs
+export const prefsEntries = [
+	['sudoku', Object.entries(sudokuFields)],
+	['user', Object.entries(userFields)],
+	['vim', Object.entries(vimFields)],
+] as const
 
-export type PrefsEntries = [['sudoku', SudokuEntries], ['user', UserEntries], ['vim', VimEntries]]
+export const PrefFields = { ...sudokuFields, ...userFields, ...vimFields }
 
 export const prefsFormSchema = {
 	sudoku: sudokuFields,
@@ -38,7 +38,7 @@ export interface IPrefs {
 	 * Reset to default value specific preference.
 	 * @param key: The key preference to the reset.
 	 */
-	resetByKey<K extends keyof AllPreferences>(key: K): this
+	resetByKey<K extends keyof Prefs>(key: K): this
 	/** Save the current  */
 	save(): Promise<void>
 	/** Set new Preferences Object.
@@ -52,7 +52,7 @@ export interface IPrefs {
 	 * @param value New value for the specific preference.
 	 * @throws {InvalidPreferencesError} If value or key is invalid.
 	 */
-	setByKey<K extends keyof AllPreferences>(key: K, value: AllPreferences[K]): this
+	setByKey<K extends keyof Prefs>(key: K, value: Prefs[K]): this
 	/** Converts the Preferences instance in JSON. */
 	toJSON(): Prefs
 	/** Converts the Preferences instance to a JSON string. */
@@ -64,12 +64,12 @@ const ALL_FIELDS = { ...sudokuFields, ...userFields, ...vimFields }
 export const PREFS_NAMES = Object.keys(ALL_FIELDS)
 
 type AllNames = (typeof PREFS_NAMES)[0]
-type ToggleNames = KeysByType<AllPreferences, boolean>
+type ToggleNames = KeysByType<Prefs, boolean>
 type NonToggleNames = Exclude<AllNames, ToggleNames>
 
 interface Names {
-	TOGGLE_NAMES: ToggleNames[]
 	NON_TOGGLE_NAMES: NonToggleNames[]
+	TOGGLE_NAMES: ToggleNames[]
 }
 
 function isTogglePref<FG extends FormGroup>(schema: FG, name: keyof FG): name is ToggleNames {

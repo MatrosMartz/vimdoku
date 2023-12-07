@@ -23,10 +23,10 @@
 	import { keydownHandler } from './keydown-handler'
 	import { Header } from './share/infra/components/svelte'
 
-	$: document.documentElement.lang = $prefsState.user.language
+	$: document.documentElement.lang = $prefsState.language
 	$: if (
-		$prefsState.user.colorSchema === Schema.DARK_MODE ||
-		($prefsState.user.colorSchema === Schema.SYSTEM && window.matchMedia('(prefers-color-scheme: dark)').matches)
+		$prefsState.colorSchema === Schema.DARK_MODE ||
+		($prefsState.colorSchema === Schema.SYSTEM && window.matchMedia('(prefers-color-scheme: dark)').matches)
 	)
 		document.documentElement.classList.add('dark')
 	else document.documentElement.classList.remove('dark')

@@ -3,7 +3,7 @@
 ///  <reference types='vite/client' />
 
 interface ObjectConstructor {
-	entries<O, K extends keyof O = keyof O>(obj: O): Array<[K, O[K]]>
+	entries<const O extends Record<string, unknown>>(obj: O): Array<{ [K in keyof O]: [K, O[K]] }[keyof O]>
 	keys<O>(o: O): Array<keyof O>
 }
 

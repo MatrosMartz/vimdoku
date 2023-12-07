@@ -3,8 +3,7 @@
 	import { capitalCase } from '~/share/utils'
 	import { med } from '$cmd/infra/services'
 	import { i18nState, prefsState, screenState } from '$cmd/infra/stores/svelte'
-	import type { AllPreferences } from '$pref/domain/models'
-	import { PrefsSvc } from '$pref/domain/services'
+	import { prefsEntries } from '$pref/domain/models'
 	import { DialogKinds, ScreenActions } from '$screen/domain/models'
 
 	const allTooltip = {
@@ -21,12 +20,6 @@
 
 	$: showAll = $screenState.dialog.kind === DialogKinds.PrefAll
 
-	$: actualPreferences = PrefsSvc.entries($prefsState)
-
-	function isDefault(name: keyof AllPreferences, value: string | number | boolean) {
-		return value !== PrefsSvc.getDefaultValue(name)
-	}
-
 	function allHandler() {
 		med.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.PrefAll })
 	}
@@ -36,21 +29,16 @@
 </script>
 
 <article>
-	{#each actualPreferences as [group, fields]}
+	{#each prefsEntries as [group, fields] (group)}
 		<table class="preferences">
 			<thead>
 				<tr><th colspan="2">{$i18nState.get(`prefs-groups-${group}`, capitalCase(group))}</th> </tr>
 			</thead>
 			<tbody>
-				{#each fields as [name, value]}
-					<tr class="field" class:strike={!showAll && isDefault(name, value)}>
+				{#each fields as [name, value] (name)}
+					<tr class="field" class:strike={!showAll && $prefsState[name] === value.default}>
 						<th class="key secondary">{$i18nState.get(`prefs-names-${name}`, capitalCase(name))}</th>
-						<td
-							class="monospace value"
-							class:bool={typeof value === 'boolean'}
-							class:num={typeof value === 'number'}
-							class:str={typeof value === 'string'}>{value}</td
-						>
+						<td class="monospace value {value.type}">{$prefsState[name]}</td>
 					</tr>
 				{/each}
 			</tbody>
@@ -136,23 +124,27 @@
 		content: ':';
 	}
 
-	.str {
+	.text {
 		color: var(--special-color);
 	}
 
-	.str::before,
-	.str::after {
+	.text::before,
+	.text::after {
 		font-weight: 600;
 		color: var(--key-color);
 		content: '"';
 	}
 
-	.num {
+	.number {
 		color: var(--number-color);
 	}
 
-	.bool {
+	.toggle {
 		font-style: italic;
 		color: var(--boolean-color);
+	}
+
+	.options {
+		color: var(--notes-color);
 	}
 </style>

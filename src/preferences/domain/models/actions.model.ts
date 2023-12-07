@@ -1,4 +1,4 @@
-import type { AllPreferences, Prefs } from './preferences.model'
+import type { Prefs } from './preferences.model'
 
 export enum PrefActions {
 	Reset = 'reset-preferences',
@@ -7,16 +7,16 @@ export enum PrefActions {
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace PrefData {
-	export type Reset = { type: 'all' } | { key: keyof AllPreferences; type: 'by-key' }
+	export type Reset = { type: 'all' } | { key: keyof Prefs; type: 'by-key' }
 
 	interface SaveAll {
 		replace: Prefs
 		type: 'all'
 	}
 
-	interface SaveByKey<K extends keyof AllPreferences = keyof AllPreferences> {
+	interface SaveByKey<K extends keyof Prefs = keyof Prefs> {
 		key: K
-		replace: AllPreferences[K]
+		replace: Prefs[K]
 		type: 'by-key'
 	}
 

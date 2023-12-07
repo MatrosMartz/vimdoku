@@ -50,7 +50,7 @@
 			"language": "Lenguaje",
 			"motionReduce": "Reducción de movimiento",
 			"cursorBox": "Caja de cursor",
-			"cursorColumn": "Columna de cursor",
+			"cursorCol": "Columna de cursor",
 			"cursorRow": "Fila de cursor",
 			"highlight": "Resaltado",
 			"history": "Historial",

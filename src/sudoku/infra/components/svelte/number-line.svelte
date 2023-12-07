@@ -7,7 +7,7 @@
 	$: dirCoord = direction === 'horizontal' ? $posState.x : $posState.y
 
 	$: getText = (num: number) => {
-		const printNum = $prefsState.vim.relativeNumbers ? Math.abs(num - dirCoord) : num + 1
+		const printNum = $prefsState.relativeNumbers ? Math.abs(num - dirCoord) : num + 1
 		return printNum === 0 ? '~' : String(printNum)
 	}
 </script>

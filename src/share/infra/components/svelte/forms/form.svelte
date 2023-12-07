@@ -16,20 +16,19 @@
 	export let method: 'get' | 'post' | 'dialog' = 'dialog'
 	export let labels: {
 		[K in keyof Schema]: {
-			names: { [S in keyof Schema[K]]: (fallback: string) => string }
-			fallback(fallback: string): string
+			groups: Record<K, (fallback: string) => string>
+			names: { [N in keyof Schema[K]]: (fallback: string) => string }
 		}
-	}
+	}[keyof Schema]
 
 	function schemaEntries(sch: FormSchema, l: typeof labels) {
 		return Object.entries(sch).map(
 			([group, settings]) =>
 				[
 					group,
-					l[group].fallback,
+					l.groups[group],
 					Object.entries(settings).map(
-						([name, settings]) =>
-							[name, l[group].names[name], settings] satisfies [string, (a: string) => string, unknown]
+						([name, settings]) => [name, l.names[name], settings] satisfies [string, (a: string) => string, unknown]
 					),
 				] satisfies [string, (a: string) => string, unknown]
 		)

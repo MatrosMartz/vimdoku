@@ -71,7 +71,7 @@ export class MedSvc implements IMed {
 		await Promise.all([this.#prefs.load(), this.#game.load()])
 		this.#iNotify('boardSaved')
 		this.#iNotify('prefs')
-		await this.#changeLang(this.#prefs.data.user.language)
+		await this.#changeLang(this.#prefs.data.language)
 		this.#hasLoaded = true
 	}
 
@@ -116,14 +116,14 @@ export class MedSvc implements IMed {
 		if (data.type === 'all') await this.#prefs.resetAll().save()
 		else await this.#prefs.resetByKey(data.key).save()
 		this.#iNotify('prefs')
-		await this.#changeLang(this.#prefs.data.user.language)
+		await this.#changeLang(this.#prefs.data.language)
 	}
 
 	async #dPrefSave(data: PrefData.Save) {
 		if (data.type === 'all') await this.#prefs.setAll(data.replace).save()
 		else await this.#prefs.setByKey(data.key, data.replace).save()
 		this.#iNotify('prefs')
-		await this.#changeLang(this.#prefs.data.user.language)
+		await this.#changeLang(this.#prefs.data.language)
 	}
 
 	#dSudokuCheck() {
@@ -156,7 +156,7 @@ export class MedSvc implements IMed {
 		this.#screen.setMain(MainScreenKinds.Game)
 		this.#iNotify('timer')
 		this.#iNotify('screen')
-		if (this.#prefs.user.timer) this.#game.timerStart(() => this.#iNotify('timer'))
+		if (this.#prefs.data.timer) this.#game.timerStart(() => this.#iNotify('timer'))
 	}
 
 	async #dSudokuSave() {
@@ -168,12 +168,12 @@ export class MedSvc implements IMed {
 		this.#iNotify('screen')
 		this.#game = await this.#game.start(data)
 		this.#iNotify('board')
-		if (this.#prefs.user.timer) this.#game.timerStart(() => this.#iNotify('timer'))
+		if (this.#prefs.data.timer) this.#game.timerStart(() => this.#iNotify('timer'))
 	}
 
 	#dSudokuWrite(data: SudokuData.Write) {
 		if (data.value === 0) this.#game.clear()
-		else this.#game.write(data.value, this.#prefs.data.sudoku.autoNoteDeletion, this.#prefs.sudoku.autoValidation)
+		else this.#game.write(data.value, this.#prefs.data.autoNoteDeletion, this.#prefs.data.autoValidation)
 		this.#iNotify('board')
 		this.#iNotify('errors')
 	}

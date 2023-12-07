@@ -6,7 +6,7 @@
 	import SudokuDivisions from './sudoku-divisions.svelte'
 </script>
 
-<table class="board monospace" class:numbers={$prefsState.vim.numbers || $prefsState.vim.relativeNumbers}>
+<table class="board monospace" class:numbers={$prefsState.numbers || $prefsState.relativeNumbers}>
 	<SudokuDivisions />
 	{#if $boardState != null}
 		{#each $boardState as row, y (y)}
