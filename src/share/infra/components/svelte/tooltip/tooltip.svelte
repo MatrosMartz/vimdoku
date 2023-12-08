@@ -45,7 +45,7 @@
 		bottom: calc(100% + 0.5rem);
 		left: 50%;
 		z-index: 100;
-		padding: 0.5rem 1rem;
+		padding: 0.25rem 0.5rem;
 		color: var(--primary-color);
 		text-align: center;
 		text-overflow: ellipsis;
@@ -60,7 +60,7 @@
 
 	p {
 		width: max-content;
-		max-width: min(35ch, 20vw);
+		max-width: min(17ch, 20vw);
 		text-align: initial;
 		text-wrap: balance;
 	}

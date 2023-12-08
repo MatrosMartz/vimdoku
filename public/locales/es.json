@@ -144,7 +144,7 @@
 		"modesDisabledReason": "El modo de inserción solo puede ser cambiado en la pantalla de juego.",
 		"posDesc": {
 			"head": "Fila",
-			"body": ", Col",
+			"body": ", Columna",
 			"tail": "."
 		}
 	},
