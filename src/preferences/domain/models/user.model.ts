@@ -27,3 +27,9 @@ export const userFields = {
 } as const satisfies FormGroup
 
 export type UserPrefs = FieldsToModel<typeof userFields>
+
+export type AccessibilityFields = {
+	[K in keyof UserPrefs]: UserPrefs[K] extends Accessibility ? K : never
+}[keyof UserPrefs]
+
+export const ACCESSIBILITY_FIELDS: AccessibilityFields[] = ['contrast', 'motionReduce']

@@ -143,9 +143,17 @@
 					"type": "object",
 					"properties": { "show": { "type": "string" }, "edit": { "type": "string" } },
 					"required": ["show", "edit"]
+				},
+				"toggle": {
+					"type": "object",
+					"properties": {
+						"true": { "type": "string" },
+						"false": { "type": "string" }
+					},
+					"required": ["true", "false"]
 				}
 			},
-			"required": ["accessibility", "schema", "groups", "names", "btn", "tabs"]
+			"required": ["accessibility", "schema", "groups", "names", "btn", "tabs", "toggle"]
 		},
 		"langName": { "type": "string" },
 		"cmdDesc": {

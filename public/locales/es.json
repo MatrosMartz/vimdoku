@@ -67,6 +67,10 @@
 		"tabs": {
 			"edit": "Editar",
 			"show": "Visualizar"
+		},
+		"toggle": {
+			"false": "apagado",
+			"true": "encendido"
 		}
 	},
 	"cmdDesc": {

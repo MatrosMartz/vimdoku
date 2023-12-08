@@ -3,7 +3,14 @@
 	import { capitalCase } from '~/share/utils'
 	import { med } from '$cmd/infra/services'
 	import { i18nState, prefsState, screenState } from '$cmd/infra/stores/svelte'
-	import { prefsEntries } from '$pref/domain/models'
+	import type { I18nData } from '$i18n/domain/models'
+	import {
+		type Accessibility,
+		ACCESSIBILITY_FIELDS,
+		prefsGroupEntries,
+		type PrefsNamesEntries,
+		type Schema,
+	} from '$pref/domain/models'
 	import { DialogKinds, ScreenActions } from '$screen/domain/models'
 
 	$: allTooltip = {
@@ -20,6 +27,15 @@
 
 	$: showAll = $screenState.dialog.kind === DialogKinds.PrefAll
 
+	function getA<E extends PrefsNamesEntries>(i18n: I18nData, [key, field]: E, value: unknown) {
+		if (field.type === 'toggle') return i18n.get(`prefs-toggle-${value as boolean}`, String(value))
+		if (key === 'colorSchema') return i18n.get(`prefs-schema-${value as Schema}`, value as string)
+		if (key === 'language') return i18n.get('langName', value as string)
+		if (ACCESSIBILITY_FIELDS.includes(key))
+			return i18n.get(`prefs-accessibility-${value as Accessibility}`, value as string)
+		return value as string
+	}
+
 	function allHandler() {
 		med.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.PrefAll })
 	}
@@ -29,16 +45,16 @@
 </script>
 
 <article>
-	{#each prefsEntries as [group, fields] (group)}
+	{#each prefsGroupEntries as [group, fields] (group)}
 		<table class="preferences">
 			<thead>
 				<tr><th colspan="2">{$i18nState.get(`prefs-groups-${group}`, capitalCase(group))}</th> </tr>
 			</thead>
 			<tbody>
-				{#each fields as [name, value] (name)}
-					<tr class="field" class:strike={!showAll && $prefsState[name] === value.default}>
-						<th class="key secondary">{$i18nState.get(`prefs-names-${name}`, capitalCase(name))}</th>
-						<td class="monospace value {value.type}">{$prefsState[name]}</td>
+				{#each fields as field (field[0])}
+					<tr class="field" class:strike={!showAll && $prefsState[field[0]] === field[1].default}>
+						<th class="key secondary">{$i18nState.get(`prefs-names-${field[0]}`, capitalCase(field[0]))}</th>
+						<td class="monospace value {field[1].type}">{getA($i18nState, field, $prefsState[field[0]])}</td>
 					</tr>
 				{/each}
 			</tbody>

@@ -69,6 +69,10 @@
 		"tabs": {
 			"edit": "Edit",
 			"show": "Show"
+		},
+		"toggle": {
+			"false": "off",
+			"true": "on"
 		}
 	},
 	"cmdDesc": {
