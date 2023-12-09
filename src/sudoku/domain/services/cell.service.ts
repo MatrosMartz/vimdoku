@@ -50,6 +50,10 @@ export class CellSvc implements ICell {
 		return { ...this.#data, notes: this.#data.notes.data }
 	}
 
+	get isCorrect() {
+		return this.#state.isCorrect
+	}
+
 	get kind() {
 		return this.data.kind
 	}
@@ -131,7 +135,7 @@ export class CellSvc implements ICell {
 	}
 
 	#stateForKind(data: CellData) {
-		return match(data.kind, {
+		return match<CellKinds, CellState>(data.kind, {
 			[CellKinds.Correct]: () => new CorrectCellState(data),
 			[CellKinds.Empty]: () => new EmptyCellState(data),
 			[CellKinds.Incorrect]: () => new IncorrectCellState(data),
@@ -151,6 +155,7 @@ abstract class CellState implements ICellState {
 	static readonly EMPTY_VALUE = 0
 
 	protected [data]: CellEntity
+	abstract readonly isCorrect: boolean
 
 	/**
 	 * Creates an instance of CellState class.
@@ -187,6 +192,8 @@ abstract class CellState implements ICellState {
 }
 
 class InitialCellState extends CellState {
+	readonly isCorrect = true
+
 	constructor(data: CellEntity) {
 		data.kind = CellKinds.Initial
 		super(data)
@@ -229,15 +236,20 @@ class UnverifiedCellState extends WritableCellState {
 		super(data)
 	}
 
-	verify(effect: (result: boolean) => void) {
-		const result = this[data].solution === this[data].value
-		effect(!result)
+	get isCorrect() {
+		return this[data].value === this[data].solution
+	}
 
-		return result ? new CorrectCellState(this[data]) : new IncorrectCellState(this[data])
+	verify(effect: (result: boolean) => void) {
+		effect(!this.isCorrect)
+
+		return this.isCorrect ? new CorrectCellState(this[data]) : new IncorrectCellState(this[data])
 	}
 }
 
 class EmptyCellState extends WritableCellState {
+	readonly isCorrect = false
+
 	constructor(data: CellEntity) {
 		data.kind = CellKinds.Empty
 		super(data)
@@ -245,6 +257,8 @@ class EmptyCellState extends WritableCellState {
 }
 
 class CorrectCellState extends WritableCellState {
+	readonly isCorrect = true
+
 	constructor(data: CellEntity) {
 		data.kind = CellKinds.Correct
 		super(data)
@@ -252,6 +266,8 @@ class CorrectCellState extends WritableCellState {
 }
 
 class IncorrectCellState extends WritableCellState {
+	readonly isCorrect = false
+
 	constructor(data: CellEntity) {
 		data.kind = CellKinds.Incorrect
 		super(data)
@@ -259,6 +275,8 @@ class IncorrectCellState extends WritableCellState {
 }
 
 class NotesCellState extends WritableCellState {
+	readonly isCorrect = false
+
 	constructor(data: CellEntity) {
 		data.kind = CellKinds.WhitNotes
 		super(data)

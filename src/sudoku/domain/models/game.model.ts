@@ -86,6 +86,8 @@ export interface IGame {
 	readonly board: Board | null
 	/** Get the errors that have been found in the current game. */
 	readonly errors: number
+	/** Get if the all board are correct. */
+	readonly hasWin: boolean
 	/** Get if there is a saved game. */
 	readonly isASaved: boolean
 	/** Get if the game has started. */

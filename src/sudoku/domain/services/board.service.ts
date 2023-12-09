@@ -9,6 +9,7 @@ import { GridSvc } from './grid.service'
 
 /** Represent a Sudoku Board Service. */
 export class BoardSvc implements IBoard {
+	#correctCells = 0
 	#grid
 
 	/**
@@ -17,10 +18,15 @@ export class BoardSvc implements IBoard {
 	 */
 	constructor(grid: IGrid<ICell>) {
 		this.#grid = grid
+		this.#correctCells = this.#grid.count(({ isCorrect }) => isCorrect)
 	}
 
 	get data(): Board {
 		return this.#grid.mapGrid(cell => cell.data).data
+	}
+
+	get hasWin() {
+		return this.#correctCells === 81
 	}
 
 	/**
@@ -111,6 +117,8 @@ export class BoardSvc implements IBoard {
 	write(cellPos: Pos, num: ValidNumbers) {
 		if (this.#grid.getCell(cellPos).kind !== CellKinds.Initial)
 			this.#grid = this.#grid.editCell(cellPos, cell => cell.writeValue(num))
+
+		if (this.#grid.getCell(cellPos).isCorrect) this.#correctCells++
 
 		return this
 	}

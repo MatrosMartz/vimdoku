@@ -9,13 +9,15 @@ export type Board = Tuple<Tuple<Cell, 9>, 9>
 export type BoardJSON = Tuple<Tuple<CellJSON, 9>, 9>
 
 export interface IBoard {
+	/** Get the current cells of board. */
+	readonly data: Board
+	/** Get if the all board are correct. */
+	readonly hasWin: boolean
 	/**
 	 * Remove cell value and clear note set.
 	 * @param cellPos Position of the cell to be cleared.
 	 */
 	clear(cellPos: Pos): this
-	/** Get the current cells of board. */
-	get data(): Board
 	/**
 	 * Removes the specified note from among the cells related to the given position.
 	 * @param cellPos Position of the origin.

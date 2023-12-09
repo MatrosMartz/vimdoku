@@ -33,6 +33,8 @@ export interface CellJSON {
 }
 
 export interface ICellState {
+	/** Get if the value is the same of the solution. */
+	readonly isCorrect: boolean
 	/**
 	 * Add a note in the Notes class.
 	 * @param num The note to remove (1-9).

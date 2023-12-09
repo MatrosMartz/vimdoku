@@ -134,8 +134,8 @@ export class MedSvc implements IMed {
 
 	async #dSudokuEnd() {
 		this.#game = await this.#game.end()
-		this.#iNotify('board')
 		this.#game.timerPause()
+		this.#iNotify('board')
 	}
 
 	#dSudokuMove(data: SudokuData.Move) {
@@ -174,8 +174,8 @@ export class MedSvc implements IMed {
 	#dSudokuWrite(data: SudokuData.Write) {
 		if (data.value === 0) this.#game.clear()
 		else this.#game.write(data.value, this.#prefs.data.autoNoteDeletion, this.#prefs.data.autoValidation)
-		this.#iNotify('board')
 		this.#iNotify('errors')
+		this.#iNotify('board')
 	}
 
 	/**

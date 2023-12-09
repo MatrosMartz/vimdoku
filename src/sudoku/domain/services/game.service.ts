@@ -18,6 +18,7 @@ abstract class GameSvc implements IGame {
 	protected readonly [repo]: GameRepo
 	abstract readonly board: Board | null
 	abstract readonly errors: number
+	abstract readonly hasWin: boolean
 	abstract readonly isASaved: boolean
 	abstract readonly isStarted: boolean
 	abstract readonly mode: ModeKinds
@@ -102,6 +103,7 @@ abstract class GameSvc implements IGame {
 export class NonStartedGameSvc extends GameSvc {
 	readonly board = null
 	readonly errors = 0
+	readonly hasWin = false
 	readonly isStarted = false
 	readonly mode = ModeKinds.X
 	readonly pos = { ...PosSvc.IDLE_POS }
@@ -192,6 +194,10 @@ class StartedGameSvc extends GameSvc {
 
 	get errors() {
 		return this.#data.errors
+	}
+
+	get hasWin() {
+		return this.#data.board.hasWin
 	}
 
 	get mode() {
