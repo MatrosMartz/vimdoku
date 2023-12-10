@@ -18,7 +18,7 @@
 
 	import { prefsState } from '$cmd/infra/stores'
 	import { Schema } from '$pref/domain/models'
-	import { CommandDialog, PreferencesDialog, Screen, StatusBar } from '$screen/infra/components/svelte'
+	import { CommandDialog, PreferencesDialog, Screen, StatusBar, WinDialog } from '$screen/infra/components/svelte'
 
 	import { keydownHandler } from './keydown-handler'
 	import { Header } from './share/infra/components/svelte'
@@ -36,6 +36,7 @@
 
 <CommandDialog />
 <PreferencesDialog />
+<WinDialog />
 <Screen />
 
 <StatusBar />

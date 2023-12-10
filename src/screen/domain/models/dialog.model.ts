@@ -6,6 +6,7 @@ export enum DialogKinds {
 	PrefAll = 'preferences-all',
 	PrefDiff = 'preferences-differ',
 	PrefEdit = 'preferences-edit',
+	Win = 'Win',
 }
 
 export const dialogPref = [DialogKinds.PrefAll, DialogKinds.PrefDiff, DialogKinds.PrefEdit]

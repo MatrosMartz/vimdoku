@@ -174,8 +174,13 @@ export class MedSvc implements IMed {
 	#dSudokuWrite(data: SudokuData.Write) {
 		if (data.value === 0) this.#game.clear()
 		else this.#game.write(data.value, this.#prefs.data.autoNoteDeletion, this.#prefs.data.autoValidation)
-		this.#iNotify('errors')
 		this.#iNotify('board')
+		if (this.#game.hasWin) {
+			this.#screen.setDialog({ kind: DialogKinds.Win })
+			this.#iNotify('screen')
+			this.#game.timerPause()
+		}
+		this.#iNotify('errors')
 	}
 
 	/**

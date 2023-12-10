@@ -14,7 +14,13 @@ export type DialogOpts = HelpDialogOpts | null | undefined
 export type DialogData =
 	| {
 			opts?: null
-			kind: DialogKinds.Cmd | DialogKinds.None | DialogKinds.PrefAll | DialogKinds.PrefDiff | DialogKinds.PrefEdit
+			kind:
+				| DialogKinds.Cmd
+				| DialogKinds.None
+				| DialogKinds.PrefAll
+				| DialogKinds.PrefDiff
+				| DialogKinds.PrefEdit
+				| DialogKinds.Win
 	  }
 	| { kind: DialogKinds.InLn; opts: InLnDialogOpts }
 	| { kind: DialogKinds.Help; opts: HelpDialogOpts }
