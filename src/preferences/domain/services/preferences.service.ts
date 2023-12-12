@@ -1,3 +1,4 @@
+import type { IAsyncObs } from '~/share/domain/models'
 import { FormFields } from '~/share/domain/services'
 import { InvalidPreferencesError, sameStructure } from '~/share/utils'
 
@@ -36,13 +37,15 @@ export class PrefsSvc implements IPrefs {
 
 	#data: Prefs = { ...PrefsSvc.DEFAULT }
 	readonly #repo
+	readonly #obs
 
 	/**
 	 * Create an instance of the PreferencesSvc class.
 	 * @param repo Initial Sudoku board.
 	 */
-	constructor(repo: PrefsRepo) {
+	constructor(repo: PrefsRepo, obs: IAsyncObs<Prefs>) {
 		this.#repo = repo
+		this.#obs = obs
 	}
 
 	get data(): Prefs {
@@ -139,15 +142,18 @@ export class PrefsSvc implements IPrefs {
 		if (!(await this.#repo.has())) return
 
 		this.#data = await this.#repo.load()
+		this.#obs.update(this.#data)
 	}
 
 	resetAll() {
 		this.#data = { ...PrefsSvc.DEFAULT }
+		this.#obs.update(this.#data)
 		return this
 	}
 
 	resetByKey<K extends keyof Prefs>(key: K) {
 		this.#data = { ...this.#data, [key]: PrefsSvc.DEFAULT[key] }
+		this.#obs.update(this.#data)
 		return this
 	}
 
@@ -159,6 +165,7 @@ export class PrefsSvc implements IPrefs {
 		if (!PrefsSvc.check(preferences)) throw new InvalidPreferencesError(preferences)
 
 		this.#data = { ...preferences }
+		this.#obs.update(this.#data)
 		return this
 	}
 

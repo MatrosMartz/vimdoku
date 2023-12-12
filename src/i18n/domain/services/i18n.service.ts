@@ -1,13 +1,22 @@
+import type { IAsyncObs } from '~/share/domain/models'
 import { Langs } from '$pref/domain/models'
 
 import type { I18nData, I18nKeys, I18nSchema, I18nValue, II18n } from '../models'
 
 export class I18nSvc implements II18n {
-	#actualLang = Langs.EN
-	#data: I18nData = {
+	static readonly IDLE : I18nData = {
 		get(key, fallBack) {
 			return fallBack
 		},
+	}
+
+	#actualLang = Langs.EN
+	#data = I18nSvc.IDLE
+
+	readonly #obs
+
+	constructor(obs: IAsyncObs<I18nData>) {
+		this.#obs = obs
 	}
 
 	get actualLang() {
@@ -29,6 +38,7 @@ export class I18nSvc implements II18n {
 				return getData(key, data) ?? fallBack
 			},
 		}
+		this.#obs.update(this.#data)
 	}
 
 	async #fetchData(lang: Langs) {

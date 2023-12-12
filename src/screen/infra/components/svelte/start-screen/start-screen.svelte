@@ -10,7 +10,7 @@
 	{#if $startType === 'start'}
 		<GameMenu />
 	{:else}
-		<SelectGame />
+		<SelectGame on:goback={() => startType.set('start')} />
 	{/if}
 </section>
 

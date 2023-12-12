@@ -1,4 +1,4 @@
-import type { IPos, Pos } from '~/share/domain/models'
+import type { IObs, IPos, Pos } from '~/share/domain/models'
 
 import type { GameRepo } from '../repositories'
 import type { Board, IBoard } from './board.model'
@@ -15,9 +15,22 @@ export interface Game {
 	timer: ITimer
 }
 
-export interface StartedGameOpts {
-	data: Game
+export interface GameObs {
+	readonly board: IObs<Board | null>
+	readonly errors: IObs<number>
+	readonly mode: IObs<ModeKinds>
+	readonly pos: IObs<Pos>
+	readonly saved: IObs<boolean>
+	readonly timer: IObs<string>
+}
+
+export interface NonStartedGameOpts {
+	obs: GameObs
 	repo: GameRepo
+}
+
+export interface StartedGameOpts extends NonStartedGameOpts {
+	data: Game
 }
 
 export interface IGameState {
@@ -171,10 +184,9 @@ export interface IGame {
 	timerReset(): this
 	/**
 	 * Start the timer.
-	 * @param effect Function to be executed each time the timer value changes.
 	 * @returns This TimerSvc instance after start the timer.
 	 */
-	timerStart(effect: () => void): this
+	timerStart(): this
 	/**
 	 * Check if any cell values are incorrect.
 	 * @returns The updated game.

@@ -4,8 +4,10 @@
 	import { Icon } from '~/share/infra/components/svelte'
 	import { tooltip } from '~/share/infra/components/svelte/tooltip'
 	import { med } from '$cmd/infra/services'
-	import { errorsState, i18nState, posState, screenState, timerState } from '$cmd/infra/stores/svelte'
+	import { i18nState } from '$i18n/infra/stores/svelte'
 	import { DialogKinds, ScreenActions } from '$screen/domain/models'
+	import { screenState } from '$screen/infra/stores/svelte'
+	import { errorsState, posState, timerState } from '$sudoku/infra/stores/svelte'
 
 	import SelectMode from './select-mode.svelte'
 

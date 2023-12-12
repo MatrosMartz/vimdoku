@@ -1,9 +1,10 @@
 <script>
 	import { Form } from '~/share/infra/components/svelte'
 	import { med } from '$cmd/infra/services'
-	import { i18nState, prefsState } from '$cmd/infra/stores/svelte'
+	import { i18nState } from '$i18n/infra/stores/svelte'
 	import { PrefActions, prefsFormSchema } from '$pref/domain/models'
 	import { PrefsSvc } from '$pref/domain/services'
+	import { prefsState } from '$pref/infra/stores/svelte'
 </script>
 
 <Form

@@ -3,8 +3,9 @@
 
 	import { Dialog } from '~/share/infra/components/svelte'
 	import { med } from '$cmd/infra/services'
-	import { errorsState, screenState, timerState } from '$cmd/infra/stores/svelte'
 	import { DialogKinds, ScreenActions } from '$screen/domain/models'
+	import { screenState } from '$screen/infra/stores/svelte'
+	import { errorsState, timerState } from '$sudoku/infra/stores/svelte'
 
 	import { SelectGame } from './start-screen'
 

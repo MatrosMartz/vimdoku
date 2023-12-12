@@ -16,8 +16,8 @@
 	import '@fontsource-variable/jetbrains-mono'
 	import '@fontsource-variable/jetbrains-mono/wght-italic.css'
 
-	import { prefsState } from '$cmd/infra/stores'
 	import { Schema } from '$pref/domain/models'
+	import { prefsState } from '$pref/infra/stores/svelte'
 	import { CommandDialog, PreferencesDialog, Screen, StatusBar, WinDialog } from '$screen/infra/components/svelte'
 
 	import { keydownHandler } from './keydown-handler'

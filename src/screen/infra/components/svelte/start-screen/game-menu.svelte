@@ -2,12 +2,13 @@
 	import { Button, ButtonMenu } from '~/share/infra/components/svelte'
 	import type { TooltipProps } from '~/share/infra/components/svelte/tooltip'
 	import { med } from '$cmd/infra/services'
-	import { boardSavedState, i18nState } from '$cmd/infra/stores/svelte'
+	import { i18nState } from '$i18n/infra/stores/svelte'
 	import { SudokuActions } from '$sudoku/domain/models'
+	import { savedState } from '$sudoku/infra/stores/svelte'
 
 	import { startType } from './start-screen.store'
 
-	$: disabled = !$boardSavedState
+	$: disabled = !$savedState
 
 	$: tooltipProps = {
 		id: 'resume-disable-reason',

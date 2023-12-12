@@ -2,9 +2,11 @@
 	import { Icon } from '~/share/infra/components/svelte'
 	import { tooltip, type TooltipProps } from '~/share/infra/components/svelte/tooltip'
 	import { med } from '$cmd/infra/services'
-	import { i18nState, modeState, posState, screenState } from '$cmd/infra/stores/svelte'
+	import { i18nState } from '$i18n/infra/stores/svelte'
 	import { DialogKinds, MainScreenKinds, ScreenActions } from '$screen/domain/models'
+	import { screenState } from '$screen/infra/stores/svelte'
 	import { ModeKinds, MODES_KEYS, SudokuActions } from '$sudoku/domain/models'
+	import { modeState, posState } from '$sudoku/infra/stores/svelte'
 
 	$: disabled = $screenState.main !== MainScreenKinds.Game
 

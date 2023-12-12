@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { DialogClose } from '~/share/infra/components/svelte'
 	import { exec } from '$cmd/infra/services'
-	import { screenState } from '$cmd/infra/stores/svelte'
 	import { DialogKinds } from '$screen/domain/models'
+	import { screenState } from '$screen/infra/stores/svelte'
 
 	import { input } from './input.store'
 

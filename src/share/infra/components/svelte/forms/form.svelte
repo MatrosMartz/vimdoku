@@ -3,7 +3,7 @@
 
 	import type { FormSchema, SchemaToModel } from '~/share/domain/models'
 	import { capitalCase, typeFallback } from '~/share/utils'
-	import { i18nState } from '$cmd/infra/stores'
+	import { i18nState } from '$i18n/infra/stores/svelte'
 
 	import { Button, ButtonMenu } from '../buttons'
 	import { NumberInput, OptionsInput, TextInput, ToggleInput } from './inputs'

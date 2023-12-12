@@ -1,3 +1,5 @@
 import { ScreenSvc } from '$screen/domain/services'
 
-export const vimScreen = new ScreenSvc()
+import { screenObs } from '../stores'
+
+export const vimScreen = new ScreenSvc(screenObs)

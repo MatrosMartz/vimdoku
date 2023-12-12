@@ -1,4 +1,5 @@
+import { createState } from '~/share/utils/svelte/create-state'
+
 import { screenObs } from '../screen.store'
-import { createState } from './create-state'
 
 export const screenState = createState(screenObs)

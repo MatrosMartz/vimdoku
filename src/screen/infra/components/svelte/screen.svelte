@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { screenState } from '$cmd/infra/stores/svelte'
 	import { MainScreenKinds } from '$screen/domain/models'
+	import { screenState } from '$screen/infra/stores/svelte'
 	import { SudokuGame } from '$sudoku/infra/components/svelte'
 
 	import { StartScreen } from './start-screen'

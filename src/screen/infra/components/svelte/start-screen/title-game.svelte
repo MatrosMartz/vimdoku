@@ -1,5 +1,5 @@
 <script>
-	import { i18nState } from '$cmd/infra/stores'
+	import { i18nState } from '$i18n/infra/stores/svelte'
 
 	$: typeText = $i18nState.get('titleScreen-cmd-type', 'Type')
 </script>

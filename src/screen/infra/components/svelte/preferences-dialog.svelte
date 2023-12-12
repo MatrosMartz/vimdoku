@@ -4,9 +4,10 @@
 	import { Dialog, DialogClose } from '~/share/infra/components/svelte/dialog'
 	import { Tab, TabGroup, TabList, TabPanel } from '~/share/infra/components/svelte/tab'
 	import { med } from '$cmd/infra/services'
-	import { i18nState, screenState } from '$cmd/infra/stores/svelte'
+	import { i18nState } from '$i18n/infra/stores/svelte'
 	import { PreferencesDisplay, PreferencesForm } from '$pref/infra/components/svelte'
 	import { DialogKinds, type DialogPref, dialogPref, ScreenActions } from '$screen/domain/models'
+	import { screenState } from '$screen/infra/stores/svelte'
 
 	const dialogState = derived(screenState, ({ dialog }) => dialogPref.includes(dialog.kind))
 	const tabState = derived<typeof screenState, string>(screenState, ({ dialog }, set) => {

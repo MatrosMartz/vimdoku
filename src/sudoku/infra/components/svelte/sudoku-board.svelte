@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { boardState, prefsState } from '$cmd/infra/stores/svelte'
+	import { prefsState } from '$pref/infra/stores/svelte'
+	import { boardState } from '$sudoku/infra/stores/svelte'
 
 	import NumberLine from './number-line.svelte'
 	import SudokuCell from './sudoku-cell.svelte'

@@ -2,8 +2,8 @@
 	import { Button, ButtonMenu } from '~/share/infra/components/svelte/buttons'
 	import { capitalCase } from '~/share/utils'
 	import { med } from '$cmd/infra/services'
-	import { i18nState, prefsState, screenState } from '$cmd/infra/stores/svelte'
 	import type { I18nData } from '$i18n/domain/models'
+	import { i18nState } from '$i18n/infra/stores/svelte'
 	import {
 		type Accessibility,
 		ACCESSIBILITY_FIELDS,
@@ -11,7 +11,9 @@
 		type PrefsNamesEntries,
 		type Schema,
 	} from '$pref/domain/models'
+	import { prefsState } from '$pref/infra/stores/svelte'
 	import { DialogKinds, ScreenActions } from '$screen/domain/models'
+	import { screenState } from '$screen/infra/stores/svelte'
 
 	$: allTooltip = {
 		id: 'all-disabled-describe',

@@ -1,8 +1,6 @@
-import type { IAsyncObs, IObs, Pos } from '~/share/domain/models'
-import type { I18nData } from '$i18n/domain/models'
-import type { PrefDispatch, Prefs } from '$pref/domain/models'
-import type { ScreenDispatch, ScreenDispatchUnData, VimScreen } from '$screen/domain/models'
-import type { Board, ModeKinds, SudokuDispatch, SudokuDispatchUnData } from '$sudoku/domain/models'
+import type { PrefDispatch } from '$pref/domain/models'
+import type { ScreenDispatch, ScreenDispatchUnData } from '$screen/domain/models'
+import type { SudokuDispatch, SudokuDispatchUnData } from '$sudoku/domain/models'
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Med {
@@ -13,20 +11,6 @@ export namespace Med {
 	export type UnDataActions = ScreenDispatchUnData | SudokuDispatchUnData
 
 	export type Actions = DataActions | UnDataActions
-
-	export interface State {
-		board: IAsyncObs<Board | null>
-		boardSaved: IAsyncObs<boolean>
-		errors: IAsyncObs<number>
-		i18n: IAsyncObs<I18nData>
-		mode: IObs<ModeKinds>
-		pos: IObs<Pos>
-		prefs: IAsyncObs<Prefs>
-		screen: IObs<VimScreen>
-		timer: IAsyncObs<string>
-	}
-
-	export type Keys = keyof State
 }
 
 export interface IMed {

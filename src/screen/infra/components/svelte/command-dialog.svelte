@@ -3,8 +3,8 @@
 
 	import { Dialog } from '~/share/infra/components/svelte/dialog'
 	import { CommandInput, SuggestionsList } from '$cmd/infra/components/svelte'
-	import { screenState } from '$cmd/infra/stores/svelte'
 	import { DialogKinds } from '$screen/domain/models'
+	import { screenState } from '$screen/infra/stores/svelte'
 
 	const dialogState = derived(screenState, ({ dialog }) => dialog.kind === DialogKinds.Cmd)
 </script>
