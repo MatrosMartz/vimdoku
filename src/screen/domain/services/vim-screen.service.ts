@@ -36,6 +36,7 @@ export class ScreenSvc implements IScreen {
 	close() {
 		if (this.#dialog.kind === DialogKinds.Win) {
 			this.#main = MainScreenKinds.Start
+			this.#dialog = { kind: DialogKinds.None }
 			this.#prev = null
 		} else if (this.#dialog.kind !== DialogKinds.None) this.#dialog = structuredClone(ScreenSvc.DEFAULT_SCREEN.dialog)
 		else if (this.#prev != null) {
