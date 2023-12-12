@@ -8,7 +8,7 @@ const { freeze: _f } = Object
 export class ScreenSvc implements IScreen {
 	/** Define default values for screen. */
 	static readonly DEFAULT_SCREEN = _f<VimScreen>({
-		dialog: _f({ kind: DialogKinds.None, opts: null }),
+		dialog: _f({ kind: DialogKinds.None }),
 		main: MainScreenKinds.Start,
 	})
 
@@ -36,7 +36,7 @@ export class ScreenSvc implements IScreen {
 	close() {
 		if (this.#dialog.kind === DialogKinds.Win) {
 			this.#main = MainScreenKinds.Start
-			this.#dialog = { kind: DialogKinds.None }
+			this.#dialog = structuredClone(ScreenSvc.DEFAULT_SCREEN.dialog)
 			this.#prev = null
 		} else if (this.#dialog.kind !== DialogKinds.None) this.#dialog = structuredClone(ScreenSvc.DEFAULT_SCREEN.dialog)
 		else if (this.#prev != null) {
