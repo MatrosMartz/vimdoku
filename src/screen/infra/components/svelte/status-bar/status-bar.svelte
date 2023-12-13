@@ -7,7 +7,7 @@
 	import { i18nState } from '$i18n/infra/stores/svelte'
 	import { DialogKinds, ScreenActions } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
-	import { errorsState, posState, timerState } from '$sudoku/infra/stores/svelte'
+	import { errorsState, posState, savedState, timerState } from '$sudoku/infra/stores/svelte'
 
 	import SelectMode from './select-mode.svelte'
 
@@ -44,6 +44,10 @@
 	<section>
 		<button class="icon dialog" on:click={cmdHandler}><Icon id="cmd" /></button>
 		<SelectMode />
+		<button class="icon sync">
+			<Icon id="sync" />
+			<span>{$i18nState.get(`sync-${$savedState}`, $savedState ? 'Saved' : 'Unsaved')}</span>
+		</button>
 		<button class="icon error" class:shake={errorsShake}>
 			<Icon id="errors" />
 			<span>{$errorsState}</span>
@@ -84,6 +88,10 @@
 
 	.error {
 		color: var(--error-color);
+	}
+
+	.sync {
+		color: var(--unverified-color);
 	}
 
 	:global(:not(.motion-reduce)) .shake {

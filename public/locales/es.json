@@ -158,5 +158,9 @@
 		"insert": "INSERCIÓN",
 		"visual": "VISUAL",
 		"normal": "NORMAL"
+	},
+	"sync": {
+		"false": "Sin guardar",
+		"true": "Guardado"
 	}
 }

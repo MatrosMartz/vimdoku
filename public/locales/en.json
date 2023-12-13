@@ -157,5 +157,9 @@
 		"insert": "INSERT",
 		"visual": "VISUAL",
 		"normal": "NORMAL"
+	},
+	"sync": {
+		"false": "Unsaved",
+		"true": "Saved"
 	}
 }

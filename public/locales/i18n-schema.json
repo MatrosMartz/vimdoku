@@ -296,7 +296,15 @@
 				"insert": { "type": "string" }
 			},
 			"required": ["normal", "annotation", "visual", "insert"]
+		},
+		"sync": {
+			"type": "object",
+			"properties": {
+				"false": { "type": "string" },
+				"true": { "type": "string" }
+			},
+			"required": ["false", "true"]
 		}
 	},
-	"required": ["titleScreen", "gameBtn", "prefs", "langName", "cmdDesc", "form", "statusBar", "help", "modes"]
+	"required": ["titleScreen", "gameBtn", "prefs", "langName", "cmdDesc", "form", "statusBar", "help", "modes", "sync"]
 }
