@@ -42,8 +42,7 @@
 		<th>{typeText}</th>
 		<td>
 			<p class="highlight">
-				<span class="command">start</span>
-				<span class="holder">difficulty</span><span class="key">Enter</span>
+				<span class="command">start</span><span class="holder">difficulty</span><span class="key">Enter</span>
 			</p>
 		</td>
 		<td>{$i18nState.get('titleScreen-cmd-startGame', 'for start command help.')}</td>
@@ -74,7 +73,7 @@
 		align-self: flex-end;
 	}
 
-	@media (width >= 768px) {
+	@container (width >= 768px) {
 		.commands {
 			display: grid;
 			grid-template-columns: repeat(3, max-content);
