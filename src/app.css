@@ -1,3 +1,49 @@
+:root {
+	--surface: rgb(210 200 214);
+	--input-background: rgb(227 225 227);
+	--input-border: rgb(137 134 139);
+	--alternative-border: rgb(152 152 192);
+	--focus-border: rgb(105 82 119);
+	--primary-color: rgb(36 26 37);
+	--secondary-color: rgb(31 29 31);
+	--editor-background: rgb(250 231 250);
+	--error-color: rgb(122 8 14);
+	--value-color: rgb(120 51 8);
+	--key-color: rgb(6 75 126);
+	--holder-color: rgb(139 125 111);
+	--special-color: rgb(6 92 31);
+	--unverified-color: rgb(69 84 99);
+	--assert-color: var(--special-color);
+	--number-color: rgb(177 92 27);
+	--string-color: var(--special-color);
+	--boolean-color: var(--error-color);
+	--status-bar-background: rgb(229 220 229);
+	--command-color: rgb(84 69 12);
+	--notes-color: var(--command-color);
+	--anchor-color: rgb(36 74 88);
+	--visited-color: rgb(52 33 92);
+	--tooltip-background: rgb(231 217 255);
+	--tooltip-border: rgb(145 104 196);
+	--card-head-background: rgb(170 152 192);
+	--card-shadow: rgb(170 152 192 / 50%);
+	--dialog-background: rgb(213 200 221);
+	--input-shadow: rgb(15 17 34 / 50%);
+	--hover-shadow: rgb(49 2 114 / 20%);
+	--focus-brightness: brightness(120%);
+	--blink-background: rgb(232 218 232);
+
+	font-family: Poppins, sans-serif;
+	font-weight: 400;
+	line-height: 1.5;
+	color: var(--primary-color);
+	color-scheme: light dark;
+	background-color: var(--surface);
+	font-synthesis: none;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizelegibility;
+}
+
 :root.dark {
 	--surface: rgb(31 24 32);
 	--input-background: rgb(26 23 27);
@@ -27,52 +73,6 @@
 	--hover-shadow: rgb(9 0 20 / 75%);
 	--focus-brightness: brightness(120%);
 	--blink-background: rgb(20 9 28);
-}
-
-:root {
-	--surface: rgb(248 239 248);
-	--input-background: rgb(227 225 227);
-	--input-border: rgb(137 134 139);
-	--alternative-border: rgb(152 152 192);
-	--focus-border: rgb(105 82 119);
-	--primary-color: rgb(36 26 37);
-	--secondary-color: rgb(31 29 31);
-	--editor-background: rgb(227 210 235);
-	--error-color: rgb(122 8 14);
-	--value-color: rgb(120 51 8);
-	--key-color: rgb(6 75 126);
-	--holder-color: rgb(139 125 111);
-	--special-color: rgb(6 92 31);
-	--unverified-color: rgb(69 84 99);
-	--assert-color: var(--special-color);
-	--number-color: rgb(177 92 27);
-	--string-color: var(--special-color);
-	--boolean-color: var(--error-color);
-	--status-bar-background: rgb(224 219 224);
-	--command-color: rgb(84 69 12);
-	--notes-color: var(--command-color);
-	--anchor-color: rgb(36 74 88);
-	--visited-color: rgb(52 33 92);
-	--tooltip-background: rgb(231 217 255);
-	--tooltip-border: rgb(145 104 196);
-	--card-head-background: rgb(170 152 192);
-	--card-shadow: rgb(170 152 192 / 50%);
-	--dialog-background: rgb(202 195 206);
-	--input-shadow: rgb(15 17 34 / 50%);
-	--hover-shadow: rgb(49 2 114 / 20%);
-	--focus-brightness: brightness(120%);
-	--blink-background: rgb(213 206 223);
-
-	font-family: Poppins, sans-serif;
-	font-weight: 400;
-	line-height: 1.5;
-	color: var(--primary-color);
-	color-scheme: light dark;
-	background-color: var(--surface);
-	font-synthesis: none;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	text-rendering: optimizelegibility;
 }
 
 * {
