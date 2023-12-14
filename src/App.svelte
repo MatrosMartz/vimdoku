@@ -16,7 +16,7 @@
 	import '@fontsource-variable/jetbrains-mono'
 	import '@fontsource-variable/jetbrains-mono/wght-italic.css'
 
-	import { Schema } from '$pref/domain/models'
+	import { Accessibility, Schema } from '$pref/domain/models'
 	import { prefsState } from '$pref/infra/stores/svelte'
 	import {
 		CommandDialog,
@@ -28,15 +28,19 @@
 	} from '$screen/infra/components/svelte'
 
 	import { keydownHandler } from './keydown-handler'
-	// import { Header } from './share/infra/components/svelte'
+	import { toggleClass } from './toggleClass'
 
 	$: document.documentElement.lang = $prefsState.language
-	$: if (
-		$prefsState.colorSchema === Schema.DARK_MODE ||
-		($prefsState.colorSchema === Schema.SYSTEM && window.matchMedia('(prefers-color-scheme: dark)').matches)
+	$: toggleClass(
+		$prefsState.colorSchema,
+		{ main: Schema.DARK_MODE, default: Schema.SYSTEM, media: '(prefers-color-scheme: dark)' },
+		'dark'
 	)
-		document.documentElement.classList.add('dark')
-	else document.documentElement.classList.remove('dark')
+	$: toggleClass(
+		$prefsState.motionReduce,
+		{ main: Accessibility.LESS, default: Accessibility.SYSTEM, media: '(prefers-reduced-motion)' },
+		'motion-reduce'
+	)
 </script>
 
 <Header />
