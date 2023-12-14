@@ -1,12 +1,12 @@
 :root {
-	--surface: rgb(210 200 214);
-	--input-background: rgb(227 225 227);
+	--surface: rgb(234 215 227);
+	--input-background: rgb(224 212 224);
 	--input-border: rgb(137 134 139);
 	--alternative-border: rgb(152 152 192);
 	--focus-border: rgb(105 82 119);
 	--primary-color: rgb(36 26 37);
 	--secondary-color: rgb(31 29 31);
-	--editor-background: rgb(250 231 250);
+	--editor-background: rgb(240 232 255);
 	--error-color: rgb(122 8 14);
 	--value-color: rgb(120 51 8);
 	--key-color: rgb(6 75 126);
@@ -17,20 +17,20 @@
 	--number-color: rgb(177 92 27);
 	--string-color: var(--special-color);
 	--boolean-color: var(--error-color);
-	--status-bar-background: rgb(229 220 229);
+	--status-bar-background: rgb(203 201 209);
 	--command-color: rgb(84 69 12);
 	--notes-color: var(--command-color);
 	--anchor-color: rgb(36 74 88);
 	--visited-color: rgb(52 33 92);
 	--tooltip-background: rgb(231 217 255);
 	--tooltip-border: rgb(145 104 196);
-	--card-head-background: rgb(170 152 192);
+	--card-head-background: var(--status-bar-background);
 	--card-shadow: rgb(170 152 192 / 50%);
-	--dialog-background: rgb(213 200 221);
+	--dialog-background: rgb(187 176 194);
 	--input-shadow: rgb(15 17 34 / 50%);
 	--hover-shadow: rgb(49 2 114 / 20%);
-	--focus-brightness: brightness(120%);
-	--blink-background: rgb(232 218 232);
+	--focus-brightness: brightness(107%);
+	--blink-background: rgb(227 219 229);
 
 	font-family: Poppins, sans-serif;
 	font-weight: 400;
@@ -60,13 +60,12 @@
 	--special-color: rgb(101 219 78);
 	--unverified-color: rgb(103 109 112);
 	--number-color: rgb(196 114 43);
-	--status-bar-background: rgb(12 8 13);
+	--status-bar-background: rgb(19 15 24);
 	--command-color: rgb(211 199 129);
 	--anchor-color: rgb(137 192 212);
 	--visited-color: rgb(174 137 255);
 	--tooltip-background: rgb(6 0 15);
 	--tooltip-border: rgb(31 11 59);
-	--card-head-background: rgb(19 15 24);
 	--card-shadow: rgb(19 15 24 / 50%);
 	--dialog-background: rgb(38 30 42);
 	--input-shadow: rgb(3 3 5 / 80%);
@@ -260,11 +259,26 @@ input {
 	color: var(--secondary-color);
 }
 
-.status-bar .icon {
+.status-bar {
+	position: sticky;
+	inset: auto 0;
+	z-index: 9999;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	background-color: var(--status-bar-background);
+}
+
+.status-bar section {
+	display: flex;
+}
+
+.status-icon {
 	--border-color: transparent;
 
 	display: flex;
-	gap: 0.5rem;
+	gap: 0.2rem;
 	align-items: center;
 	justify-content: center;
 	min-width: 44px;
@@ -276,21 +290,48 @@ input {
 	border: 2px solid var(--border-color);
 }
 
-.status-bar p,
-.status-bar .icon:has(span),
-.status-bar summary.icon {
-	padding-inline: 0.5rem;
+.item-separation {
+	gap: 0.7rem;
+	padding-inline: 0.3rem;
 }
 
-.status-bar .icon:hover {
-	filter: brightness(125%);
-	backdrop-filter: brightness(125%);
+.status-icon:hover {
+	filter: var(--focus-brightness);
+	backdrop-filter: var(--focus-brightness);
 }
 
-.status-bar .icon:focus {
+.status-icon:focus {
 	--border-color: var(--focus-border);
 }
 
-.status-bar .icon.dialog {
+.icon-dialog {
 	background-color: var(--alternative-border);
+}
+
+@keyframes shake {
+	0% {
+		transform: rotate(0);
+	}
+
+	25% {
+		transform: rotate(10deg);
+	}
+
+	50% {
+		transform: rotate(0);
+	}
+
+	75% {
+		transform: rotate(-10deg);
+	}
+
+	100% {
+		transform: rotate(0);
+	}
+}
+
+@media (orientation: portrait) {
+	.portrait-hidden {
+		display: none;
+	}
 }

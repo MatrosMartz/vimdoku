@@ -18,10 +18,17 @@
 
 	import { Schema } from '$pref/domain/models'
 	import { prefsState } from '$pref/infra/stores/svelte'
-	import { CommandDialog, PreferencesDialog, Screen, StatusBar, WinDialog } from '$screen/infra/components/svelte'
+	import {
+		CommandDialog,
+		Header,
+		PreferencesDialog,
+		Screen,
+		StatusBar,
+		WinDialog,
+	} from '$screen/infra/components/svelte'
 
 	import { keydownHandler } from './keydown-handler'
-	import { Header } from './share/infra/components/svelte'
+	// import { Header } from './share/infra/components/svelte'
 
 	$: document.documentElement.lang = $prefsState.language
 	$: if (

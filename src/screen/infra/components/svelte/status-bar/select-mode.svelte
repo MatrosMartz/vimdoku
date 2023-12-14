@@ -56,7 +56,7 @@
 		aria-label="Select mode"
 		aria-controls="mode-selector-panel"
 		aria-disabled={disabled}
-		class="icon mode"
+		class="status-icon mode"
 		on:focus={focusHandler}
 		on:focusout={focusoutHandler}
 		on:click={toggleHandler}
