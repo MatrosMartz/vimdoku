@@ -27,7 +27,7 @@
 	--card-head-background: var(--status-bar-background);
 	--card-shadow: rgb(170 152 192 / 50%);
 	--dialog-background: rgb(187 176 194);
-	--input-shadow: rgb(15 17 34 / 50%);
+	--input-shadow: rgb(15 17 34 / 25%);
 	--hover-shadow: rgb(49 2 114 / 20%);
 	--focus-brightness: brightness(107%);
 	--blink-background: rgb(227 219 229);

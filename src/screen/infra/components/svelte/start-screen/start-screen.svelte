@@ -1,17 +1,11 @@
 <script>
 	import GameMenu from './game-menu.svelte'
-	import SelectGame from './select-game.svelte'
-	import { startType } from './start-screen.store'
 	import TitleGame from './title-game.svelte'
 </script>
 
 <section class="monospace start-screen">
 	<TitleGame />
-	{#if $startType === 'start'}
-		<GameMenu />
-	{:else}
-		<SelectGame on:goback={() => startType.set('start')} />
-	{/if}
+	<GameMenu />
 </section>
 
 <style>

@@ -54,6 +54,7 @@ export class ScreenSvc implements IScreen {
 	setMain(main: MainScreenKinds) {
 		this.#prev = this.#main
 		this.#main = main
+		this.#dialog = structuredClone(ScreenSvc.DEFAULT_SCREEN.dialog)
 		this.#obs.update(this.data)
 	}
 }

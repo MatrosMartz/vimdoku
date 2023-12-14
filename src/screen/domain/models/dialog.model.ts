@@ -1,11 +1,13 @@
 export enum DialogKinds {
 	Cmd = 'command',
-	InLn = 'inline',
 	Help = 'help',
+	InLn = 'inline',
 	None = 'none',
+	pause = 'pause',
 	PrefAll = 'preferences-all',
 	PrefDiff = 'preferences-differ',
 	PrefEdit = 'preferences-edit',
+	sel = 'select',
 	Win = 'Win',
 }
 

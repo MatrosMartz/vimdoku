@@ -2,18 +2,13 @@
 	import { derived } from 'svelte/store'
 
 	import { Dialog } from '~/share/infra/components/svelte'
-	import { med } from '$cmd/infra/services'
-	import { DialogKinds, ScreenActions } from '$screen/domain/models'
+	import { DialogKinds } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
 	import { errorsState, timerState } from '$sudoku/infra/stores/svelte'
 
-	import { SelectGame } from './start-screen'
+	import { SelectGame } from './select-dialog'
 
 	$: dialogState = derived(screenState, ({ dialog }) => dialog.kind === DialogKinds.Win)
-
-	function gobackHandler() {
-		med.dispatch(ScreenActions.Exit)
-	}
 </script>
 
 <Dialog type="modal" {dialogState}>
@@ -24,7 +19,7 @@
 			<p><strong>Time</strong> <span>{$timerState}</span></p>
 			<p><strong>Difficulty</strong> <span>Some</span></p>
 		</section>
-		<SelectGame on:goback={gobackHandler} />
+		<SelectGame />
 	</div>
 </Dialog>
 
@@ -32,6 +27,8 @@
 	.content {
 		display: flex;
 		flex-direction: column;
+		align-items: center;
+		justify-content: center;
 		width: 80vw;
 		max-width: 600px;
 		height: 90vh;

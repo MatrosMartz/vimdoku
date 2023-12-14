@@ -3,10 +3,9 @@
 	import type { TooltipProps } from '~/share/infra/components/svelte/tooltip'
 	import { med } from '$cmd/infra/services'
 	import { i18nState } from '$i18n/infra/stores/svelte'
+	import { DialogKinds, ScreenActions } from '$screen/domain/models'
 	import { SudokuActions } from '$sudoku/domain/models'
 	import { savedState } from '$sudoku/infra/stores/svelte'
-
-	import { startType } from './start-screen.store'
 
 	$: disabled = !$savedState
 
@@ -16,7 +15,7 @@
 	} satisfies TooltipProps
 
 	function newGameHandler() {
-		startType.set('select')
+		med.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.sel })
 	}
 
 	function resumeHandler() {
@@ -24,17 +23,9 @@
 	}
 </script>
 
-<div class="menu">
-	<ButtonMenu>
-		<Button on:click={newGameHandler}>{$i18nState.get('gameBtn-new-text', 'New game')}</Button>
-		<Button {disabled} {tooltipProps} on:click={resumeHandler}
-			>{$i18nState.get('gameBtn-resume-text', 'Resume game')}</Button
-		>
-	</ButtonMenu>
-</div>
-
-<style>
-	.menu {
-		padding-top: 102px;
-	}
-</style>
+<ButtonMenu>
+	<Button on:click={newGameHandler}>{$i18nState.get('gameBtn-new-text', 'New game')}</Button>
+	<Button {disabled} {tooltipProps} on:click={resumeHandler}
+		>{$i18nState.get('gameBtn-resume-text', 'Resume game')}</Button
+	>
+</ButtonMenu>

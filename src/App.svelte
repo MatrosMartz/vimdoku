@@ -18,14 +18,7 @@
 
 	import { Accessibility, Schema } from '$pref/domain/models'
 	import { prefsState } from '$pref/infra/stores/svelte'
-	import {
-		CommandDialog,
-		Header,
-		PreferencesDialog,
-		Screen,
-		StatusBar,
-		WinDialog,
-	} from '$screen/infra/components/svelte'
+	import { Dialogs, Header, Screen, StatusBar } from '$screen/infra/components/svelte'
 
 	import { keydownHandler } from './keydown-handler'
 	import { toggleClass } from './toggleClass'
@@ -45,9 +38,7 @@
 
 <Header />
 
-<CommandDialog />
-<PreferencesDialog />
-<WinDialog />
+<Dialogs />
 <Screen />
 
 <StatusBar />

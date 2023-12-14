@@ -1,17 +1,14 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte'
-
 	import { Button, ButtonMenu, OptionsInput } from '~/share/infra/components/svelte'
 	import { med } from '$cmd/infra/services'
 	import { i18nState } from '$i18n/infra/stores/svelte'
+	import { ScreenActions } from '$screen/domain/models'
 	import { DIFFICULTIES_NAMES, DifficultyKinds, SudokuActions } from '$sudoku/domain/models'
 
 	let value: keyof typeof DifficultyKinds = 'Beginner'
 
-	const dispatch = createEventDispatcher<{ goback: null }>()
-
 	function backHandler() {
-		dispatch('goback')
+		med.dispatch(ScreenActions.Exit)
 	}
 
 	function submitHandler() {

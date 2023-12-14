@@ -17,9 +17,11 @@ export type DialogData =
 			kind:
 				| DialogKinds.Cmd
 				| DialogKinds.None
+				| DialogKinds.pause
 				| DialogKinds.PrefAll
 				| DialogKinds.PrefDiff
 				| DialogKinds.PrefEdit
+				| DialogKinds.sel
 				| DialogKinds.Win
 	  }
 	| { kind: DialogKinds.InLn; opts: InLnDialogOpts }
