@@ -2,7 +2,7 @@
 	export let id: string
 </script>
 
-<svg width="1.5em"><use href="/sprites.svg#{id}"></use></svg>
+<svg width="1.5em"><use href="/sprites/heroicons.svg#{id}"></use></svg>
 
 <style>
 	svg {
