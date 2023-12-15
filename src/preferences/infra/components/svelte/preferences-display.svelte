@@ -62,7 +62,7 @@
 			</tbody>
 		</table>
 	{/each}
-	<ButtonMenu>
+	<ButtonMenu direction="auto">
 		<Button disabled={showAll} tooltipProps={allTooltip} on:click={allHandler}
 			>{$i18nState.get('prefs-btn-showAll-text', 'Show all')}</Button
 		>
