@@ -24,7 +24,7 @@
 		bind:value
 	/>
 
-	<ButtonMenu>
+	<ButtonMenu direction="auto">
 		<Button on:click={backHandler}>{$i18nState.get('gameBtn-goBack', 'Go back')}</Button>
 		<Button type="submit">{$i18nState.get('gameBtn-start', 'Start new game')}</Button>
 	</ButtonMenu>
@@ -35,6 +35,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 2rem;
+		max-width: 70vw;
 	}
 
 	form :global(.field) {

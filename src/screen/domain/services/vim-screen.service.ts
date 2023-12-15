@@ -38,21 +38,20 @@ export class ScreenSvc implements IScreen {
 			this.#main = MainScreenKinds.Start
 			this.#dialog = structuredClone(ScreenSvc.DEFAULT_SCREEN.dialog)
 			this.#prev = null
-		} else if (this.#dialog.kind !== DialogKinds.None) this.#dialog = structuredClone(ScreenSvc.DEFAULT_SCREEN.dialog)
-		else if (this.#prev != null) {
-			this.#main = structuredClone(this.#prev)
-			this.#prev = null
+		} else if (this.#dialog.kind !== DialogKinds.None) {
+			this.#dialog = structuredClone(ScreenSvc.DEFAULT_SCREEN.dialog)
 		}
 		this.#obs.update(this.data)
 	}
 
 	setDialog(dialog: DialogData) {
+		if (dialog.kind === DialogKinds.pause && this.#main !== MainScreenKinds.Game) return
 		this.#dialog = structuredClone(dialog)
 		this.#obs.update(this.data)
 	}
 
 	setMain(main: MainScreenKinds) {
-		this.#prev = this.#main
+		this.#prev = main === MainScreenKinds.Start ? null : this.#main
 		this.#main = main
 		this.#dialog = structuredClone(ScreenSvc.DEFAULT_SCREEN.dialog)
 		this.#obs.update(this.data)

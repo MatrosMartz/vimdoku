@@ -1,4 +1,4 @@
-import { match, unPromise } from '~/share/utils'
+import { match } from '~/share/utils'
 import type { II18n } from '$i18n/domain/models'
 import { type IPrefs, type Langs, PrefActions, type PrefData } from '$pref/domain/models'
 import {
@@ -52,13 +52,25 @@ export class MedSvc implements IMed {
 			[SudokuActions.Check]: () => this.#dSudokuCheck(),
 			[SudokuActions.Erase]: () => this.#dCellErase(),
 			[SudokuActions.Move]: () => this.#dSudokuMove(data),
-			[SudokuActions.End]: unPromise(async () => await this.#dSudokuEnd()),
-			[SudokuActions.Resume]: unPromise(async () => await this.#dSudokuResume()),
-			[SudokuActions.Save]: unPromise(async () => await this.#dSudokuSave()),
-			[SudokuActions.Start]: unPromise(async () => await this.#dSudokuStart(data)),
+			[SudokuActions.End]: () => {
+				void this.#dSudokuEnd()
+			},
+			[SudokuActions.Resume]: () => {
+				void this.#dSudokuResume()
+			},
+			[SudokuActions.Save]: () => {
+				void this.#dSudokuSave()
+			},
+			[SudokuActions.Start]: () => {
+				void this.#dSudokuStart(data)
+			},
 			[SudokuActions.Write]: () => this.#dSudokuWrite(data),
-			[PrefActions.Reset]: unPromise(async () => await this.#dPrefReset(data)),
-			[PrefActions.Save]: unPromise(async () => await this.#dPrefSave(data)),
+			[PrefActions.Reset]: () => {
+				void this.#dPrefReset(data)
+			},
+			[PrefActions.Save]: () => {
+				void this.#dPrefSave(data)
+			},
 		})
 
 		return this

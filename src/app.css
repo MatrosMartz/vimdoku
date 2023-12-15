@@ -335,3 +335,28 @@ input {
 		display: none;
 	}
 }
+
+.dir-column {
+	flex-direction: column;
+}
+
+.dir-auto {
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.justify-center {
+	justify-content: center;
+}
+
+.justify-end {
+	justify-content: end;
+}
+
+.justify-start {
+	justify-content: start;
+}
+
+.justify-between {
+	justify-content: space-between;
+}

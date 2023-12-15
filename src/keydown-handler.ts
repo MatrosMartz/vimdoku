@@ -57,7 +57,10 @@ export function keydownHandler(ev: KeyboardEvent) {
 	}
 	if (ev.key === 'Escape') {
 		if (screenState.data.dialog.kind !== DialogKinds.None) ev.preventDefault()
-		if (!isGameScreen(screenState.data)) med.dispatch(ScreenActions.Exit)
+		med.dispatch(ScreenActions.Exit)
+	}
+	if (ev.key === ' ' && screenState.data.dialog.kind === DialogKinds.None) {
+		med.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.pause })
 	}
 
 	if (isGameScreen(screenState.data)) sudoku(ev.key)

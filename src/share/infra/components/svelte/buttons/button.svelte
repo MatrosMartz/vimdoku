@@ -6,6 +6,7 @@
 	export let tooltipProps: TooltipProps | null = null
 	export let disabled = false
 	export let type: 'button' | 'submit' | 'reset' = 'button'
+	export let justify: 'center' | 'end' | 'start' | 'between' = 'center'
 
 	const dispatch = createEventDispatcher<{ click: MouseEvent }>()
 
@@ -15,7 +16,13 @@
 </script>
 
 <li>
-	<button aria-disabled={disabled} {type} on:click={clickHandler} use:tooltip={disabled ? tooltipProps : null}>
+	<button
+		aria-disabled={disabled}
+		{type}
+		class="justify-{justify}"
+		on:click={clickHandler}
+		use:tooltip={disabled ? tooltipProps : null}
+	>
 		<slot />
 	</button>
 </li>
@@ -27,6 +34,9 @@
 	}
 
 	button {
+		display: flex;
+		gap: 1ch;
+		align-items: center;
 		width: calc(2rem + 15ch);
 		min-width: max-content;
 		height: 48px;
