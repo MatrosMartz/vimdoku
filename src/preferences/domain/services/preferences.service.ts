@@ -1,4 +1,4 @@
-import type { IAsyncObs } from '~/share/domain/models'
+import type { IObs } from '~/share/domain/models'
 import { FormFields } from '~/share/domain/services'
 import { InvalidPreferencesError, sameStructure } from '~/share/utils'
 
@@ -43,7 +43,7 @@ export class PrefsSvc implements IPrefs {
 	 * Create an instance of the PreferencesSvc class.
 	 * @param repo Initial Sudoku board.
 	 */
-	constructor(repo: PrefsRepo, obs: IAsyncObs<Prefs>) {
+	constructor(repo: PrefsRepo, obs: IObs<Prefs>) {
 		this.#repo = repo
 		this.#obs = obs
 	}

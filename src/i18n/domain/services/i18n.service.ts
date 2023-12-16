@@ -1,10 +1,10 @@
-import type { IAsyncObs } from '~/share/domain/models'
+import type { IObs } from '~/share/domain/models'
 import { Langs } from '$pref/domain/models'
 
 import type { I18nData, I18nKeys, I18nSchema, I18nValue, II18n } from '../models'
 
 export class I18nSvc implements II18n {
-	static readonly IDLE : I18nData = {
+	static readonly IDLE: I18nData = {
 		get(key, fallBack) {
 			return fallBack
 		},
@@ -15,7 +15,7 @@ export class I18nSvc implements II18n {
 
 	readonly #obs
 
-	constructor(obs: IAsyncObs<I18nData>) {
+	constructor(obs: IObs<I18nData>) {
 		this.#obs = obs
 	}
 

@@ -20,15 +20,7 @@ export interface IObs<T> {
 	update(data: T): void
 }
 
-export interface IAsyncObs<T> extends IObs<T> {
-	/**
-	 * Update the current value data after the callback.
-	 * @param cb The callback which returns the new value of the data.
-	 */
-	load(cb: () => Promise<T>): Promise<void>
-}
-
-export interface IHistoryObs<T> extends IAsyncObs<T> {
+export interface IHistoryObs<T> extends IObs<T> {
 	/** Get the current value of the entire history. */
 	readonly history: T[]
 	/** Navigate backwards in history. */

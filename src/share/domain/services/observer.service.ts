@@ -1,4 +1,4 @@
-import type { IAsyncObs, IHistoryObs, IObs, Obsr } from '../models'
+import type { IHistoryObs, IObs, Obsr } from '../models'
 
 /** Represent a Observable Service */
 export class ObsSvc<T> implements IObs<T> {
@@ -32,15 +32,8 @@ export class ObsSvc<T> implements IObs<T> {
 	}
 }
 
-/** Represent a Async Observable Service */
-export class AsyncObsSvc<T> extends ObsSvc<T> implements IAsyncObs<T> {
-	async load(cb: () => Promise<T>): Promise<void> {
-		this.update(await cb())
-	}
-}
-
 /** Represent a History Observable Service */
-export class HistoryObsSvc<T> extends AsyncObsSvc<T> implements IHistoryObs<T> {
+export class HistoryObsSvc<T> extends ObsSvc<T> implements IHistoryObs<T> {
 	#cursor: number
 	readonly #emptyState: T
 	readonly #history: T[]
@@ -61,11 +54,6 @@ export class HistoryObsSvc<T> extends AsyncObsSvc<T> implements IHistoryObs<T> {
 		return [...this.#history]
 	}
 
-	update(data: T): void {
-		this.#history.push(data)
-		super.update(this.#emptyState)
-	}
-
 	redo(): void {
 		if (this.#cursor < this.#history.length) this.#cursor++
 		super.update(this.data)
@@ -74,5 +62,10 @@ export class HistoryObsSvc<T> extends AsyncObsSvc<T> implements IHistoryObs<T> {
 	undo(): void {
 		if (this.#cursor > 0) this.#cursor--
 		super.update(this.data)
+	}
+
+	update(data: T): void {
+		this.#history.push(data)
+		super.update(this.#emptyState)
 	}
 }
