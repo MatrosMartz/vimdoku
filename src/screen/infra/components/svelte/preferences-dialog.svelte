@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { derived } from 'svelte/store'
-
 	import { Dialog, DialogClose } from '~/share/infra/components/svelte/dialog'
 	import { Tab, TabGroup, TabList, TabPanel } from '~/share/infra/components/svelte/tab'
 	import { med } from '$cmd/infra/services'
@@ -9,11 +7,11 @@
 	import { DialogKinds, type DialogPref, dialogPref, ScreenActions } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
 
-	const dialogState = derived(screenState, ({ dialog }) => dialogPref.includes(dialog.kind))
-	const tabState = derived<typeof screenState, string>(screenState, ({ dialog }, set) => {
-		if (!dialogPref.includes(dialog.kind)) return
-		set(dialog.kind === DialogKinds.PrefEdit ? 'edit' : 'show')
-	})
+	$: show = dialogPref.includes($screenState.dialog.kind)
+	$: tabState = ((kind): 'edit' | 'show' => {
+		if (dialogPref.includes(kind)) return kind === DialogKinds.PrefEdit ? 'edit' : 'show'
+		return tabState ?? 'edit'
+	})($screenState.dialog.kind)
 
 	function createTabHandler(kind: DialogPref) {
 		return () => {
@@ -22,7 +20,7 @@
 	}
 </script>
 
-<Dialog type="modal" {dialogState}>
+<Dialog type="modal" {show}>
 	<div class="content">
 		<TabGroup {tabState}>
 			<TabList>

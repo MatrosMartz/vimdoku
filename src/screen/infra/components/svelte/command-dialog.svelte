@@ -1,15 +1,13 @@
 <script lang="ts">
-	import { derived } from 'svelte/store'
-
 	import { Dialog } from '~/share/infra/components/svelte/dialog'
 	import { CommandInput, SuggestionsList } from '$cmd/infra/components/svelte'
 	import { DialogKinds } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
 
-	const dialogState = derived(screenState, ({ dialog }) => dialog.kind === DialogKinds.Cmd)
+	$: show = $screenState.dialog.kind === DialogKinds.Cmd
 </script>
 
-<Dialog type="modal" {dialogState}>
+<Dialog type="modal" {show}>
 	<div class="command-dialog">
 		<CommandInput />
 		<SuggestionsList />

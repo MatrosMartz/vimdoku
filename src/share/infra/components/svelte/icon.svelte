@@ -4,7 +4,7 @@
 	export let id: string
 </script>
 
-<svg width="1.5em"><use href="/sprites/{$prefsState.iconTheme}.svg#{id}"></use></svg>
+<svg height="1.5em" width="1.5em"><use href="/sprites/{$prefsState.iconTheme}.svg#{id}"></use></svg>
 
 <style>
 	svg {

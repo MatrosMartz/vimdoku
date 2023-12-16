@@ -1,14 +1,10 @@
 <script lang="ts">
-	import type { Readable } from 'svelte/store'
-
-	export let dialogState: Readable<boolean>
+	export let show: boolean
 	export let type: 'modal' | 'dialog'
 
 	let dialog: HTMLDialogElement
 
-	$: hide = !$dialogState
-
-	$: if ($dialogState) {
+	$: if (show) {
 		if (type === 'modal') dialog.showModal()
 		else if (type === 'dialog') dialog.show()
 	}
@@ -18,7 +14,7 @@
 	}
 </script>
 
-<dialog bind:this={dialog} class="vim-dialog" class:hide on:animationend={animationendHandler}>
+<dialog bind:this={dialog} class="vim-dialog" class:hide={!show} on:animationend={animationendHandler}>
 	<slot />
 </dialog>
 

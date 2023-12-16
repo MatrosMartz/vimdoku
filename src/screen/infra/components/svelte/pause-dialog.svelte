@@ -1,13 +1,11 @@
 <script>
-	import { derived } from 'svelte/store'
-
 	import { Button, ButtonMenu, Dialog, Icon } from '~/share/infra/components/svelte'
 	import { med } from '$cmd/infra/services'
 	import { DialogKinds, MainScreenKinds, ScreenActions } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
 	import { SudokuActions } from '$sudoku/domain/models'
 
-	const dialogState = derived(screenState, ({ dialog }) => dialog.kind === DialogKinds.pause)
+	$: show = $screenState.dialog.kind === DialogKinds.Pause
 
 	function continueHandler() {
 		med.dispatch(ScreenActions.Exit)
@@ -26,7 +24,7 @@
 	}
 </script>
 
-<Dialog type="modal" {dialogState}>
+<Dialog type="modal" {show}>
 	<div class="content">
 		<h2>Pause</h2>
 		<ButtonMenu direction="column">

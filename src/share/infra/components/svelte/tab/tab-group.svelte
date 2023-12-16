@@ -1,11 +1,15 @@
 <script lang="ts">
-	import type { Readable } from 'svelte/store'
+	import { writable } from 'svelte/store'
 
 	import { createSelectedContext } from './tab.context'
 
-	export let tabState: Readable<string>
+	export let tabState: string
 
-	createSelectedContext(tabState)
+	const tabStore = writable(tabState)
+
+	$: tabStore.set(tabState)
+
+	createSelectedContext(tabStore)
 </script>
 
 <slot />

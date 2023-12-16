@@ -1,6 +1,4 @@
 <script>
-	import { derived } from 'svelte/store'
-
 	import { Dialog } from '~/share/infra/components/svelte'
 	import { DialogKinds } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
@@ -8,10 +6,10 @@
 
 	import { SelectGame } from './select-dialog'
 
-	$: dialogState = derived(screenState, ({ dialog }) => dialog.kind === DialogKinds.Win)
+	$: show = $screenState.dialog.kind === DialogKinds.Win
 </script>
 
-<Dialog type="modal" {dialogState}>
+<Dialog type="modal" {show}>
 	<div class="content">
 		<h2>You are win!</h2>
 		<section>
