@@ -45,6 +45,7 @@
 		bottom: calc(100% + 0.5rem);
 		left: 50%;
 		z-index: 100;
+		width: max(100%, 15ch);
 		padding: 0.25rem 0.5rem;
 		color: var(--primary-color);
 		text-align: center;
@@ -60,7 +61,7 @@
 
 	p {
 		width: max-content;
-		max-width: min(17ch, 20vw);
+		max-width: 100%;
 		text-align: initial;
 		text-wrap: balance;
 	}
