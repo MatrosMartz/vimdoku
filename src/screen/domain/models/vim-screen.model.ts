@@ -11,19 +11,18 @@ export interface InLnDialogOpts {
 
 export type DialogOpts = HelpDialogOpts | null | undefined
 
+export type DialogsWithoutOpts =
+	| DialogKinds.Cmd
+	| DialogKinds.None
+	| DialogKinds.Pause
+	| DialogKinds.PrefAll
+	| DialogKinds.PrefDiff
+	| DialogKinds.PrefEdit
+	| DialogKinds.sel
+	| DialogKinds.Win
+
 export type DialogData =
-	| {
-			opts?: null
-			kind:
-				| DialogKinds.Cmd
-				| DialogKinds.None
-				| DialogKinds.Pause
-				| DialogKinds.PrefAll
-				| DialogKinds.PrefDiff
-				| DialogKinds.PrefEdit
-				| DialogKinds.sel
-				| DialogKinds.Win
-	  }
+	| { opts?: null; kind: DialogsWithoutOpts }
 	| { kind: DialogKinds.InLn; opts: InLnDialogOpts }
 	| { kind: DialogKinds.Help; opts: HelpDialogOpts }
 

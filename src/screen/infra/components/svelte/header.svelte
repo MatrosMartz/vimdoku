@@ -1,26 +1,27 @@
 <script lang="ts">
 	import { Icon } from '~/share/infra/components/svelte'
 	import { med } from '$cmd/infra/services'
-	import { DialogKinds, ScreenActions } from '$screen/domain/models'
+	import { DialogKinds, type DialogsWithoutOpts, MainScreenKinds, ScreenActions } from '$screen/domain/models'
+	import { screenState } from '$screen/infra/stores/svelte'
 
-	function cmdHandler() {
-		med.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.Cmd })
+	function openDialog(kind: DialogsWithoutOpts) {
+		return () => med.dispatch(ScreenActions.OpenDialog, { kind })
 	}
 
-	function prefHandler() {
-		med.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.PrefEdit })
-	}
+	$: inGame = $screenState.main === MainScreenKinds.Game
 </script>
 
 <header class="status-bar monospace">
 	<section>
-		<button class="status-icon icon-dialog" on:click={cmdHandler}><Icon id="cmd" /></button>
+		<button class="status-icon icon-dialog" on:click={openDialog(DialogKinds.Cmd)}><Icon id="cmd" /></button>
 	</section>
 	<section>
 		<h1>Vimdoku</h1>
 	</section>
 	<section>
-		<button class="status-icon icon-dialog" on:click={prefHandler}><Icon id="pref" /></button>
+		<button class="status-icon icon-dialog" on:click={openDialog(inGame ? DialogKinds.Pause : DialogKinds.PrefEdit)}
+			><Icon id={inGame ? 'pause' : 'pref'} /></button
+		>
 	</section>
 </header>
 
