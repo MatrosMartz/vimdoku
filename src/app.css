@@ -292,7 +292,7 @@ input {
 
 .item-separation {
 	gap: 0.7rem;
-	padding-inline: 0.3rem;
+	padding-inline: 0.5rem;
 }
 
 .status-icon:hover {

@@ -35,7 +35,7 @@
 		<SelectMode />
 		<button class="status-icon sync">
 			<Icon id="sync" />
-			<span>{$i18nState.get(`sync-${$savedState}`, $savedState ? 'Saved' : 'Unsaved')}</span>
+			<span class="portrait-hidden">{$i18nState.get(`sync-${$savedState}`, $savedState ? 'Saved' : 'Unsaved')}</span>
 		</button>
 		<button class="status-icon error" class:shake={errorsShake}>
 			<Icon id="errors" />
@@ -43,7 +43,7 @@
 		</button>
 	</section>
 	<section class="item-separation">
-		<div class="position portrait-hidden">
+		<div class="position">
 			<p use:tooltip={tooltipProps}>
 				{$posState.y + 1},{$posState.x + 1}
 			</p>
