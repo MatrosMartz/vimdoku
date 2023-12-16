@@ -39,11 +39,11 @@ function pressNum(value: ValidNumbers) {
 	} else moves = moves * 10 + value
 }
 
-function sudoku(key: string) {
-	movePosition(key)
-	if (isGameScreen(screenState.data)) changeMode(key)
+function sudoku(ev: KeyboardEvent) {
+	movePosition(ev.key)
+	changeMode(ev.key)
 
-	pressNum(Number(key) as ValidNumbers)
+	pressNum(Number(ev.key) as ValidNumbers)
 }
 
 function isGameScreen(screen: VimScreen) {
@@ -63,5 +63,5 @@ export function keydownHandler(ev: KeyboardEvent) {
 		med.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.Pause })
 	}
 
-	if (isGameScreen(screenState.data)) sudoku(ev.key)
+	if (isGameScreen(screenState.data)) sudoku(ev)
 }
