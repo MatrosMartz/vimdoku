@@ -23,7 +23,7 @@
 	}
 </script>
 
-<ButtonMenu>
+<ButtonMenu direction="auto">
 	<Button on:click={newGameHandler}>{$i18nState.get('gameBtn-new-text', 'New game')}</Button>
 	<Button {disabled} {tooltipProps} on:click={resumeHandler}
 		>{$i18nState.get('gameBtn-resume-text', 'Resume game')}</Button

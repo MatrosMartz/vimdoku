@@ -17,6 +17,7 @@
 		justify-content: center;
 		width: 93%;
 		max-width: 55rem;
+		min-height: 77vh;
 		padding: 2.2rem 2ch;
 		color: var(--primary-color);
 		background-color: var(--editor-background);

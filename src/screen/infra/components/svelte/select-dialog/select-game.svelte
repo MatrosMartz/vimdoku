@@ -24,7 +24,7 @@
 		bind:value
 	/>
 
-	<ButtonMenu direction="auto">
+	<ButtonMenu direction="auto-reverse">
 		<Button on:click={backHandler}>{$i18nState.get('gameBtn-goBack', 'Go back')}</Button>
 		<Button type="submit">{$i18nState.get('gameBtn-start', 'Start new game')}</Button>
 	</ButtonMenu>

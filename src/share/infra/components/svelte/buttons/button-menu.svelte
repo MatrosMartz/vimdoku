@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let direction: 'column' | 'row' | 'auto' = 'row'
+	export let direction: 'column' | 'row' | 'auto' | 'auto-reverse' = 'row'
 </script>
 
 <menu class="btn-menu dir-{direction}">
@@ -10,7 +10,6 @@
 	.btn-menu {
 		display: flex;
 		gap: 0.5rem 1rem;
-		justify-content: end;
 		list-style: none;
 	}
 </style>
