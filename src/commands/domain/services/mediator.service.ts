@@ -100,6 +100,7 @@ export class MedSvc implements IMed {
 		this.#screen.close()
 		if (this.#screen.data.main === MainScreenKinds.Game && this.#screen.data.dialog.kind === DialogKinds.None)
 			this.#game.timerStart()
+		if (this.#screen.data.main !== MainScreenKinds.Game) this.#game.timerReset()
 	}
 
 	#dOpenDialog(data: DialogData) {
