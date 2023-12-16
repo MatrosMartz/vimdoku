@@ -3,7 +3,7 @@ export enum DialogKinds {
 	Help = 'help',
 	InLn = 'inline',
 	None = 'none',
-	pause = 'pause',
+	Pause = 'pause',
 	PrefAll = 'preferences-all',
 	PrefDiff = 'preferences-differ',
 	PrefEdit = 'preferences-edit',

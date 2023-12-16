@@ -17,7 +17,7 @@ export type DialogData =
 			kind:
 				| DialogKinds.Cmd
 				| DialogKinds.None
-				| DialogKinds.pause
+				| DialogKinds.Pause
 				| DialogKinds.PrefAll
 				| DialogKinds.PrefDiff
 				| DialogKinds.PrefEdit

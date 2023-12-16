@@ -45,7 +45,7 @@ export class ScreenSvc implements IScreen {
 	}
 
 	setDialog(dialog: DialogData) {
-		if (dialog.kind === DialogKinds.pause && this.#main !== MainScreenKinds.Game) return
+		if (dialog.kind === DialogKinds.Pause && this.#main !== MainScreenKinds.Game) return
 		this.#dialog = structuredClone(dialog)
 		this.#obs.update(this.data)
 	}

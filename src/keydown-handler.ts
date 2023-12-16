@@ -60,7 +60,7 @@ export function keydownHandler(ev: KeyboardEvent) {
 		med.dispatch(ScreenActions.Exit)
 	}
 	if (ev.key === ' ' && screenState.data.dialog.kind === DialogKinds.None) {
-		med.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.pause })
+		med.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.Pause })
 	}
 
 	if (isGameScreen(screenState.data)) sudoku(ev.key)
