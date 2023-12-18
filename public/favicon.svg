@@ -1,0 +1,14 @@
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="a">
+      <stop offset="0" stop-color="#7baadc"/>
+      <stop offset="1" stop-color="#71779a"/>
+    </linearGradient>
+    <linearGradient xlink:href="#a" id="b" x1="268" y1="66" x2="248" y2="488" gradientUnits="userSpaceOnUse"/>
+  </defs>
+  <g paint-order="markers stroke fill">
+    <path d="M256 0a64 64 0 0 0-44 18L18 212a64 64 0 0 0-18 44 64 64 0 0 0 18 44l194 194a64 64 0 0 0 44 18 64 64 0 0 0 44-18l194-194a64 64 0 0 0 18-44 64 64 0 0 0-18-44L300 18a64 64 0 0 0-44-18Z" fill="#0c0611"/>
+    <path d="m103 333 230-230M179 409l230-230m0 154L179 103m154 306L103 179" fill="#3f3f59" stroke="#3f3f59" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="15.6"/>
+  </g>
+  <path d="M48 464V88H24V56c0-9 7-16 16-16h96c9 0 16 7 16 16v16c0 9-7 16-16 16h-8v272L384 88h-16c-9 0-16-7-16-16V40h128c9 0 16 7 16 16v32L128 488H72c-13 0-24-11-24-24Z" fill="url(#b)" paint-order="markers stroke fill"/>
+</svg>
