@@ -43,7 +43,7 @@
 		</button>
 	</section>
 	<section class="item-separation">
-		<div class="position">
+		<div class="position tooltip-overflow">
 			<p use:tooltip={tooltipProps}>
 				{$posState.y + 1},{$posState.x + 1}
 			</p>

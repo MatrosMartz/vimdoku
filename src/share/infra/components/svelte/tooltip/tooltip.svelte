@@ -39,13 +39,17 @@
 	<p>{text}</p>
 </div>
 
+<!-- 
+	min 100% 5ch
+ -->
+
 <style>
 	.tooltip {
 		position: absolute;
 		bottom: calc(100% + 0.5rem);
 		left: 50%;
 		z-index: 100;
-		width: max(100%, 15ch);
+		width: 100%;
 		padding: 0.25rem 0.5rem;
 		color: var(--primary-color);
 		text-align: center;
@@ -57,6 +61,10 @@
 		opacity: 0;
 		transform: translateX(-50%);
 		animation: tooltip-hide 250ms;
+	}
+
+	:global(.tooltip-overflow) .tooltip {
+		width: 15ch;
 	}
 
 	p {
