@@ -4,6 +4,13 @@
 	$: typeText = $i18nState.get('titleScreen-cmd-type', 'Type')
 </script>
 
+<img
+	height="200"
+	width="200"
+	alt="vimdoku logo"
+	src="./favicon.svg"
+/>
+
 <h2>VIMDOKU - VIM suDOKU</h2>
 
 <div class="data">
