@@ -34,7 +34,6 @@ interface CellOpts {
 
 /** Represents a Sudoku Cell Service.  */
 export class CellSvc implements ICell {
-	readonly #data: CellEntity
 	#state: ICellState
 
 	/**
@@ -42,12 +41,11 @@ export class CellSvc implements ICell {
 	 * @param data Kind, notes, solution and value for cell.
 	 */
 	constructor(data: CellEntity) {
-		this.#data = data
 		this.#state = this.#stateForKind(data)
 	}
 
 	get data(): Cell {
-		return { ...this.#data, notes: this.#data.notes.data }
+		return this.data
 	}
 
 	get isCorrect() {
@@ -55,19 +53,19 @@ export class CellSvc implements ICell {
 	}
 
 	get kind() {
-		return this.data.kind
+		return this.#state.kind
 	}
 
 	get notes() {
-		return this.#data.notes.toJSON()
+		return this.#state.notes
 	}
 
 	get notesNumber() {
-		return this.#data.notes.toNumber()
+		return this.#state.notesNumber
 	}
 
 	get value() {
-		return this.data.value
+		return this.#state.value
 	}
 
 	/**
@@ -112,7 +110,7 @@ export class CellSvc implements ICell {
 	}
 
 	toJSON(): CellJSON {
-		return { kind: this.#data.kind, notes: this.#data.notes.toNumber(), value: this.#data.value }
+		return { kind: this.#state.kind, notes: this.#state.notesNumber, value: this.#state.value }
 	}
 
 	toString() {
@@ -164,6 +162,30 @@ abstract class CellState implements ICellState {
 	constructor(data: CellEntity)
 	constructor(cellData: CellEntity) {
 		this[data] = cellData
+	}
+
+	get data(): Cell {
+		return {
+			kind: this[data].kind,
+			notes: this[data].notes.data,
+			value: this[data].value,
+		}
+	}
+
+	get kind() {
+		return this[data].kind
+	}
+
+	get notes() {
+		return this[data].notes.data
+	}
+
+	get notesNumber() {
+		return this[data].notes.toNumber()
+	}
+
+	get value() {
+		return this[data].value
 	}
 
 	addNote(num: ValidNumbers): ICellState {

@@ -33,8 +33,18 @@ export interface CellJSON {
 }
 
 export interface ICellState {
+	/** Get the current data of cell. */
+	readonly data: Cell
 	/** Get if the value is the same of the solution. */
 	readonly isCorrect: boolean
+	/** Get the current kind of cell. */
+	readonly kind: CellKinds
+	/** Get the current data of cell notes. */
+	readonly notes: Notes
+	/** Get value return of Notes instance toNumber() method. */
+	readonly notesNumber: number
+	/** Get the current value of cell. */
+	readonly value: number
 	/**
 	 * Add a note in the Notes class.
 	 * @param num The note to remove (1-9).
@@ -72,16 +82,6 @@ export interface ICellState {
 }
 
 export interface ICell extends ICellState {
-	/** Get the current data of cell. */
-	readonly data: Cell
-	/** Get the current kind of cell. */
-	readonly kind: CellKinds
-	/** Get the current data of cell notes. */
-	readonly notes: Notes
-	/** Get value return of Notes instance toNumber() method. */
-	readonly notesNumber: number
-	/** Get the current value of cell. */
-	readonly value: number
 	/** @returns The updated cell. */
 	addNote(num: ValidNumbers): this
 	/** @returns The updated cell. */
@@ -99,3 +99,22 @@ export interface ICell extends ICellState {
 	/** @returns The updated cell. */
 	writeValue(num: ValidNumbers): this
 }
+
+export enum CellEvKind {
+	AddNote = 'add-note',
+	delNote = 'del-note',
+	Erase = 'erase',
+	Write = 'write',
+}
+
+export interface CellInsertEv {
+	event: Exclude<CellEvKind, CellEvKind.Erase>
+	value: ValidNumbers
+}
+
+export interface CellEraseEv {
+	value?: null
+	event: CellEvKind.Erase
+}
+
+export type CellEv = CellInsertEv | CellEraseEv
