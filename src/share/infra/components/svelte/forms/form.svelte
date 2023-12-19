@@ -85,7 +85,7 @@
 	{/each}
 	<ButtonMenu direction="auto">
 		<Button type="reset">{$i18nState.get('form-reset', 'Reset to default')}</Button>
-		<Button type="submit">{$i18nState.get('form-save', 'Save al')}</Button>
+		<Button type="submit">{$i18nState.get('form-save', 'Save all')}</Button>
 	</ButtonMenu>
 </form>
 
