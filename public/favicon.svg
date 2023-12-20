@@ -1,19 +1,25 @@
-<svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" viewBox="-8 -8 528 528">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512">
   <defs>
-    <linearGradient id="a">
-      <stop offset="0" stop-color="#7baadc" />
-      <stop offset="1" stop-color="#71779a" />
+    <linearGradient id="b">
+      <stop offset="0" stop-color="#27263d"/>
+      <stop offset="1" stop-color="#3e3e58"/>
     </linearGradient>
-    <linearGradient xlink:href="#a" id="b" x1="268" y1="66" x2="248" y2="488" gradientUnits="userSpaceOnUse" />
+    <linearGradient id="a">
+      <stop offset="0" stop-color="#7baadc" stop-opacity=".98039216"/>
+      <stop offset="1" stop-color="#71779b" stop-opacity=".98823529"/>
+    </linearGradient>
+    <linearGradient xlink:href="#a" id="d" x1="256" x2="256" y1="0" y2="512" gradientUnits="userSpaceOnUse"/>
+    <linearGradient xlink:href="#a" id="c" x1="256" x2="256" y1="0" y2="512" gradientUnits="userSpaceOnUse"/>
+    <linearGradient xlink:href="#b" id="e" x1="472" x2="408" y1="472" y2="408" gradientUnits="userSpaceOnUse"/>
   </defs>
-  <g paint-order="markers stroke fill" stroke-width="16">
-    <path
-      d="M256 0a64 64 0 0 0-44 18L18 212a64 64 0 0 0-18 44 64 64 0 0 0 18 44l194 194a64 64 0 0 0 44 18 64 64 0 0 0 44-18l194-194a64 64 0 0 0 18-44 64 64 0 0 0-18-44L300 18a64 64 0 0 0-44-18Z"
-      stroke="url(#b)" fill="#0c0611" />
-    <path d="m103 333 230-230M179 409l230-230m0 154L179 103m154 306L103 179" fill="#3f3f59" stroke="#3f3f59"
-      stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="15.6" />
+  <g stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="15.6" stroke-width="16" paint-order="markers stroke fill">
+    <path fill="#0c0611" fill-opacity=".988235" stroke="url(#c)" d="M-256-24c-16.33768.0519-32.03697 6.34987-43.88086 17.60352l-186.51562 186.51562C-497.65012 191.96303-503.94815 207.66232-504 224c.0519 16.33768 6.34988 32.03697 17.60352 43.88086l186.51562 186.51562C-288.03697 465.65012-272.33768 471.94815-256 472c16.33768-.0519 32.03697-6.34988 43.88086-17.60352l186.515624-186.51562C-14.349873 256.03697-8.0518487 240.33768-8 224c-.051849-16.33768-6.349873-32.03697-17.603516-43.88086L-212.11914-6.39648C-223.96303-17.65013-239.66232-23.94815-256-24Z" transform="translate(512 32)"/>
+    <path fill="#3f3f59" fill-opacity=".990066" stroke="#3f3f59" stroke-opacity=".988235" d="m102.85138 332.57404 229.72307-229.72256M179.4257 409.14836 409.14877 179.4258m-.00023 153.14843L179.42547 102.851671M332.57422 409.14855 102.85115 179.42599"/>
   </g>
-  <path
-    d="M48 464V88H24V56c0-9 7-16 16-16h96c9 0 16 7 16 16v16c0 9-7 16-16 16h-8v272L384 88h-16c-9 0-16-7-16-16V40h128c9 0 16 7 16 16v32L128 488H72c-13 0-24-11-24-24Z"
-    fill="url(#b)" paint-order="markers stroke fill" />
+  <path fill="url(#d)" d="M48 464V88H16V48c0-8.836556 7.163444-16 16-16l116-4c8.83656 0 16 7.163444 16 16v24c0 8.836556-7.16344 16-16 16h-16v268L372 88h-20c-8.83656 0-16-7.163444-16-16V32h136c8.83656 0 16 7.163444 16 16v40L128 488H72c-13.254834 0-24-10.74517-24-24Z" paint-order="markers stroke fill"/>
+  <g paint-order="markers stroke fill">
+    <path fill="url(#e)" d="m415.42383 360.57617-54.84766 54.84766c1.26179 2.01806 2.74565 3.88845 4.42383 5.57617l91 91h56v-56l-91-91c-1.68772-1.67818-3.55811-3.16204-5.57617-4.42383z"/>
+    <path fill="#71779b" fill-opacity=".988235" d="m363.20008 340.79995-22.40013 22.40011 16.78403 46.15541c.77927 2.12322 1.78231 4.15746 2.99219 6.06836l54.84766-54.84766c-1.9109-1.20988-3.94514-2.21292-6.06836-2.99219z"/>
+    <path fill="#3e3e58" d="m330.7336 335.51801 10.06635 27.68205 22.40013-22.40011-27.68207-10.06635c-2.97924-1.08338-5.86769 1.80513-4.78441 4.78441z"/>
+  </g>
 </svg>
