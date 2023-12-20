@@ -94,6 +94,10 @@ export class NotesSvc implements INotes {
 		return new NotesSvc(this.data)
 	}
 
+	has(num: ValidNumbers) {
+		return this.#data[num - 1] == null
+	}
+
 	remove(num: ValidNumbers) {
 		this.#data[num - 1] = null
 		return this
@@ -114,8 +118,6 @@ export class NotesSvc implements INotes {
 	}
 
 	toggle(num: ValidNumbers) {
-		if (this.#data[num - 1] == null) this.add(num)
-		else this.remove(num)
-		return this
+		return this.has(num) ? this.add(num) : this.remove(num)
 	}
 }

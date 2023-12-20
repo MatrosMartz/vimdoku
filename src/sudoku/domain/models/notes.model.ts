@@ -24,6 +24,11 @@ export interface INotes {
 	 */
 	copy(): INotes
 	/**
+	 * Check if it contains the note.
+	 * @param num The note to be checked (1-9).
+	 */
+	has(num: ValidNumbers): boolean
+	/**
 	 * Remove a note to the set.
 	 * @param num The note remove (1-9).
 	 */
