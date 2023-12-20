@@ -1,34 +1,37 @@
+import type { Pos } from '~/share/domain/models'
+import { PosSvc } from '~/share/domain/services'
 import { match } from '~/share/utils'
 
-import {
-	type Cell,
-	type CellData,
-	type CellJSON,
-	CellKinds,
-	type ICell,
-	type ICellState,
-	type INotes,
-	type ValidNumbers,
-} from '../models'
+import { type SudokuMove, type ValidNumbers } from '../models'
+import { type Cell, type CellData, type CellJSON, CellKinds, type ICell, type ICellState } from '../models/cell.model'
 import { NotesSvc } from './notes.service'
 
 /** Represents a Sudoku Cell Entity.  */
 class CellEntity implements CellData {
-	kind: CellKinds
-	notes: INotes
-	readonly solution: ValidNumbers
-	value: number
+	kind
+	notes
+	readonly pos
+	readonly solution
+	value
 
 	constructor(data: CellData) {
 		this.kind = data.kind
 		this.notes = data.notes
+		this.pos = data.pos
 		this.solution = data.solution
 		this.value = data.value
 	}
 }
 
-interface CellOpts {
+interface CellCreateOpts {
 	isInitial: boolean
+	pos: Pos
+	solution: ValidNumbers
+}
+
+interface CellFromJSONOpts {
+	cellLike: CellJSON
+	pos: Pos
 	solution: ValidNumbers
 }
 
@@ -64,6 +67,14 @@ export class CellSvc implements ICell {
 		return this.#state.notesNumber
 	}
 
+	get pos() {
+		return this.#state.pos
+	}
+
+	get solution() {
+		return this.#state.solution
+	}
+
 	get value() {
 		return this.#state.value
 	}
@@ -72,9 +83,9 @@ export class CellSvc implements ICell {
 	 * Create an instance of CellSvc with options.
 	 * @param opts Options for create cell (optional).
 	 */
-	static create(opts: CellOpts): CellSvc
-	static create({ isInitial, solution }: CellOpts) {
-		const baseData: Omit<CellData, 'kind' | 'value'> = { notes: NotesSvc.create(), solution }
+	static create(opts: CellCreateOpts): CellSvc
+	static create({ isInitial, pos, solution }: CellCreateOpts) {
+		const baseData: Omit<CellData, 'kind' | 'value'> = { notes: NotesSvc.create(), solution, pos }
 
 		const specificData: Pick<CellData, 'kind' | 'value'> = isInitial
 			? { kind: CellKinds.Initial, value: solution }
@@ -88,9 +99,9 @@ export class CellSvc implements ICell {
 	 * @param cellLike JSON representation of cell.
 	 * @param solution Value for  solution of cell.
 	 */
-	static fromJSON(cellLike: CellJSON, solution: ValidNumbers): CellSvc
-	static fromJSON({ kind, notes, value }: CellJSON, solution: ValidNumbers) {
-		const data = new CellEntity({ kind, notes: NotesSvc.fromNumber(notes), solution, value })
+	static fromJSON(opts: CellFromJSONOpts): CellSvc
+	static fromJSON({ cellLike: { kind, notes, value }, pos, solution }: CellFromJSONOpts) {
+		const data = new CellEntity({ kind, notes: NotesSvc.fromNumber(notes), pos, solution, value })
 		return new CellSvc(data)
 	}
 
@@ -99,8 +110,16 @@ export class CellSvc implements ICell {
 		return this
 	}
 
+	changeByMove(sudokuMove: SudokuMove): this {
+		throw new Error('Method not implemented.')
+	}
+
 	clear() {
 		this.#state = this.#state.clear()
+		return this
+	}
+
+	redo() {
 		return this
 	}
 
@@ -122,6 +141,10 @@ export class CellSvc implements ICell {
 		return this
 	}
 
+	undo() {
+		return this
+	}
+
 	verify(effect: (result: boolean) => void) {
 		this.#state = this.#state.verify(effect)
 		return this
@@ -134,18 +157,22 @@ export class CellSvc implements ICell {
 
 	#stateForKind(data: CellData) {
 		return match<CellKinds, CellState>(data.kind, {
-			[CellKinds.Correct]: () => new CorrectCellState(data),
-			[CellKinds.Empty]: () => new EmptyCellState(data),
-			[CellKinds.Incorrect]: () => new IncorrectCellState(data),
-			[CellKinds.Initial]: () => new InitialCellState(data),
-			[CellKinds.Unverified]: () => new UnverifiedCellState(data),
-			[CellKinds.WhitNotes]: () => new NotesCellState(data),
+			[CellKinds.Correct]: () => new CorrectCellState({ data }),
+			[CellKinds.Empty]: () => new EmptyCellState({ data }),
+			[CellKinds.Incorrect]: () => new IncorrectCellState({ data }),
+			[CellKinds.Initial]: () => new InitialCellState({ data }),
+			[CellKinds.Unverified]: () => new UnverifiedCellState({ data }),
+			[CellKinds.WhitNotes]: () => new NotesCellState({ data }),
 		})
 	}
 }
 
 /** Simulated key for protected field. */
 const data = Symbol('data')
+
+interface CellStateDeps {
+	data: CellEntity
+}
 
 /** Represents a Sudoku Cell State.  */
 abstract class CellState implements ICellState {
@@ -157,11 +184,10 @@ abstract class CellState implements ICellState {
 
 	/**
 	 * Creates an instance of CellState class.
-	 * @param data Kind, notes, solution and value for cell.
+	 * @param deps Kind, notes, solution and value for cell.
 	 */
-	constructor(data: CellEntity)
-	constructor(cellData: CellEntity) {
-		this[data] = cellData
+	constructor(deps: CellStateDeps) {
+		this[data] = deps.data
 	}
 
 	get data(): Cell {
@@ -184,12 +210,30 @@ abstract class CellState implements ICellState {
 		return this[data].notes.toNumber()
 	}
 
+	get pos() {
+		return this[data].pos
+	}
+
+	get solution() {
+		return this[data].solution
+	}
+
 	get value() {
 		return this[data].value
 	}
 
 	addNote(num: ValidNumbers): ICellState {
 		return this
+	}
+
+	changeByMove(sudokuMove: SudokuMove): CellState {
+		if (!PosSvc.equalsPos(sudokuMove.pos, this[data].pos)) return this
+		const notes = new NotesSvc(sudokuMove.notes)
+
+		if (!notes.isEmpty && sudokuMove.value < 0)
+			return NotesCellState.create({ ...sudokuMove, notes, solution: this.solution })
+		if (sudokuMove.value > 0) return UnverifiedCellState.create({ ...sudokuMove, notes, solution: this.solution })
+		else return EmptyCellState.create({ ...sudokuMove, notes, solution: this.solution })
 	}
 
 	clear(): ICellState {
@@ -216,102 +260,137 @@ abstract class CellState implements ICellState {
 class InitialCellState extends CellState {
 	readonly isCorrect = true
 
-	constructor(data: CellEntity) {
-		data.kind = CellKinds.Initial
-		super(data)
+	constructor(deps: CellStateDeps) {
+		deps.data.kind = CellKinds.Initial
+		super(deps)
+	}
+
+	static create(data: Omit<CellData, 'kind'>) {
+		return new UnverifiedCellState({ data: new CellEntity({ kind: CellKinds.Initial, ...data }) })
 	}
 }
 
 abstract class WritableCellState extends CellState {
 	addNote(num: ValidNumbers): CellState {
+		if (this[data].notes.has(num)) return this
+
 		this[data].notes.add(num)
 		this[data].value = CellState.EMPTY_VALUE
 
-		return new NotesCellState(this[data])
+		return new NotesCellState({ data: this[data] })
 	}
 
 	clear() {
 		this[data].notes.clear()
 		this[data].value = CellState.EMPTY_VALUE
 
-		return new EmptyCellState(this[data])
+		return new EmptyCellState({ data: this[data] })
 	}
 
 	toggleNote(num: ValidNumbers): CellState {
 		this[data].notes.add(num)
 		this[data].value = CellState.EMPTY_VALUE
 
-		return new NotesCellState(this[data])
+		return new NotesCellState({ data: this[data] })
 	}
 
 	writeValue(num: ValidNumbers) {
+		if (this[data].value === num) return this
+
 		this[data].notes.clear()
 		this[data].value = num
 
-		return new UnverifiedCellState(this[data])
+		return new UnverifiedCellState({ data: this[data] })
 	}
 }
 
 class UnverifiedCellState extends WritableCellState {
-	constructor(data: CellEntity) {
-		data.kind = CellKinds.Unverified
-		super(data)
+	constructor(deps: CellStateDeps) {
+		deps.data.kind = CellKinds.Unverified
+		super(deps)
 	}
 
 	get isCorrect() {
-		return this[data].value === this[data].solution
+		return this.value === this.solution
+	}
+
+	static create(data: Omit<CellData, 'kind'>) {
+		return new UnverifiedCellState({ data: new CellEntity({ kind: CellKinds.Unverified, ...data }) })
 	}
 
 	verify(effect: (result: boolean) => void) {
 		effect(!this.isCorrect)
 
-		return this.isCorrect ? new CorrectCellState(this[data]) : new IncorrectCellState(this[data])
+		return this.isCorrect ? new CorrectCellState({ data: this[data] }) : new IncorrectCellState({ data: this[data] })
 	}
 }
 
 class EmptyCellState extends WritableCellState {
 	readonly isCorrect = false
 
-	constructor(data: CellEntity) {
-		data.kind = CellKinds.Empty
-		super(data)
+	constructor(deps: CellStateDeps) {
+		deps.data.kind = CellKinds.Empty
+		super(deps)
+	}
+
+	static create(data: Omit<CellData, 'kind'>) {
+		return new UnverifiedCellState({ data: new CellEntity({ kind: CellKinds.Empty, ...data }) })
+	}
+
+	clear() {
+		return this
 	}
 }
 
 class CorrectCellState extends WritableCellState {
 	readonly isCorrect = true
 
-	constructor(data: CellEntity) {
-		data.kind = CellKinds.Correct
-		super(data)
+	constructor(deps: CellStateDeps) {
+		deps.data.kind = CellKinds.Correct
+		super(deps)
+	}
+
+	static create(data: Omit<CellData, 'kind'>) {
+		return new UnverifiedCellState({ data: new CellEntity({ kind: CellKinds.Correct, ...data }) })
 	}
 }
 
 class IncorrectCellState extends WritableCellState {
 	readonly isCorrect = false
 
-	constructor(data: CellEntity) {
-		data.kind = CellKinds.Incorrect
-		super(data)
+	constructor(deps: CellStateDeps) {
+		deps.data.kind = CellKinds.Incorrect
+		super(deps)
+	}
+
+	static create(data: Omit<CellData, 'kind'>) {
+		return new UnverifiedCellState({ data: new CellEntity({ kind: CellKinds.Incorrect, ...data }) })
 	}
 }
 
 class NotesCellState extends WritableCellState {
 	readonly isCorrect = false
 
-	constructor(data: CellEntity) {
-		data.kind = CellKinds.WhitNotes
-		super(data)
+	constructor(deps: CellStateDeps) {
+		deps.data.kind = CellKinds.WhitNotes
+		super(deps)
+	}
+
+	static create(data: Omit<CellData, 'kind'>) {
+		return new UnverifiedCellState({ data: new CellEntity({ kind: CellKinds.WhitNotes, ...data }) })
 	}
 
 	removeNote(num: ValidNumbers) {
+		if (!this[data].notes.has(num)) return this
+
 		this[data].notes.remove(num)
 
-		return this[data].notes.isEmpty ? new EmptyCellState(this[data]) : this
+		return this[data].notes.isEmpty ? new EmptyCellState({ data: this[data] }) : this
 	}
 
 	toggleNote(num: ValidNumbers) {
 		this[data].notes.toggle(num)
-		return this[data].notes.isEmpty ? new EmptyCellState(this[data]) : this
+
+		return this[data].notes.isEmpty ? new EmptyCellState({ data: this[data] }) : this
 	}
 }

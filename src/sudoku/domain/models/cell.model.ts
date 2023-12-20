@@ -1,3 +1,6 @@
+import type { Pos } from '~/share/domain/models'
+
+import type { SudokuMove } from './board.model'
 import { type INotes, type Notes, type ValidNumbers } from './notes.model'
 
 export enum CellKinds {
@@ -16,6 +19,7 @@ export const INSERT_KINDS: InsertKinds[] = [CellKinds.Correct, CellKinds.Incorre
 export interface CellData {
 	kind: CellKinds
 	notes: INotes
+	readonly pos: Pos
 	readonly solution: ValidNumbers
 	value: number
 }
@@ -43,6 +47,8 @@ export interface ICellState {
 	readonly notes: Notes
 	/** Get value return of Notes instance toNumber() method. */
 	readonly notesNumber: number
+	readonly pos: Pos
+	readonly solution: ValidNumbers
 	/** Get the current value of cell. */
 	readonly value: number
 	/**
@@ -51,6 +57,7 @@ export interface ICellState {
 	 * @returns The updated cell state.
 	 */
 	addNote(num: ValidNumbers): ICellState
+	changeByMove(sudokuMove: SudokuMove): ICellState
 	/**
 	 * Remove value and clear note set.
 	 * @returns The updated cell state.
@@ -84,6 +91,7 @@ export interface ICellState {
 export interface ICell extends ICellState {
 	/** @returns The updated cell. */
 	addNote(num: ValidNumbers): this
+	changeByMove(sudokuMove: SudokuMove): this
 	/** @returns The updated cell. */
 	clear(): this
 	/** @returns The updated cell. */
@@ -99,22 +107,3 @@ export interface ICell extends ICellState {
 	/** @returns The updated cell. */
 	writeValue(num: ValidNumbers): this
 }
-
-export enum CellEvKind {
-	AddNote = 'add-note',
-	delNote = 'del-note',
-	Erase = 'erase',
-	Write = 'write',
-}
-
-export interface CellInsertEv {
-	event: Exclude<CellEvKind, CellEvKind.Erase>
-	value: ValidNumbers
-}
-
-export interface CellEraseEv {
-	value?: null
-	event: CellEvKind.Erase
-}
-
-export type CellEv = CellInsertEv | CellEraseEv

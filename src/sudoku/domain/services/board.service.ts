@@ -38,7 +38,7 @@ export class BoardSvc implements IBoard {
 		const diffNum = Number(difficulty)
 		const grid = GridSvc.create<ICell>(pos => {
 			const isInitial = Boolean(Math.floor(Math.random() * diffNum))
-			return CellSvc.create({ isInitial, solution: solution.grid.getCell(pos) })
+			return CellSvc.create({ isInitial, solution: solution.grid.getCell(pos), pos })
 		})
 
 		return new BoardSvc(grid)
@@ -53,7 +53,9 @@ export class BoardSvc implements IBoard {
 	static fromJSON(boardLike: BoardJSON, solution: SolutionJSON) {
 		try {
 			if (Array.isArray(boardLike)) {
-				const data = new GridSvc(boardLike).mapGrid<ICell>((json, { y, x }) => CellSvc.fromJSON(json, solution[y][x]))
+				const data = new GridSvc(boardLike).mapGrid<ICell>((json, { y, x }) =>
+					CellSvc.fromJSON({ cellLike: json, solution: solution[y][x], pos: { y, x } })
+				)
 				return new BoardSvc(data)
 			} else throw new InvalidBoardError(boardLike)
 		} catch (err) {
