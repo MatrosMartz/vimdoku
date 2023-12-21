@@ -3,8 +3,8 @@
 	import type { TooltipProps } from '~/share/infra/components/svelte/tooltip'
 	import { med } from '$cmd/infra/services'
 	import { i18nState } from '$i18n/infra/stores/svelte'
-	import { DialogKinds, ScreenActions } from '$screen/domain/models'
-	import { SudokuActions } from '$sudoku/domain/models'
+	import { DialogKind, ScreenAction } from '$screen/domain/models'
+	import { SudokuAction } from '$sudoku/domain/models'
 	import { savedState } from '$sudoku/infra/stores/svelte'
 
 	$: disabled = !$savedState
@@ -15,11 +15,11 @@
 	} satisfies TooltipProps
 
 	function newGameHandler() {
-		med.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.sel })
+		med.dispatch(ScreenAction.OpenDialog, { kind: DialogKind.sel })
 	}
 
 	function resumeHandler() {
-		med.dispatch(SudokuActions.Resume)
+		med.dispatch(SudokuAction.Resume)
 	}
 </script>
 

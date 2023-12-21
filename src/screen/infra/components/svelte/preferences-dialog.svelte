@@ -4,18 +4,18 @@
 	import { med } from '$cmd/infra/services'
 	import { i18nState } from '$i18n/infra/stores/svelte'
 	import { PreferencesDisplay, PreferencesForm } from '$pref/infra/components/svelte'
-	import { DialogKinds, type DialogPref, dialogPref, ScreenActions } from '$screen/domain/models'
+	import { DialogKind, type DialogPref, dialogPref, ScreenAction } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
 
 	$: show = dialogPref.includes($screenState.dialog.kind)
 	$: tabState = ((kind): 'edit' | 'show' => {
-		if (dialogPref.includes(kind)) return kind === DialogKinds.PrefEdit ? 'edit' : 'show'
+		if (dialogPref.includes(kind)) return kind === DialogKind.PrefEdit ? 'edit' : 'show'
 		return tabState ?? 'edit'
 	})($screenState.dialog.kind)
 
 	function createTabHandler(kind: DialogPref) {
 		return () => {
-			med.dispatch(ScreenActions.OpenDialog, { kind })
+			med.dispatch(ScreenAction.OpenDialog, { kind })
 		}
 	}
 </script>
@@ -24,10 +24,9 @@
 	<div class="content">
 		<TabGroup {tabState}>
 			<TabList>
-				<Tab key="show" on:click={createTabHandler(DialogKinds.PrefAll)}
-					>{$i18nState.get('prefs-tabs-show', 'Show')}</Tab
+				<Tab key="show" on:click={createTabHandler(DialogKind.PrefAll)}>{$i18nState.get('prefs-tabs-show', 'Show')}</Tab
 				>
-				<Tab key="edit" on:click={createTabHandler(DialogKinds.PrefEdit)}
+				<Tab key="edit" on:click={createTabHandler(DialogKind.PrefEdit)}
 					>{$i18nState.get('prefs-tabs-edit', 'Edit')}</Tab
 				>
 				<li class="close">

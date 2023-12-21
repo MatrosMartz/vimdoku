@@ -3,7 +3,7 @@ import { PosSvc } from '~/share/domain/services'
 import type { OptionalKeys } from '~/share/types'
 import { match } from '~/share/utils'
 
-import { type Board, DifficultyKinds, ModeKinds, type ValidNumbers } from '../models'
+import { type Board, DifficultyKind, ModeKind, type ValidNumbers } from '../models'
 import {
 	type Game,
 	type GameObs,
@@ -31,7 +31,7 @@ abstract class GameSvc implements IGame {
 	abstract readonly hasWin: boolean
 	abstract readonly isASaved: boolean
 	abstract readonly isStarted: boolean
-	abstract readonly mode: ModeKinds
+	abstract readonly mode: ModeKind
 	abstract readonly pos: Pos
 	abstract readonly timer: string
 
@@ -44,7 +44,7 @@ abstract class GameSvc implements IGame {
 		this[repo] = opts.repo
 	}
 
-	changeMode(mode: ModeKinds) {
+	changeMode(mode: ModeKind) {
 		return this
 	}
 
@@ -115,7 +115,7 @@ export class NonStartedGameSvc extends GameSvc {
 	readonly errors = 0
 	readonly hasWin = false
 	readonly isStarted = false
-	readonly mode = ModeKinds.X
+	readonly mode = ModeKind.X
 	readonly pos = { ...PosSvc.IDLE_POS }
 	readonly timer = TimerSvc.IDLE_STR
 
@@ -157,7 +157,7 @@ export class NonStartedGameSvc extends GameSvc {
 	}
 
 	async start(opts?: Partial<GameOpts>): Promise<StartedGameSvc>
-	async start({ difficulty = DifficultyKinds.Beginner, solution = SolutionSvc.create() }: Partial<GameOpts> = {}) {
+	async start({ difficulty = DifficultyKind.Beginner, solution = SolutionSvc.create() }: Partial<GameOpts> = {}) {
 		const board = BoardSvc.create({ difficulty, solution })
 
 		await this[repo].create({ board: board.toJSON(), opts: { difficulty, solution: solution.toJSON() } })
@@ -178,7 +178,7 @@ class StartedGameData implements Game {
 	constructor({
 		board,
 		errors = 0,
-		mode = ModeKinds.X,
+		mode = ModeKind.X,
 		pos,
 		timer = new TimerSvc(0),
 	}: OptionalKeys<Game, 'mode' | 'errors' | 'timer'>) {
@@ -238,7 +238,7 @@ class StartedGameSvc extends GameSvc {
 		return this.#data.timer.toString()
 	}
 
-	changeMode(mode: ModeKinds) {
+	changeMode(mode: ModeKind) {
 		this.#state = this.#state.changeMode(mode)
 		this[obs].mode.update(this.mode)
 		return this
@@ -351,17 +351,17 @@ abstract class GameState implements IGameState {
 	 * @param data The game data with create instance.
 	 * @param mode The value to set.
 	 */
-	static create(data: StartedGameData, mode: ModeKinds): GameState {
+	static create(data: StartedGameData, mode: ModeKind): GameState {
 		data.mode = mode
 		return match(mode, {
-			[ModeKinds.N]: () => new AnnotationGameState(data),
-			[ModeKinds.I]: () => new InsertGameState(data),
-			[ModeKinds.V]: () => new VisualGameState(data),
-			[ModeKinds.X]: () => new NormalGameState(data),
+			[ModeKind.N]: () => new AnnotationGameState(data),
+			[ModeKind.I]: () => new InsertGameState(data),
+			[ModeKind.V]: () => new VisualGameState(data),
+			[ModeKind.X]: () => new NormalGameState(data),
 		})
 	}
 
-	changeMode(mode: ModeKinds) {
+	changeMode(mode: ModeKind) {
 		return GameState.create(this[data], mode)
 	}
 

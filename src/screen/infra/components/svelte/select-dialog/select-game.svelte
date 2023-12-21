@@ -2,17 +2,17 @@
 	import { Button, ButtonMenu, OptionsInput } from '~/share/infra/components/svelte'
 	import { med } from '$cmd/infra/services'
 	import { i18nState } from '$i18n/infra/stores/svelte'
-	import { ScreenActions } from '$screen/domain/models'
-	import { DIFFICULTIES_NAMES, DifficultyKinds, SudokuActions } from '$sudoku/domain/models'
+	import { ScreenAction } from '$screen/domain/models'
+	import { DIFFICULTIES_NAMES, DifficultyKind, SudokuAction } from '$sudoku/domain/models'
 
-	let value: keyof typeof DifficultyKinds = 'Beginner'
+	let value: keyof typeof DifficultyKind = 'Beginner'
 
 	function backHandler() {
-		med.dispatch(ScreenActions.Exit)
+		med.dispatch(ScreenAction.Exit)
 	}
 
 	function submitHandler() {
-		med.dispatch(SudokuActions.Start, { difficulty: DifficultyKinds[value] })
+		med.dispatch(SudokuAction.Start, { difficulty: DifficultyKind[value] })
 	}
 </script>
 

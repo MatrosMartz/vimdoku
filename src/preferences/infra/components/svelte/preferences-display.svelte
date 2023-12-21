@@ -12,7 +12,7 @@
 		type Schema,
 	} from '$pref/domain/models'
 	import { prefsState } from '$pref/infra/stores/svelte'
-	import { DialogKinds, ScreenActions } from '$screen/domain/models'
+	import { DialogKind, ScreenAction } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
 
 	$: allTooltip = {
@@ -27,7 +27,7 @@
 		),
 	}
 
-	$: showAll = $screenState.dialog.kind === DialogKinds.PrefAll
+	$: showAll = $screenState.dialog.kind === DialogKind.PrefAll
 
 	function getA<E extends PrefsNamesEntries>(i18n: I18nData, [key, field]: E, value: unknown) {
 		if (field.type === 'toggle') return i18n.get(`prefs-toggle-${value as boolean}`, String(value))
@@ -39,10 +39,10 @@
 	}
 
 	function allHandler() {
-		med.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.PrefAll })
+		med.dispatch(ScreenAction.OpenDialog, { kind: DialogKind.PrefAll })
 	}
 	function diffHandler() {
-		med.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.PrefDiff })
+		med.dispatch(ScreenAction.OpenDialog, { kind: DialogKind.PrefDiff })
 	}
 </script>
 

@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { Dialog } from '~/share/infra/components/svelte/dialog'
 	import { CommandInput, SuggestionsList } from '$cmd/infra/components/svelte'
-	import { DialogKinds } from '$screen/domain/models'
+	import { DialogKind } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
 
-	$: show = $screenState.dialog.kind === DialogKinds.Cmd
+	$: show = $screenState.dialog.kind === DialogKind.Cmd
 </script>
 
 <Dialog type="modal" {show}>

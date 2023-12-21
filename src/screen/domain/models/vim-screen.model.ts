@@ -1,5 +1,5 @@
-import type { DialogKinds } from './dialog.model'
-import { type MainScreenKinds } from './main.model'
+import type { DialogKind } from './dialog.model'
+import { type MainScreenKind } from './main.model'
 
 export interface HelpDialogOpts {
 	search: string
@@ -12,23 +12,23 @@ export interface InLnDialogOpts {
 export type DialogOpts = HelpDialogOpts | null | undefined
 
 export type DialogsWithoutOpts =
-	| DialogKinds.Cmd
-	| DialogKinds.None
-	| DialogKinds.Pause
-	| DialogKinds.PrefAll
-	| DialogKinds.PrefDiff
-	| DialogKinds.PrefEdit
-	| DialogKinds.sel
-	| DialogKinds.Win
+	| DialogKind.Cmd
+	| DialogKind.None
+	| DialogKind.Pause
+	| DialogKind.PrefAll
+	| DialogKind.PrefDiff
+	| DialogKind.PrefEdit
+	| DialogKind.sel
+	| DialogKind.Win
 
 export type DialogData =
 	| { opts?: null; kind: DialogsWithoutOpts }
-	| { kind: DialogKinds.InLn; opts: InLnDialogOpts }
-	| { kind: DialogKinds.Help; opts: HelpDialogOpts }
+	| { kind: DialogKind.InLn; opts: InLnDialogOpts }
+	| { kind: DialogKind.Help; opts: HelpDialogOpts }
 
 export interface VimScreen {
 	dialog: DialogData
-	main: MainScreenKinds
+	main: MainScreenKind
 }
 
 export interface IScreen {
@@ -37,11 +37,11 @@ export interface IScreen {
 	/** Get the current dialog. */
 	readonly dialog: DialogData
 	/** Get the current main screen. */
-	readonly mainScreen: MainScreenKinds
+	readonly mainScreen: MainScreenKind
 	/** Return to previous screen or close dialog. */
 	close(): void
 	/** Set dialog and options. */
 	setDialog(dialog: DialogData): void
 	/** Set main screen. */
-	setMain(main: MainScreenKinds): void
+	setMain(main: MainScreenKind): void
 }

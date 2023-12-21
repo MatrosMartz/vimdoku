@@ -3,14 +3,14 @@ import type { IObs, IPos, Pos } from '~/share/domain/models'
 import type { GameRepo } from '../repositories'
 import type { Board, IBoard } from './board.model'
 import type { GameOpts } from './game-options.model'
-import type { ModeKinds } from './modes.model'
+import type { ModeKind } from './modes.model'
 import type { ValidNumbers } from './notes.model'
 import type { ITimer } from './timer.model'
 
 export interface Game {
 	readonly board: IBoard
 	errors: number
-	mode: ModeKinds
+	mode: ModeKind
 	readonly pos: IPos
 	timer: ITimer
 }
@@ -18,7 +18,7 @@ export interface Game {
 export interface GameObs {
 	readonly board: IObs<Board | null>
 	readonly errors: IObs<number>
-	readonly mode: IObs<ModeKinds>
+	readonly mode: IObs<ModeKind>
 	readonly pos: IObs<Pos>
 	readonly saved: IObs<boolean>
 	readonly timer: IObs<string>
@@ -39,7 +39,7 @@ export interface IGameState {
 	 * @param mode The new mode.
 	 * @returns The updated game state.
 	 */
-	changeMode(mode: ModeKinds): IGameState
+	changeMode(mode: ModeKind): IGameState
 	/**
 	 * Change the current position within the game board.
 	 * @param position The new position.
@@ -106,7 +106,7 @@ export interface IGame {
 	/** Get if the game has started. */
 	readonly isStarted: boolean
 	/** Get the game mode. */
-	readonly mode: ModeKinds
+	readonly mode: ModeKind
 	/** Get the current position. */
 	readonly pos: Pos
 	/** Get the current value of timer. */
@@ -116,7 +116,7 @@ export interface IGame {
 	 * @param mode The new mode.
 	 * @returns The updated game.
 	 */
-	changeMode(mode: ModeKinds): this
+	changeMode(mode: ModeKind): this
 	/**
 	 * Change the current position within the game board.
 	 * @param position The new position.

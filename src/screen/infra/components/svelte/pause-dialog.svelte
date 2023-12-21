@@ -1,26 +1,26 @@
 <script>
 	import { Button, ButtonMenu, Dialog, Icon } from '~/share/infra/components/svelte'
 	import { med } from '$cmd/infra/services'
-	import { DialogKinds, MainScreenKinds, ScreenActions } from '$screen/domain/models'
+	import { DialogKind, MainScreenKind, ScreenAction } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
-	import { SudokuActions } from '$sudoku/domain/models'
+	import { SudokuAction } from '$sudoku/domain/models'
 
-	$: show = $screenState.dialog.kind === DialogKinds.Pause
+	$: show = $screenState.dialog.kind === DialogKind.Pause
 
 	function continueHandler() {
-		med.dispatch(ScreenActions.Exit)
+		med.dispatch(ScreenAction.Exit)
 	}
 
 	function saveHandler() {
-		med.dispatch(SudokuActions.Save)
+		med.dispatch(SudokuAction.Save)
 	}
 
 	function homeHandler() {
-		med.dispatch(ScreenActions.OpenScreen, { screen: MainScreenKinds.Start })
+		med.dispatch(ScreenAction.OpenScreen, { screen: MainScreenKind.Start })
 	}
 
 	function prefsHandler() {
-		med.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.PrefEdit })
+		med.dispatch(ScreenAction.OpenDialog, { kind: DialogKind.PrefEdit })
 	}
 </script>
 

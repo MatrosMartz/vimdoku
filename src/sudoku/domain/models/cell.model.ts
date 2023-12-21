@@ -3,7 +3,7 @@ import type { Pos } from '~/share/domain/models'
 import type { SudokuMove } from './board.model'
 import { type INotes, type Notes, type ValidNumbers } from './notes.model'
 
-export enum CellKinds {
+export enum CellKind {
 	Correct = 'correct',
 	Empty = 'empty',
 	Incorrect = 'incorrect',
@@ -12,12 +12,12 @@ export enum CellKinds {
 	WhitNotes = 'notes',
 }
 
-export type InsertKinds = CellKinds.Correct | CellKinds.Incorrect | CellKinds.Unverified
+export type InsertKinds = CellKind.Correct | CellKind.Incorrect | CellKind.Unverified
 
-export const INSERT_KINDS: InsertKinds[] = [CellKinds.Correct, CellKinds.Incorrect, CellKinds.Unverified]
+export const INSERT_KINDS: InsertKinds[] = [CellKind.Correct, CellKind.Incorrect, CellKind.Unverified]
 
 export interface CellData {
-	kind: CellKinds
+	kind: CellKind
 	notes: INotes
 	readonly pos: Pos
 	readonly solution: ValidNumbers
@@ -25,13 +25,13 @@ export interface CellData {
 }
 
 export interface Cell {
-	kind: CellKinds
+	kind: CellKind
 	notes: Notes
 	value: number
 }
 
 export interface CellJSON {
-	kind: CellKinds
+	kind: CellKind
 	notes: number
 	value: number
 }
@@ -42,7 +42,7 @@ export interface ICellState {
 	/** Get if the value is the same of the solution. */
 	readonly isCorrect: boolean
 	/** Get the current kind of cell. */
-	readonly kind: CellKinds
+	readonly kind: CellKind
 	/** Get the current data of cell notes. */
 	readonly notes: Notes
 	/** Get value return of Notes instance toNumber() method. */

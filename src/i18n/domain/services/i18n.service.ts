@@ -1,5 +1,5 @@
 import type { IObs } from '~/share/domain/models'
-import { Langs } from '$pref/domain/models'
+import { Lang } from '$pref/domain/models'
 
 import type { I18nData, I18nKeys, I18nSchema, I18nValue, II18n } from '../models'
 
@@ -10,7 +10,7 @@ export class I18nSvc implements II18n {
 		},
 	}
 
-	#actualLang = Langs.EN
+	#actualLang = Lang.EN
 	#data = I18nSvc.IDLE
 
 	readonly #obs
@@ -27,7 +27,7 @@ export class I18nSvc implements II18n {
 		return this.#data
 	}
 
-	async changeLang(lang: Langs) {
+	async changeLang(lang: Lang) {
 		this.#actualLang = lang
 		const data = await this.#fetchData(lang)
 
@@ -41,7 +41,7 @@ export class I18nSvc implements II18n {
 		this.#obs.update(this.#data)
 	}
 
-	async #fetchData(lang: Langs) {
+	async #fetchData(lang: Lang) {
 		return await fetch(`locales/${lang}.json`).then<I18nSchema | null>(async res => await res.json())
 	}
 

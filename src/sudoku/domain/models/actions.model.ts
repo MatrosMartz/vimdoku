@@ -1,10 +1,10 @@
 import type { Pos } from '~/share/domain/models'
 
 import type { GameOpts } from './game-options.model'
-import type { ModeKinds } from './modes.model'
+import type { ModeKind } from './modes.model'
 import type { ValidNumbers } from './notes.model'
 
-export enum SudokuActions {
+export enum SudokuAction {
 	ChangeMode = 'change-mode',
 	Check = 'check-game',
 	End = 'end-game',
@@ -19,7 +19,7 @@ export enum SudokuActions {
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace SudokuData {
 	export interface ChangeMode {
-		mode: ModeKinds
+		mode: ModeKind
 	}
 
 	interface DirectionMove {
@@ -42,15 +42,15 @@ export namespace SudokuData {
 }
 
 export type SudokuDispatchUnData =
-	| SudokuActions.Check
-	| SudokuActions.End
-	| SudokuActions.Erase
-	| SudokuActions.Resume
-	| SudokuActions.Save
+	| SudokuAction.Check
+	| SudokuAction.End
+	| SudokuAction.Erase
+	| SudokuAction.Resume
+	| SudokuAction.Save
 
 export interface SudokuDispatch {
-	[SudokuActions.ChangeMode]: SudokuData.ChangeMode
-	[SudokuActions.Move]: SudokuData.Move
-	[SudokuActions.Start]: SudokuData.Start
-	[SudokuActions.Write]: SudokuData.Write
+	[SudokuAction.ChangeMode]: SudokuData.ChangeMode
+	[SudokuAction.Move]: SudokuData.Move
+	[SudokuAction.Start]: SudokuData.Start
+	[SudokuAction.Write]: SudokuData.Write
 }

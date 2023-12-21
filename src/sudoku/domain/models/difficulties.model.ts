@@ -1,4 +1,4 @@
-export enum DifficultyKinds {
+export enum DifficultyKind {
 	Beginner = '1.92',
 	Basic = '1.87',
 	Easy = '1.75',
@@ -8,4 +8,4 @@ export enum DifficultyKinds {
 	Expert = '1.2',
 }
 
-export const DIFFICULTIES_NAMES = Object.keys(DifficultyKinds)
+export const DIFFICULTIES_NAMES = Object.keys(DifficultyKind)

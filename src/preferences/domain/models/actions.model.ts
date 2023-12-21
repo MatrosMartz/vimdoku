@@ -1,6 +1,6 @@
 import type { Prefs } from './preferences.model'
 
-export enum PrefActions {
+export enum PrefAction {
 	Reset = 'reset-preferences',
 	Save = 'save-preferences',
 }
@@ -24,6 +24,6 @@ export namespace PrefData {
 }
 
 export interface PrefDispatch {
-	[PrefActions.Reset]: PrefData.Reset
-	[PrefActions.Save]: PrefData.Save
+	[PrefAction.Reset]: PrefData.Reset
+	[PrefAction.Save]: PrefData.Save
 }

@@ -1,6 +1,6 @@
 import type { IObs } from '~/share/domain/models'
-import { DialogKinds, ScreenActions } from '$screen/domain/models'
-import { DifficultyKinds, SudokuActions } from '$sudoku/domain/models'
+import { DialogKind, ScreenAction } from '$screen/domain/models'
+import { DifficultyKind, SudokuAction } from '$sudoku/domain/models'
 
 import type { IExec, IMed, ISugg, Sugg } from '../models'
 import { SuggSvc } from '.'
@@ -33,26 +33,26 @@ export class ExecSvc implements IExec {
 		const [command = '', args = ''] = cmdLike.split(/(?<=^[^\s\t]+)((?:\s|\t).*)/).map(r => r?.trim())
 
 		if (/^(q(?:uit)|x(?:it)?|exit?)?$/.test(command)) {
-			this.#mediator.dispatch(ScreenActions.Exit)
+			this.#mediator.dispatch(ScreenAction.Exit)
 		}
-		if (/^st(?:art)?$/.test(command) && Object.values(DifficultyKinds).includes(args)) {
-			this.#mediator.dispatch(SudokuActions.Start, { difficulty: args })
+		if (/^st(?:art)?$/.test(command) && Object.values(DifficultyKind).includes(args)) {
+			this.#mediator.dispatch(SudokuAction.Start, { difficulty: args })
 		}
 		if (/^w(?:rite)?$/.test(command)) {
-			this.#mediator.dispatch(SudokuActions.Save)
+			this.#mediator.dispatch(SudokuAction.Save)
 		}
 		if (/^wq(?:uit)?$/.test(command)) {
-			this.#mediator.dispatch(ScreenActions.Exit).dispatch(SudokuActions.Save)
+			this.#mediator.dispatch(ScreenAction.Exit).dispatch(SudokuAction.Save)
 		}
 
 		if (/^set?$/.test(command)) {
 			if (args.length === 0)
-				this.#mediator.dispatch(ScreenActions.OpenDialog, {
-					kind: DialogKinds.PrefDiff,
+				this.#mediator.dispatch(ScreenAction.OpenDialog, {
+					kind: DialogKind.PrefDiff,
 				})
 			if (args === 'all')
-				this.#mediator.dispatch(ScreenActions.OpenDialog, {
-					kind: DialogKinds.PrefAll,
+				this.#mediator.dispatch(ScreenAction.OpenDialog, {
+					kind: DialogKind.PrefAll,
 				})
 		}
 

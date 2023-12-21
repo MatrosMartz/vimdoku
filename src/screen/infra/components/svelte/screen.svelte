@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { MainScreenKinds } from '$screen/domain/models'
+	import { MainScreenKind } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
 	import { SudokuGame } from '$sudoku/infra/components/svelte'
 
@@ -7,9 +7,9 @@
 </script>
 
 <main>
-	{#if $screenState.main === MainScreenKinds.Start}
+	{#if $screenState.main === MainScreenKind.Start}
 		<StartScreen />
-	{:else if $screenState.main === MainScreenKinds.Game}
+	{:else if $screenState.main === MainScreenKind.Game}
 		<SudokuGame />
 	{/if}
 </main>

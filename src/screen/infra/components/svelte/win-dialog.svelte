@@ -1,12 +1,12 @@
 <script>
 	import { Dialog } from '~/share/infra/components/svelte'
-	import { DialogKinds } from '$screen/domain/models'
+	import { DialogKind } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
 	import { errorsState, timerState } from '$sudoku/infra/stores/svelte'
 
 	import { SelectGame } from './select-dialog'
 
-	$: show = $screenState.dialog.kind === DialogKinds.Win
+	$: show = $screenState.dialog.kind === DialogKind.Win
 </script>
 
 <Dialog type="modal" {show}>

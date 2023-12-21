@@ -1,5 +1,5 @@
 import type enSchema from '@/locales/en.json'
-import type { Langs } from '$pref/domain/models'
+import type { Lang } from '$pref/domain/models'
 
 import type { SchemaStr, SchemaValue } from './schemas.model'
 
@@ -13,7 +13,7 @@ export interface I18nData {
 }
 
 export interface II18n {
-	readonly actualLang: Langs
+	readonly actualLang: Lang
 	readonly data: I18nData
-	changeLang(lang: Langs): Promise<void>
+	changeLang(lang: Lang): Promise<void>
 }

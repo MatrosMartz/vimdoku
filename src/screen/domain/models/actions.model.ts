@@ -1,7 +1,7 @@
-import type { MainScreenKinds } from './main.model'
+import type { MainScreenKind } from './main.model'
 import type { DialogData } from './vim-screen.model'
 
-export enum ScreenActions {
+export enum ScreenAction {
 	Exit = 'exit-screen',
 	OpenDialog = 'open-dialog',
 	OpenScreen = 'open-screen',
@@ -10,15 +10,15 @@ export enum ScreenActions {
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace ScreenData {
 	export interface OpenScreen {
-		screen: MainScreenKinds
+		screen: MainScreenKind
 	}
 
 	export type OpenDialog = DialogData
 }
 
-export type ScreenDispatchUnData = ScreenActions.Exit
+export type ScreenDispatchUnData = ScreenAction.Exit
 
 export interface ScreenDispatch {
-	[ScreenActions.OpenDialog]: ScreenData.OpenDialog
-	[ScreenActions.OpenScreen]: ScreenData.OpenScreen
+	[ScreenAction.OpenDialog]: ScreenData.OpenDialog
+	[ScreenAction.OpenScreen]: ScreenData.OpenScreen
 }

@@ -1,4 +1,4 @@
-export enum DialogKinds {
+export enum DialogKind {
 	Cmd = 'command',
 	Help = 'help',
 	InLn = 'inline',
@@ -11,6 +11,6 @@ export enum DialogKinds {
 	Win = 'Win',
 }
 
-export const dialogPref = [DialogKinds.PrefAll, DialogKinds.PrefDiff, DialogKinds.PrefEdit]
+export const dialogPref = [DialogKind.PrefAll, DialogKind.PrefDiff, DialogKind.PrefEdit]
 
-export type DialogPref = DialogKinds.PrefAll | DialogKinds.PrefDiff | DialogKinds.PrefEdit
+export type DialogPref = DialogKind.PrefAll | DialogKind.PrefDiff | DialogKind.PrefEdit

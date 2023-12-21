@@ -2,7 +2,7 @@
 	import type { Pos } from '~/share/domain/models'
 	import { PosSvc } from '~/share/domain/services'
 	import { med } from '$cmd/infra/services'
-	import { type Cell, SudokuActions } from '$sudoku/domain/models'
+	import { type Cell, SudokuAction } from '$sudoku/domain/models'
 	import { posState } from '$sudoku/infra/stores/svelte'
 
 	export let data: Cell
@@ -17,7 +17,7 @@
 
 	function focusHandler() {
 		if (PosSvc.equalsPos($posState, position)) return
-		med.dispatch(SudokuActions.Move, { type: 'set', position })
+		med.dispatch(SudokuAction.Move, { type: 'set', position })
 	}
 </script>
 

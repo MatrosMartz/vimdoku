@@ -1,15 +1,15 @@
 import { match } from '~/share/utils'
 import type { II18n } from '$i18n/domain/models'
-import { type IPrefs, type Langs, PrefActions, type PrefData } from '$pref/domain/models'
+import { type IPrefs, type Lang, PrefAction, type PrefData } from '$pref/domain/models'
 import {
 	type DialogData,
-	DialogKinds,
+	DialogKind,
 	type IScreen,
-	MainScreenKinds,
-	ScreenActions,
+	MainScreenKind,
+	ScreenAction,
 	type ScreenData,
 } from '$screen/domain/models'
-import { type GameOpts, type IGame, SudokuActions, type SudokuData } from '$sudoku/domain/models'
+import { type GameOpts, type IGame, SudokuAction, type SudokuData } from '$sudoku/domain/models'
 
 import type { IMed, Med } from '../models'
 
@@ -45,30 +45,30 @@ export class MedSvc implements IMed {
 	dispatch<Action extends Med.DataActions>(action: Action, data: Med.DataDispatch[Action]): this
 	dispatch(action: Med.Actions, data?: any) {
 		match(action, {
-			[ScreenActions.Exit]: () => this.#dExitScreen(),
-			[ScreenActions.OpenDialog]: () => this.#dOpenDialog(data),
-			[ScreenActions.OpenScreen]: () => this.#dOpenScreen(data),
-			[SudokuActions.ChangeMode]: () => this.#dChangeMode(data),
-			[SudokuActions.Check]: () => this.#dSudokuCheck(),
-			[SudokuActions.Erase]: () => this.#dCellErase(),
-			[SudokuActions.Move]: () => this.#dSudokuMove(data),
-			[SudokuActions.End]: () => {
+			[ScreenAction.Exit]: () => this.#dExitScreen(),
+			[ScreenAction.OpenDialog]: () => this.#dOpenDialog(data),
+			[ScreenAction.OpenScreen]: () => this.#dOpenScreen(data),
+			[SudokuAction.ChangeMode]: () => this.#dChangeMode(data),
+			[SudokuAction.Check]: () => this.#dSudokuCheck(),
+			[SudokuAction.Erase]: () => this.#dCellErase(),
+			[SudokuAction.Move]: () => this.#dSudokuMove(data),
+			[SudokuAction.End]: () => {
 				void this.#dSudokuEnd()
 			},
-			[SudokuActions.Resume]: () => {
+			[SudokuAction.Resume]: () => {
 				void this.#dSudokuResume()
 			},
-			[SudokuActions.Save]: () => {
+			[SudokuAction.Save]: () => {
 				void this.#dSudokuSave()
 			},
-			[SudokuActions.Start]: () => {
+			[SudokuAction.Start]: () => {
 				void this.#dSudokuStart(data)
 			},
-			[SudokuActions.Write]: () => this.#dSudokuWrite(data),
-			[PrefActions.Reset]: () => {
+			[SudokuAction.Write]: () => this.#dSudokuWrite(data),
+			[PrefAction.Reset]: () => {
 				void this.#dPrefReset(data)
 			},
-			[PrefActions.Save]: () => {
+			[PrefAction.Save]: () => {
 				void this.#dPrefSave(data)
 			},
 		})
@@ -83,7 +83,7 @@ export class MedSvc implements IMed {
 		this.#hasLoaded = true
 	}
 
-	async #changeLang(lang: Langs) {
+	async #changeLang(lang: Lang) {
 		if (this.#i18n.actualLang === lang) return
 		await this.#i18n.changeLang(lang)
 	}
@@ -98,14 +98,14 @@ export class MedSvc implements IMed {
 
 	#dExitScreen() {
 		this.#screen.close()
-		if (this.#screen.data.main === MainScreenKinds.Game && this.#screen.data.dialog.kind === DialogKinds.None)
+		if (this.#screen.data.main === MainScreenKind.Game && this.#screen.data.dialog.kind === DialogKind.None)
 			this.#game.timerStart()
-		if (this.#screen.data.main !== MainScreenKinds.Game) this.#game.timerReset()
+		if (this.#screen.data.main !== MainScreenKind.Game) this.#game.timerReset()
 	}
 
 	#dOpenDialog(data: DialogData) {
 		this.#screen.setDialog(data)
-		if (this.#screen.data.main === MainScreenKinds.Game && this.#screen.data.dialog.kind !== DialogKinds.None)
+		if (this.#screen.data.main === MainScreenKind.Game && this.#screen.data.dialog.kind !== DialogKind.None)
 			this.#game.timerPause()
 	}
 
@@ -146,7 +146,7 @@ export class MedSvc implements IMed {
 		const newGame = await this.#game.resume()
 		if (newGame == null) return
 		this.#game = newGame
-		this.#screen.setMain(MainScreenKinds.Game)
+		this.#screen.setMain(MainScreenKind.Game)
 		if (this.#prefs.data.timer) this.#game.timerStart()
 	}
 
@@ -155,7 +155,7 @@ export class MedSvc implements IMed {
 	}
 
 	async #dSudokuStart(data: Partial<GameOpts>) {
-		this.#screen.setMain(MainScreenKinds.Game)
+		this.#screen.setMain(MainScreenKind.Game)
 		this.#game = await this.#game.start(data)
 		if (this.#prefs.data.timer) this.#game.timerStart()
 	}
@@ -165,7 +165,7 @@ export class MedSvc implements IMed {
 		else this.#game.write(data.value, this.#prefs.data.autoNoteDeletion, this.#prefs.data.autoValidation)
 
 		if (this.#game.hasWin) {
-			this.#screen.setDialog({ kind: DialogKinds.Win })
+			this.#screen.setDialog({ kind: DialogKind.Win })
 			this.#game.timerPause()
 		}
 	}

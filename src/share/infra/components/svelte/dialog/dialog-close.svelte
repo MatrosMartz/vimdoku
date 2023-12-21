@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { med } from '$cmd/infra/services'
-	import { ScreenActions } from '$screen/domain/models'
+	import { ScreenAction } from '$screen/domain/models'
 
 	import Icon from '../icon.svelte'
 </script>
 
-<button type="button" on:click={() => med.dispatch(ScreenActions.Exit)}><Icon id="quit" /></button>
+<button type="button" on:click={() => med.dispatch(ScreenAction.Exit)}><Icon id="quit" /></button>
 
 <style>
 	button {

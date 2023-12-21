@@ -3,7 +3,7 @@ import { PosSvc } from '~/share/domain/services'
 import { match } from '~/share/utils'
 
 import { type SudokuMove, type ValidNumbers } from '../models'
-import { type Cell, type CellData, type CellJSON, CellKinds, type ICell, type ICellState } from '../models/cell.model'
+import { type Cell, type CellData, type CellJSON, CellKind, type ICell, type ICellState } from '../models/cell.model'
 import { NotesSvc } from './notes.service'
 
 /** Represents a Sudoku Cell Entity.  */
@@ -88,8 +88,8 @@ export class CellSvc implements ICell {
 		const baseData: Omit<CellData, 'kind' | 'value'> = { notes: NotesSvc.create(), solution, pos }
 
 		const specificData: Pick<CellData, 'kind' | 'value'> = isInitial
-			? { kind: CellKinds.Initial, value: solution }
-			: { kind: CellKinds.Empty, value: CellState.EMPTY_VALUE }
+			? { kind: CellKind.Initial, value: solution }
+			: { kind: CellKind.Empty, value: CellState.EMPTY_VALUE }
 
 		return new CellSvc(new CellEntity({ ...baseData, ...specificData }))
 	}
@@ -156,13 +156,13 @@ export class CellSvc implements ICell {
 	}
 
 	#stateForKind(data: CellData) {
-		return match<CellKinds, CellState>(data.kind, {
-			[CellKinds.Correct]: () => new CorrectCellState({ data }),
-			[CellKinds.Empty]: () => new EmptyCellState({ data }),
-			[CellKinds.Incorrect]: () => new IncorrectCellState({ data }),
-			[CellKinds.Initial]: () => new InitialCellState({ data }),
-			[CellKinds.Unverified]: () => new UnverifiedCellState({ data }),
-			[CellKinds.WhitNotes]: () => new NotesCellState({ data }),
+		return match<CellKind, CellState>(data.kind, {
+			[CellKind.Correct]: () => new CorrectCellState({ data }),
+			[CellKind.Empty]: () => new EmptyCellState({ data }),
+			[CellKind.Incorrect]: () => new IncorrectCellState({ data }),
+			[CellKind.Initial]: () => new InitialCellState({ data }),
+			[CellKind.Unverified]: () => new UnverifiedCellState({ data }),
+			[CellKind.WhitNotes]: () => new NotesCellState({ data }),
 		})
 	}
 }
@@ -261,12 +261,12 @@ class InitialCellState extends CellState {
 	readonly isCorrect = true
 
 	constructor(deps: CellStateDeps) {
-		deps.data.kind = CellKinds.Initial
+		deps.data.kind = CellKind.Initial
 		super(deps)
 	}
 
 	static create(data: Omit<CellData, 'kind'>) {
-		return new UnverifiedCellState({ data: new CellEntity({ kind: CellKinds.Initial, ...data }) })
+		return new UnverifiedCellState({ data: new CellEntity({ kind: CellKind.Initial, ...data }) })
 	}
 }
 
@@ -306,7 +306,7 @@ abstract class WritableCellState extends CellState {
 
 class UnverifiedCellState extends WritableCellState {
 	constructor(deps: CellStateDeps) {
-		deps.data.kind = CellKinds.Unverified
+		deps.data.kind = CellKind.Unverified
 		super(deps)
 	}
 
@@ -315,7 +315,7 @@ class UnverifiedCellState extends WritableCellState {
 	}
 
 	static create(data: Omit<CellData, 'kind'>) {
-		return new UnverifiedCellState({ data: new CellEntity({ kind: CellKinds.Unverified, ...data }) })
+		return new UnverifiedCellState({ data: new CellEntity({ kind: CellKind.Unverified, ...data }) })
 	}
 
 	verify(effect: (result: boolean) => void) {
@@ -329,12 +329,12 @@ class EmptyCellState extends WritableCellState {
 	readonly isCorrect = false
 
 	constructor(deps: CellStateDeps) {
-		deps.data.kind = CellKinds.Empty
+		deps.data.kind = CellKind.Empty
 		super(deps)
 	}
 
 	static create(data: Omit<CellData, 'kind'>) {
-		return new UnverifiedCellState({ data: new CellEntity({ kind: CellKinds.Empty, ...data }) })
+		return new UnverifiedCellState({ data: new CellEntity({ kind: CellKind.Empty, ...data }) })
 	}
 
 	clear() {
@@ -346,12 +346,12 @@ class CorrectCellState extends WritableCellState {
 	readonly isCorrect = true
 
 	constructor(deps: CellStateDeps) {
-		deps.data.kind = CellKinds.Correct
+		deps.data.kind = CellKind.Correct
 		super(deps)
 	}
 
 	static create(data: Omit<CellData, 'kind'>) {
-		return new UnverifiedCellState({ data: new CellEntity({ kind: CellKinds.Correct, ...data }) })
+		return new UnverifiedCellState({ data: new CellEntity({ kind: CellKind.Correct, ...data }) })
 	}
 }
 
@@ -359,12 +359,12 @@ class IncorrectCellState extends WritableCellState {
 	readonly isCorrect = false
 
 	constructor(deps: CellStateDeps) {
-		deps.data.kind = CellKinds.Incorrect
+		deps.data.kind = CellKind.Incorrect
 		super(deps)
 	}
 
 	static create(data: Omit<CellData, 'kind'>) {
-		return new UnverifiedCellState({ data: new CellEntity({ kind: CellKinds.Incorrect, ...data }) })
+		return new UnverifiedCellState({ data: new CellEntity({ kind: CellKind.Incorrect, ...data }) })
 	}
 }
 
@@ -372,12 +372,12 @@ class NotesCellState extends WritableCellState {
 	readonly isCorrect = false
 
 	constructor(deps: CellStateDeps) {
-		deps.data.kind = CellKinds.WhitNotes
+		deps.data.kind = CellKind.WhitNotes
 		super(deps)
 	}
 
 	static create(data: Omit<CellData, 'kind'>) {
-		return new UnverifiedCellState({ data: new CellEntity({ kind: CellKinds.WhitNotes, ...data }) })
+		return new UnverifiedCellState({ data: new CellEntity({ kind: CellKind.WhitNotes, ...data }) })
 	}
 
 	removeNote(num: ValidNumbers) {

@@ -3,7 +3,7 @@ import { InvalidBoardError } from '~/share/utils'
 
 import { type GameOpts, type IGrid, type SolutionJSON, type ValidNumbers } from '../models'
 import { type Board, type BoardJSON, type IBoard } from '../models/board.model'
-import { CellKinds, type ICell, INSERT_KINDS } from '../models/cell.model'
+import { CellKind, type ICell, INSERT_KINDS } from '../models/cell.model'
 import { CellSvc } from './cell.service'
 import { GridSvc } from './grid.service'
 
@@ -86,7 +86,7 @@ export class BoardSvc implements IBoard {
 	}
 
 	noteDeletion(cellPos: Pos, num: ValidNumbers) {
-		if (this.#grid.getCell(cellPos).kind !== CellKinds.Initial)
+		if (this.#grid.getCell(cellPos).kind !== CellKind.Initial)
 			this.#grid = this.#grid.mapRelated(cellPos, cell => cell.removeNote(num))
 
 		return this
@@ -117,7 +117,7 @@ export class BoardSvc implements IBoard {
 	}
 
 	write(cellPos: Pos, num: ValidNumbers) {
-		if (this.#grid.getCell(cellPos).kind !== CellKinds.Initial)
+		if (this.#grid.getCell(cellPos).kind !== CellKind.Initial)
 			this.#grid = this.#grid.editCell(cellPos, cell => cell.writeValue(num))
 
 		if (this.#grid.getCell(cellPos).isCorrect) this.#correctCells++

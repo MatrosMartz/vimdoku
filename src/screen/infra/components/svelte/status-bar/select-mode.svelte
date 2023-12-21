@@ -3,18 +3,18 @@
 	import { tooltip, type TooltipProps } from '~/share/infra/components/svelte/tooltip'
 	import { med } from '$cmd/infra/services'
 	import { i18nState } from '$i18n/infra/stores/svelte'
-	import { DialogKinds, MainScreenKinds, ScreenActions } from '$screen/domain/models'
+	import { DialogKind, MainScreenKind, ScreenAction } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
-	import { ModeKinds, MODES_KEYS, SudokuActions } from '$sudoku/domain/models'
+	import { ModeKind, MODES_KEYS, SudokuAction } from '$sudoku/domain/models'
 	import { modeState, posState } from '$sudoku/infra/stores/svelte'
 
-	$: disabled = $screenState.main !== MainScreenKinds.Game
+	$: disabled = $screenState.main !== MainScreenKind.Game
 
-	$: open = $screenState.dialog.kind === DialogKinds.InLn && $screenState.dialog.opts.type === 'modes'
+	$: open = $screenState.dialog.kind === DialogKind.InLn && $screenState.dialog.opts.type === 'modes'
 
 	let timeoutId: ReturnType<typeof setTimeout> | null = null
 
-	$: if (disabled) med.dispatch(ScreenActions.Exit)
+	$: if (disabled) med.dispatch(ScreenAction.Exit)
 	$: if (open) document.getElementById(`mode-${modeState.data}`)?.focus()
 
 	$: tooltipProps = {
@@ -23,14 +23,14 @@
 	} satisfies TooltipProps
 
 	function toggleHandler() {
-		if (disabled || open) med.dispatch(ScreenActions.Exit)
-		else med.dispatch(ScreenActions.OpenDialog, { kind: DialogKinds.InLn, opts: { type: 'modes' } })
+		if (disabled || open) med.dispatch(ScreenAction.Exit)
+		else med.dispatch(ScreenAction.OpenDialog, { kind: DialogKind.InLn, opts: { type: 'modes' } })
 	}
 
 	function modeHandler({ currentTarget }: { currentTarget: HTMLInputElement }) {
-		const mode = currentTarget.value as ModeKinds
+		const mode = currentTarget.value as ModeKind
 
-		med.dispatch(SudokuActions.ChangeMode, { mode })
+		med.dispatch(SudokuAction.ChangeMode, { mode })
 	}
 
 	function focusHandler() {
@@ -41,11 +41,11 @@
 	}
 
 	function focusoutHandler() {
-		if (open) timeoutId = setTimeout(() => med.dispatch(ScreenActions.Exit), 150)
+		if (open) timeoutId = setTimeout(() => med.dispatch(ScreenAction.Exit), 150)
 	}
 
 	function keyupHandler({ key }: KeyboardEvent) {
-		if (key === 'Enter') med.dispatch(SudokuActions.Move, { type: 'set', position: posState.data })
+		if (key === 'Enter') med.dispatch(SudokuAction.Move, { type: 'set', position: posState.data })
 	}
 </script>
 
@@ -65,7 +65,7 @@
 	>
 	<div id="mode-selector-panel" role="region" aria-labelledby="mode-selector-header">
 		<form method="get">
-			{#each Object.values(ModeKinds) as mode (mode)}
+			{#each Object.values(ModeKind) as mode (mode)}
 				<label for="mode-{mode}">
 					<input
 						id="mode-{mode}"
