@@ -4,5 +4,4 @@ fmt:
 	npm run lint:css
 
 check:
-	npm run check
-	npm run test
+	npm run check & npm run test & wait
