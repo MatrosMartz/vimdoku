@@ -1,4 +1,5 @@
 import type { Pos } from '~/share/domain/models'
+import type { OptionalKeys } from '~/share/types'
 
 import type { GameOpts } from './game-options.model'
 import type { ModeKind } from './modes.model'
@@ -34,7 +35,7 @@ export namespace SudokuData {
 
 	export type Move = DirectionMove | SetMove
 
-	export type Start = Partial<GameOpts>
+	export type Start = OptionalKeys<GameOpts, 'solution'>
 
 	export interface Write {
 		value: ValidNumbers | 0

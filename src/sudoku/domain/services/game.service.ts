@@ -3,7 +3,7 @@ import { PosSvc } from '~/share/domain/services'
 import type { OptionalKeys } from '~/share/types'
 import { match } from '~/share/utils'
 
-import { type Board, DifficultyKind, ModeKind, type ValidNumbers } from '../models'
+import { type Board, ModeKind, type ValidNumbers } from '../models'
 import {
 	type Game,
 	type GameObs,
@@ -15,7 +15,6 @@ import {
 import { type GameOpts } from '../models/game-options.model'
 import type { GameRepo } from '../repositories'
 import { BoardSvc } from './board.service'
-import { SolutionSvc } from './solution.service'
 import { TimerSvc } from './timer.service'
 
 /** Simulated key for protected field. */
@@ -84,7 +83,7 @@ abstract class GameSvc implements IGame {
 
 	async save(): Promise<void> {}
 
-	async start(opts?: Partial<GameOpts> | undefined): Promise<IGame> {
+	async start(opts: GameOpts): Promise<IGame> {
 		return this
 	}
 
@@ -104,7 +103,7 @@ abstract class GameSvc implements IGame {
 		return this
 	}
 
-	write(num: ValidNumbers, removeNotes?: boolean, validate?: boolean) {
+	write(num: ValidNumbers, opts: { removeNotes: boolean; validate: boolean }) {
 		return this
 	}
 }
@@ -156,11 +155,15 @@ export class NonStartedGameSvc extends GameSvc {
 		return new StartedGameSvc({ data, obs: this[obs], repo: this[repo] })
 	}
 
-	async start(opts?: Partial<GameOpts>): Promise<StartedGameSvc>
-	async start({ difficulty = DifficultyKind.Beginner, solution = SolutionSvc.create() }: Partial<GameOpts> = {}) {
+	async start(opts: GameOpts): Promise<StartedGameSvc>
+	async start({ difficulty, solution }: GameOpts) {
 		const board = BoardSvc.create({ difficulty, solution })
 
-		await this[repo].create({ board: board.toJSON(), opts: { difficulty, solution: solution.toJSON() } })
+		await this[repo].create({
+			board: board.toJSON(),
+			info: { errors: 0, timer: 0 },
+			opts: { difficulty, solution: solution.toJSON() },
+		})
 
 		const data = new StartedGameData({ board, pos: new PosSvc() })
 
@@ -322,9 +325,9 @@ class StartedGameSvc extends GameSvc {
 		return this
 	}
 
-	write(num: ValidNumbers, removeNotes = false, validate = false) {
-		this.#state = this.#state.write(num, removeNotes)
-		if (validate) {
+	write(num: ValidNumbers, opts: { removeNotes: boolean; validate: boolean }) {
+		this.#state = this.#state.write(num, opts)
+		if (opts.validate) {
 			this.#state.validateWrite()
 			this[obs].errors.update(this.#data.errors)
 		}
@@ -366,7 +369,7 @@ abstract class GameState implements IGameState {
 	}
 
 	changePos(position: Pos) {
-		this[data].pos.change(position)
+		this[data].pos.set(position)
 		return this
 	}
 
@@ -405,7 +408,7 @@ abstract class GameState implements IGameState {
 		return this
 	}
 
-	write(num: ValidNumbers, removeNotes?: boolean) {
+	write(num: ValidNumbers, opts: { removeNotes: boolean }) {
 		return this
 	}
 }
@@ -433,7 +436,7 @@ class InsertGameState extends EditedGameState {
 		return this
 	}
 
-	write(num: ValidNumbers, removeNotes = false) {
+	write(num: ValidNumbers, { removeNotes }: { removeNotes: boolean }) {
 		this[data].board.write(this[data].pos.data, num)
 		if (removeNotes) this[data].board.noteDeletion(this[data].pos.data, num)
 		return this

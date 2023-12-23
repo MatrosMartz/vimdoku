@@ -11,18 +11,8 @@ export class PosSvc implements IPos {
 	/** The minimum range for row and column coordinates. */
 	static readonly MIN_RANGE = 0
 
-	#x
-	#y
-
-	/**
-	 * Creates an instance of the PosSvc class.
-	 * @param pos Initial Sudoku board.
-	 */
-	constructor(pos?: Partial<Pos>)
-	constructor({ y = 0, x = 0 }: Partial<Pos> = {}) {
-		this.#x = x
-		this.#y = y
-	}
+	#x = PosSvc.IDLE_POS.x
+	#y = PosSvc.IDLE_POS.y
 
 	get data(): Pos {
 		return { y: this.#y, x: this.#x }
@@ -111,12 +101,6 @@ export class PosSvc implements IPos {
 		return { y: pos1.y + pos2.y, x: pos1.x + pos2.x }
 	}
 
-	change({ y, x }: RequireOne<Pos>) {
-		if (x != null) this.#x = x
-		if (y != null) this.#y = y
-		return this
-	}
-
 	moveDown(times: number) {
 		if (this.#y === PosSvc.MAX_RANGE) this.#x = PosSvc.MAX_RANGE
 		else this.#y = Math.min(PosSvc.MAX_RANGE, this.#y + times)
@@ -136,6 +120,12 @@ export class PosSvc implements IPos {
 	moveUp(times: number) {
 		if (this.#y === PosSvc.MIN_RANGE) this.#x = PosSvc.MIN_RANGE
 		else this.#y = Math.max(PosSvc.MIN_RANGE, this.#y - times)
+		return this
+	}
+
+	set({ y, x }: RequireOne<Pos>) {
+		if (x != null) this.#x = x
+		if (y != null) this.#y = y
 		return this
 	}
 }

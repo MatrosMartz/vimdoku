@@ -9,7 +9,8 @@ import {
 	ScreenAction,
 	type ScreenData,
 } from '$screen/domain/models'
-import { type GameOpts, type IGame, SudokuAction, type SudokuData } from '$sudoku/domain/models'
+import { type IGame, SudokuAction, type SudokuData } from '$sudoku/domain/models'
+import { SolutionSvc } from '$sudoku/domain/services'
 
 import type { IMed, Med } from '../models'
 
@@ -154,15 +155,18 @@ export class MedSvc implements IMed {
 		await this.#game.save()
 	}
 
-	async #dSudokuStart(data: Partial<GameOpts>) {
+	async #dSudokuStart({ difficulty, solution = SolutionSvc.create() }: SudokuData.Start) {
 		this.#screen.setMain(MainScreenKind.Game)
-		this.#game = await this.#game.start(data)
+		this.#game = await this.#game.start({ difficulty, solution })
 		if (this.#prefs.data.timer) this.#game.timerStart()
 	}
 
 	#dSudokuWrite(data: SudokuData.Write) {
 		if (data.value === 0) this.#game.clear()
-		else this.#game.write(data.value, this.#prefs.data.autoNoteDeletion, this.#prefs.data.autoValidation)
+		else {
+			const { autoNoteDeletion: removeNotes, autoValidation: validate } = this.#prefs.data
+			this.#game.write(data.value, { removeNotes, validate })
+		}
 
 		if (this.#game.hasWin) {
 			this.#screen.setDialog({ kind: DialogKind.Win })

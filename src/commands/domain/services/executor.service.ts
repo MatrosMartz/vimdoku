@@ -1,9 +1,10 @@
 import type { IObs } from '~/share/domain/models'
 import { DialogKind, ScreenAction } from '$screen/domain/models'
 import { DifficultyKind, SudokuAction } from '$sudoku/domain/models'
+import { SolutionSvc } from '$sudoku/domain/services'
 
 import type { IExec, IMed, ISugg, Sugg } from '../models'
-import { SuggSvc } from '.'
+import { SuggSvc } from './suggestions.service'
 
 interface ExecutorDeps {
 	allSuggestions: ISugg[]

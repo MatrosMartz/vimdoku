@@ -6,11 +6,6 @@ export interface Pos {
 }
 
 export interface IPos {
-	/**
-	 * Change the current position by updating the row and/or column.
-	 * @param pos An object containing row and/or col properties to update the position.
-	 */
-	change(pos: RequireOne<Pos>): this
 	/** Get the current data of position. */
 	get data(): Pos
 	/**
@@ -33,4 +28,9 @@ export interface IPos {
 	 * @param times The number of times to move up.
 	 */
 	moveUp(times: number): this
+		/**
+	 * Change the current position by updating the row and/or column.
+	 * @param pos An object containing row and/or col properties to update the position.
+	 */
+		set(pos: RequireOne<Pos>): this
 }

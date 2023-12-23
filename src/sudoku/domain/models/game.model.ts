@@ -89,9 +89,9 @@ export interface IGameState {
 	/**
 	 * Write a valid number as value or notes depending on the game mode in the current position cell.
 	 * @param num The valid number to write.
-	 * @param removeNotes Indicates if it should remove the related notes.
+	 * @param opts removeNotes: Indicates if it should remove the related notes.
 	 */
-	write(num: ValidNumbers, removeNotes?: boolean): this
+	write(num: ValidNumbers, opts: { removeNotes: boolean }): this
 }
 
 export interface IGame {
@@ -171,7 +171,7 @@ export interface IGame {
 	 * @param opts Optional game options, including difficulty and solution.
 	 * @returns The new started game.
 	 */
-	start(opts?: Partial<GameOpts>): Promise<IGame>
+	start(opts: GameOpts): Promise<IGame>
 	/**
 	 * Pause the increase or decrease of time.
 	 * @returns This TimerSvc instance after freezing the time value.
@@ -195,9 +195,8 @@ export interface IGame {
 	/**
 	 * Write a valid number as value or notes depending on the game mode in the current position cell.
 	 * @param num The valid number to write.
-	 * @param removeNotes Indicates if it should remove the related notes.
-	 * @param validate Indicates if it should validate after write number.
+	 * @param opts Indicates if it should remove the related notes and validate after write number.
 	 * @returns The updated game.
 	 */
-	write(num: ValidNumbers, removeNotes?: boolean, validate?: boolean): this
+	write(num: ValidNumbers, opts: { removeNotes: boolean; validate: boolean }): this
 }

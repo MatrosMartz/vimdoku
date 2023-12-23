@@ -26,16 +26,8 @@ export class BrowserGameRepo implements GameRepo {
 		this.#infoStorage = createBrowserStorage(info)
 	}
 
-	async create(data: { info?: GameInfo; board: BoardJSON; opts: GameOptsJSON }): Promise<void>
-	async create({
-		info = { errors: 0, timer: 0 },
-		board,
-		opts,
-	}: {
-		info?: GameInfo
-		board: BoardJSON
-		opts: GameOptsJSON
-	}) {
+	async create(data: { board: BoardJSON; info: GameInfo; opts: GameOptsJSON }): Promise<void>
+	async create({ board, info, opts }: { board: BoardJSON; info: GameInfo; opts: GameOptsJSON }) {
 		const { boardJSON, notes } = new GridSvc(board).groupSubgrids(({ notes, ...boardJSON }) => ({
 			boardJSON,
 			notes,

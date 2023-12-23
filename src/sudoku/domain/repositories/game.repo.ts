@@ -1,7 +1,7 @@
 import type { BoardJSON, GameInfo, GameOptsJSON } from '../models'
 
 export interface GameRepo {
-	create(data: { info?: GameInfo; board: BoardJSON; opts: GameOptsJSON }): Promise<void>
+	create(data: { board: BoardJSON; info: GameInfo; opts: GameOptsJSON }): Promise<void>
 	delete(): Promise<void>
 	getBoard(): Promise<BoardJSON>
 	getInfo(): Promise<GameInfo>
