@@ -47,8 +47,8 @@ export class CellSvc implements ICell {
 		this.#state = this.#stateForKind(data)
 	}
 
-	get data(): Cell {
-		return this.data
+	get data() {
+		return this.#state.data
 	}
 
 	get isCorrect() {
