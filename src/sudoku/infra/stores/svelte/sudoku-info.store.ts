@@ -1,6 +1,6 @@
+import { inject } from '~/share/utils'
 import { createState } from '~/share/utils/svelte/create-state'
+import { ErrorsObs, TimerObs } from '$sudoku/domain/services'
 
-import { errorsObs, timerObs } from '../sudoku-info.store'
-
-export const errorsState = createState(errorsObs)
-export const timerState = createState(timerObs)
+export const errorsState = createState(inject(ErrorsObs))
+export const timerState = createState(inject(TimerObs))

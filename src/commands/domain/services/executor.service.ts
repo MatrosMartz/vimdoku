@@ -1,22 +1,21 @@
-import type { IObs } from '~/share/domain/models'
+import { inject } from '~/share/utils'
 import { DialogKind, ScreenAction } from '$screen/domain/models'
 import { DifficultyKind, SudokuAction } from '$sudoku/domain/models'
-import { SolutionSvc } from '$sudoku/domain/services'
 
-import type { IExec, IMed, ISugg, Sugg } from '../models'
+import type { IExec, IMed, ISugg } from '../models'
 import { SuggSvc } from './suggestions.service'
+import { SuggsObs } from './suggestions-obs.service'
 
 interface ExecutorDeps {
 	allSuggestions: ISugg[]
 	mediator: IMed
-	suggsObs: IObs<Sugg[]>
 }
 
 /** Represent a Executor Service. */
 export class ExecSvc implements IExec {
 	readonly #allSuggestions
 	readonly #mediator
-	readonly #suggsObs
+	readonly #suggsObs = inject(SuggsObs)
 	#timeoutID: ReturnType<typeof setTimeout> | null = null
 
 	/**
@@ -24,10 +23,9 @@ export class ExecSvc implements IExec {
 	 * @param deps An object contains mediator service and other dependencies.
 	 */
 	constructor(deps: ExecutorDeps)
-	constructor({ allSuggestions, mediator, suggsObs }: ExecutorDeps) {
+	constructor({ allSuggestions, mediator }: ExecutorDeps) {
 		this.#mediator = mediator
 		this.#allSuggestions = allSuggestions
-		this.#suggsObs = suggsObs
 	}
 
 	run(cmdLike: string) {
@@ -65,7 +63,7 @@ export class ExecSvc implements IExec {
 
 		this.#timeoutID = setTimeout(() => {
 			const newSuggs = this.#allSuggestions.filter(suggs => suggs.match(cmdLike))
-			this.#suggsObs.update(SuggSvc.getArrayData(newSuggs))
+			this.#suggsObs.set(SuggSvc.getArrayData(newSuggs))
 			this.#timeoutID = null
 		}, 500)
 

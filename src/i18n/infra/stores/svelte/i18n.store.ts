@@ -1,5 +1,5 @@
+import { inject } from '~/share/utils'
 import { createState } from '~/share/utils/svelte/create-state'
+import { I18nObs } from '$i18n/domain/services'
 
-import { i18nObs } from '../i18n.store'
-
-export const i18nState = createState(i18nObs)
+export const i18nState = createState(inject(I18nObs))

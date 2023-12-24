@@ -1,18 +1,19 @@
 import type { RequireOne } from '~/share/types'
+import { inject } from '~/share/utils'
 
-import type { IPos, Pos } from '../models'
+import { IDLE_POS, type IPos, type Pos } from '../models'
+import { PosObs } from './position-obs.service'
 
 /** Represent a Position Service. */
 export class PosSvc implements IPos {
-	/** The default position value.. */
-	static readonly IDLE_POS: Pos = { x: 0, y: 0 }
 	/** The maximum range for row and column coordinates. */
 	static readonly MAX_RANGE = 8
 	/** The minimum range for row and column coordinates. */
 	static readonly MIN_RANGE = 0
 
-	#x = PosSvc.IDLE_POS.x
-	#y = PosSvc.IDLE_POS.y
+	readonly #obs = inject(PosObs)
+	#x: number = IDLE_POS.x
+	#y: number = IDLE_POS.y
 
 	get data(): Pos {
 		return { y: this.#y, x: this.#x }
@@ -104,28 +105,33 @@ export class PosSvc implements IPos {
 	moveDown(times: number) {
 		if (this.#y === PosSvc.MAX_RANGE) this.#x = PosSvc.MAX_RANGE
 		else this.#y = Math.min(PosSvc.MAX_RANGE, this.#y + times)
+		this.#obs.set(this.data)
 		return this
 	}
 
 	moveLeft(times: number) {
 		this.#x = Math.max(PosSvc.MIN_RANGE, this.#x - times)
+		this.#obs.set(this.data)
 		return this
 	}
 
 	moveRight(times: number) {
 		this.#x = Math.min(PosSvc.MAX_RANGE, this.#x + times)
+		this.#obs.set(this.data)
 		return this
 	}
 
 	moveUp(times: number) {
 		if (this.#y === PosSvc.MIN_RANGE) this.#x = PosSvc.MIN_RANGE
 		else this.#y = Math.max(PosSvc.MIN_RANGE, this.#y - times)
+		this.#obs.set(this.data)
 		return this
 	}
 
 	set({ y, x }: RequireOne<Pos>) {
 		if (x != null) this.#x = x
 		if (y != null) this.#y = y
+		this.#obs.set(this.data)
 		return this
 	}
 }

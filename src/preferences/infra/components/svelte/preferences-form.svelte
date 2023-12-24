@@ -2,13 +2,13 @@
 	import { Form } from '~/share/infra/components/svelte'
 	import { med } from '$cmd/infra/services'
 	import { i18nState } from '$i18n/infra/stores/svelte'
-	import { PrefAction, prefsFormSchema } from '$pref/domain/models'
+	import { IDLE_PREFS_GROUPS, PrefAction, prefsFormSchema } from '$pref/domain/models'
 	import { PrefsSvc } from '$pref/domain/services'
 	import { prefsState } from '$pref/infra/stores/svelte'
 </script>
 
 <Form
-	defaultValues={PrefsSvc.DEFAULT_GROUPS}
+	defaultValues={IDLE_PREFS_GROUPS}
 	initialValues={PrefsSvc.getGroups(prefsState.data)}
 	labels={{
 		groups: {

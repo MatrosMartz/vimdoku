@@ -1,7 +1,7 @@
+import { inject } from '~/share/utils'
 import { createState } from '~/share/utils/svelte/create-state'
+import { BoardObs, SavedObs } from '$sudoku/domain/services'
 
-import { boardObs, savedObs } from '../sudoku.store'
+export const boardState = createState(inject(BoardObs))
 
-export const boardState = createState(boardObs)
-
-export const savedState = createState(savedObs)
+export const savedState = createState(inject(SavedObs))

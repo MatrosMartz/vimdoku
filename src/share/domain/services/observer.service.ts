@@ -28,10 +28,14 @@ export class ObsSvc<T> implements IObs<T> {
 		return this
 	}
 
-	update(data: T) {
+	set(data: T) {
 		this.#data = data
 		for (const sub of this.#observers) sub(data)
 		return this
+	}
+
+	update(updater: (data: T) => T) {
+		return this.set(updater(this.#data))
 	}
 }
 
@@ -40,19 +44,18 @@ export class HistoryObsSvc<T> extends ObsSvc<T> implements IHistoryObs<T> {
 	#cursor: number
 	readonly #emptyState: T
 	readonly #history: T[]
-	#length
+	#length = 20
 
 	/**
 	 * Creates an instance of the HistoryObservableSvc class.
 	 * @param emptyState The value that will represent empty state.
 	 * @param history Optional history with which the context is to be created.
 	 */
-	constructor(emptyState: T, history: T[] = [], length: number) {
+	constructor(emptyState: T, history: T[] = []) {
 		super(emptyState)
 		this.#emptyState = emptyState
 		this.#history = history
 		this.#cursor = this.#history.length
-		this.#length = length
 	}
 
 	get history() {
@@ -68,38 +71,36 @@ export class HistoryObsSvc<T> extends ObsSvc<T> implements IHistoryObs<T> {
 		if (this.#history.length > length) this.#history.length = length
 	}
 
-	redo() {
-		if (this.#cursor < this.#history.length) this.#cursor++
-		super.update(this.data)
+	overwrite(data: T) {
+		return this.trunc().push(data)
+	}
+
+	push(data: T) {
+		this.#history.push(data)
+		super.set(this.#emptyState)
+
+		const hasExceed = this.#length - this.#history.length <= 0
+
+		if (hasExceed) this.#history.shift()
+
 		return this
 	}
 
-	rewrite(data: T) {
-		return this.#trunc().update(this.#emptyState)
+	redo() {
+		if (this.#cursor < this.#history.length) this.#cursor++
+		super.set(this.data)
+		return this
+	}
+
+	trunc() {
+		if (this.#history.length > this.#cursor) this.#history.length = this.#cursor
+
+		return this
 	}
 
 	undo() {
 		if (this.#cursor > 0) this.#cursor--
-		super.update(this.data)
-		return this
-	}
-
-	update(data: T) {
-		this.#history.push(data)
-		super.update(this.#emptyState)
-
-		const exceeds = this.#length - this.#history.length
-
-		if (exceeds <= 0) return this
-
-		this.#history.splice(0, exceeds)
-
-		return this
-	}
-
-	#trunc() {
-		if (this.#history.length > this.#cursor) this.#history.length = this.#cursor
-
+		super.set(this.data)
 		return this
 	}
 }

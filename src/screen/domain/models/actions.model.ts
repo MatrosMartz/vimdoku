@@ -1,5 +1,5 @@
+import type { DialogData } from './dialog.model'
 import type { MainScreenKind } from './main.model'
-import type { DialogData } from './vim-screen.model'
 
 export enum ScreenAction {
 	Exit = 'exit-screen',

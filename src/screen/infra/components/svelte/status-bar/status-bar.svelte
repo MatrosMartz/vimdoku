@@ -3,8 +3,9 @@
 
 	import { Icon } from '~/share/infra/components/svelte'
 	import { tooltip } from '~/share/infra/components/svelte/tooltip'
+	import { posState } from '~/share/infra/stores/svelte'
 	import { i18nState } from '$i18n/infra/stores/svelte'
-	import { errorsState, posState, savedState, timerState } from '$sudoku/infra/stores/svelte'
+	import { errorsState, savedState, timerState } from '$sudoku/infra/stores/svelte'
 
 	import SelectMode from './select-mode.svelte'
 

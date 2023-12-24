@@ -1,24 +1,30 @@
 import type { Pos } from '~/share/domain/models'
-import { InvalidBoardError } from '~/share/utils'
+import { inject, InvalidBoardError } from '~/share/utils'
 
 import { type GameOpts, type IGrid, type SolutionJSON, type ValidNumbers } from '../models'
 import { type Board, type BoardJSON, type IBoard } from '../models/board.model'
-import { CellKind, type ICell, INSERT_KINDS } from '../models/cell.model'
+import { CellKind, type ICell } from '../models/cell.model'
 import { CellSvc } from './cell.service'
 import { GridSvc } from './grid.service'
+import { BoardObs, ErrorsObs } from './sudoku-obs.service'
 
 /** Represent a Sudoku Board Service. */
 export class BoardSvc implements IBoard {
 	#correctCells = 0
+	#errors
+	readonly #errorsObs = inject(ErrorsObs)
 	#grid
+	readonly #obs = inject(BoardObs)
 
 	/**
 	 * Creates an instance of the BoardSvc class.
 	 * @param grid Initial Sudoku board.
 	 */
-	constructor(grid: IGrid<ICell>) {
+	constructor(grid: IGrid<ICell>, errors: number) {
 		this.#grid = grid
+		this.#obs.set(this.data)
 		this.#correctCells = this.#grid.count(({ isCorrect }) => isCorrect)
+		this.#errors = errors
 	}
 
 	get data(): Board {
@@ -33,15 +39,15 @@ export class BoardSvc implements IBoard {
 	 * Create an instance of BoardSvc with options.
 	 * @param opts Options for create board (optional).
 	 */
-	static create(opts: GameOpts): BoardSvc
-	static create({ difficulty, solution }: GameOpts) {
+	static create(opts: GameOpts, errors: number): BoardSvc
+	static create({ difficulty, solution }: GameOpts, errors: number) {
 		const diffNum = Number(difficulty)
 		const grid = GridSvc.create<ICell>(pos => {
 			const isInitial = Boolean(Math.floor(Math.random() * diffNum))
 			return CellSvc.create({ isInitial, solution: solution.grid.getCell(pos), pos })
 		})
 
-		return new BoardSvc(grid)
+		return new BoardSvc(grid, errors)
 	}
 
 	/**
@@ -50,13 +56,13 @@ export class BoardSvc implements IBoard {
 	 * @param solution JSON representation of solutions.
 	 * @throws {InvalidBoardError} If `boardLike` is not a valid JSON.
 	 */
-	static fromJSON(boardLike: BoardJSON, solution: SolutionJSON) {
+	static fromJSON(boardLike: BoardJSON, solution: SolutionJSON, errors: number) {
 		try {
 			if (Array.isArray(boardLike)) {
 				const data = new GridSvc(boardLike).mapGrid<ICell>((json, { y, x }) =>
 					CellSvc.fromJSON({ cellLike: json, solution: solution[y][x], pos: { y, x } })
 				)
-				return new BoardSvc(data)
+				return new BoardSvc(data, errors)
 			} else throw new InvalidBoardError(boardLike)
 		} catch (err) {
 			throw err instanceof InvalidBoardError ? err : new InvalidBoardError(boardLike, err)
@@ -69,11 +75,11 @@ export class BoardSvc implements IBoard {
 	 * @param solution JSON representation of solutions.
 	 * @throws {InvalidBoardError} If `boardLike` is not a valid JSON string.
 	 */
-	static fromString(boardLike: string, solution: SolutionJSON) {
+	static fromString(boardLike: string, solution: SolutionJSON, errors: number) {
 		try {
 			const cellJSONs: BoardJSON = JSON.parse(boardLike)
 
-			return this.fromJSON(cellJSONs, solution)
+			return this.fromJSON(cellJSONs, solution, errors)
 		} catch (err) {
 			throw err instanceof InvalidBoardError ? err : new InvalidBoardError(boardLike, err)
 		}
@@ -82,6 +88,7 @@ export class BoardSvc implements IBoard {
 	clear(cellPos: Pos) {
 		this.#grid = this.#grid.editCell(cellPos, cell => cell.clear())
 
+		this.#obs.set(this.data)
 		return this
 	}
 
@@ -89,6 +96,7 @@ export class BoardSvc implements IBoard {
 		if (this.#grid.getCell(cellPos).kind !== CellKind.Initial)
 			this.#grid = this.#grid.mapRelated(cellPos, cell => cell.removeNote(num))
 
+		this.#obs.set(this.data)
 		return this
 	}
 
@@ -102,17 +110,21 @@ export class BoardSvc implements IBoard {
 
 	toggleNotes(cellPos: Pos, num: ValidNumbers) {
 		this.#grid = this.#grid.editCell(cellPos, cell => cell.toggleNote(num))
-
+		this.#obs.set(this.data)
 		return this
 	}
 
-	validate(cellPos: Pos, effect: (result: boolean) => void) {
-		this.#grid = this.#grid.editCell(cellPos, cell => cell.verify(effect))
+	validate(cellPos: Pos) {
+		this.#grid = this.#grid.editCell(cellPos, cell => cell.verify(this.#verify))
+		this.#errorsObs.set(this.#errors)
+		this.#obs.set(this.data)
 		return this
 	}
 
-	validateAllBoard(effect: (result: boolean) => void) {
-		this.#grid = this.#grid.mapGrid(cell => (INSERT_KINDS.includes(cell.kind) ? cell.verify(effect) : cell))
+	validateAllBoard() {
+		this.#grid = this.#grid.mapGrid(cell => cell.verify(this.#verify))
+		this.#errorsObs.set(this.#errors)
+		this.#obs.set(this.data)
 		return this
 	}
 
@@ -122,6 +134,11 @@ export class BoardSvc implements IBoard {
 
 		if (this.#grid.getCell(cellPos).isCorrect) this.#correctCells++
 
+		this.#obs.set(this.data)
 		return this
+	}
+
+	readonly #verify = (isIncorrect: boolean) => {
+		if (isIncorrect) this.#errors++
 	}
 }

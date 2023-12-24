@@ -79,7 +79,7 @@ export interface ICellState {
 	 * Change kind if value is the correct or incorrect.
 	 * @returns The updated cell state.
 	 */
-	verify(effect: (result: boolean) => void): ICellState
+	verify(effect: (isIncorrect: boolean) => void): ICellState
 	/**
 	 * Toggle a cell value (add if not present, remove if present).
 	 * @param num The note add (1-9).

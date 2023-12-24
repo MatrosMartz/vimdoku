@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { Pos } from '~/share/domain/models'
 	import { PosSvc } from '~/share/domain/services'
+	import { posState } from '~/share/infra/stores/svelte'
 	import { med } from '$cmd/infra/services'
 	import { type Cell, SudokuAction } from '$sudoku/domain/models'
-	import { posState } from '$sudoku/infra/stores/svelte'
 
 	export let data: Cell
 	export let position: Pos

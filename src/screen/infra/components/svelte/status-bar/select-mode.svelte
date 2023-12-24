@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { Icon } from '~/share/infra/components/svelte'
 	import { tooltip, type TooltipProps } from '~/share/infra/components/svelte/tooltip'
+	import { posState } from '~/share/infra/stores/svelte'
 	import { med } from '$cmd/infra/services'
 	import { i18nState } from '$i18n/infra/stores/svelte'
 	import { DialogKind, MainScreenKind, ScreenAction } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
-	import { ModeKind, MODES_KEYS, SudokuAction } from '$sudoku/domain/models'
-	import { modeState, posState } from '$sudoku/infra/stores/svelte'
+	import { MODE_KEYS, ModeKind, SudokuAction } from '$sudoku/domain/models'
+	import { modeState } from '$sudoku/infra/stores/svelte'
 
 	$: disabled = $screenState.main !== MainScreenKind.Game
 
@@ -78,7 +79,7 @@
 						on:focusout={focusoutHandler}
 						on:change={modeHandler}
 						on:keyup={keyupHandler}
-						use:tooltip={{ id: `mode-${mode}-input-key-describe`, text: `<${MODES_KEYS[mode]}>` }}
+						use:tooltip={{ id: `mode-${mode}-input-key-describe`, text: `<${MODE_KEYS[mode]}>` }}
 					/>
 					<span>{$i18nState.get(`modes-${mode}`, mode.toUpperCase())}</span><Icon id="check" />
 				</label>

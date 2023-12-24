@@ -1,51 +1,36 @@
-import type { IObs } from '~/share/domain/models'
-import { FormFields } from '~/share/domain/services'
-import { InvalidPreferencesError, sameStructure } from '~/share/utils'
+import { inject, InvalidPreferencesError, sameStructure } from '~/share/utils'
 
-import { type IPrefs, PrefFields, type Prefs } from '../models'
-import { sudokuFields, type SudokuPrefs } from '../models/sudoku.model'
-import { userFields, type UserPrefs } from '../models/user.model'
-import { vimFields, type VimPrefs } from '../models/vim.model'
+import { IDLE_PREFS, type IPrefs, type Prefs } from '../models'
+import { SUDOKU_IDLE_PREFS, type SudokuPrefs } from '../models/sudoku.model'
+import { USER_IDLE_PREFS, type UserPrefs } from '../models/user.model'
+import { VIM_IDLE_PREFS, type VimPrefs } from '../models/vim.model'
 import type { PrefsRepo } from '../repositories'
-
-const { freeze: _f } = Object
+import { PrefsObs } from './preferences-obs.service'
 
 const keyIn = {
 	sudoku(key: string): key is keyof SudokuPrefs {
-		return key in PrefsSvc.DEFAULT_SUDOKU
+		return key in SUDOKU_IDLE_PREFS
 	},
 	user(key: string): key is keyof UserPrefs {
-		return key in PrefsSvc.DEFAULT_USER
+		return key in USER_IDLE_PREFS
 	},
 	vim(key: string): key is keyof VimPrefs {
-		return key in PrefsSvc.DEFAULT_VIM
+		return key in VIM_IDLE_PREFS
 	},
 }
 
 /** Represent a Preferences Service for game. */
 export class PrefsSvc implements IPrefs {
-	/** Default all Preferences. */
-	static readonly DEFAULT = _f(FormFields.getDefaultValues(PrefFields))
-	/** Default Sudoku Preferences. */
-	static readonly DEFAULT_SUDOKU = _f(FormFields.getDefaultValues(sudokuFields))
-	/** Default User Preferences. */
-	static readonly DEFAULT_USER = _f(FormFields.getDefaultValues(userFields))
-	/** Default VIM preferences. */
-	static readonly DEFAULT_VIM = _f(FormFields.getDefaultValues(vimFields))
-	// eslint-disable-next-line @typescript-eslint/member-ordering
-	static readonly DEFAULT_GROUPS = { sudoku: this.DEFAULT_SUDOKU, user: this.DEFAULT_USER, vim: this.DEFAULT_VIM }
-
-	#data: Prefs = { ...PrefsSvc.DEFAULT }
+	#data: Prefs = { ...IDLE_PREFS }
+	readonly #obs = inject(PrefsObs)
 	readonly #repo
-	readonly #obs
 
 	/**
 	 * Create an instance of the PreferencesSvc class.
 	 * @param repo Initial Sudoku board.
 	 */
-	constructor(repo: PrefsRepo, obs: IObs<Prefs>) {
+	constructor(repo: PrefsRepo) {
 		this.#repo = repo
-		this.#obs = obs
 	}
 
 	get data(): Prefs {
@@ -70,7 +55,7 @@ export class PrefsSvc implements IPrefs {
 	 * @readonly True if it complies with the structure, False if it doesn't.
 	 */
 	static check(preferences: Prefs) {
-		return sameStructure(preferences, PrefsSvc.DEFAULT)
+		return sameStructure(preferences, IDLE_PREFS)
 	}
 
 	/**
@@ -92,9 +77,9 @@ export class PrefsSvc implements IPrefs {
 	 * @returns Default value of the specified preference.
 	 */
 	static getDefaultValue<K extends keyof Prefs>(key: K) {
-		if (keyIn.sudoku(key)) return PrefsSvc.DEFAULT_SUDOKU[key]
-		if (keyIn.user(key)) return PrefsSvc.DEFAULT_USER[key]
-		if (keyIn.vim(key)) return PrefsSvc.DEFAULT_VIM[key]
+		if (keyIn.sudoku(key)) return SUDOKU_IDLE_PREFS[key]
+		if (keyIn.user(key)) return USER_IDLE_PREFS[key]
+		if (keyIn.vim(key)) return VIM_IDLE_PREFS[key]
 	}
 
 	static getGroups(prefs: Prefs) {
@@ -142,18 +127,18 @@ export class PrefsSvc implements IPrefs {
 		if (!(await this.#repo.has())) return
 
 		this.#data = await this.#repo.load()
-		this.#obs.update(this.#data)
+		this.#obs.set(this.#data)
 	}
 
 	resetAll() {
-		this.#data = { ...PrefsSvc.DEFAULT }
-		this.#obs.update(this.#data)
+		this.#data = { ...IDLE_PREFS }
+		this.#obs.set(this.#data)
 		return this
 	}
 
 	resetByKey<K extends keyof Prefs>(key: K) {
-		this.#data = { ...this.#data, [key]: PrefsSvc.DEFAULT[key] }
-		this.#obs.update(this.#data)
+		this.#data = { ...this.#data, [key]: IDLE_PREFS[key] }
+		this.#obs.set(this.#data)
 		return this
 	}
 
@@ -165,7 +150,7 @@ export class PrefsSvc implements IPrefs {
 		if (!PrefsSvc.check(preferences)) throw new InvalidPreferencesError(preferences)
 
 		this.#data = { ...preferences }
-		this.#obs.update(this.#data)
+		this.#obs.set(this.#data)
 		return this
 	}
 

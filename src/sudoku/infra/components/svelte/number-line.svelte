@@ -1,7 +1,7 @@
 <script lang="ts">
+	import { posState } from '~/share/infra/stores/svelte'
 	import { iterateArray } from '~/share/utils'
 	import { prefsState } from '$pref/infra/stores/svelte'
-	import { posState } from '$sudoku/infra/stores/svelte'
 
 	export let direction: 'horizontal' | 'vertical'
 

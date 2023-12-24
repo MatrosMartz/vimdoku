@@ -28,9 +28,11 @@ export interface IPos {
 	 * @param times The number of times to move up.
 	 */
 	moveUp(times: number): this
-		/**
+	/**
 	 * Change the current position by updating the row and/or column.
 	 * @param pos An object containing row and/or col properties to update the position.
 	 */
-		set(pos: RequireOne<Pos>): this
+	set(pos: RequireOne<Pos>): this
 }
+
+export const IDLE_POS = { x: 0, y: 0 } as const satisfies Pos

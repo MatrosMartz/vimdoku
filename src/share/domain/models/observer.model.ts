@@ -14,28 +14,31 @@ export interface IObs<T> {
 	 */
 	remove(observer: Obsr<T>): this
 	/**
-	 * Updates all observer with the new data.
+	 * Set all observer with the new data.
 	 * @param data The new value of data.
 	 */
-	update(data: T): this
+	set(data: T): this
+	update(updater: (data: T) => T): this
 }
 
 export interface IHistoryObs<T> extends IObs<T> {
 	/** Get the current value of the entire history. */
 	readonly history: T[]
 	length: number
-	/** Navigate backwards in history. */
-	redo(): this
 	/**
-	 * Truncates the history based on the index and updates based on it.
+	 * Truncates the history based on the cursor and updates based on it.
 	 * @param data The new entry of the history.
 	 */
-	rewrite(data: T): this
-	/** Navigate forwards in history. */
-	undo(): this
+	overwrite(data: T): this
 	/**
 	 * Adds a new entry to the history and set the current data value to an empty state.
 	 * @param data The new entry of the history.
 	 */
-	update(data: T): this
+	push(data: T): this
+	/** Navigate backwards in history. */
+	redo(): this
+	/** Truncates the history based on the cursor */
+	trunc(): this
+	/** Navigate forwards in history. */
+	undo(): this
 }

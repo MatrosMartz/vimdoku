@@ -1,19 +1,13 @@
+import { inject } from '~/share/utils'
+
 import type { ITimer } from '../models'
+import { TimerObs } from './sudoku-obs.service'
 
 /** Represent a TimerBoard Service. */
 export class TimerSvc implements ITimer {
-	static IDLE_STR = TimerSvc.parseString(0)
-
-	#data
+	#data = 0
 	#intervalID: ReturnType<typeof setInterval> | null = null
-
-	/**
-	 * Creates an instance of the TimerSvc class.
-	 * @param data Initial time value in seconds..
-	 */
-	constructor(data: number) {
-		this.#data = data
-	}
+	readonly #obs = inject(TimerObs)
 
 	get data() {
 		return this.#data
@@ -32,7 +26,7 @@ export class TimerSvc implements ITimer {
 		if (Number.isNaN(minutes)) throw new Error('invalid minutes')
 		if (Number.isNaN(seconds)) throw new Error('invalid seconds')
 
-		return new TimerSvc(hours * 3600 + minutes * 60 + seconds)
+		return new TimerSvc().set(hours * 3600 + minutes * 60 + seconds)
 	}
 
 	/**
@@ -69,27 +63,32 @@ export class TimerSvc implements ITimer {
 
 	reset(): this {
 		this.#data = 0
+		this.#obs.set(this.toString())
 		return this
 	}
 
-	start(effect: () => void) {
+	set(num: number) {
+		this.#data = num
+		this.#obs.set(this.toString())
+		return this
+	}
+
+	start() {
 		if (this.#intervalID != null) return this
 
-		this.#intervalID = setInterval(() => {
-			this.#inc()
-			effect()
-		}, 1000)
+		this.#intervalID = setInterval(() => this.#inc().#obs.set(this.toString()), 1000)
 
 		return this
 	}
 
-	toString(): string {
+	toString() {
 		return TimerSvc.parseString(this.#data)
 	}
 
 	/** Decrements the current time value by 1 second. */
 	#dec() {
 		this.#data--
+		return this
 	}
 
 	/** Increments the current time value by 1 second. */

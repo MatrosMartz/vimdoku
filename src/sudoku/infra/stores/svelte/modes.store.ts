@@ -1,5 +1,5 @@
+import { inject } from '~/share/utils'
 import { createState } from '~/share/utils/svelte/create-state'
+import { ModeObs } from '$sudoku/domain/services'
 
-import { modeObs } from '../modes.store'
-
-export const modeState = createState(modeObs)
+export const modeState = createState(inject(ModeObs))

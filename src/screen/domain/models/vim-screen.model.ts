@@ -1,30 +1,5 @@
-import type { DialogKind } from './dialog.model'
-import { type MainScreenKind } from './main.model'
-
-export interface HelpDialogOpts {
-	search: string
-}
-
-export interface InLnDialogOpts {
-	type: 'modes' | 'position'
-}
-
-export type DialogOpts = HelpDialogOpts | null | undefined
-
-export type DialogsWithoutOpts =
-	| DialogKind.Cmd
-	| DialogKind.None
-	| DialogKind.Pause
-	| DialogKind.PrefAll
-	| DialogKind.PrefDiff
-	| DialogKind.PrefEdit
-	| DialogKind.sel
-	| DialogKind.Win
-
-export type DialogData =
-	| { opts?: null; kind: DialogsWithoutOpts }
-	| { kind: DialogKind.InLn; opts: InLnDialogOpts }
-	| { kind: DialogKind.Help; opts: HelpDialogOpts }
+import { type DialogData, IDLE_DIALOG } from './dialog.model'
+import { IDLE_MAIN_SCREEN, type MainScreenKind } from './main.model'
 
 export interface VimScreen {
 	dialog: DialogData
@@ -45,3 +20,5 @@ export interface IScreen {
 	/** Set main screen. */
 	setMain(main: MainScreenKind): void
 }
+
+export const IDLE_SCREEN = { dialog: IDLE_DIALOG, main: IDLE_MAIN_SCREEN } as const satisfies VimScreen

@@ -1,4 +1,5 @@
 import type { FieldsToModel, FormGroup } from '~/share/domain/models'
+import { FormFields } from '~/share/domain/services'
 
 export const vimFields = {
 	cursorBox: { type: 'toggle', default: false },
@@ -10,3 +11,5 @@ export const vimFields = {
 } as const satisfies FormGroup
 
 export type VimPrefs = FieldsToModel<typeof vimFields>
+
+export const VIM_IDLE_PREFS = FormFields.getDefaultValues(vimFields)

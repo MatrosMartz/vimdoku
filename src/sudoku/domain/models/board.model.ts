@@ -34,8 +34,8 @@ export interface IBoard {
 	 * @param num The note to toggle (1-9).
 	 */
 	toggleNotes(cellPos: Pos, num: ValidNumbers): this
-	validate(cellPos: Pos, effect: (result: boolean) => void): this
-	validateAllBoard(effect: (result: boolean) => void): this
+	validate(cellPos: Pos): this
+	validateAllBoard(): this
 	/**
 	 * Toggle a cell value (add if not present, remove if present).
 	 * @param cellPos Position of the cell to which the value is changed.

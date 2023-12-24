@@ -1,4 +1,4 @@
-import type { IObs, IPos, Pos } from '~/share/domain/models'
+import type { IPos, Pos } from '~/share/domain/models'
 
 import type { GameRepo } from '../repositories'
 import type { Board, IBoard } from './board.model'
@@ -15,22 +15,9 @@ export interface Game {
 	timer: ITimer
 }
 
-export interface GameObs {
-	readonly board: IObs<Board | null>
-	readonly errors: IObs<number>
-	readonly mode: IObs<ModeKind>
-	readonly pos: IObs<Pos>
-	readonly saved: IObs<boolean>
-	readonly timer: IObs<string>
-}
-
-export interface NonStartedGameOpts {
-	obs: GameObs
-	repo: GameRepo
-}
-
-export interface StartedGameOpts extends NonStartedGameOpts {
+export interface StartedGameOpts {
 	data: Game
+	repo: GameRepo
 }
 
 export interface IGameState {

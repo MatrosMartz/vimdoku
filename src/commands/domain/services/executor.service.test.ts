@@ -1,11 +1,11 @@
 import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
-import type { IObs } from '~/share/domain/models'
-import { ObsSvc } from '~/share/domain/services'
+import { inject } from '~/share/utils'
 import { ALL_SUGGS } from '$cmd/infra/services'
 
-import type { IMed, Med, Sugg } from '../models'
+import type { IMed, Med} from '../models'
 import { ExecSvc } from './executor.service'
+import { SuggsObs } from './suggestions-obs.service'
 
 const mockMediator: IMed = {
 	dispatch(action: Med.Actions, data?: Record<string, unknown>) {
@@ -14,7 +14,7 @@ const mockMediator: IMed = {
 	async load() {},
 }
 
-let suggsObs: IObs<Sugg[]>
+const suggsObs = inject(SuggsObs)
 let executor: ExecSvc
 
 beforeAll(() => {
@@ -24,8 +24,7 @@ beforeAll(() => {
 })
 
 beforeEach(() => {
-	suggsObs = new ObsSvc([])
-	executor = new ExecSvc({ allSuggestions: ALL_SUGGS, mediator: mockMediator, suggsObs })
+	executor = new ExecSvc({ allSuggestions: ALL_SUGGS, mediator: mockMediator })
 })
 
 describe.concurrent('ExecutorSvc suggestions', () => {

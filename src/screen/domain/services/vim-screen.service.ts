@@ -1,25 +1,22 @@
-import type { IObs } from '~/share/domain/models'
+import { inject } from '~/share/utils'
 
-import { type DialogData, DialogKind, type IScreen, MainScreenKind, type VimScreen } from '../models'
-
-const { freeze: _f } = Object
+import {
+	type DialogData,
+	DialogKind,
+	IDLE_DIALOG,
+	IDLE_MAIN_SCREEN,
+	type IScreen,
+	MainScreenKind,
+	type VimScreen,
+} from '../models'
+import { ScreenObs } from './vim-screen-obs.service'
 
 /** Represent a VIM-like Screen Service for Sudoku game. */
 export class ScreenSvc implements IScreen {
-	/** Define default values for screen. */
-	static readonly DEFAULT_SCREEN = _f<VimScreen>({
-		dialog: _f({ kind: DialogKind.None }),
-		main: MainScreenKind.Start,
-	})
-
-	#dialog: DialogData = ScreenSvc.DEFAULT_SCREEN.dialog
-	#main = ScreenSvc.DEFAULT_SCREEN.main
-	readonly #obs
+	#dialog: DialogData = { ...IDLE_DIALOG }
+	#main = IDLE_MAIN_SCREEN
+	readonly #obs = inject(ScreenObs)
 	#prev: null | MainScreenKind = null
-
-	constructor(obs: IObs<VimScreen>) {
-		this.#obs = obs
-	}
 
 	get data(): VimScreen {
 		return { dialog: this.#dialog, main: this.#main }
@@ -36,24 +33,24 @@ export class ScreenSvc implements IScreen {
 	close() {
 		if (this.#dialog.kind === DialogKind.Win) {
 			this.#main = MainScreenKind.Start
-			this.#dialog = structuredClone(ScreenSvc.DEFAULT_SCREEN.dialog)
+			this.#dialog = { ...IDLE_DIALOG }
 			this.#prev = null
 		} else if (this.#dialog.kind !== DialogKind.None) {
-			this.#dialog = structuredClone(ScreenSvc.DEFAULT_SCREEN.dialog)
+			this.#dialog = { ...IDLE_DIALOG }
 		}
-		this.#obs.update(this.data)
+		this.#obs.set(this.data)
 	}
 
 	setDialog(dialog: DialogData) {
 		if (dialog.kind === DialogKind.Pause && this.#main !== MainScreenKind.Game) return
 		this.#dialog = structuredClone(dialog)
-		this.#obs.update(this.data)
+		this.#obs.set(this.data)
 	}
 
 	setMain(main: MainScreenKind) {
 		this.#prev = main === MainScreenKind.Start ? null : this.#main
 		this.#main = main
-		this.#dialog = structuredClone(ScreenSvc.DEFAULT_SCREEN.dialog)
-		this.#obs.update(this.data)
+		this.#dialog = { ...IDLE_DIALOG }
+		this.#obs.set(this.data)
 	}
 }

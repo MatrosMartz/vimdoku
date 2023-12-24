@@ -1,23 +1,13 @@
-import type { IObs } from '~/share/domain/models'
-import { Lang } from '$pref/domain/models'
+import { inject } from '~/share/utils'
+import { IDLE_PREFS, type Lang } from '$pref/domain/models'
 
-import type { I18nData, I18nKeys, I18nSchema, I18nValue, II18n } from '../models'
+import { type I18nKeys, type I18nSchema, type I18nValue, IDLE_I18N, type II18n } from '../models'
+import { I18nObs } from './i18n-obs.service'
 
 export class I18nSvc implements II18n {
-	static readonly IDLE: I18nData = {
-		get(key, fallBack) {
-			return fallBack
-		},
-	}
-
-	#actualLang = Lang.EN
-	#data = I18nSvc.IDLE
-
-	readonly #obs
-
-	constructor(obs: IObs<I18nData>) {
-		this.#obs = obs
-	}
+	#actualLang: Lang = IDLE_PREFS.language
+	#data = IDLE_I18N
+	readonly #obs = inject(I18nObs)
 
 	get actualLang() {
 		return this.#actualLang
@@ -38,7 +28,7 @@ export class I18nSvc implements II18n {
 				return getData(key, data) ?? fallBack
 			},
 		}
-		this.#obs.update(this.#data)
+		this.#obs.set(this.#data)
 	}
 
 	async #fetchData(lang: Lang) {

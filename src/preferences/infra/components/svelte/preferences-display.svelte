@@ -2,7 +2,7 @@
 	import { Button, ButtonMenu } from '~/share/infra/components/svelte/buttons'
 	import { capitalCase } from '~/share/utils'
 	import { med } from '$cmd/infra/services'
-	import type { I18nData } from '$i18n/domain/models'
+	import type { I18n } from '$i18n/domain/models'
 	import { i18nState } from '$i18n/infra/stores/svelte'
 	import {
 		type Accessibility,
@@ -29,7 +29,7 @@
 
 	$: showAll = $screenState.dialog.kind === DialogKind.PrefAll
 
-	function getA<E extends PrefsNamesEntries>(i18n: I18nData, [key, field]: E, value: unknown) {
+	function getA<E extends PrefsNamesEntries>(i18n: I18n, [key, field]: E, value: unknown) {
 		if (field.type === 'toggle') return i18n.get(`prefs-toggle-${value as boolean}`, String(value))
 		if (key === 'colorSchema') return i18n.get(`prefs-schema-${value as Schema}`, value as string)
 		if (key === 'language') return i18n.get('langName', value as string)

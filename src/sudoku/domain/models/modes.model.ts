@@ -5,9 +5,11 @@ export enum ModeKind {
 	X = 'normal',
 }
 
-export const MODES_KEYS: Record<ModeKind, string> = {
+export const MODE_KEYS: Record<ModeKind, string> = {
 	[ModeKind.N]: 'KeyN',
 	[ModeKind.I]: 'KeyI',
 	[ModeKind.V]: 'KeyV',
 	[ModeKind.X]: 'Esc',
 }
+
+export const IDLE_MODE = ModeKind.X

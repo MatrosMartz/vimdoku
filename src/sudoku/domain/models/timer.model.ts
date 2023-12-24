@@ -13,14 +13,21 @@ export interface ITimer {
 	 */
 	reset(): this
 	/**
+	 * Set the current time.
+	 * @param num The new value of the current time value.
+	 * @returns This TimerSvc instance after resetting the time value.
+	 */
+	set(num: number): this
+	/**
 	 * Start the timer.
-	 * @param effect Function to be executed each time the timer value changes.
 	 * @returns This TimerSvc instance after start the timer.
 	 */
-	start(effect: () => void): this
+	start(): this
 	/**
 	 * Converts the current time value to a string representation in the "HH:MM:SS" format.
 	 * @returns A string representing the current time value in "HH:MM:SS" format.
 	 */
 	toString(): string
 }
+
+export const IDLE_TIMER = '--:--:--'

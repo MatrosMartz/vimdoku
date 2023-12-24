@@ -1,30 +1,23 @@
-import type { Pos } from '~/share/domain/models'
+import { IDLE_POS, type Pos } from '~/share/domain/models'
 import { PosSvc } from '~/share/domain/services'
-import type { OptionalKeys } from '~/share/types'
-import { match } from '~/share/utils'
+import { inject, match } from '~/share/utils'
 
-import { type Board, ModeKind, type ValidNumbers } from '../models'
-import {
-	type Game,
-	type GameObs,
-	type IGame,
-	type IGameState,
-	type NonStartedGameOpts,
-	type StartedGameOpts,
-} from '../models/game.model'
+import { type Board, IDLE_MODE, IDLE_TIMER, ModeKind, type ValidNumbers } from '../models'
+import { type Game, type IGame, type IGameState, type StartedGameOpts } from '../models/game.model'
 import { type GameOpts } from '../models/game-options.model'
 import type { GameRepo } from '../repositories'
 import { BoardSvc } from './board.service'
+import { ModeObs, SavedObs } from './sudoku-obs.service'
 import { TimerSvc } from './timer.service'
 
 /** Simulated key for protected field. */
-const obs = Symbol('board-obs')
+const savedObs = Symbol('board-obs')
 /** Simulated key for protected field. */
 const repo = Symbol('board-repo')
 
 abstract class GameSvc implements IGame {
-	protected readonly [obs]: GameObs
 	protected readonly [repo]: GameRepo
+	protected readonly [savedObs] = inject(SavedObs)
 	abstract readonly board: Board | null
 	abstract readonly errors: number
 	abstract readonly hasWin: boolean
@@ -38,9 +31,9 @@ abstract class GameSvc implements IGame {
 	 * Creates an instance of the NonStartedGameSvc class.
 	 * @param repo The repository for game data.
 	 */
-	constructor(opts: NonStartedGameOpts) {
-		this[obs] = opts.obs
-		this[repo] = opts.repo
+	constructor(repo: GameRepo)
+	constructor(gRepo: GameRepo) {
+		this[repo] = gRepo
 	}
 
 	changeMode(mode: ModeKind) {
@@ -115,8 +108,8 @@ export class NonStartedGameSvc extends GameSvc {
 	readonly hasWin = false
 	readonly isStarted = false
 	readonly mode = ModeKind.X
-	readonly pos = { ...PosSvc.IDLE_POS }
-	readonly timer = TimerSvc.IDLE_STR
+	readonly pos = { ...IDLE_POS }
+	readonly timer = IDLE_TIMER
 
 	#isASaved = false
 
@@ -124,9 +117,9 @@ export class NonStartedGameSvc extends GameSvc {
 	 * Creates an instance of the NonStartedGameSvc class.
 	 * @param repo The repository for game data.
 	 */
-	constructor(opts: NonStartedGameOpts) {
-		super(opts)
-		this[obs].saved.update(false)
+	constructor(repo: GameRepo) {
+		super(repo)
+		this[savedObs].set(false)
 	}
 
 	get isASaved() {
@@ -135,7 +128,7 @@ export class NonStartedGameSvc extends GameSvc {
 
 	async load() {
 		this.#isASaved = await this[repo].hasData()
-		this[obs].saved.update(this.#isASaved)
+		this[savedObs].set(this.#isASaved)
 	}
 
 	async resume() {
@@ -145,19 +138,17 @@ export class NonStartedGameSvc extends GameSvc {
 		const optsData = await this[repo].getOpts()
 		const infoData = await this[repo].getInfo()
 
-		const data = new StartedGameData({
-			board: BoardSvc.fromJSON(boardData, optsData.solution),
-			errors: infoData.errors,
-			pos: new PosSvc(),
-			timer: new TimerSvc(infoData.timer),
-		})
+		const board = BoardSvc.fromJSON(boardData, optsData.solution, infoData.errors)
+		const timer = new TimerSvc().set(infoData.timer)
 
-		return new StartedGameSvc({ data, obs: this[obs], repo: this[repo] })
+		const data = new StartedGameData({ board, errors: infoData.errors, mode: IDLE_MODE, pos: new PosSvc(), timer })
+
+		return new StartedGameSvc({ data, repo: this[repo] })
 	}
 
 	async start(opts: GameOpts): Promise<StartedGameSvc>
 	async start({ difficulty, solution }: GameOpts) {
-		const board = BoardSvc.create({ difficulty, solution })
+		const board = BoardSvc.create({ difficulty, solution }, 0)
 
 		await this[repo].create({
 			board: board.toJSON(),
@@ -165,9 +156,9 @@ export class NonStartedGameSvc extends GameSvc {
 			opts: { difficulty, solution: solution.toJSON() },
 		})
 
-		const data = new StartedGameData({ board, pos: new PosSvc() })
+		const data = new StartedGameData({ board, errors: 0, mode: IDLE_MODE, pos: new PosSvc(), timer: new TimerSvc() })
 
-		return new StartedGameSvc({ data, obs: this[obs], repo: this[repo] })
+		return new StartedGameSvc({ data, repo: this[repo] })
 	}
 }
 
@@ -178,18 +169,12 @@ class StartedGameData implements Game {
 	readonly pos
 	timer
 
-	constructor({
-		board,
-		errors = 0,
-		mode = ModeKind.X,
-		pos,
-		timer = new TimerSvc(0),
-	}: OptionalKeys<Game, 'mode' | 'errors' | 'timer'>) {
-		this.board = board
-		this.errors = errors
-		this.mode = mode
-		this.pos = pos
-		this.timer = timer
+	constructor(data: Game) {
+		this.board = data.board
+		this.errors = data.errors
+		this.mode = data.mode
+		this.pos = data.pos
+		this.timer = data.timer
 	}
 }
 
@@ -198,19 +183,18 @@ class StartedGameSvc extends GameSvc {
 	readonly isStarted = true
 	readonly #data
 	#isASaved = true
+	readonly #modeObs = inject(ModeObs)
 	#state: IGameState
 
 	/**
 	 * Creates an instance of the StartedGameSvc class.
 	 * @param opts Options for th[StartedGam]eSvc (game data and repository).
 	 */
-	constructor(opts: StartedGameOpts)
-	constructor({ data, ...opts }: StartedGameOpts) {
-		super(opts)
-		this.#data = data
-		this.#state = GameState.create(data, data.mode)
-		this[obs].board.update(data.board.data)
-		this[obs].saved.update(true)
+	constructor(opts: StartedGameOpts) {
+		super(opts.repo)
+		this.#data = opts.data
+		this.#state = GameState.create(opts.data, opts.data.mode)
+		this[savedObs].set(true)
 	}
 
 	get board() {
@@ -243,51 +227,45 @@ class StartedGameSvc extends GameSvc {
 
 	changeMode(mode: ModeKind) {
 		this.#state = this.#state.changeMode(mode)
-		this[obs].mode.update(this.mode)
+		this.#modeObs.set(this.mode)
 		return this
 	}
 
 	changePos(position: Pos) {
 		this.#state.changePos(position)
-		this[obs].pos.update(this.pos)
 		return this
 	}
 
 	clear() {
 		this.#state.clear()
-		this[obs].board.update(this.board)
 		this.#isASaved = false
-		this[obs].saved.update(false)
+		this[savedObs].set(false)
 		return this
 	}
 
 	async end() {
 		await this[repo].delete()
 
-		return new NonStartedGameSvc({ obs: this[obs], repo: this[repo] })
+		return new NonStartedGameSvc(this[repo])
 	}
 
 	moveDown(times: number) {
 		this.#state.moveDown(times)
-		this[obs].pos.update(this.pos)
 		return this
 	}
 
 	moveLeft(times: number) {
 		this.#state.moveLeft(times)
-		this[obs].pos.update(this.pos)
 		return this
 	}
 
 	moveRight(times: number) {
 		this.#state.moveRight(times)
-		this[obs].pos.update(this.pos)
 		return this
 	}
 
 	moveUp(times: number) {
 		this.#state.moveUp(times)
-		this[obs].pos.update(this.pos)
 		return this
 	}
 
@@ -297,7 +275,7 @@ class StartedGameSvc extends GameSvc {
 			info: { errors: this.#data.errors, timer: this.#data.timer.data },
 		})
 		this.#isASaved = true
-		this[obs].saved.update(true)
+		this[savedObs].set(true)
 	}
 
 	timerPause() {
@@ -307,33 +285,27 @@ class StartedGameSvc extends GameSvc {
 
 	timerReset() {
 		this.#data.timer.reset()
-		this[obs].timer.update(this.timer)
 		return this
 	}
 
 	timerStart() {
-		this.#data.timer.start(() => this[obs].timer.update(this.timer))
+		this.#data.timer.start()
 		return this
 	}
 
 	verify() {
 		this.#state = this.#state.verify()
-		this[obs].board.update(this.board)
 		this.#isASaved = false
-		this[obs].saved.update(false)
-		this[obs].errors.update(this.#data.errors)
+		this[savedObs].set(false)
 		return this
 	}
 
 	write(num: ValidNumbers, opts: { removeNotes: boolean; validate: boolean }) {
 		this.#state = this.#state.write(num, opts)
-		if (opts.validate) {
-			this.#state.validateWrite()
-			this[obs].errors.update(this.#data.errors)
-		}
-		this[obs].board.update(this.board)
+		if (opts.validate) this.#state.validateWrite()
+
 		this.#isASaved = false
-		this[obs].saved.update(false)
+		this[savedObs].set(false)
 		return this
 	}
 }
@@ -402,9 +374,7 @@ abstract class GameState implements IGameState {
 	}
 
 	verify() {
-		this[data].board.validateAllBoard(result => {
-			if (result) this[data].errors++
-		})
+		this[data].board.validateAllBoard()
 		return this
 	}
 
@@ -429,9 +399,7 @@ class AnnotationGameState extends EditedGameState {
 
 class InsertGameState extends EditedGameState {
 	validateWrite() {
-		this[data].board.validate(this[data].pos.data, result => {
-			if (result) this[data].errors += 1
-		})
+		this[data].board.validate(this[data].pos.data)
 
 		return this
 	}

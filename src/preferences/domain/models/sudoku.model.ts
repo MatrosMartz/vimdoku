@@ -1,4 +1,5 @@
 import type { FieldsToModel, FormGroup } from '~/share/domain/models'
+import { FormFields } from '~/share/domain/services'
 
 export const sudokuFields = {
 	autoNoteDeletion: { type: 'toggle', default: true },
@@ -10,3 +11,5 @@ export const sudokuFields = {
 } as const satisfies FormGroup
 
 export type SudokuPrefs = FieldsToModel<typeof sudokuFields>
+
+export const SUDOKU_IDLE_PREFS = FormFields.getDefaultValues(sudokuFields)

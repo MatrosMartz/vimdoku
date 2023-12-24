@@ -18,9 +18,12 @@ export const injectable = <const C extends Class<object>>(Target: C): C => {
 
 export const singleton: Decorator = Target => {
 	return class Singleton extends Target {
-		static readonly #instance: Singleton = new Singleton()
+		// eslint-disable-next-line @typescript-eslint/prefer-readonly
+		static #instance: Singleton
 
 		static [create]() {
+			Singleton.#instance ??= new Singleton()
+
 			return Singleton.#instance
 		}
 	}

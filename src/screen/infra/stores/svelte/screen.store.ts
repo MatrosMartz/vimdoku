@@ -1,5 +1,5 @@
+import { inject } from '~/share/utils'
 import { createState } from '~/share/utils/svelte/create-state'
+import { ScreenObs } from '$screen/domain/services'
 
-import { screenObs } from '../screen.store'
-
-export const screenState = createState(screenObs)
+export const screenState = createState(inject(ScreenObs))

@@ -1,4 +1,5 @@
 import type { FieldsToModel, FormGroup } from '~/share/domain/models'
+import { FormFields } from '~/share/domain/services'
 
 export enum Lang {
 	EN = 'en',
@@ -40,3 +41,5 @@ export type AccessibilityFields = {
 }[keyof UserPrefs]
 
 export const ACCESSIBILITY_FIELDS: AccessibilityFields[] = ['contrast', 'motionReduce']
+
+export const USER_IDLE_PREFS = FormFields.getDefaultValues(userFields)

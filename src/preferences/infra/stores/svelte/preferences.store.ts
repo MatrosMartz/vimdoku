@@ -1,5 +1,5 @@
+import { inject } from '~/share/utils'
 import { createState } from '~/share/utils/svelte/create-state'
+import { PrefsObs } from '$pref/domain/services'
 
-import { prefsObs } from '../preferences.store'
-
-export const prefsState = createState(prefsObs)
+export const prefsState = createState(inject(PrefsObs))
