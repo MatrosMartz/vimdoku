@@ -25,16 +25,7 @@ export class PosSvc implements IPos {
 	 * @param pos2 The second cell position.
 	 */
 	static areRelated(pos1: Pos, pos2: Pos) {
-		return PosSvc.equalsCol(pos1, pos2) || PosSvc.equalsRow(pos1, pos2) || PosSvc.equalsBox(pos1, pos2)
-	}
-
-	/**
-	 * Check if two cell positions are in the same box.
-	 * @param pos1 The first cell position.
-	 * @param pos2 The second cell position.
-	 */
-	static equalsBox(pos1: Pos, pos2: Pos) {
-		return PosSvc.equalsPos(PosSvc.getInitsBox(pos1), PosSvc.getInitsBox(pos2))
+		return PosSvc.equalsCol(pos1, pos2) || PosSvc.equalsRow(pos1, pos2) || PosSvc.equalsReg(pos1, pos2)
 	}
 
 	/**
@@ -56,6 +47,15 @@ export class PosSvc implements IPos {
 	}
 
 	/**
+	 * Check if two cell positions are in the same region.
+	 * @param pos1 The first cell position.
+	 * @param pos2 The second cell position.
+	 */
+	static equalsReg(pos1: Pos, pos2: Pos) {
+		return PosSvc.equalsPos(PosSvc.getInitsReg(pos1), PosSvc.getInitsReg(pos2))
+	}
+
+	/**
 	 * Check if two cell positions are in the same row.
 	 * @param pos1 The first cell position.
 	 * @param pos2 The second cell position.
@@ -65,32 +65,36 @@ export class PosSvc implements IPos {
 	}
 
 	/**
-	 * Get the box number (0-8) for a given cell position.
-	 * @param pos The position of the cell.
-	 * @returns The box number for the cell.
-	 */
-	static getBoxFromPos(pos: Pos) {
-		const { y, x } = PosSvc.getInitsBox(pos)
-		return y + (x + 3)
-	}
-
-	/**
-	 * Get the initial position of the box that contains a cell.
+	 * Get the initial position of the region that contains a cell.
 	 * @param position The position of the cell.
-	 * @returns The initial position of the box.
+	 * @returns The initial position of the region.
 	 */
-	static getInitsBox(position: Pos): Pos
-	static getInitsBox({ y, x }: Pos): Pos {
+	static getInitsReg(position: Pos): Pos
+	static getInitsReg({ y, x }: Pos): Pos {
 		return { y: Math.floor(y / 3) * 3, x: Math.floor(x / 3) * 3 }
 	}
 
 	/**
-	 * Get the position from a box index.
+	 * Get the position from a region index.
 	 * @param index The box index of the cell.
-	 * @returns The initial position of the box.
+	 * @returns The initial position of the region.
 	 */
-	static getPosFromBox(index: number): Pos {
+	static getPosFromReg(index: number): Pos {
 		return { y: index % 3, x: Math.floor(index / 3) }
+	}
+
+	/**
+	 * Get the region number (0-8) for a given cell position.
+	 * @param pos The position of the cell.
+	 * @returns The box number for the cell.
+	 */
+	static getRegFromPos(pos: Pos) {
+		const { y, x } = PosSvc.getInitsReg(pos)
+		return y + (x + 3)
+	}
+
+	static parseString(pos: Pos) {
+		return `${pos.y}-${pos.x}` as const
 	}
 
 	/**
