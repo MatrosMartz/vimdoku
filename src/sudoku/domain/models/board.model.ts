@@ -2,7 +2,7 @@ import type { Pos } from '~/share/domain/models'
 import type { Tuple } from '~/share/types'
 
 import { type Cell, type CellJSON } from './cell.model'
-import { type Notes, type ValidNumbers } from './notes.model'
+import { type ValidNumbers } from './notes.model'
 
 export type Board = Tuple<Tuple<Cell, 9>, 9>
 
@@ -42,10 +42,4 @@ export interface IBoard {
 	 * @param num The note to add (1-9).
 	 */
 	write(cellPos: Pos, num: ValidNumbers): this
-}
-
-export interface SudokuMove {
-	notes: Notes
-	pos: Pos
-	value: number
 }

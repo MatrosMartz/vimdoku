@@ -1,6 +1,5 @@
 import type { Pos } from '~/share/domain/models'
 
-import type { SudokuMove } from './board.model'
 import { type INotes, type Notes, type ValidNumbers } from './notes.model'
 
 export enum CellKind {
@@ -57,7 +56,8 @@ export interface ICellState {
 	 * @returns The updated cell state.
 	 */
 	addNote(num: ValidNumbers): ICellState
-	changeByMove(sudokuMove: SudokuMove): ICellState
+	applyMove(move: MoveMap): ICellState
+	changeByMove(sudokuMove: MoveItem): ICellState
 	/**
 	 * Remove value and clear note set.
 	 * @returns The updated cell state.
@@ -91,7 +91,8 @@ export interface ICellState {
 export interface ICell extends ICellState {
 	/** @returns The updated cell. */
 	addNote(num: ValidNumbers): this
-	changeByMove(sudokuMove: SudokuMove): this
+	applyMove(move: MoveMap): this
+	changeByMove(sudokuMove: MoveItem): this
 	/** @returns The updated cell. */
 	clear(): this
 	/** @returns The updated cell. */
@@ -103,7 +104,15 @@ export interface ICell extends ICellState {
 	/** @returns The updated cell. */
 	toggleNote(num: ValidNumbers): this
 	/** @returns The updated cell. */
-	verify(effect: (result: boolean) => void): this
+	verify(effect: (isIncorrect: boolean) => void): this
 	/** @returns The updated cell. */
 	writeValue(num: ValidNumbers): this
 }
+
+export interface MoveItem {
+	notes: Notes
+	pos: Pos
+	value: number
+}
+
+export type MoveMap = Map<`${number}-${number}`, MoveItem>

@@ -2,8 +2,16 @@ import type { Pos } from '~/share/domain/models'
 import { PosSvc } from '~/share/domain/services'
 import { match } from '~/share/utils'
 
-import { type SudokuMove, type ValidNumbers } from '../models'
-import { type Cell, type CellData, type CellJSON, CellKind, type ICell, type ICellState } from '../models/cell.model'
+import { type MoveItem, type ValidNumbers } from '../models'
+import {
+	type Cell,
+	type CellData,
+	type CellJSON,
+	CellKind,
+	type ICell,
+	type ICellState,
+	type MoveMap,
+} from '../models/cell.model'
 import { NotesSvc } from './notes.service'
 
 /** Represents a Sudoku Cell Entity.  */
@@ -110,16 +118,17 @@ export class CellSvc implements ICell {
 		return this
 	}
 
-	changeByMove(sudokuMove: SudokuMove): this {
+	applyMove(move: MoveMap) {
+		this.#state = this.#state.applyMove(move)
+		return this
+	}
+
+	changeByMove(sudokuMove: MoveItem): this {
 		throw new Error('Method not implemented.')
 	}
 
 	clear() {
 		this.#state = this.#state.clear()
-		return this
-	}
-
-	redo() {
 		return this
 	}
 
@@ -141,11 +150,7 @@ export class CellSvc implements ICell {
 		return this
 	}
 
-	undo() {
-		return this
-	}
-
-	verify(effect: (result: boolean) => void) {
+	verify(effect: (isIncorrect: boolean) => void) {
 		this.#state = this.#state.verify(effect)
 		return this
 	}
@@ -226,7 +231,11 @@ abstract class CellState implements ICellState {
 		return this
 	}
 
-	changeByMove(sudokuMove: SudokuMove): CellState {
+	applyMove(move: MoveMap): ICellState {
+		return this
+	}
+
+	changeByMove(sudokuMove: MoveItem): CellState {
 		if (!PosSvc.equalsPos(sudokuMove.pos, this[data].pos)) return this
 		const notes = new NotesSvc(sudokuMove.notes)
 
@@ -248,7 +257,7 @@ abstract class CellState implements ICellState {
 		return this
 	}
 
-	verify(effect: (result: boolean) => void): ICellState {
+	verify(effect: (isIncorrect: boolean) => void): ICellState {
 		return this
 	}
 
@@ -280,6 +289,19 @@ abstract class WritableCellState extends CellState {
 		return new NotesCellState({ data: this[data] })
 	}
 
+	applyMove(move: MoveMap) {
+		const posKey = PosSvc.parseString(this.pos)
+
+		if (move.has(posKey)) return this
+
+		const moveItem = move.get(posKey)!
+		const notes = new NotesSvc(moveItem.notes)
+
+		if (!notes.isEmpty) return NotesCellState.create({ ...moveItem, notes, solution: this.solution })
+		if (moveItem.value <= 0) return EmptyCellState.create({ ...moveItem, notes, solution: this.solution })
+		return UnverifiedCellState.create({ ...moveItem, notes, solution: this.solution })
+	}
+
 	clear() {
 		this[data].notes.clear()
 		this[data].value = CellState.EMPTY_VALUE
@@ -287,11 +309,19 @@ abstract class WritableCellState extends CellState {
 		return new EmptyCellState({ data: this[data] })
 	}
 
+	redo(): ICellState {
+		return this
+	}
+
 	toggleNote(num: ValidNumbers): CellState {
 		this[data].notes.add(num)
 		this[data].value = CellState.EMPTY_VALUE
 
 		return new NotesCellState({ data: this[data] })
+	}
+
+	undo(): ICellState {
+		return this
 	}
 
 	writeValue(num: ValidNumbers) {
@@ -318,7 +348,7 @@ class UnverifiedCellState extends WritableCellState {
 		return new UnverifiedCellState({ data: new CellEntity({ kind: CellKind.Unverified, ...data }) })
 	}
 
-	verify(effect: (result: boolean) => void) {
+	verify(effect: (isIncorrect: boolean) => void) {
 		effect(!this.isCorrect)
 
 		return this.isCorrect ? new CorrectCellState({ data: this[data] }) : new IncorrectCellState({ data: this[data] })
