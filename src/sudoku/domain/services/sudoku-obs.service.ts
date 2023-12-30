@@ -1,7 +1,7 @@
-import { ObsSvc } from '~/share/domain/services'
+import { HistoryObsSvc, ObsSvc } from '~/share/domain/services'
 import { singleton } from '~/share/utils'
 
-import { type Board, IDLE_MODE, IDLE_TIMER, type ModeKind } from '../models'
+import { type Board, IDLE_MODE, IDLE_TIMER, type ModeKind, type MoveMap } from '../models'
 
 @singleton
 export class ModeObs extends ObsSvc<ModeKind> {
@@ -35,5 +35,12 @@ export class SavedObs extends ObsSvc<boolean> {
 export class BoardObs extends ObsSvc<Board | null> {
 	constructor() {
 		super(null)
+	}
+}
+
+@singleton
+export class MovesObs extends HistoryObsSvc<MoveMap> {
+	constructor() {
+		super(new Map())
 	}
 }

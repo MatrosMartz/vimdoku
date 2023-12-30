@@ -1,203 +1,228 @@
-import type { Pos } from '~/share/domain/models'
+import { IDLE_POS, type Pos } from '~/share/domain/models'
 import { PosSvc } from '~/share/domain/services'
-import type { Tuple } from '~/share/types'
-import { createArray, createMatrix, iterateArray, iterateMatrix } from '~/share/utils'
+import { createMatrix, iterateArray, iterateMatrix, noop } from '~/share/utils'
 
-import { type CBFn, type CompareCBFn, type CreateCBFn, type Grid, type IGrid } from '../models'
+import { type Grid, type GridMapper, type GridMethods, type IGrid } from '../models'
 
-/** Represent a Sudoku Grid Service. */
-export class GridSvc<T> implements IGrid<T> {
+class GridEverySvc<T> implements GridMethods.IEvery<T> {
 	readonly #data
 
-	/**
-	 * Creates an instance of the GridSvc class with the provided data.
-	 * @param data A two-dimensional array representing the Sudoku grid.
-	 * @throws {Error} If the data is invalid (not a 9x9 grid).
-	 */
 	constructor(data: Grid<T>) {
 		this.#data = data
 	}
 
-	get data() {
-		return this.#mapData(cell => cell)
-	}
-
-	/**
-	 * Creates an instance of the GridSvc with map function.
-	 * @param mapFn A mapping function to call on every element of the array.
-	 */
-	static create<T>(mapFn: CreateCBFn<T>) {
-		return new GridSvc(createMatrix(9, mapFn))
-	}
-
-	compareRelated(cellPos: Pos, fn: CompareCBFn<T, boolean>) {
-		for (const currPos of iterateMatrix(9)) {
-			if (PosSvc.areRelated(cellPos, currPos) && !fn(this.getCell(cellPos), this.getCell(currPos), currPos))
-				return false
-		}
-
+	col(col: number, fn: (cell: T, pos: Pos) => boolean) {
+		for (const y of iterateArray(9)) if (!fn(this.#data[y][col], { y, x: col })) return false
 		return true
 	}
 
-	compareWithBox(cellPos: Pos, fn: CompareCBFn<T, boolean>) {
-		const box = PosSvc.getInitsBox(cellPos)
-		for (const pos of iterateMatrix(3)) {
-			const currPos = PosSvc.sumPos(pos, box)
-			if (!PosSvc.equalsPos(cellPos, currPos) && !fn(this.getCell(cellPos), this.getCell(currPos), currPos))
-				return false
-		}
-
-		return true
-	}
-
-	compareWithCol(cellPos: Pos, fn: CompareCBFn<T, boolean>) {
-		const { x } = cellPos
-		for (const y of iterateArray(9))
-			if (y !== cellPos.y && !fn(this.getCell(cellPos), this.getCell({ y, x }), { y, x })) return false
-		return true
-	}
-
-	compareWithRow(cellPos: Pos, fn: CompareCBFn<T, boolean>) {
-		const { y } = cellPos
-		for (const x of iterateArray(9))
-			if (x !== cellPos.x && !fn(this.getCell(cellPos), this.getCell({ y, x }), { y, x })) return false
-		return true
-	}
-
-	copy() {
-		return new GridSvc(this.data)
-	}
-
-	count(fnCond: CBFn<T, boolean>) {
-		let asserts = 0
-		for (const pos of iterateMatrix(9)) if (fnCond(this.getCell(pos), pos)) asserts++
-
-		return asserts
-	}
-
-	editCell<U>(cellPos: Pos, fn: CBFn<T, U>) {
-		const newGrid = this.#mapData((cell, pos) =>
-			PosSvc.equalsPos(cellPos, pos) ? fn(this.getCell(cellPos), cellPos) : cell
-		)
-
-		return new GridSvc(newGrid)
-	}
-
-	everyBox(box: number, fn: CBFn<T, boolean>) {
-		const boxPos = PosSvc.getPosFromBox(box)
-		for (const pos of iterateMatrix(3)) {
-			const currPos = PosSvc.sumPos(boxPos, pos)
-			if (!fn(this.getCell(currPos), currPos)) return false
-		}
-
-		return true
-	}
-
-	everyCol(x: number, fn: CBFn<T, boolean>) {
-		for (const y of iterateArray(9)) if (!fn(this.getCell({ y, x }), { y, x })) return false
-		return true
-	}
-
-	everyGrid(fn: CBFn<T, boolean>) {
+	grid(fn: (cell: T, pos: Pos) => boolean) {
 		return this.#data.every((row, y) => row.every((cell, x) => fn(cell, { y, x })))
 	}
 
-	everyRow(y: number, fn: CBFn<T, boolean>) {
-		return this.#data[y].every((cell, x) => fn(cell, { y, x }))
-	}
-
-	getCell(pos: Pos): T
-	getCell({ y, x }: Pos) {
-		return this.#data[y][x]
-	}
-
-	groupSubgrids<U>(fn: CBFn<T, U>) {
-		const newGrid = {} as {
-			[K in keyof U]: GridSvc<U[K]>
-		}
-
-		for (const pos of iterateMatrix(9)) {
-			const result = fn(this.getCell(pos), pos)
-
-			for (const key of Object.keys(result)) {
-				if (!(key in newGrid)) newGrid[key] = new GridSvc(createArray(9, () => Array(9) as Tuple<U[keyof U], 9>))
-				newGrid[key].#mutateCell(pos, result[key])
-			}
-		}
-
-		return newGrid
-	}
-
-	joinBox(box: number, separators: { x?: string; y?: string }): string
-	joinBox(box: number, { y: rowSep = '', x: colSep = '' }: { x?: string; y?: string }) {
-		let str = ''
-		const boxPos = PosSvc.getPosFromBox(box)
+	reg(reg: number, fn: (cell: T, pos: Pos) => boolean): boolean {
+		const boxPos = PosSvc.getPosFromReg(reg)
 		for (const pos of iterateMatrix(3)) {
-			const { y, x } = PosSvc.sumPos(pos, boxPos)
-			if (pos.y === 0 && pos.x === 0) str += this.#data[y][x]
-			else if (pos.x === 0) str += colSep + this.#data[y][x]
-			else str += rowSep + this.#data[y][x]
+			const { y, x } = PosSvc.sumPos(boxPos, pos)
+			if (!fn(this.#data[y][x], { y, x })) return false
 		}
 
-		return str
+		return true
 	}
 
-	joinCol(x: number, rowSeparator: string) {
+	row(row: number, fn: (cell: T, pos: Pos) => boolean) {
+		return this.#data[row].every((cell, x) => fn(cell, { y: row, x }))
+	}
+}
+
+class GridComparerSvc<T> implements GridMethods.IComparer<T> {
+	readonly #data
+	readonly #origin
+
+	constructor(data: Grid<T>, origin: Pos) {
+		this.#data = data
+		this.#origin = origin
+	}
+
+	withCol(fn: (origin: T, curr: T, currPos: Pos) => boolean) {
+		const { x } = this.#origin
+		for (const y of iterateArray(9)) {
+			const pos = { x, y }
+			if (!PosSvc.equalsRow(pos, this.#origin) && !fn(this.#cellBy(this.#origin), this.#cellBy(pos), pos)) return false
+		}
+		return true
+	}
+
+	withOther(otherPos: Pos, fn: (origin: T, other: T) => boolean) {
+		return fn(this.#cellBy(this.#origin), this.#cellBy(otherPos))
+	}
+
+	withReg(fn: (origin: T, curr: T, currPos: Pos) => boolean) {
+		const reg = PosSvc.getInitsReg(this.#origin)
+		for (const pos of iterateMatrix(3)) {
+			const currPos = PosSvc.sumPos(pos, reg)
+			if (!PosSvc.equalsPos(this.#origin, currPos) && !fn(this.#cellBy(this.#origin), this.#cellBy(currPos), currPos))
+				return false
+		}
+
+		return true
+	}
+
+	withRelated(fn: (origin: T, curr: T, currPos: Pos) => boolean) {
+		for (const currPos of iterateMatrix(9)) {
+			if (
+				!PosSvc.equalsPos(this.#origin, currPos) &&
+				PosSvc.areRelated(this.#origin, currPos) &&
+				!fn(this.#cellBy(this.#origin), this.#cellBy(currPos), currPos)
+			)
+				return false
+		}
+
+		return true
+	}
+
+	withRow(fn: (origin: T, curr: T, currPos: Pos) => boolean) {
+		const { y } = this.#origin
+		for (const x of iterateArray(9)) {
+			const pos = { y, x }
+			if (!PosSvc.equalsCol(pos, this.#origin) && !fn(this.#cellBy(this.#origin), this.#cellBy(pos), pos)) return false
+		}
+		return true
+	}
+
+	#cellBy(pos: Pos) {
+		return this.#data[pos.y][pos.x]
+	}
+}
+
+function createMapperProp<T>(mapper: GridMapperSvc<T>, type: GridMapper.Type, withoutOrigin: boolean) {
+	const prop: GridMapper.Prop<T> = <U>(fn: (cell: T, pos: Pos) => T | U) =>
+		GridMapperSvc.addMove(mapper, { fn, type, withoutOrigin: false })
+
+	prop.onlyIf = <U>(condition: boolean, fn: (cell: T, pos: Pos) => T | U) => (condition ? prop(fn) : mapper)
+
+	return prop
+}
+
+function createMapperPropWithoutOrigin<T>(mapper: GridMapperSvc<T>, type: Exclude<GridMapper.Type, 'cell'>) {
+	const prop = createMapperProp(mapper, type, false) as GridMapper.PropWithoutOrigin<T>
+
+	prop.withoutOrigin = createMapperProp(mapper, type, true)
+
+	return prop
+}
+
+class GridMapperSvc<T> implements GridMethods.IMapper<T> {
+	readonly cell = createMapperProp(this, 'cell', false)
+	readonly col = createMapperPropWithoutOrigin(this, 'col')
+	readonly reg = createMapperPropWithoutOrigin(this, 'reg')
+	readonly related = createMapperPropWithoutOrigin(this, 'related')
+	readonly row = createMapperPropWithoutOrigin(this, 'row')
+
+	readonly #data
+	readonly #gridMoves
+	readonly #origin
+
+	/**
+	 * Creates an instance of the GridSvc class with the provided data.
+	 * @param data A two-dimensional array representing the Sudoku grid.
+	 */
+	constructor(data: Grid<T>, origin: Pos, gridMoves: Array<GridMapper.Move<T>> = []) {
+		this.#data = data
+		this.#origin = origin
+		this.#gridMoves = gridMoves
+	}
+
+	static addMove<T>(mapper: GridMapperSvc<T>, move: GridMapper.Move<T>) {
+		return new GridMapperSvc(mapper.#data, mapper.#origin, [...mapper.#gridMoves, move])
+	}
+
+	apply(effect: (cell: T, pos: Pos) => void = noop) {
+		const data = createMatrix(9, (pos): T => {
+			let cell = this.#cellBy(pos)
+			for (const { type, fn, withoutOrigin } of this.#gridMoves) {
+				const isOrigin = PosSvc.equalsPos(pos, this.#origin)
+				const equalPos = type === 'cell' && isOrigin
+				const equalCol = type === 'col' && PosSvc.equalsCol(pos, this.#origin)
+				const equalRow = type === 'row' && PosSvc.equalsRow(pos, this.#origin)
+				const equalReg = type === 'reg' && PosSvc.equalsReg(pos, this.#origin)
+				const areRelated = type === 'related' && PosSvc.areRelated(pos, this.#origin)
+
+				if (!withoutOrigin && isOrigin && (equalPos || equalReg || equalCol || equalRow || areRelated)) {
+					cell = fn(cell, pos)
+					effect(cell, pos)
+				}
+			}
+			return cell
+		})
+
+		return new GridSvc(data)
+	}
+
+	#cellBy(pos: Pos) {
+		return this.#data[pos.y][pos.x]
+	}
+}
+
+class GridJoinerSvc<T> implements GridMethods.IJoiner {
+	readonly #data
+
+	constructor(data: Grid<T>) {
+		this.#data = data
+	}
+
+	all(separators: { col?: string | undefined; row?: string | undefined }): string
+	all({ col = ',', row = '\n' }: { col?: string | undefined; row?: string | undefined }) {
+		return this.#data.map(Row => Row.join(col)).join(row)
+	}
+
+	col(col: number, rowSeparator: string) {
 		let str = ''
 
 		for (const y of iterateArray(9))
-			if (y === 0) str += this.#data[y][x]
-			else str += rowSeparator + this.#data[y][x]
+			if (y === 0) str += this.#data[y][col]
+			else str += rowSeparator + this.#data[y][col]
 
 		return str
 	}
 
-	joinGrid(separators: { x?: string; y?: string }): string
-	joinGrid({ x = '', y = '' }: { x?: string; y?: string }) {
-		return this.#data.map(Row => Row.join(y)).join(x)
+	reg(reg: number, separators: { col?: string | undefined; row?: string | undefined }): string
+	reg(reg: number, { col = ',', row = '\n' }: { col?: string | undefined; row?: string | undefined }) {
+		let str = ''
+		const regPos = PosSvc.getPosFromReg(reg)
+		for (const pos of iterateMatrix(3)) {
+			const { y, x } = PosSvc.sumPos(pos, regPos)
+			if (PosSvc.equalsPos(pos, IDLE_POS)) str += this.#data[y][x]
+			else if (PosSvc.equalsCol(pos, IDLE_POS)) str += col + this.#data[y][x]
+			else str += row + this.#data[y][x]
+		}
+
+		return str
 	}
 
-	joinRow(rowIndex: number, colSeparator: string) {
-		return this.#data[rowIndex].join(colSeparator)
+	row(row: number, colSeparator: string) {
+		return this.#data[row].join(colSeparator)
+	}
+}
+
+class GridSomeSvc<T> implements GridMethods.ISome<T> {
+	readonly #data
+
+	constructor(data: Grid<T>) {
+		this.#data = data
 	}
 
-	mapBox<U>(box: number, fn: CBFn<T, U>) {
-		const newData = this.#mapData(this.#condMap(curr => PosSvc.getBoxFromPos(curr) === box, fn))
-
-		return new GridSvc(newData)
+	col(col: number, fn: (cell: T, pos: Pos) => boolean) {
+		for (const y of iterateArray(9)) if (fn(this.#data[y][col], { y, x: col })) return true
+		return false
 	}
 
-	mapCol<U>(x: number, fn: CBFn<T, U>) {
-		const newData = this.#mapData(this.#condMap(curr => curr.x === x, fn))
-		return new GridSvc(newData)
+	grid(fn: (cell: T, pos: Pos) => boolean) {
+		return this.#data.some((row, y) => row.some((cell, x) => fn(cell, { y, x })))
 	}
 
-	mapFiltered<U, S extends T>(filter: (cell: T, pos: Pos) => cell is S, map: CBFn<S, U>) {
-		const newData = this.#mapData((cell, currPos) => (filter(cell, currPos) ? map(cell, currPos) : cell))
-
-		return new GridSvc(newData)
-	}
-
-	mapGrid<U>(fn: CBFn<T, U>) {
-		return new GridSvc(this.#mapData(fn))
-	}
-
-	mapRelated<U>(cellPos: Pos, fn: CBFn<T, U>) {
-		const newData = this.#mapData(
-			this.#condMap(curr => !PosSvc.equalsPos(cellPos, curr) && PosSvc.areRelated(cellPos, curr), fn)
-		)
-
-		return new GridSvc(newData)
-	}
-
-	mapRow<U>(y: number, fn: CBFn<T, U>) {
-		const newData = this.#mapData(this.#condMap(curr => curr.y === y, fn))
-
-		return new GridSvc(newData)
-	}
-
-	someBox(box: number, fn: CBFn<T, boolean>) {
-		const boxPos = PosSvc.getPosFromBox(box)
+	reg(reg: number, fn: (cell: T, pos: Pos) => boolean) {
+		const boxPos = PosSvc.getPosFromReg(reg)
 		for (const pos of iterateMatrix(3)) {
 			const { y, x } = PosSvc.sumPos(boxPos, pos)
 			if (fn(this.#data[y][x], { y, x })) return true
@@ -206,36 +231,86 @@ export class GridSvc<T> implements IGrid<T> {
 		return false
 	}
 
-	someCol(x: number, fn: CBFn<T, boolean>) {
-		for (const y of iterateArray(9)) if (fn(this.getCell({ y, x }), { y, x })) return true
-		return false
+	row(row: number, fn: (cell: T, pos: Pos) => boolean) {
+		return this.#data[row].some((cell, x) => fn(cell, { y: row, x }))
+	}
+}
+
+export class GridSvc<T> implements IGrid<T> {
+	readonly every: GridEverySvc<T>
+	readonly join: GridJoinerSvc<T>
+	readonly some: GridSomeSvc<T>
+	readonly #data
+
+	/**
+	 * Creates an instance of the GridSvc class with the provided data.
+	 * @param data A two-dimensional array representing the Sudoku grid.
+	 */
+	constructor(data: Grid<T>) {
+		this.#data = this.#internalMap(data, cell => cell)
+		this.every = new GridEverySvc(this.#data)
+		this.join = new GridJoinerSvc(this.#data)
+		this.some = new GridSomeSvc(this.#data)
 	}
 
-	someGrid(fn: CBFn<T, boolean>): boolean {
-		return this.#data.some((row, y) => row.some((cell, x) => fn(cell, { y, x })))
-	}
-
-	someRow(y: number, fn: CBFn<T, boolean>): boolean {
-		return this.#data[y].some((cell, x) => fn(cell, { y, x }))
+	get data() {
+		return this.#data
 	}
 
 	/**
-	 * Returns another function that transforms the given value if the condition is met; otherwise, it returns the value unchanged.
-	 * @param cond The conditional function, if true, will execute the mapping function; if false, nothing will be done.
-	 * @param map The mapping function only executes if the condition is true.
-	 * @returns A function that runs the mapping function only if the condition is met; otherwise, it does nothing.
+	 * Creates an instance of the GridSvc with map function.
+	 * @param mapFn A mapping function to call on every element of the array.
 	 */
-	#condMap<T, U>(cond: (curr: Pos) => boolean, map: CBFn<T, U>): CBFn<T, T | U> {
-		return (cell, pos) => (cond(pos) ? map(cell, pos) : cell)
+	static create<T>(fn: (pos: Pos) => T) {
+		return new GridSvc(createMatrix(9, fn))
 	}
 
-	/**
-	 * Map each of the cells in the data.
-	 * @param mapFn The mapping function.
-	 * @returns The mapped data.
-	 */
-	#mapData<U>(mapFn: CBFn<T, U>) {
-		return this.#data.map((row, y) => row.map((cell, x) => mapFn(cell, { y, x }))) as Grid<U>
+	cellBy(pos: Pos) {
+		return this.#data[pos.y][pos.x]
+	}
+
+	compare(origin: Pos) {
+		return new GridComparerSvc(this.#data, origin)
+	}
+
+	copy() {
+		return new GridSvc(this.data)
+	}
+
+	count(fn: (cell: T, pos: Pos) => boolean) {
+		let asserts = 0
+		for (const pos of iterateMatrix(9)) if (fn(this.cellBy(pos), pos)) asserts++
+
+		return asserts
+	}
+
+	createSubgrids<U>(fn: (cell: T, pos: Pos) => U) {
+		const newGrid = {} as {
+			[K in keyof U]: GridSvc<U[K]>
+		}
+
+		for (const pos of iterateMatrix(9)) {
+			const result = fn(this.cellBy(pos), pos)
+
+			for (const key of Object.keys(result)) {
+				if (!(key in newGrid)) newGrid[key] = new GridSvc(createMatrix(9, () => null as U[keyof U]))
+				newGrid[key].#mutateCell(pos, result[key])
+			}
+		}
+
+		return newGrid
+	}
+
+	mapAll<U>(fn: (cell: T, pos: Pos) => U) {
+		return new GridSvc(this.#internalMap(this.#data, fn))
+	}
+
+	mapBy(origin: Pos) {
+		return new GridMapperSvc(this.data, origin)
+	}
+
+	#internalMap<I, U>(data: Grid<I>, fn: (cell: I, pos: Pos) => U) {
+		return data.map((row, y) => row.map((cell, x) => fn(cell, { y, x }))) as Grid<U>
 	}
 
 	/**

@@ -28,7 +28,7 @@ export class BoardSvc implements IBoard {
 	}
 
 	get data(): Board {
-		return this.#grid.mapGrid(cell => cell.data).data
+		return this.#grid.mapAll(cell => cell.data).data
 	}
 
 	get hasWin() {
@@ -44,7 +44,7 @@ export class BoardSvc implements IBoard {
 		const diffNum = Number(difficulty)
 		const grid = GridSvc.create<ICell>(pos => {
 			const isInitial = Boolean(Math.floor(Math.random() * diffNum))
-			return CellSvc.create({ isInitial, solution: solution.grid.getCell(pos), pos })
+			return CellSvc.create({ isInitial, solution: solution.grid.cellBy(pos), pos })
 		})
 
 		return new BoardSvc(grid, errors)
@@ -59,7 +59,7 @@ export class BoardSvc implements IBoard {
 	static fromJSON(boardLike: BoardJSON, solution: SolutionJSON, errors: number) {
 		try {
 			if (Array.isArray(boardLike)) {
-				const data = new GridSvc(boardLike).mapGrid<ICell>((json, { y, x }) =>
+				const data = new GridSvc(boardLike).mapAll<ICell>((json, { y, x }) =>
 					CellSvc.fromJSON({ cellLike: json, solution: solution[y][x], pos: { y, x } })
 				)
 				return new BoardSvc(data, errors)
@@ -86,22 +86,27 @@ export class BoardSvc implements IBoard {
 	}
 
 	clear(cellPos: Pos) {
-		this.#grid = this.#grid.editCell(cellPos, cell => cell.clear())
+		this.#grid = this.#grid
+			.mapBy(cellPos)
+			.cell(cell => cell.clear())
+			.apply()
 
 		this.#obs.set(this.data)
 		return this
 	}
 
 	noteDeletion(cellPos: Pos, num: ValidNumbers) {
-		if (this.#grid.getCell(cellPos).kind !== CellKind.Initial)
-			this.#grid = this.#grid.mapRelated(cellPos, cell => cell.removeNote(num))
+		this.#grid = this.#grid
+			.mapBy(cellPos)
+			.related.withoutOrigin.onlyIf(this.#notIsInitial(cellPos), cell => cell.removeNote(num))
+			.apply()
 
 		this.#obs.set(this.data)
 		return this
 	}
 
 	toJSON(): BoardJSON {
-		return this.#grid.mapGrid(cell => cell.toJSON()).data
+		return this.#grid.mapAll(cell => cell.toJSON()).data
 	}
 
 	toString() {
@@ -109,33 +114,45 @@ export class BoardSvc implements IBoard {
 	}
 
 	toggleNotes(cellPos: Pos, num: ValidNumbers) {
-		this.#grid = this.#grid.editCell(cellPos, cell => cell.toggleNote(num))
+		this.#grid = this.#grid
+			.mapBy(cellPos)
+			.cell(cell => cell.toggleNote(num))
+			.apply()
 		this.#obs.set(this.data)
 		return this
 	}
 
 	validate(cellPos: Pos) {
-		this.#grid = this.#grid.editCell(cellPos, cell => cell.verify(this.#verify))
+		this.#grid = this.#grid
+			.mapBy(cellPos)
+			.cell(cell => cell.verify(this.#verify))
+			.apply()
 		this.#errorsObs.set(this.#errors)
 		this.#obs.set(this.data)
 		return this
 	}
 
 	validateAllBoard() {
-		this.#grid = this.#grid.mapGrid(cell => cell.verify(this.#verify))
+		this.#grid = this.#grid.mapAll(cell => cell.verify(this.#verify))
 		this.#errorsObs.set(this.#errors)
 		this.#obs.set(this.data)
 		return this
 	}
 
 	write(cellPos: Pos, num: ValidNumbers) {
-		if (this.#grid.getCell(cellPos).kind !== CellKind.Initial)
-			this.#grid = this.#grid.editCell(cellPos, cell => cell.writeValue(num))
-
-		if (this.#grid.getCell(cellPos).isCorrect) this.#correctCells++
+		this.#grid = this.#grid
+			.mapBy(cellPos)
+			.cell(cell => cell.writeValue(num))
+			.apply(cell => {
+				if (cell.isCorrect) this.#correctCells++
+			})
 
 		this.#obs.set(this.data)
 		return this
+	}
+
+	#notIsInitial(pos: Pos) {
+		return this.#grid.cellBy(pos).kind !== CellKind.Initial
 	}
 
 	readonly #verify = (isIncorrect: boolean) => {

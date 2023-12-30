@@ -36,7 +36,7 @@ export class SolutionSvc implements ISolution {
 	static check(grid: SolutionGrid) {
 		try {
 			for (const pos of iterateMatrix(9))
-				if (grid.compareRelated(pos, (comp, current) => comp === current)) return false
+				if (grid.compare(pos).withRelated((comp, current) => comp === current)) return false
 			return true
 		} catch (err) {
 			if (err instanceof TypeError && notArrayErrorMsgRgx().test(err.message)) return false
@@ -97,7 +97,7 @@ export class SolutionSvc implements ISolution {
 				const numbers = randomNumbers()
 				for (const num of numbers) if (this.#cellIsSafe(value, num, { y: i, x: j })) value[i][j] = num
 
-				for (const num of numbers.reverse()) if (this.#cellIsSafe(value, num, { y: j, x: i })) value[j][i] = num
+				for (const num of [...numbers].reverse()) if (this.#cellIsSafe(value, num, { y: j, x: i })) value[j][i] = num
 
 				if (value[i][j] === 0 || value[j][i] === 0) {
 					retry()
@@ -113,8 +113,8 @@ export class SolutionSvc implements ISolution {
 	}
 
 	toString() {
-		const x = ' | '
-		const y = '\n- - - + - - - + - - -\n'
-		return this.grid.joinGrid({ x, y })
+		const col = ' | '
+		const row = '\n- - - + - - - + - - -\n'
+		return this.grid.join.all({ col, row })
 	}
 }
