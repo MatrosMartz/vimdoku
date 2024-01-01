@@ -3,7 +3,7 @@ import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 import { inject } from '~/share/utils'
 import { ALL_SUGGS } from '$cmd/infra/services'
 
-import type { IMed, Med} from '../models'
+import type { IMed, Med } from '../models'
 import { ExecSvc } from './executor.service'
 import { SuggsObs } from './suggestions-obs.service'
 
