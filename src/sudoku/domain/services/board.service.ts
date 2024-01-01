@@ -3,10 +3,10 @@ import { inject, InvalidBoardError } from '~/share/utils'
 
 import { type GameOpts, type IGrid, type SolutionJSON, type ValidNumbers } from '../models'
 import { type Board, type BoardJSON, type IBoard } from '../models/board.model'
-import { CellKind, type ICell } from '../models/cell.model'
+import { CellKind, type ICell, type MoveMap } from '../models/cell.model'
 import { CellSvc } from './cell.service'
 import { GridSvc } from './grid.service'
-import { BoardObs, ErrorsObs } from './sudoku-obs.service'
+import { BoardObs, ErrorsObs, MovesObs } from './sudoku-obs.service'
 
 /** Represent a Sudoku Board Service. */
 export class BoardSvc implements IBoard {
@@ -14,6 +14,7 @@ export class BoardSvc implements IBoard {
 	#errors
 	readonly #errorsObs = inject(ErrorsObs)
 	#grid
+	readonly #movesObs = inject(MovesObs)
 	readonly #obs = inject(BoardObs)
 
 	/**
@@ -86,22 +87,31 @@ export class BoardSvc implements IBoard {
 	}
 
 	clear(cellPos: Pos) {
+		const moveMap: MoveMap = new Map()
+
 		this.#grid = this.#grid
 			.mapBy(cellPos)
 			.cell(cell => cell.clear())
-			.apply()
+			.apply((cell, pos) => {
+				moveMap.set(...this.#createMoveMapEntries(cell, pos))
+			})
 
 		this.#obs.set(this.data)
+		this.#movesObs.overwrite(moveMap)
 		return this
 	}
 
 	noteDeletion(cellPos: Pos, num: ValidNumbers) {
+		const moveMap: MoveMap = new Map()
+
 		this.#grid = this.#grid
 			.mapBy(cellPos)
 			.related.withoutOrigin.onlyIf(this.#notIsInitial(cellPos), cell => cell.removeNote(num))
-			.apply()
-
+			.apply((cell, pos) => {
+				moveMap.set(...this.#createMoveMapEntries(cell, pos))
+			})
 		this.#obs.set(this.data)
+		this.#movesObs.overwrite(moveMap)
 		return this
 	}
 
@@ -114,11 +124,16 @@ export class BoardSvc implements IBoard {
 	}
 
 	toggleNotes(cellPos: Pos, num: ValidNumbers) {
+		const moveMap: MoveMap = new Map()
+
 		this.#grid = this.#grid
 			.mapBy(cellPos)
 			.cell(cell => cell.toggleNote(num))
-			.apply()
+			.apply((cell, pos) => {
+				moveMap.set(...this.#createMoveMapEntries(cell, pos))
+			})
 		this.#obs.set(this.data)
+		this.#movesObs.overwrite(moveMap)
 		return this
 	}
 
@@ -140,15 +155,23 @@ export class BoardSvc implements IBoard {
 	}
 
 	write(cellPos: Pos, num: ValidNumbers) {
+		const moveMap: MoveMap = new Map()
+
 		this.#grid = this.#grid
 			.mapBy(cellPos)
 			.cell(cell => cell.writeValue(num))
-			.apply(cell => {
+			.apply((cell, pos) => {
 				if (cell.isCorrect) this.#correctCells++
+				moveMap.set(...this.#createMoveMapEntries(cell, pos))
 			})
 
 		this.#obs.set(this.data)
+		this.#movesObs.overwrite(moveMap)
 		return this
+	}
+
+	#createMoveMapEntries({ notes, value }: ICell, pos: Pos) {
+		return [`${pos.y}-${pos.x}`, { notes, pos, value }] as const
 	}
 
 	#notIsInitial(pos: Pos) {

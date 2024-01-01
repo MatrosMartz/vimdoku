@@ -42,5 +42,6 @@ export class BoardObs extends ObsSvc<Board | null> {
 export class MovesObs extends HistoryObsSvc<MoveMap> {
 	constructor() {
 		super(new Map())
+		super.length = 50
 	}
 }
