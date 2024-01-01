@@ -13,7 +13,7 @@ export namespace GridMapper {
 
 	export interface Move<T> {
 		type: Type
-		withoutOrigin: boolean
+		withOrigin: boolean
 		fn(cell: T, pos: Pos): T
 	}
 

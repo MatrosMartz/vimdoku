@@ -95,9 +95,9 @@ class GridComparerSvc<T> implements GridMethods.IComparer<T> {
 	}
 }
 
-function createMapperProp<T>(mapper: GridMapperSvc<T>, type: GridMapper.Type, withoutOrigin: boolean) {
+function createMapperProp<T>(mapper: GridMapperSvc<T>, type: GridMapper.Type, withOrigin: boolean) {
 	const prop: GridMapper.Prop<T> = <U>(fn: (cell: T, pos: Pos) => T | U) =>
-		GridMapperSvc.addMove(mapper, { fn, type, withoutOrigin: false })
+		GridMapperSvc.addMove(mapper, { fn, type, withOrigin })
 
 	prop.onlyIf = <U>(condition: boolean, fn: (cell: T, pos: Pos) => T | U) => (condition ? prop(fn) : mapper)
 
@@ -105,15 +105,15 @@ function createMapperProp<T>(mapper: GridMapperSvc<T>, type: GridMapper.Type, wi
 }
 
 function createMapperPropWithoutOrigin<T>(mapper: GridMapperSvc<T>, type: Exclude<GridMapper.Type, 'cell'>) {
-	const prop = createMapperProp(mapper, type, false) as GridMapper.PropWithoutOrigin<T>
+	const prop = createMapperProp(mapper, type, true) as GridMapper.PropWithoutOrigin<T>
 
-	prop.withoutOrigin = createMapperProp(mapper, type, true)
+	prop.withoutOrigin = createMapperProp(mapper, type, false)
 
 	return prop
 }
 
 class GridMapperSvc<T> implements GridMethods.IMapper<T> {
-	readonly cell = createMapperProp(this, 'cell', false)
+	readonly cell = createMapperProp(this, 'cell', true)
 	readonly col = createMapperPropWithoutOrigin(this, 'col')
 	readonly reg = createMapperPropWithoutOrigin(this, 'reg')
 	readonly related = createMapperPropWithoutOrigin(this, 'related')
@@ -140,7 +140,7 @@ class GridMapperSvc<T> implements GridMethods.IMapper<T> {
 	apply(effect: (cell: T, pos: Pos) => void = noop) {
 		const data = createMatrix(9, (pos): T => {
 			let cell = this.#cellBy(pos)
-			for (const { type, fn, withoutOrigin } of this.#gridMoves) {
+			for (const { type, fn, withOrigin } of this.#gridMoves) {
 				const isOrigin = PosSvc.equalsPos(pos, this.#origin)
 				const equalPos = type === 'cell' && isOrigin
 				const equalCol = type === 'col' && PosSvc.equalsCol(pos, this.#origin)
@@ -148,7 +148,7 @@ class GridMapperSvc<T> implements GridMethods.IMapper<T> {
 				const equalReg = type === 'reg' && PosSvc.equalsReg(pos, this.#origin)
 				const areRelated = type === 'related' && PosSvc.areRelated(pos, this.#origin)
 
-				if (!withoutOrigin && isOrigin && (equalPos || equalReg || equalCol || equalRow || areRelated)) {
+				if ((withOrigin || !isOrigin) && (equalPos || equalReg || equalCol || equalRow || areRelated)) {
 					cell = fn(cell, pos)
 					effect(cell, pos)
 				}
