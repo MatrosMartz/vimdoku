@@ -95,7 +95,7 @@ export class NotesSvc implements INotes {
 	}
 
 	has(num: ValidNumbers) {
-		return this.#data[num - 1] == null
+		return this.#data[num - 1] != null
 	}
 
 	remove(num: ValidNumbers) {
