@@ -1,3 +1,4 @@
+import type { IEntity } from '~/share/domain/models'
 import type { Tuple } from '~/share/types'
 
 /** valid numbers for notes or cell values. */
@@ -6,7 +7,7 @@ export type ValidNumbers = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 export type Notes = Tuple<ValidNumbers | null, 9>
 export type NotesJSON = Tuple<ValidNumbers, 9>
 
-export interface INotes {
+export interface INotes extends IEntity {
 	/** Get the current set of notes. */
 	readonly data: Notes
 	/** Checks if notes set is empty */
@@ -15,9 +16,9 @@ export interface INotes {
 	 *	Add a note to the set.
 	 * @param num The note add (1-9).
 	 */
-	add(num: ValidNumbers): this
+	add(num: ValidNumbers): INotes
 	/** remove all notes */
-	clear(): this
+	clear(): INotes
 	/**
 	 * Return a copy of Notes.
 	 * @returns A new notes object with the same data.
@@ -32,7 +33,7 @@ export interface INotes {
 	 * Remove a note to the set.
 	 * @param num The note remove (1-9).
 	 */
-	remove(num: ValidNumbers): this
+	remove(num: ValidNumbers): INotes
 	/** Converts Notes instance in JSON. */
 	toJSON(): NotesJSON
 	/** Converts Notes instance to a number. */
@@ -43,5 +44,5 @@ export interface INotes {
 	 * Toggle a note in the set (add if not present, remove if present).
 	 * @param num The note to toggle (1-9).
 	 */
-	toggle(num: ValidNumbers): this
+	toggle(num: ValidNumbers): INotes
 }

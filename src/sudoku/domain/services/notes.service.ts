@@ -1,19 +1,22 @@
+import { Entity } from '~/share/domain/services'
 import { createArray, InvalidNoteError } from '~/share/utils'
 
 import type { INotes, Notes, NotesJSON, ValidNumbers } from '../models'
 
 /** Represents a Sudoku Cell Notes Service. */
-export class NotesSvc implements INotes {
+export class NotesSvc extends Entity implements INotes {
 	/** Represent the first 9 primes numbers. */
 	static readonly #PRIMES = [2, 3, 5, 7, 11, 13, 17, 19, 23]
 
-	#data
+	readonly #data
 
 	/**
 	 * Creates an instance of the NotesSvc class.
 	 * @param data Initial Sudoku cell notes.
 	 */
 	constructor(data: Notes) {
+		super()
+
 		this.#data = data
 	}
 
@@ -81,17 +84,19 @@ export class NotesSvc implements INotes {
 	}
 
 	add(num: ValidNumbers) {
-		this.#data[num - 1] = num
-		return this
+		if (this.has(num)) return this
+
+		const newData = structuredClone(this.#data)
+		newData[num - 1] = num
+		return new NotesSvc(newData)
 	}
 
 	clear() {
-		this.#data = createArray(9, () => null)
-		return this
+		return this.isEmpty ? this : new NotesSvc(createArray(9, () => null))
 	}
 
 	copy() {
-		return new NotesSvc(this.data)
+		return new NotesSvc(structuredClone(this.data))
 	}
 
 	has(num: ValidNumbers) {
@@ -99,8 +104,11 @@ export class NotesSvc implements INotes {
 	}
 
 	remove(num: ValidNumbers) {
-		this.#data[num - 1] = null
-		return this
+		if (!this.has(num)) return this
+
+		const newData = structuredClone(this.#data)
+		newData[num - 1] = null
+		return new NotesSvc(newData)
 	}
 
 	toJSON() {
@@ -118,6 +126,6 @@ export class NotesSvc implements INotes {
 	}
 
 	toggle(num: ValidNumbers) {
-		return this.has(num) ? this.add(num) : this.remove(num)
+		return this.has(num) ? this.remove(num) : this.add(num)
 	}
 }
