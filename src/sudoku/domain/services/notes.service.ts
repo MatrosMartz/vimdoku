@@ -116,9 +116,7 @@ export class NotesSvc extends Entity implements INotes {
 	}
 
 	toNumber() {
-		let num = 1
-		for (const note of this.#data) if (note != null) num *= NotesSvc.#PRIMES[note - 1]
-		return num
+		return this.#data.reduce((acc: number, curr) => (curr != null ? acc * NotesSvc.#PRIMES[curr - 1] : acc), 1)
 	}
 
 	toString() {
