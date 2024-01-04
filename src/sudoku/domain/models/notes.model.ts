@@ -46,3 +46,5 @@ export interface INotes extends IEntity {
 	 */
 	toggle(num: ValidNumbers): INotes
 }
+
+export const EMPTY_NOTES = [null, null, null, null, null, null, null, null, null] as const
