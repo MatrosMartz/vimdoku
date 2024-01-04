@@ -1,6 +1,6 @@
 {
 	"extends": ["stylelint-config-standard", "stylelint-config-html/svelte", "stylelint-config-recess-order"],
-	"ignoreFiles": ["**/*.js", "**/*.[cm]js", "**/*.json", "**/*.ts", "index.html"],
+	"ignoreFiles": ["**/*.js", "**/*.[cm]js", "**/*.json", "**/*.ts", "index.html", "coverage"],
 	"overrides": [
 		{
 			"files": ["*.svelte"],
