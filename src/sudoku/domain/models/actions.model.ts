@@ -11,9 +11,11 @@ export enum SudokuAction {
 	End = 'end-game',
 	Erase = 'erase',
 	Move = 'move',
+	Redo = 'redo-game',
 	Resume = 'resume-game',
 	Save = 'save-game',
 	Start = 'start-game',
+	Undo = 'undo-game',
 	Write = 'write',
 }
 
@@ -46,8 +48,10 @@ export type SudokuDispatchUnData =
 	| SudokuAction.Check
 	| SudokuAction.End
 	| SudokuAction.Erase
+	| SudokuAction.Redo
 	| SudokuAction.Resume
 	| SudokuAction.Save
+	| SudokuAction.Undo
 
 export interface SudokuDispatch {
 	[SudokuAction.ChangeMode]: SudokuData.ChangeMode

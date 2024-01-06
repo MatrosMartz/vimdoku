@@ -1,5 +1,5 @@
 import { IDLE_POS, type Pos } from '~/share/domain/models'
-import { PosSvc } from '~/share/domain/services'
+import { Entity, PosSvc } from '~/share/domain/services'
 import { createMatrix, iterateArray, iterateMatrix, noop } from '~/share/utils'
 
 import { type Grid, type GridMapper, type GridMethods, type IGrid } from '../models'
@@ -149,8 +149,9 @@ class GridMapperSvc<T> implements GridMethods.IMapper<T> {
 				const areRelated = type === 'related' && PosSvc.areRelated(pos, this.#origin)
 
 				if ((withOrigin || !isOrigin) && (equalPos || equalReg || equalCol || equalRow || areRelated)) {
-					cell = fn(cell, pos)
-					effect(cell, pos)
+					const newCell = fn(cell, pos)
+					if (!(cell instanceof Entity && newCell instanceof Entity) || cell.id !== newCell.id) effect(cell, pos)
+					cell = newCell
 				}
 			}
 			return cell

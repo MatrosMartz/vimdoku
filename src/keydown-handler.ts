@@ -44,6 +44,9 @@ function sudoku(ev: KeyboardEvent) {
 	changeMode(ev.key)
 
 	pressNum(Number(ev.key) as ValidNumbers)
+
+	if (ev.ctrlKey && ['z', 'Z'].includes(ev.key)) med.dispatch(SudokuAction.Undo)
+	if (ev.ctrlKey && ['y', 'Y'].includes(ev.key)) med.dispatch(SudokuAction.Redo)
 }
 
 function isGameScreen(screen: VimScreen) {

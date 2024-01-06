@@ -70,6 +70,10 @@ abstract class GameSvc implements IGame {
 		return this
 	}
 
+	redo() {
+		return this
+	}
+
 	async resume(): Promise<IGame | null> {
 		return this
 	}
@@ -89,6 +93,10 @@ abstract class GameSvc implements IGame {
 	}
 
 	timerStart() {
+		return this
+	}
+
+	undo() {
 		return this
 	}
 
@@ -269,6 +277,11 @@ class StartedGameSvc extends GameSvc {
 		return this
 	}
 
+	redo() {
+		this.#state.redo()
+		return this
+	}
+
 	async save(): Promise<void> {
 		await this[repo].save({
 			board: this.#data.board.toJSON(),
@@ -290,6 +303,12 @@ class StartedGameSvc extends GameSvc {
 
 	timerStart() {
 		this.#data.timer.start()
+		return this
+	}
+
+	undo() {
+		this.#state.undo()
+
 		return this
 	}
 
@@ -369,6 +388,14 @@ abstract class GameState implements IGameState {
 		return this
 	}
 
+	redo() {
+		return this
+	}
+
+	undo() {
+		return this
+	}
+
 	validateWrite() {
 		return this
 	}
@@ -386,6 +413,16 @@ abstract class GameState implements IGameState {
 abstract class EditedGameState extends GameState {
 	clear() {
 		this[data].board.clear(this[data].pos.data)
+		return this
+	}
+
+	redo() {
+		this[data].board.redo()
+		return this
+	}
+
+	undo() {
+		this[data].board.undo()
 		return this
 	}
 }

@@ -24,6 +24,7 @@ export interface IBoard {
 	 * @param num The note remove (1-9).
 	 */
 	noteDeletion(cellPos: Pos, num: ValidNumbers): this
+	redo(): this
 	/** Converts Board instance in JSON. */
 	toJSON(): BoardJSON
 	/** Converts the Board instance to a JSON string. */
@@ -34,6 +35,7 @@ export interface IBoard {
 	 * @param num The note to toggle (1-9).
 	 */
 	toggleNotes(cellPos: Pos, num: ValidNumbers): this
+	undo(): this
 	validate(cellPos: Pos): this
 	validateAllBoard(): this
 	/**

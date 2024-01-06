@@ -56,6 +56,7 @@ export class MedSvc implements IMed {
 			[SudokuAction.End]: () => {
 				void this.#dSudokuEnd()
 			},
+			[SudokuAction.Redo]: () => this.#dRedo(),
 			[SudokuAction.Resume]: () => {
 				void this.#dSudokuResume()
 			},
@@ -65,6 +66,7 @@ export class MedSvc implements IMed {
 			[SudokuAction.Start]: () => {
 				void this.#dSudokuStart(data)
 			},
+			[SudokuAction.Undo]: () => this.#dUndo(),
 			[SudokuAction.Write]: () => this.#dSudokuWrite(data),
 			[PrefAction.Reset]: () => {
 				void this.#dPrefReset(data)
@@ -126,6 +128,10 @@ export class MedSvc implements IMed {
 		await this.#changeLang(this.#prefs.data.language)
 	}
 
+	#dRedo() {
+		this.#game.redo()
+	}
+
 	#dSudokuCheck() {
 		this.#game.verify()
 	}
@@ -172,5 +178,9 @@ export class MedSvc implements IMed {
 			this.#screen.setDialog({ kind: DialogKind.Win })
 			this.#game.timerPause()
 		}
+	}
+
+	#dUndo() {
+		this.#game.undo()
 	}
 }

@@ -1,4 +1,5 @@
 import type { Pos } from '~/share/domain/models'
+import { PosSvc } from '~/share/domain/services'
 import { inject, InvalidBoardError } from '~/share/utils'
 
 import { type GameOpts, type IGrid, type SolutionJSON, type ValidNumbers } from '../models'
@@ -97,7 +98,7 @@ export class BoardSvc implements IBoard {
 			})
 
 		this.#obs.set(this.data)
-		this.#movesObs.overwrite(moveMap)
+		if (moveMap.size > 0) this.#movesObs.overwrite(moveMap)
 		return this
 	}
 
@@ -111,7 +112,22 @@ export class BoardSvc implements IBoard {
 				moveMap.set(...this.#createMoveMapEntries(cell, pos))
 			})
 		this.#obs.set(this.data)
-		this.#movesObs.overwrite(moveMap)
+		if (moveMap.size > 0) this.#movesObs.overwrite(moveMap)
+		return this
+	}
+
+	redo() {
+		const move = this.#movesObs.redo().data
+
+		this.#grid = this.#grid.mapAll((cell, pos) => {
+			const key = PosSvc.parseString(pos)
+			if (!move.has(key)) return cell
+
+			return cell.changeByMove(move.get(key)!)
+		})
+
+		this.#obs.set(this.data)
+
 		return this
 	}
 
@@ -133,7 +149,22 @@ export class BoardSvc implements IBoard {
 				moveMap.set(...this.#createMoveMapEntries(cell, pos))
 			})
 		this.#obs.set(this.data)
-		this.#movesObs.overwrite(moveMap)
+		if (moveMap.size > 0) this.#movesObs.overwrite(moveMap)
+		return this
+	}
+
+	undo() {
+		const move = this.#movesObs.undo().data
+
+		this.#grid = this.#grid.mapAll((cell, pos) => {
+			const key = PosSvc.parseString(pos)
+			if (!move.has(key)) return cell
+
+			return cell.changeByMove(move.get(key)!)
+		})
+
+		this.#obs.set(this.data)
+
 		return this
 	}
 
@@ -166,7 +197,7 @@ export class BoardSvc implements IBoard {
 			})
 
 		this.#obs.set(this.data)
-		this.#movesObs.overwrite(moveMap)
+		if (moveMap.size > 0) this.#movesObs.overwrite(moveMap)
 		return this
 	}
 

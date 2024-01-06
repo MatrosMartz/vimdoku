@@ -107,7 +107,6 @@ export abstract class CellSvc extends Entity implements ICell {
 	}
 
 	changeByMove(sudokuMove: MoveItem): ICell {
-		if (!PosSvc.equalsPos(sudokuMove.pos, this[dataKey].pos)) return this
 		const notes = new NotesSvc(sudokuMove.notes)
 
 		const data = { ...sudokuMove, notes, solution: this.solution }

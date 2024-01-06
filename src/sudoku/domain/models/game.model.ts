@@ -62,6 +62,8 @@ export interface IGameState {
 	 * @returns The updated game.
 	 */
 	moveUp(times: number): this
+	redo(): this
+	undo(): this
 	/**
 	 * check if the number in the current position is correct.
 	 * @returns The updated game.
@@ -146,6 +148,7 @@ export interface IGame {
 	 * @returns The updated game.
 	 */
 	moveUp(times: number): this
+	redo(): this
 	/**
 	 * Resumes a previously started Sudoku game.
 	 * @returns The saved game exists.
@@ -174,6 +177,7 @@ export interface IGame {
 	 * @returns This TimerSvc instance after start the timer.
 	 */
 	timerStart(): this
+	undo(): this
 	/**
 	 * Check if any cell values are incorrect.
 	 * @returns The updated game.
