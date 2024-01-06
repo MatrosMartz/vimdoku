@@ -44,18 +44,20 @@ export class HistoryObsSvc<T> extends ObsSvc<T> implements IHistoryObs<T> {
 	#cursor: number
 	readonly #emptyState: T
 	readonly #history: T[]
-	#length = 20
+	#length: number
 
 	/**
 	 * Creates an instance of the HistoryObservableSvc class.
 	 * @param emptyState The value that will represent empty state.
 	 * @param history Optional history with which the context is to be created.
 	 */
-	constructor(emptyState: T, history: T[] = []) {
+	constructor(emptyState: T, length: number, history: T[]) {
 		super(emptyState)
 		this.#emptyState = emptyState
+		this.#length = length
 		this.#history = history
-		this.#cursor = this.#history.length
+		this.#cursor = this.history.length
+		this.trunc()
 	}
 
 	get history() {
@@ -76,19 +78,23 @@ export class HistoryObsSvc<T> extends ObsSvc<T> implements IHistoryObs<T> {
 	}
 
 	push(data: T) {
-		this.#history.push(data)
-		super.set(this.#emptyState)
-
 		const hasExceed = this.#length - this.#history.length <= 0
 
 		if (hasExceed) this.#history.shift()
+
+		this.#history.push(data)
+		super.set(this.#emptyState)
+
+		this.#cursor = this.#history.length
 
 		return this
 	}
 
 	redo() {
-		if (this.#cursor < this.#history.length) this.#cursor++
-		super.set(this.data)
+		if (this.#cursor < this.#history.length) {
+			this.#cursor++
+			super.set(this.#history[this.#cursor] ?? this.#emptyState)
+		}
 		return this
 	}
 
@@ -99,8 +105,10 @@ export class HistoryObsSvc<T> extends ObsSvc<T> implements IHistoryObs<T> {
 	}
 
 	undo() {
-		if (this.#cursor > 0) this.#cursor--
-		super.set(this.data)
+		if (this.#cursor > 0) {
+			this.#cursor--
+			super.set(this.#history[this.#cursor])
+		}
 		return this
 	}
 }
