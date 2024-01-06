@@ -13,6 +13,7 @@
 		"fmt": "prettier --write --plugin prettier-plugin-svelte .",
 		"test": "vitest --run",
 		"test:watch": "vitest",
+		"coverage": "vitest --run --coverage src",
 		"bench": "vitest bench --run",
 		"bench:watch": "vitest bench"
 	},
