@@ -1,17 +1,9 @@
 import type { Pos } from '~/share/domain/models'
-import { Entity, PosSvc } from '~/share/domain/services'
+import { Entity } from '~/share/domain/services'
 import { match } from '~/share/utils'
 
-import { type MoveItem, type ValidNumbers } from '../models'
-import {
-	type Cell,
-	type CellData,
-	type CellJSON,
-	CellKind,
-	EMPTY_CELL_VALUE,
-	type ICell,
-	type MoveMap,
-} from '../models/cell.model'
+import { type MoveData, type ValidNumbers } from '../models'
+import { type Cell, type CellData, type CellJSON, CellKind, EMPTY_CELL_VALUE, type ICell } from '../models/cell.model'
 import { NotesSvc } from './notes.service'
 
 export interface CellFromJSONOpts {
@@ -102,17 +94,8 @@ export abstract class CellSvc extends Entity implements ICell {
 		return this
 	}
 
-	applyMove(move: MoveMap): ICell {
+	changeByMove(sudokuMove: MoveData): ICell {
 		return this
-	}
-
-	changeByMove(sudokuMove: MoveItem): ICell {
-		const notes = new NotesSvc(sudokuMove.notes)
-
-		const data = { ...sudokuMove, notes, solution: this.solution }
-		if (!notes.isEmpty && sudokuMove.value <= EMPTY_CELL_VALUE) return new NotesCellSvc(data)
-		if (sudokuMove.value > EMPTY_CELL_VALUE) return new UnverifiedCellSvc(data)
-		else return new EmptyCellSvc(data)
 	}
 
 	clear(): ICell {
@@ -159,19 +142,13 @@ abstract class WritableCellSvc extends CellSvc {
 		return new NotesCellSvc({ ...this[dataKey], notes: this[dataKey].notes.add(num), value: EMPTY_CELL_VALUE })
 	}
 
-	applyMove(move: MoveMap): ICell {
-		const posKey = PosSvc.parseString(this.pos)
+	changeByMove(sudokuMove: MoveData): ICell {
+		const notes = new NotesSvc(sudokuMove.notes)
 
-		if (move.has(posKey)) return this
-
-		const moveItem = move.get(posKey)!
-		const notes = new NotesSvc(moveItem.notes)
-
-		const data: CellData = { ...moveItem, notes, solution: this.solution }
-
-		if (!notes.isEmpty) return new NotesCellSvc(data)
-		if (moveItem.value <= EMPTY_CELL_VALUE) return new EmptyCellSvc(data)
-		return new UnverifiedCellSvc(data)
+		const data = { ...sudokuMove, pos: this.pos, notes, solution: this.solution }
+		if (!notes.isEmpty && sudokuMove.value <= EMPTY_CELL_VALUE) return new NotesCellSvc(data)
+		if (sudokuMove.value > EMPTY_CELL_VALUE) return new UnverifiedCellSvc(data)
+		else return new EmptyCellSvc(data)
 	}
 
 	clear() {

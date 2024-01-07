@@ -98,7 +98,7 @@ export namespace GridMethods {
 		reg: GridMapper.PropWithoutOrigin<T>
 		related: GridMapper.PropWithoutOrigin<T>
 		row: GridMapper.PropWithoutOrigin<T>
-		apply(effect?: (cell: T, pos: Pos) => void): IGrid<T>
+		apply(effect?: (cell: { next: T; prev: T }, pos: Pos) => void): IGrid<T>
 	}
 
 	export interface IJoiner {

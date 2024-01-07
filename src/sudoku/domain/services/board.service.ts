@@ -93,8 +93,8 @@ export class BoardSvc implements IBoard {
 		this.#grid = this.#grid
 			.mapBy(cellPos)
 			.cell(cell => cell.clear())
-			.apply((cell, pos) => {
-				moveMap.set(...this.#createMoveMapEntries(cell, pos))
+			.apply(({ prev, next }, pos) => {
+				if (next.id !== prev.id) moveMap.set(...this.#createMoveMapEntries({ next, prev }, pos))
 			})
 
 		this.#obs.set(this.data)
@@ -108,8 +108,8 @@ export class BoardSvc implements IBoard {
 		this.#grid = this.#grid
 			.mapBy(cellPos)
 			.related.withoutOrigin.onlyIf(this.#notIsInitial(cellPos), cell => cell.removeNote(num))
-			.apply((cell, pos) => {
-				moveMap.set(...this.#createMoveMapEntries(cell, pos))
+			.apply(({ prev, next }, pos) => {
+				if (next.id !== prev.id) moveMap.set(...this.#createMoveMapEntries({ next, prev }, pos))
 			})
 		this.#obs.set(this.data)
 		if (moveMap.size > 0) this.#movesObs.overwrite(moveMap)
@@ -123,7 +123,7 @@ export class BoardSvc implements IBoard {
 			const key = PosSvc.parseString(pos)
 			if (!move.has(key)) return cell
 
-			return cell.changeByMove(move.get(key)!)
+			return cell.changeByMove(move.get(key)!.next)
 		})
 
 		this.#obs.set(this.data)
@@ -145,8 +145,8 @@ export class BoardSvc implements IBoard {
 		this.#grid = this.#grid
 			.mapBy(cellPos)
 			.cell(cell => cell.toggleNote(num))
-			.apply((cell, pos) => {
-				moveMap.set(...this.#createMoveMapEntries(cell, pos))
+			.apply(({ next, prev }, pos) => {
+				if (next.id !== prev.id) moveMap.set(...this.#createMoveMapEntries({ next, prev }, pos))
 			})
 		this.#obs.set(this.data)
 		if (moveMap.size > 0) this.#movesObs.overwrite(moveMap)
@@ -160,7 +160,7 @@ export class BoardSvc implements IBoard {
 			const key = PosSvc.parseString(pos)
 			if (!move.has(key)) return cell
 
-			return cell.changeByMove(move.get(key)!)
+			return cell.changeByMove(move.get(key)!.prev)
 		})
 
 		this.#obs.set(this.data)
@@ -191,9 +191,9 @@ export class BoardSvc implements IBoard {
 		this.#grid = this.#grid
 			.mapBy(cellPos)
 			.cell(cell => cell.writeValue(num))
-			.apply((cell, pos) => {
-				if (cell.isCorrect) this.#correctCells++
-				moveMap.set(...this.#createMoveMapEntries(cell, pos))
+			.apply(({ next, prev }, pos) => {
+				if (next.isCorrect) this.#correctCells++
+				moveMap.set(...this.#createMoveMapEntries({ prev, next }, pos))
 			})
 
 		this.#obs.set(this.data)
@@ -201,8 +201,11 @@ export class BoardSvc implements IBoard {
 		return this
 	}
 
-	#createMoveMapEntries({ notes, value }: ICell, pos: Pos) {
-		return [`${pos.y}-${pos.x}`, { notes, pos, value }] as const
+	#createMoveMapEntries({ next, prev }: { next: ICell; prev: ICell }, pos: Pos) {
+		return [
+			`${pos.y}-${pos.x}`,
+			{ next: { notes: next.notes, pos, value: next.value }, prev: { notes: prev.notes, pos, value: prev.value } },
+		] as const
 	}
 
 	#notIsInitial(pos: Pos) {

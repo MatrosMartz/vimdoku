@@ -34,10 +34,14 @@ export interface CellJSON {
 	value: number
 }
 
-export interface MoveItem {
+export interface MoveData {
 	notes: Notes
-	pos: Pos
 	value: number
+}
+
+export interface MoveItem {
+	next: MoveData
+	prev: MoveData
 }
 
 export type MoveMap = Map<`${number}-${number}`, MoveItem>
@@ -63,8 +67,7 @@ export interface ICell extends IEntity {
 	 * @returns The updated cell state.
 	 */
 	addNote(num: ValidNumbers): ICell
-	applyMove(move: MoveMap): ICell
-	changeByMove(sudokuMove: MoveItem): ICell
+	changeByMove(sudokuMove: MoveData): ICell
 	/**
 	 * Remove value and clear note set.
 	 * @returns The updated cell state.

@@ -1,5 +1,5 @@
 import { IDLE_POS, type Pos } from '~/share/domain/models'
-import { Entity, PosSvc } from '~/share/domain/services'
+import { PosSvc } from '~/share/domain/services'
 import { createMatrix, iterateArray, iterateMatrix, noop } from '~/share/utils'
 
 import { type Grid, type GridMapper, type GridMethods, type IGrid } from '../models'
@@ -137,7 +137,7 @@ class GridMapperSvc<T> implements GridMethods.IMapper<T> {
 		return new GridMapperSvc(mapper.#data, mapper.#origin, [...mapper.#gridMoves, move])
 	}
 
-	apply(effect: (cell: T, pos: Pos) => void = noop) {
+	apply(effect: (cell: { next: T; prev: T }, pos: Pos) => void = noop) {
 		const data = createMatrix(9, (pos): T => {
 			let cell = this.#cellBy(pos)
 			for (const { type, fn, withOrigin } of this.#gridMoves) {
@@ -149,9 +149,9 @@ class GridMapperSvc<T> implements GridMethods.IMapper<T> {
 				const areRelated = type === 'related' && PosSvc.areRelated(pos, this.#origin)
 
 				if ((withOrigin || !isOrigin) && (equalPos || equalReg || equalCol || equalRow || areRelated)) {
-					const newCell = fn(cell, pos)
-					if (!(cell instanceof Entity && newCell instanceof Entity) || cell.id !== newCell.id) effect(cell, pos)
-					cell = newCell
+					const next = fn(cell, pos)
+					effect({ next, prev: cell }, pos)
+					cell = next
 				}
 			}
 			return cell
