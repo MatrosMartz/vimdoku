@@ -94,6 +94,7 @@ export class BoardSvc implements IBoard {
 			.mapBy(cellPos)
 			.cell(cell => cell.clear())
 			.apply(({ prev, next }, pos) => {
+				if (prev.isCorrect && !next.isCorrect) this.#correctCells--
 				if (next.id !== prev.id) moveMap.set(...this.#createMoveMapEntries({ next, prev }, pos))
 			})
 
@@ -117,7 +118,7 @@ export class BoardSvc implements IBoard {
 	}
 
 	redo() {
-		const move = this.#movesObs.redo().data
+		const move = this.#movesObs.data
 
 		this.#grid = this.#grid.mapAll((cell, pos) => {
 			const key = PosSvc.parseString(pos)
@@ -126,6 +127,7 @@ export class BoardSvc implements IBoard {
 			return cell.changeByMove(move.get(key)!.next)
 		})
 
+		this.#movesObs.redo()
 		this.#obs.set(this.data)
 
 		return this
@@ -146,6 +148,7 @@ export class BoardSvc implements IBoard {
 			.mapBy(cellPos)
 			.cell(cell => cell.toggleNote(num))
 			.apply(({ next, prev }, pos) => {
+				if (prev.isCorrect && !next.isCorrect) this.#correctCells--
 				if (next.id !== prev.id) moveMap.set(...this.#createMoveMapEntries({ next, prev }, pos))
 			})
 		this.#obs.set(this.data)
@@ -154,7 +157,7 @@ export class BoardSvc implements IBoard {
 	}
 
 	undo() {
-		const move = this.#movesObs.undo().data
+		const move = this.#movesObs.data
 
 		this.#grid = this.#grid.mapAll((cell, pos) => {
 			const key = PosSvc.parseString(pos)
@@ -162,6 +165,8 @@ export class BoardSvc implements IBoard {
 
 			return cell.changeByMove(move.get(key)!.prev)
 		})
+
+		this.#movesObs.undo()
 
 		this.#obs.set(this.data)
 
@@ -192,7 +197,8 @@ export class BoardSvc implements IBoard {
 			.mapBy(cellPos)
 			.cell(cell => cell.writeValue(num))
 			.apply(({ next, prev }, pos) => {
-				if (next.isCorrect) this.#correctCells++
+				if (!prev.isCorrect && next.isCorrect) this.#correctCells++
+				if (prev.isCorrect && !next.isCorrect) this.#correctCells--
 				moveMap.set(...this.#createMoveMapEntries({ prev, next }, pos))
 			})
 
