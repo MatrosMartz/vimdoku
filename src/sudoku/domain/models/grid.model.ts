@@ -13,16 +13,35 @@ export namespace GridMapper {
 
 	export interface Move<T> {
 		type: Type
+		/** Whether it should also apply to the origin.  */
 		withOrigin: boolean
+		/**
+		 * Mapping function.
+		 * @param cell The previous cell.
+		 * @param pos Cell position.
+		 * @returns The new cell.
+		 */
 		fn(cell: T, pos: Pos): T
 	}
 
 	export interface Prop<T> {
+		/**
+		 * Add a move.
+		 * @param fn The mapping function that the move will have.
+		 * @returns New `GridMapper` with the move.
+		 */
 		<U>(fn: (cell: T, pos: Pos) => T | U): GridMethods.IMapper<T | U>
+		/**
+		 * Add a move if the condition is true.
+		 * @param condition The condition
+		 * @param fn The mapping function that the move will have.
+		 * @returns New `GridMapper` with the move if condition is true.
+		 */
 		onlyIf<U>(condition: boolean, fn: (cell: T, pos: Pos) => T | U): GridMethods.IMapper<T | U>
 	}
 
 	export interface PropWithoutOrigin<T> extends Prop<T> {
+		/** Add a move not applicable to the origin. */
 		withoutOrigin: Prop<T>
 	}
 }
@@ -93,11 +112,20 @@ export namespace GridMethods {
 	}
 
 	export interface IMapper<T> {
+		/** Add a move to be applied only the origin. */
 		cell: GridMapper.Prop<T>
+		/** Add a move to be applied to the origin column. */
 		col: GridMapper.PropWithoutOrigin<T>
+		/** Add a move to be applied to the origin region. */
 		reg: GridMapper.PropWithoutOrigin<T>
+		/** Add a move to be applied to the cells that are in the same column, region or row. */
 		related: GridMapper.PropWithoutOrigin<T>
+		/** Add a move to be applied to the origin row. */
 		row: GridMapper.PropWithoutOrigin<T>
+		/**
+		 * Applies the all moves.
+		 * @param effect Function to be executed for each move.
+		 */
 		apply(effect?: (cell: { next: T; prev: T }, pos: Pos) => void): IGrid<T>
 	}
 
@@ -165,9 +193,11 @@ export namespace GridMethods {
 export interface IGrid<T> {
 	/** Get the data as a two-dimensional array representing the Sudoku grid. */
 	readonly data: Grid<T>
+	/** Get the `GridEvery` */
 	readonly every: GridMethods.IEvery<T>
 	/** Get the `GridJoiner`. */
 	readonly join: GridMethods.IJoiner
+	/** Get the `GridSome` */
 	readonly some: GridMethods.ISome<T>
 	/**
 	 * Get the value of a cell at the specified position.
