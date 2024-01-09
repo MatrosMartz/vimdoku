@@ -19,24 +19,31 @@ export class I18nSvc implements II18n {
 
 	async changeLang(lang: Lang) {
 		this.#actualLang = lang
-		const data = await this.#fetchData(lang)
-
-		const getData = this.#getData
+		const resource = await this.#fetchResource(lang)
 
 		this.#data = {
-			get(key, fallBack) {
-				return getData(key, data) ?? fallBack
-			},
+			get: (key, fallBack) => this.#getText(key, resource) ?? fallBack,
 		}
 		this.#obs.set(this.#data)
 	}
 
-	async #fetchData(lang: Lang) {
+	/**
+	 * The fetch language resource.
+	 * @param lang The language.
+	 * @returns The resource.
+	 */
+	async #fetchResource(lang: Lang) {
 		return await fetch(`locales/${lang}.json`).then<I18nSchema | null>(async res => await res.json())
 	}
 
-	#getData<K extends I18nKeys>(key: K, data: I18nSchema | null): I18nValue<K> | null {
-		let result: any = data
+	/**
+	 * Find text in the resource.
+	 * @param key The key of the text.
+	 * @param resource The resource in the find text.
+	 * @returns The text or null if was not exist in the resource.
+	 */
+	#getText<K extends I18nKeys>(key: K, resource: I18nSchema | null): I18nValue<K> | null {
+		let result: any = resource
 
 		for (const k of key.split('-')) {
 			result = result[k]
