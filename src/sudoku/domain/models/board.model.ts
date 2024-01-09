@@ -24,6 +24,9 @@ export interface IBoard {
 	 * @param num The note remove (1-9).
 	 */
 	noteDeletion(cellPos: Pos, num: ValidNumbers): this
+	/**
+	 * Redo the next move.
+	 */
 	redo(): this
 	/** Converts Board instance in JSON. */
 	toJSON(): BoardJSON
@@ -35,8 +38,14 @@ export interface IBoard {
 	 * @param num The note to toggle (1-9).
 	 */
 	toggleNotes(cellPos: Pos, num: ValidNumbers): this
+	/** Undo the previous move. */
 	undo(): this
+	/**
+	 * Validate the specific cell.
+	 * @param cellPos The position of the cell.
+	 */
 	validate(cellPos: Pos): this
+	/** validate all cell of the board. */
 	validateAllBoard(): this
 	/**
 	 * Toggle a cell value (add if not present, remove if present).
