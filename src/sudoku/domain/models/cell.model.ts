@@ -67,6 +67,11 @@ export interface ICell extends IEntity {
 	 * @returns The updated cell state.
 	 */
 	addNote(num: ValidNumbers): ICell
+	/**
+	 * Create a new cell from the given move.
+	 * @param sudokuMove The move.
+	 * @returns The new cell.
+	 */
 	changeByMove(sudokuMove: MoveData): ICell
 	/**
 	 * Remove value and clear note set.
