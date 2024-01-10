@@ -3,7 +3,6 @@ import { DialogKind, ScreenAction } from '$screen/domain/models'
 import { DifficultyKind, SudokuAction } from '$sudoku/domain/models'
 
 import type { IExec, IMed, ISugg } from '../models'
-import { SuggSvc } from './suggestions.service'
 import { SuggsObs } from './suggestions-obs.service'
 
 interface ExecutorDeps {
@@ -62,8 +61,8 @@ export class ExecSvc implements IExec {
 		if (this.#timeoutID != null) clearTimeout(this.#timeoutID)
 
 		this.#timeoutID = setTimeout(() => {
-			const newSuggs = this.#allSuggestions.filter(suggs => suggs.match(cmdLike))
-			this.#suggsObs.set(SuggSvc.getArrayData(newSuggs))
+			const newSuggs = this.#allSuggestions.filter(suggs => suggs.match(cmdLike)).map(({ data }) => data)
+			this.#suggsObs.set(newSuggs)
 			this.#timeoutID = null
 		}, 500)
 
