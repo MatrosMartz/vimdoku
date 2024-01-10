@@ -1,6 +1,6 @@
 import { inject } from '~/share/utils'
 
-import type { ITimer } from '../models'
+import { IDLE_TIMER, type ITimer } from '../models'
 import { TimerObs } from './sudoku-obs.service'
 
 /** Represent a TimerBoard Service. */
@@ -45,11 +45,10 @@ export class TimerSvc implements ITimer {
 	/**
 	 * Formats a time unit (hours, minutes, or seconds) to have a minimum number of digits.
 	 * @param unit The time unit to be formatted.
-	 * @param digits The minimum number of digits for the formatted unit (default is 2).
 	 * @returns A string representation of the unit with the specified number of digits.
 	 */
-	static #parseUnit(unit: number, digits = 2) {
-		return String(unit).padStart(digits, '0')
+	static #parseUnit(unit: number) {
+		return String(unit).padStart(2, '0')
 	}
 
 	pause() {
@@ -63,7 +62,7 @@ export class TimerSvc implements ITimer {
 
 	reset(): this {
 		this.#data = 0
-		this.#obs.set(this.toString())
+		this.#obs.set(IDLE_TIMER)
 		return this
 	}
 
