@@ -36,3 +36,8 @@ export interface IPos {
 }
 
 export const IDLE_POS = { x: 0, y: 0 } as const satisfies Pos
+
+/** The maximum range for row and column coordinates. */
+export const POS_MAX_RANGE = 8
+/** The minimum range for row and column coordinates. */
+export const POS_MIN_RANGE = 0

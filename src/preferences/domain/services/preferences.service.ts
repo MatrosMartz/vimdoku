@@ -21,7 +21,6 @@ const keyIn = {
 
 /** Represent a Preferences Service for game. */
 export class PrefsSvc implements IPrefs {
-	#data: Prefs = { ...IDLE_PREFS }
 	readonly #obs = inject(PrefsObs)
 	readonly #repo
 
@@ -34,19 +33,19 @@ export class PrefsSvc implements IPrefs {
 	}
 
 	get data(): Prefs {
-		return { ...this.#data }
+		return { ...this.#obs.data }
 	}
 
 	get sudoku() {
-		return PrefsSvc.getSudoku(this.#data)
+		return PrefsSvc.getSudoku(this.#obs.data)
 	}
 
 	get user() {
-		return PrefsSvc.getUser(this.#data)
+		return PrefsSvc.getUser(this.#obs.data)
 	}
 
 	get vim() {
-		return PrefsSvc.getVim(this.#data)
+		return PrefsSvc.getVim(this.#obs.data)
 	}
 
 	/**
@@ -126,19 +125,16 @@ export class PrefsSvc implements IPrefs {
 	async load() {
 		if (!(await this.#repo.has())) return
 
-		this.#data = await this.#repo.load()
-		this.#obs.set(this.#data)
+		this.#obs.set(await this.#repo.load())
 	}
 
 	resetAll() {
-		this.#data = { ...IDLE_PREFS }
-		this.#obs.set(this.#data)
+		this.#obs.set({ ...IDLE_PREFS })
 		return this
 	}
 
 	resetByKey<K extends keyof Prefs>(key: K) {
-		this.#data = { ...this.#data, [key]: IDLE_PREFS[key] }
-		this.#obs.set(this.#data)
+		this.#obs.update(prefs => ({ ...prefs, [key]: IDLE_PREFS[key] }))
 		return this
 	}
 
@@ -149,14 +145,12 @@ export class PrefsSvc implements IPrefs {
 	setAll(preferences: Prefs) {
 		if (!PrefsSvc.check(preferences)) throw new InvalidPreferencesError(preferences)
 
-		this.#data = { ...preferences }
-		this.#obs.set(this.#data)
+		this.#obs.set({ ...preferences })
 		return this
 	}
 
 	setByKey<K extends keyof Prefs>(key: K, value: Prefs[K]) {
-		this.#data = { ...this.#data, [key]: value }
-
+		this.#obs.update(prefs => ({ ...prefs, [key]: value }))
 		return this
 	}
 

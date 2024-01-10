@@ -6,6 +6,6 @@ import { IDLE_PREFS, type Prefs } from '../models'
 @singleton
 export class PrefsObs extends ObsSvc<Prefs> {
 	constructor() {
-		super(IDLE_PREFS)
+		super({ ...IDLE_PREFS })
 	}
 }

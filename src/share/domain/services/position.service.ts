@@ -1,22 +1,15 @@
 import type { RequireOne } from '~/share/types'
 import { inject } from '~/share/utils'
 
-import { IDLE_POS, type IPos, type Pos } from '../models'
+import { type IPos, type Pos, POS_MAX_RANGE, POS_MIN_RANGE } from '../models'
 import { PosObs } from './position-obs.service'
 
 /** Represent a Position Service. */
 export class PosSvc implements IPos {
-	/** The maximum range for row and column coordinates. */
-	static readonly MAX_RANGE = 8
-	/** The minimum range for row and column coordinates. */
-	static readonly MIN_RANGE = 0
-
 	readonly #obs = inject(PosObs)
-	#x: number = IDLE_POS.x
-	#y: number = IDLE_POS.y
 
 	get data(): Pos {
-		return { y: this.#y, x: this.#x }
+		return this.#obs.data
 	}
 
 	/**
@@ -107,35 +100,33 @@ export class PosSvc implements IPos {
 	}
 
 	moveDown(times: number) {
-		if (this.#y === PosSvc.MAX_RANGE) this.#x = PosSvc.MAX_RANGE
-		else this.#y = Math.min(PosSvc.MAX_RANGE, this.#y + times)
-		this.#obs.set(this.data)
+		this.#obs.update(({ y, x }) => ({
+			y: Math.min(POS_MAX_RANGE, y + times),
+			x: y === POS_MAX_RANGE ? POS_MAX_RANGE : x,
+		}))
 		return this
 	}
 
 	moveLeft(times: number) {
-		this.#x = Math.max(PosSvc.MIN_RANGE, this.#x - times)
-		this.#obs.set(this.data)
+		this.#obs.update(({ y, x }) => ({ y, x: Math.max(POS_MIN_RANGE, x + times) }))
 		return this
 	}
 
 	moveRight(times: number) {
-		this.#x = Math.min(PosSvc.MAX_RANGE, this.#x + times)
-		this.#obs.set(this.data)
+		this.#obs.update(({ y, x }) => ({ y, x: Math.min(POS_MAX_RANGE, x + times) }))
 		return this
 	}
 
 	moveUp(times: number) {
-		if (this.#y === PosSvc.MIN_RANGE) this.#x = PosSvc.MIN_RANGE
-		else this.#y = Math.max(PosSvc.MIN_RANGE, this.#y - times)
-		this.#obs.set(this.data)
+		this.#obs.update(({ y, x }) => ({
+			y: Math.max(POS_MIN_RANGE, y - times),
+			x: y === POS_MIN_RANGE ? POS_MIN_RANGE : x,
+		}))
 		return this
 	}
 
 	set({ y, x }: RequireOne<Pos>) {
-		if (x != null) this.#x = x
-		if (y != null) this.#y = y
-		this.#obs.set(this.data)
+		this.#obs.update(pos => ({ y: y ?? pos.y, x: x ?? pos.x }))
 		return this
 	}
 }

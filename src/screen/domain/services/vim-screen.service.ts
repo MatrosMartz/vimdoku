@@ -13,44 +13,41 @@ import { ScreenObs } from './vim-screen-obs.service'
 
 /** Represent a VIM-like Screen Service for Sudoku game. */
 export class ScreenSvc implements IScreen {
-	#dialog: DialogData = { ...IDLE_DIALOG }
-	#main = IDLE_MAIN_SCREEN
 	readonly #obs = inject(ScreenObs)
 	#prev: null | MainScreenKind = null
 
 	get data(): VimScreen {
-		return { dialog: this.#dialog, main: this.#main }
+		return this.#obs.data
 	}
 
 	get dialog() {
-		return this.#dialog
+		return this.#obs.data.dialog
 	}
 
 	get mainScreen() {
-		return this.#main
+		return this.#obs.data.main
 	}
 
 	close() {
-		if (this.#dialog.kind === DialogKind.Win) {
-			this.#main = MainScreenKind.Start
-			this.#dialog = { ...IDLE_DIALOG }
-			this.#prev = null
-		} else if (this.#dialog.kind !== DialogKind.None) {
-			this.#dialog = { ...IDLE_DIALOG }
-		}
-		this.#obs.set(this.data)
+		this.#obs.update(({ dialog, main }) => {
+			if (dialog.kind === DialogKind.Win) return { main: IDLE_MAIN_SCREEN, dialog: { ...IDLE_DIALOG } }
+			else if (dialog.kind !== DialogKind.None) return { main, dialog: { ...IDLE_DIALOG } }
+			return { dialog, main }
+		})
 	}
 
 	setDialog(dialog: DialogData) {
-		if (dialog.kind === DialogKind.Pause && this.#main !== MainScreenKind.Game) return
-		this.#dialog = structuredClone(dialog)
-		this.#obs.set(this.data)
+		this.#obs.update(({ dialog: prevDialog, main }) => {
+			if (dialog.kind === DialogKind.Pause && main !== MainScreenKind.Game) return { dialog, prevDialog, main }
+			return { dialog, main }
+		})
 	}
 
 	setMain(main: MainScreenKind) {
-		this.#prev = main === MainScreenKind.Start ? null : this.#main
-		this.#main = main
-		this.#dialog = { ...IDLE_DIALOG }
-		this.#obs.set(this.data)
+		this.#obs.update(screen => {
+			this.#prev = main === MainScreenKind.Start ? null : screen.main
+
+			return { main, dialog: { ...IDLE_DIALOG } }
+		})
 	}
 }

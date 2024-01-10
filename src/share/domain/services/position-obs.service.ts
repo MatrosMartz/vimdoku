@@ -6,6 +6,6 @@ import { ObsSvc } from './observer.service'
 @singleton
 export class PosObs extends ObsSvc<Pos> {
 	constructor() {
-		super(IDLE_POS)
+		super({ ...IDLE_POS })
 	}
 }
