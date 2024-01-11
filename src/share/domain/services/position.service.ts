@@ -108,7 +108,7 @@ export class PosSvc implements IPos {
 	}
 
 	moveLeft(times: number) {
-		this.#obs.update(({ y, x }) => ({ y, x: Math.max(POS_MIN_RANGE, x + times) }))
+		this.#obs.update(({ y, x }) => ({ y, x: Math.max(POS_MIN_RANGE, x - times) }))
 		return this
 	}
 
