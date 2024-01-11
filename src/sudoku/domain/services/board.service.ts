@@ -14,7 +14,6 @@ export class BoardSvc implements IBoard {
 	#correctCells = 0
 	#errors
 	readonly #errorsObs = inject(ErrorsObs)
-	#grid
 	readonly #movesObs = inject(MovesObs)
 	readonly #obs = inject(BoardObs)
 
@@ -23,14 +22,13 @@ export class BoardSvc implements IBoard {
 	 * @param grid Initial Sudoku board.
 	 */
 	constructor(grid: IGrid<ICell>, errors: number) {
-		this.#grid = grid
-		this.#obs.set(this.data)
-		this.#correctCells = this.#grid.count(({ isCorrect }) => isCorrect)
+		this.#obs.set(grid)
+		this.#correctCells = this.#obs.data!.count(({ isCorrect }) => isCorrect)
 		this.#errors = errors
 	}
 
 	get data(): Board {
-		return this.#grid.mapAll(cell => cell.data).data
+		return this.#obs.data!.mapAll(cell => cell.data).data
 	}
 
 	get hasWin() {
@@ -90,15 +88,16 @@ export class BoardSvc implements IBoard {
 	clear(cellPos: Pos) {
 		const moveMap: MoveMap = new Map()
 
-		this.#grid = this.#grid
-			.mapBy(cellPos)
-			.cell(cell => cell.clear())
-			.apply(({ prev, next }, pos) => {
-				if (prev.isCorrect && !next.isCorrect) this.#correctCells--
-				if (next.id !== prev.id) moveMap.set(...this.#createMoveMapEntries({ next, prev }, pos))
-			})
+		this.#obs.update(grid =>
+			grid!
+				.mapBy(cellPos)
+				.cell(cell => cell.clear())
+				.apply(({ prev, next }, pos) => {
+					if (prev.isCorrect && !next.isCorrect) this.#correctCells--
+					if (next.id !== prev.id) moveMap.set(...this.#createMoveMapEntries({ next, prev }, pos))
+				})
+		)
 
-		this.#obs.set(this.data)
 		if (moveMap.size > 0) this.#movesObs.overwrite(moveMap)
 		return this
 	}
@@ -106,13 +105,14 @@ export class BoardSvc implements IBoard {
 	noteDeletion(cellPos: Pos, num: ValidNumbers) {
 		const moveMap: MoveMap = new Map()
 
-		this.#grid = this.#grid
-			.mapBy(cellPos)
-			.related.withoutOrigin.onlyIf(this.#notIsInitial(cellPos), cell => cell.removeNote(num))
-			.apply(({ prev, next }, pos) => {
-				if (next.id !== prev.id) moveMap.set(...this.#createMoveMapEntries({ next, prev }, pos))
-			})
-		this.#obs.set(this.data)
+		this.#obs.update(board =>
+			board!
+				.mapBy(cellPos)
+				.related.withoutOrigin.onlyIf(this.#notIsInitial(cellPos), cell => cell.removeNote(num))
+				.apply(({ prev, next }, pos) => {
+					if (next.id !== prev.id) moveMap.set(...this.#createMoveMapEntries({ next, prev }, pos))
+				})
+		)
 		if (moveMap.size > 0) this.#movesObs.overwrite(moveMap)
 		return this
 	}
@@ -120,21 +120,21 @@ export class BoardSvc implements IBoard {
 	redo() {
 		const move = this.#movesObs.data
 
-		this.#grid = this.#grid.mapAll((cell, pos) => {
-			const key = PosSvc.parseString(pos)
-			if (!move.has(key)) return cell
+		this.#obs.update(board =>
+			board!.mapAll((cell, pos) => {
+				const key = PosSvc.parseString(pos)
+				if (!move.has(key)) return cell
 
-			return cell.changeByMove(move.get(key)!.next)
-		})
-
+				return cell.changeByMove(move.get(key)!.next)
+			})
+		)
 		this.#movesObs.redo()
-		this.#obs.set(this.data)
 
 		return this
 	}
 
 	toJSON(): BoardJSON {
-		return this.#grid.mapAll(cell => cell.toJSON()).data
+		return this.#obs.data!.mapAll(cell => cell.toJSON()).data
 	}
 
 	toString() {
@@ -144,14 +144,15 @@ export class BoardSvc implements IBoard {
 	toggleNotes(cellPos: Pos, num: ValidNumbers) {
 		const moveMap: MoveMap = new Map()
 
-		this.#grid = this.#grid
-			.mapBy(cellPos)
-			.cell(cell => cell.toggleNote(num))
-			.apply(({ next, prev }, pos) => {
-				if (prev.isCorrect && !next.isCorrect) this.#correctCells--
-				if (next.id !== prev.id) moveMap.set(...this.#createMoveMapEntries({ next, prev }, pos))
-			})
-		this.#obs.set(this.data)
+		this.#obs.update(board =>
+			board!
+				.mapBy(cellPos)
+				.cell(cell => cell.toggleNote(num))
+				.apply(({ next, prev }, pos) => {
+					if (prev.isCorrect && !next.isCorrect) this.#correctCells--
+					if (next.id !== prev.id) moveMap.set(...this.#createMoveMapEntries({ next, prev }, pos))
+				})
+		)
 		if (moveMap.size > 0) this.#movesObs.overwrite(moveMap)
 		return this
 	}
@@ -159,50 +160,51 @@ export class BoardSvc implements IBoard {
 	undo() {
 		const move = this.#movesObs.data
 
-		this.#grid = this.#grid.mapAll((cell, pos) => {
-			const key = PosSvc.parseString(pos)
-			if (!move.has(key)) return cell
+		this.#obs.update(board =>
+			board!.mapAll((cell, pos) => {
+				const key = PosSvc.parseString(pos)
+				if (!move.has(key)) return cell
 
-			return cell.changeByMove(move.get(key)!.prev)
-		})
+				return cell.changeByMove(move.get(key)!.prev)
+			})
+		)
 
 		this.#movesObs.undo()
-
-		this.#obs.set(this.data)
 
 		return this
 	}
 
 	validate(cellPos: Pos) {
-		this.#grid = this.#grid
-			.mapBy(cellPos)
-			.cell(cell => cell.verify(this.#verify))
-			.apply()
+		this.#obs.update(board =>
+			board!
+				.mapBy(cellPos)
+				.cell(cell => cell.verify(this.#verify))
+				.apply()
+		)
 		this.#errorsObs.set(this.#errors)
-		this.#obs.set(this.data)
 		return this
 	}
 
 	validateAllBoard() {
-		this.#grid = this.#grid.mapAll(cell => cell.verify(this.#verify))
+		this.#obs.update(board => board!.mapAll(cell => cell.verify(this.#verify)))
 		this.#errorsObs.set(this.#errors)
-		this.#obs.set(this.data)
 		return this
 	}
 
 	write(cellPos: Pos, num: ValidNumbers) {
 		const moveMap: MoveMap = new Map()
 
-		this.#grid = this.#grid
-			.mapBy(cellPos)
-			.cell(cell => cell.writeValue(num))
-			.apply(({ next, prev }, pos) => {
-				if (!prev.isCorrect && next.isCorrect) this.#correctCells++
-				if (prev.isCorrect && !next.isCorrect) this.#correctCells--
-				moveMap.set(...this.#createMoveMapEntries({ prev, next }, pos))
-			})
+		this.#obs.update(board =>
+			board!
+				.mapBy(cellPos)
+				.cell(cell => cell.writeValue(num))
+				.apply(({ next, prev }, pos) => {
+					if (!prev.isCorrect && next.isCorrect) this.#correctCells++
+					if (prev.isCorrect && !next.isCorrect) this.#correctCells--
+					moveMap.set(...this.#createMoveMapEntries({ prev, next }, pos))
+				})
+		)
 
-		this.#obs.set(this.data)
 		if (moveMap.size > 0) this.#movesObs.overwrite(moveMap)
 		return this
 	}
@@ -215,7 +217,7 @@ export class BoardSvc implements IBoard {
 	}
 
 	#notIsInitial(pos: Pos) {
-		return this.#grid.cellBy(pos).kind !== CellKind.Initial
+		return this.#obs.data!.cellBy(pos).kind !== CellKind.Initial
 	}
 
 	readonly #verify = (isIncorrect: boolean) => {
