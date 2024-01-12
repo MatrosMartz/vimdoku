@@ -1,16 +1,16 @@
 import { describe, expect, test } from 'vitest'
 
-import { GridSvc } from './grid.service'
+import { Grid } from './grid.entity'
 
 describe.concurrent('Grid Service', () => {
 	test('The data should be an array.', () => {
-		const initialGrid = GridSvc.create(pos => pos.y)
+		const initialGrid = Grid.create(pos => pos.y)
 
 		expect(Array.isArray(initialGrid.data)).toBe(true)
 	})
 
 	test('Each cell should contain the value of its row.', () => {
-		const initialGrid = GridSvc.create(pos => pos.x)
+		const initialGrid = Grid.create(pos => pos.x)
 
 		expect(initialGrid.data).toEqual([
 			[0, 1, 2, 3, 4, 5, 6, 7, 8],
@@ -26,19 +26,19 @@ describe.concurrent('Grid Service', () => {
 	})
 
 	test('The copy data should be the same as the original.', () => {
-		const initialGrid = GridSvc.create(pos => pos.x)
+		const initialGrid = Grid.create(pos => pos.x)
 
 		expect(initialGrid.data).toEqual(initialGrid.copy().data)
 	})
 
 	test('The counter should be working properly.', () => {
-		const initialGrid = GridSvc.create(pos => pos.x)
+		const initialGrid = Grid.create(pos => pos.x)
 
 		expect(initialGrid.count(cell => cell === 7)).toBe(9)
 	})
 
 	test('Should create the subgrids "foo" and "bar".', () => {
-		const initialGrid = GridSvc.create(pos => ({ foo: pos.x, bar: pos.y }))
+		const initialGrid = Grid.create(pos => ({ foo: pos.x, bar: pos.y }))
 
 		const { bar, foo } = initialGrid.createSubgrids(cell => cell)
 
@@ -70,7 +70,7 @@ describe.concurrent('Grid Service', () => {
 
 describe.concurrent('Grid Mapper', () => {
 	test('Should multiply the whole grid by 5.', () => {
-		const initialGrid = GridSvc.create(pos => pos.x)
+		const initialGrid = Grid.create(pos => pos.x)
 
 		expect(initialGrid.mapAll(cell => cell * 5).data).toEqual([
 			[0, 5, 10, 15, 20, 25, 30, 35, 40],
@@ -86,7 +86,7 @@ describe.concurrent('Grid Mapper', () => {
 	})
 
 	test('Should set the value of the cell selected to 10.', () => {
-		const initialGrid = GridSvc.create(pos => pos.x)
+		const initialGrid = Grid.create(pos => pos.x)
 
 		expect(
 			initialGrid
@@ -107,7 +107,7 @@ describe.concurrent('Grid Mapper', () => {
 	})
 
 	test('Should set the value of every cell in the same row to 10.', () => {
-		const initialGrid = GridSvc.create(pos => pos.x)
+		const initialGrid = Grid.create(pos => pos.x)
 
 		expect(
 			initialGrid
@@ -128,7 +128,7 @@ describe.concurrent('Grid Mapper', () => {
 	})
 
 	test('Should set the value of every cell in the same row to 10.', () => {
-		const initialGrid = GridSvc.create(pos => pos.x)
+		const initialGrid = Grid.create(pos => pos.x)
 
 		expect(
 			initialGrid
@@ -149,7 +149,7 @@ describe.concurrent('Grid Mapper', () => {
 	})
 
 	test('Should set the value of every cell in the same box to 10.', () => {
-		const initialGrid = GridSvc.create(pos => pos.x)
+		const initialGrid = Grid.create(pos => pos.x)
 
 		expect(
 			initialGrid
@@ -170,7 +170,7 @@ describe.concurrent('Grid Mapper', () => {
 	})
 
 	test('Should set the value of every related cell to 10.', () => {
-		const initialGrid = GridSvc.create(pos => pos.x)
+		const initialGrid = Grid.create(pos => pos.x)
 
 		expect(
 			initialGrid
@@ -191,7 +191,7 @@ describe.concurrent('Grid Mapper', () => {
 	})
 
 	test('Should set the value of each related cell other than the origin to 10.', () => {
-		const initialGrid = GridSvc.create(pos => pos.x)
+		const initialGrid = Grid.create(pos => pos.x)
 
 		expect(
 			initialGrid
@@ -212,7 +212,7 @@ describe.concurrent('Grid Mapper', () => {
 	})
 
 	test('Should skip the declared functions if the condition is false.', () => {
-		const initialGrid = GridSvc.create(pos => pos.x)
+		const initialGrid = Grid.create(pos => pos.x)
 
 		expect(
 			initialGrid
@@ -223,7 +223,7 @@ describe.concurrent('Grid Mapper', () => {
 	})
 
 	test('Should execute the declared functions if the condition is true.', () => {
-		const initialGrid = GridSvc.create(pos => pos.x)
+		const initialGrid = Grid.create(pos => pos.x)
 
 		expect(
 			initialGrid

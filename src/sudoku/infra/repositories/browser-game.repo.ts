@@ -1,8 +1,8 @@
 import { createBrowserStorage } from '~/share/infra/repositories'
 import { _throw, createMatrix, RepoItemNotFoundError } from '~/share/utils'
+import { Grid } from '$sudoku/domain/entities'
 import type { BoardJSON, CellJSON, GameInfo, GameOptsJSON } from '$sudoku/domain/models'
 import type { GameRepo } from '$sudoku/domain/repositories'
-import { GridSvc } from '$sudoku/domain/services'
 
 interface StorageNames {
 	board?: string
@@ -28,7 +28,7 @@ export class BrowserGameRepo implements GameRepo {
 
 	async create(data: { board: BoardJSON; info: GameInfo; opts: GameOptsJSON }): Promise<void>
 	async create({ board, info, opts }: { board: BoardJSON; info: GameInfo; opts: GameOptsJSON }) {
-		const { boardJSON, notes } = new GridSvc(board).createSubgrids(({ notes, ...boardJSON }) => ({
+		const { boardJSON, notes } = new Grid(board).createSubgrids(({ notes, ...boardJSON }) => ({
 			boardJSON,
 			notes,
 		}))

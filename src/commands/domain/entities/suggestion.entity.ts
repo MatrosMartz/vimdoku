@@ -1,18 +1,18 @@
-import { type ISugg, type Sugg } from '../models'
-
 interface SuggOpts {
 	cmdStr: string
 	descriptions: string | [string, ...string[]]
 	id: string
 }
 
-/** Represent a Suggestion Service. */
-export class SuggSvc implements ISugg {
-	readonly #data: Sugg
-	readonly #rgxStr: string
+export class Sugg {
+	readonly #descriptions
+	readonly #header
+	readonly #id
+	readonly #input
+	readonly #rgxStr
 
 	/**
-	 * Creates an instance of the SuggSvc class.
+	 * Creates an instance of the Sugg class.
 	 * @param opts Options for create Suggestion.
 	 */
 	constructor(opts: SuggOpts)
@@ -20,16 +20,33 @@ export class SuggSvc implements ISugg {
 		const [cmd, opt, arg = ''] = cmdStr.split(/(\[\w+\] ?)/)
 		const parseOpt = opt.replace(/(\[|\]|\s)/g, '')
 
-		this.#rgxStr = SuggSvc.#createRgxStr(cmd, parseOpt, arg)
-		const header = SuggSvc.#createCmd(cmd, parseOpt, arg)
-		const input = SuggSvc.#createInput(cmd, parseOpt, arg)
-		const dataDescriptions = Array.isArray(descriptions) ? descriptions : ([descriptions] as [string])
-
-		this.#data = { header, descriptions: dataDescriptions, id, input }
+		this.#rgxStr = Sugg.#createRgxStr(cmd, parseOpt, arg)
+		this.#header = Sugg.#createCmd(cmd, parseOpt, arg)
+		this.#input = Sugg.#createInput(cmd, parseOpt, arg)
+		this.#descriptions = Object.freeze<[string, ...string[]]>(
+			Array.isArray(descriptions) ? descriptions : [descriptions]
+		)
+		this.#id = id
 	}
 
-	get data() {
-		return this.#data
+	/** The Suggestion descriptions. */
+	get descriptions() {
+		return this.#descriptions
+	}
+
+	/** The Suggestion header element. */
+	get header() {
+		return this.#header
+	}
+
+	/** The Suggestion identifier. */
+	get id() {
+		return this.#id
+	}
+
+	/** The input value. */
+	get input() {
+		return this.#input
 	}
 
 	/**
@@ -38,11 +55,7 @@ export class SuggSvc implements ISugg {
 	 * @param fn Function to be executed for each iteration of the original array, and which returns the options to create an instance.
 	 */
 	static createArray<T>(array: T[], fn: (value: T) => SuggOpts) {
-		return array.map(value => new SuggSvc(fn(value)))
-	}
-
-	static getArrayData(suggs: ISugg[]) {
-		return suggs.map(({ data }) => data)
+		return array.map(value => new Sugg(fn(value)))
 	}
 
 	/**
@@ -54,8 +67,8 @@ export class SuggSvc implements ISugg {
 	static #createCmd(cmd: string, opt: string, arg: string) {
 		const h3 = document.createElement('h3')
 		h3.classList.add('monospace', 'highlight')
-		const cmdSpan = SuggSvc.#createSpan(cmd, 'command')
-		const optSpan = SuggSvc.#createSpan(opt, 'optional')
+		const cmdSpan = Sugg.#createSpan(cmd, 'command')
+		const optSpan = Sugg.#createSpan(opt, 'optional')
 		cmdSpan.appendChild(optSpan)
 		h3.appendChild(cmdSpan)
 
@@ -65,11 +78,11 @@ export class SuggSvc implements ISugg {
 
 		for (const section of arg.split(/(?=\{)|(?='[^']+')|(?=\()|(?=<)/)) {
 			if (section == null || section.length === 0) continue
-			if (/^'.*'$/.test(section)) h3.appendChild(SuggSvc.#createSpan(section.slice(1, -1), 'text'))
-			else if (/^\{\w+\}$/.test(arg)) h3.appendChild(SuggSvc.#createSpan(section.slice(1, -1), 'holder'))
-			else if (/^\(\w+\)$/.test(section)) h3.appendChild(SuggSvc.#createSpan(section.slice(1, -1), 'value'))
-			else if (/^:\w+$/.test(section)) h3.appendChild(SuggSvc.#createSpan(section.slice(1), 'command'))
-			else if (/^<[^>]*>$/.test(section)) h3.appendChild(SuggSvc.#createSpan(section.slice(1, -1), 'special'))
+			if (/^'.*'$/.test(section)) h3.appendChild(Sugg.#createSpan(section.slice(1, -1), 'text'))
+			else if (/^\{\w+\}$/.test(arg)) h3.appendChild(Sugg.#createSpan(section.slice(1, -1), 'holder'))
+			else if (/^\(\w+\)$/.test(section)) h3.appendChild(Sugg.#createSpan(section.slice(1, -1), 'value'))
+			else if (/^:\w+$/.test(section)) h3.appendChild(Sugg.#createSpan(section.slice(1), 'command'))
+			else if (/^<[^>]*>$/.test(section)) h3.appendChild(Sugg.#createSpan(section.slice(1, -1), 'special'))
 			else h3.appendChild(document.createTextNode(section))
 		}
 
@@ -131,6 +144,11 @@ export class SuggSvc implements ISugg {
 		return str.split(/(?<!\\)/).reduceRight((acc, curr) => `(${curr}${acc}?)`) + '?'
 	}
 
+	/**
+	 * Check if the given command matches the suggestion based on the regular expression.
+	 * @param cmd The command to be matched.
+	 * @returns True if the command matches the suggestion, otherwise false.
+	 */
 	match(cmd: string) {
 		return new RegExp(this.#rgxStr).test(cmd)
 	}

@@ -9,8 +9,8 @@ import {
 	ScreenAction,
 	type ScreenData,
 } from '$screen/domain/models'
+import { Solution } from '$sudoku/domain/entities'
 import { type IGame, SudokuAction, type SudokuData } from '$sudoku/domain/models'
-import { SolutionSvc } from '$sudoku/domain/services'
 
 import type { IMed, Med } from '../models'
 
@@ -161,7 +161,7 @@ export class MedSvc implements IMed {
 		await this.#game.save()
 	}
 
-	async #dSudokuStart({ difficulty, solution = SolutionSvc.create() }: SudokuData.Start) {
+	async #dSudokuStart({ difficulty, solution = Solution.create() }: SudokuData.Start) {
 		this.#screen.setMain(MainScreenKind.Game)
 		this.#game = await this.#game.start({ difficulty, solution })
 		if (this.#prefs.data.timer) this.#game.timerStart()

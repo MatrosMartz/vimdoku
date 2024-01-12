@@ -2,15 +2,17 @@ import type { Pos } from '~/share/domain/models'
 import type { Tuple } from '~/share/types'
 import { box, createMatrix, InvalidSolutionError, iterateMatrix, randomNumbers } from '~/share/utils'
 
-import { type ISolution, type SolutionGrid, type SolutionJSON, type ValidNumbers } from '../models'
-import { GridSvc } from './grid.service'
+import { type SolutionJSON, type ValidNumbers } from '../models'
+import { Grid } from './grid.entity'
+
+export type SolutionGrid = Grid<ValidNumbers>
 
 function notArrayErrorMsgRgx() {
 	return /^Cannot read properties of undefined \(reading '[0-8]'\)/
 }
 
 /** Represent a Sudoku Solution Service. */
-export class SolutionSvc implements ISolution {
+export class Solution {
 	readonly #grid
 
 	/**
@@ -21,10 +23,12 @@ export class SolutionSvc implements ISolution {
 		this.#grid = grid
 	}
 
+	/** Get the current data of Solution. */
 	get data() {
 		return this.toJSON()
 	}
 
+	/** Get the current grid. */
 	get grid() {
 		return this.#grid.copy()
 	}
@@ -46,7 +50,7 @@ export class SolutionSvc implements ISolution {
 
 	/** Create an instance of the SolutionSvc. */
 	static create() {
-		return new SolutionSvc(SolutionSvc.#fillSolution())
+		return new Solution(Solution.#fillSolution())
 	}
 
 	/**
@@ -60,7 +64,7 @@ export class SolutionSvc implements ISolution {
 	static fromString(solutionLike: string) {
 		try {
 			const initSolution = JSON.parse(solutionLike)
-			return new SolutionSvc(new GridSvc(initSolution))
+			return new Solution(new Grid(initSolution))
 		} catch (err) {
 			throw new InvalidSolutionError(solutionLike, err)
 		}
@@ -105,13 +109,15 @@ export class SolutionSvc implements ISolution {
 				}
 			}
 		}
-		return new GridSvc(value as Tuple<Tuple<ValidNumbers, 9>, 9>)
+		return new Grid(value as Tuple<Tuple<ValidNumbers, 9>, 9>)
 	}
 
+	/** Converts the solution instance to a array. */
 	toJSON(): SolutionJSON {
 		return this.#grid.data
 	}
 
+	/** Converts Solution instance in sudoku board string representation. */
 	toString() {
 		const col = ' | '
 		const row = '\n- - - + - - - + - - -\n'

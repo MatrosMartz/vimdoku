@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 
-import { SuggSvc } from './suggestions.service'
+import { Sugg } from './suggestion.entity'
 
 interface SuggExpect {
 	innerText: string
@@ -61,13 +61,13 @@ const SUGGESTIONS_CASES: SuggCase[] = [
 
 describe.concurrent('SuggestionSvc', () => {
 	describe.each(SUGGESTIONS_CASES)('`cmdStr` is $cmdStr', ({ cmdStr, expected }) => {
-		const suggestion = new SuggSvc({ cmdStr, descriptions: 'some', id: 'some' })
+		const suggestion = new Sugg({ cmdStr, descriptions: 'some', id: 'some' })
 		test(`\`data.input\` Should be '${expected.input}'`, () => {
-			expect(suggestion.data.input).toBe(expected.input)
+			expect(suggestion.input).toBe(expected.input)
 		})
 
 		test('should be correct innerText', () => {
-			expect(suggestion.data.header.innerHTML).toBe(expected.innerText)
+			expect(suggestion.header.innerHTML).toBe(expected.innerText)
 		})
 	})
 })

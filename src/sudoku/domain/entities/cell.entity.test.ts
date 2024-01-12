@@ -2,13 +2,12 @@ import { randomUUID } from 'node:crypto'
 
 import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
-import { IDLE_POS } from '~/share/domain/models'
 import { noop } from '~/share/utils'
 
-import { CellKind, EMPTY_CELL_VALUE, EMPTY_NOTES, type ICell } from '../models'
-import { type CellCreateOpts, CellSvc } from './cell.service'
+import { CellKind, EMPTY_CELL_VALUE, EMPTY_NOTES } from '../models'
+import { Cell, type CellCreateOpts } from './cell.entity'
 
-export const DEFAULT_OPTS: CellCreateOpts = { isInitial: false, pos: IDLE_POS, solution: 8 }
+export const DEFAULT_OPTS: CellCreateOpts = { isInitial: false, solution: 8 }
 
 beforeAll(() => {
 	const crypto = { randomUUID }
@@ -17,11 +16,11 @@ beforeAll(() => {
 	return () => vi.unstubAllGlobals()
 })
 
-let cell: ICell
+let cell: Cell
 
-describe.concurrent('Initial Cell Svc', () => {
+describe.concurrent('Initial Cell', () => {
 	beforeEach(() => {
-		cell = CellSvc.create({ ...DEFAULT_OPTS, isInitial: true })
+		cell = Cell.create({ ...DEFAULT_OPTS, isInitial: true })
 	})
 
 	test('Should create an initial cell.', () => {
@@ -63,7 +62,7 @@ describe.concurrent('Initial Cell Svc', () => {
 	})
 
 	test('Should not be able to clean the cell.', () => {
-		const cell = CellSvc.create({ ...DEFAULT_OPTS, isInitial: true })
+		const cell = Cell.create({ ...DEFAULT_OPTS, isInitial: true })
 		const cellAfterClear = cell.clear()
 
 		expect(cell.id).toBe(cellAfterClear.id)
@@ -80,9 +79,9 @@ describe.concurrent('Initial Cell Svc', () => {
 	})
 })
 
-describe.concurrent('Empty Cell Svc', () => {
+describe.concurrent('Empty Cell', () => {
 	beforeEach(() => {
-		cell = CellSvc.create({ ...DEFAULT_OPTS })
+		cell = Cell.create({ ...DEFAULT_OPTS })
 	})
 
 	test('Should create an empty cell.', () => {
@@ -143,9 +142,9 @@ describe.concurrent('Empty Cell Svc', () => {
 	})
 })
 
-describe.concurrent('Notes Cell Svc', () => {
+describe.concurrent('Notes Cell', () => {
 	beforeEach(() => {
-		cell = CellSvc.create({ ...DEFAULT_OPTS })
+		cell = Cell.create({ ...DEFAULT_OPTS })
 			.addNote(5)
 			.addNote(2)
 	})
@@ -236,9 +235,9 @@ describe.concurrent('Notes Cell Svc', () => {
 	})
 })
 
-describe.concurrent('Unverified Cell Svc', () => {
+describe.concurrent('Unverified Cell', () => {
 	beforeEach(() => {
-		cell = CellSvc.create({ ...DEFAULT_OPTS }).writeValue(5)
+		cell = Cell.create({ ...DEFAULT_OPTS }).writeValue(5)
 	})
 
 	test('Should create an unverified cell.', () => {

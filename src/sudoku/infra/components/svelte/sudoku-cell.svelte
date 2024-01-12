@@ -3,7 +3,8 @@
 	import { PosSvc } from '~/share/domain/services'
 	import { posState } from '~/share/infra/stores/svelte'
 	import { med } from '$cmd/infra/services'
-	import { type Cell, SudokuAction } from '$sudoku/domain/models'
+	import type { Cell } from '$sudoku/domain/entities'
+	import { SudokuAction } from '$sudoku/domain/models'
 
 	export let data: Cell
 	export let position: Pos

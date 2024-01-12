@@ -2,11 +2,9 @@ import type { Pos } from '~/share/domain/models'
 import { PosSvc } from '~/share/domain/services'
 import { inject, InvalidBoardError } from '~/share/utils'
 
-import { type GameOpts, type IGrid, type SolutionJSON, type ValidNumbers } from '../models'
-import { type Board, type BoardJSON, type IBoard } from '../models/board.model'
-import { CellKind, type ICell, type MoveMap } from '../models/cell.model'
-import { CellSvc } from './cell.service'
-import { GridSvc } from './grid.service'
+import { Cell, Grid } from '../entities'
+import { type Board, type BoardJSON, type GameOpts, type IBoard, type SolutionJSON, type ValidNumbers } from '../models'
+import { CellKind, type MoveMap } from '../models/cell.model'
 import { BoardObs, ErrorsObs, MovesObs } from './sudoku-obs.service'
 
 /** Represent a Sudoku Board Service. */
@@ -21,14 +19,14 @@ export class BoardSvc implements IBoard {
 	 * Creates an instance of the BoardSvc class.
 	 * @param grid Initial Sudoku board.
 	 */
-	constructor(grid: IGrid<ICell>, errors: number) {
+	constructor(grid: Grid<Cell>, errors: number) {
 		this.#obs.set(grid)
 		this.#correctCells = this.#obs.data!.count(({ isCorrect }) => isCorrect)
 		this.#errors = errors
 	}
 
 	get data(): Board {
-		return this.#obs.data!.mapAll(cell => cell.data).data
+		return this.#obs.data!.data
 	}
 
 	get hasWin() {
@@ -42,9 +40,9 @@ export class BoardSvc implements IBoard {
 	static create(opts: GameOpts, errors: number): BoardSvc
 	static create({ difficulty, solution }: GameOpts, errors: number) {
 		const diffNum = Number(difficulty)
-		const grid = GridSvc.create<ICell>(pos => {
+		const grid = Grid.create<Cell>(pos => {
 			const isInitial = Boolean(Math.floor(Math.random() * diffNum))
-			return CellSvc.create({ isInitial, solution: solution.grid.cellBy(pos), pos })
+			return Cell.create({ isInitial, solution: solution.grid.cellBy(pos) })
 		})
 
 		return new BoardSvc(grid, errors)
@@ -59,8 +57,8 @@ export class BoardSvc implements IBoard {
 	static fromJSON(boardLike: BoardJSON, solution: SolutionJSON, errors: number) {
 		try {
 			if (Array.isArray(boardLike)) {
-				const data = new GridSvc(boardLike).mapAll<ICell>((json, { y, x }) =>
-					CellSvc.fromJSON({ cellLike: json, solution: solution[y][x], pos: { y, x } })
+				const data = new Grid(boardLike).mapAll<Cell>((json, { y, x }) =>
+					Cell.fromJSON({ cellLike: json, solution: solution[y][x] })
 				)
 				return new BoardSvc(data, errors)
 			} else throw new InvalidBoardError(boardLike)
@@ -209,7 +207,7 @@ export class BoardSvc implements IBoard {
 		return this
 	}
 
-	#createMoveMapEntries({ next, prev }: { next: ICell; prev: ICell }, pos: Pos) {
+	#createMoveMapEntries({ next, prev }: { next: Cell; prev: Cell }, pos: Pos) {
 		return [
 			`${pos.y}-${pos.x}`,
 			{ next: { notes: next.notes, pos, value: next.value }, prev: { notes: prev.notes, pos, value: prev.value } },

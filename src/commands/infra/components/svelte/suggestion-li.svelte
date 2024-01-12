@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 
-	import { type Sugg } from '$cmd/domain/models'
+	import { type Sugg } from '$cmd/domain/entities'
 	import { exec } from '$cmd/infra/services'
 
 	import { input } from './input.store'
