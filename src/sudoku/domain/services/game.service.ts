@@ -1,8 +1,9 @@
-import { IDLE_POS, type Pos } from '~/share/domain/models'
+import { IDLE_POS, type Pos } from '~/share/domain/entities'
 import { PosSvc } from '~/share/domain/services'
 import { inject, match } from '~/share/utils'
 
-import { type Board, IDLE_MODE, IDLE_TIMER, ModeKind, type ValidNumbers } from '../models'
+import { type ValidNumbers } from '../entities'
+import { type Board, IDLE_MODE, IDLE_TIMER, ModeKind } from '../models'
 import { type Game, type IGame, type IGameState, type StartedGameOpts } from '../models/game.model'
 import { type GameOpts } from '../models/game-options.model'
 import type { GameRepo } from '../repositories'
@@ -116,7 +117,7 @@ export class NonStartedGameSvc extends GameSvc {
 	readonly hasWin = false
 	readonly isStarted = false
 	readonly mode = ModeKind.X
-	readonly pos = { ...IDLE_POS }
+	readonly pos = IDLE_POS
 	readonly timer = IDLE_TIMER
 
 	#isASaved = false

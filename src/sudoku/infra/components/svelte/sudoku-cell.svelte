@@ -1,6 +1,5 @@
 <script lang="ts">
-	import type { Pos } from '~/share/domain/models'
-	import { PosSvc } from '~/share/domain/services'
+	import type { Pos } from '~/share/domain/entities'
 	import { posState } from '~/share/infra/stores/svelte'
 	import { med } from '$cmd/infra/services'
 	import type { Cell } from '$sudoku/domain/entities'
@@ -12,12 +11,12 @@
 	let btn: HTMLElement
 
 	$: value = data.value > 0 ? String(data.value) : ''
-	$: selected = PosSvc.equalsPos($posState, position)
+	$: selected = position.equalsPos($posState)
 
 	$: if (selected) btn?.focus()
 
 	function focusHandler() {
-		if (PosSvc.equalsPos($posState, position)) return
+		if (position.equalsPos($posState)) return
 		med.dispatch(SudokuAction.Move, { type: 'set', position })
 	}
 </script>

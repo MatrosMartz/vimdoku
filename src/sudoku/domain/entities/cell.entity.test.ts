@@ -4,8 +4,8 @@ import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { noop } from '~/share/utils'
 
-import { CellKind, EMPTY_CELL_VALUE, EMPTY_NOTES } from '../models'
-import { Cell, type CellCreateOpts } from './cell.entity'
+import { Cell, type CellCreateOpts, CellKind, EMPTY_CELL_VALUE } from './cell.entity'
+import { EMPTY_NOTES } from './notes.entity'
 
 export const DEFAULT_OPTS: CellCreateOpts = { isInitial: false, solution: 8 }
 

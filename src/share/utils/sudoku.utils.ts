@@ -10,7 +10,7 @@ export function randomNumbers() {
 	return numbers
 }
 
-export const box = {
+export const reg = {
 	y: (i: number, y: number) => (i % 3) + Math.floor(y / 3) * 3,
 	x: (i: number, x: number) => Math.floor(i / 3) + Math.floor(x / 3) * 3,
 }

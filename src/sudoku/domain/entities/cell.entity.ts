@@ -1,8 +1,38 @@
 import { Entity } from '~/share/domain/entities'
 import { match } from '~/share/utils'
 
-import { type CellJSON, CellKind, EMPTY_CELL_VALUE, type MoveData, type NotesData, type ValidNumbers } from '../models'
-import { Notes } from './notes.entity'
+import { Notes, type NotesData, type ValidNumbers } from './notes.entity'
+
+export enum CellKind {
+	Correct = 'correct',
+	Empty = 'empty',
+	Incorrect = 'incorrect',
+	Initial = 'initial',
+	Unverified = 'unverified',
+	WhitNotes = 'notes',
+}
+
+export type InsertKinds = CellKind.Correct | CellKind.Incorrect | CellKind.Unverified
+
+export const INSERT_KINDS: InsertKinds[] = [CellKind.Correct, CellKind.Incorrect, CellKind.Unverified]
+
+export interface CellJSON {
+	kind: CellKind
+	notes: number
+	value: number
+}
+
+export interface MoveData {
+	notes: NotesData
+	value: number
+}
+
+export interface MoveItem {
+	next: MoveData
+	prev: MoveData
+}
+
+export type MoveMap = Map<`${number}-${number}`, MoveItem>
 
 export interface CellData {
 	/** Get the current kind of cell. */
@@ -282,3 +312,5 @@ class NotesCellSvc extends WritableCell {
 			: new NotesCellSvc({ notes, solution: this[solutionK], value: this[valueK] })
 	}
 }
+
+export const EMPTY_CELL_VALUE = 0

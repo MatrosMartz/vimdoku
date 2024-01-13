@@ -2,8 +2,7 @@ import { randomUUID } from 'node:crypto'
 
 import { beforeAll, describe, expect, test, vi } from 'vitest'
 
-import { EMPTY_NOTES } from '../models'
-import { Notes } from './notes.entity'
+import { EMPTY_NOTES, Notes } from './notes.entity'
 
 beforeAll(() => {
 	const crypto = { randomUUID }

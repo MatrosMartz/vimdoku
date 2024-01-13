@@ -1,9 +1,11 @@
-import type { Pos } from '~/share/domain/models'
+import { Pos, type PosData } from '~/share/domain/entities'
 import type { Tuple } from '~/share/types'
-import { box, createMatrix, InvalidSolutionError, iterateMatrix, randomNumbers } from '~/share/utils'
+import { InvalidSolutionError, randomNumbers, reg } from '~/share/utils'
 
-import { type SolutionJSON, type ValidNumbers } from '../models'
 import { Grid } from './grid.entity'
+import { type ValidNumbers } from './notes.entity'
+
+export type SolutionJSON = Tuple<Tuple<ValidNumbers, 9>, 9>
 
 export type SolutionGrid = Grid<ValidNumbers>
 
@@ -39,7 +41,7 @@ export class Solution {
 	 */
 	static check(grid: SolutionGrid) {
 		try {
-			for (const pos of iterateMatrix(9))
+			for (const pos of Pos.iterateMatrix(9))
 				if (grid.compare(pos).withRelated((comp, current) => comp === current)) return false
 			return true
 		} catch (err) {
@@ -77,13 +79,13 @@ export class Solution {
 	 * @param position The position of the cell to check.
 	 * @private
 	 */
-	static #cellIsSafe(value: number[][], num: number, { y, x }: Pos) {
+	static #cellIsSafe(value: number[][], num: number, { y, x }: PosData) {
 		if (value[y][x] !== 0) return false
 
 		for (let i = 0; i < 9; i++) {
 			if (value[y][i] === num) return false
 			if (value[i][x] === num) return false
-			if (value[box.y(i, y)][box.x(i, x)] === num) return false
+			if (value[reg.y(i, y)][reg.x(i, x)] === num) return false
 		}
 
 		return true
@@ -91,10 +93,10 @@ export class Solution {
 
 	/** Create a Sudoku solution data. */
 	static #fillSolution() {
-		let value = createMatrix(9, () => 0)
+		let value = Pos.createMatrix(9, () => 0)
 		for (let i = 0; i < 9; i++) {
 			const retry = () => {
-				value = createMatrix(9, () => 0)
+				value = Pos.createMatrix(9, () => 0)
 				i = -1
 			}
 			for (let j = i; j < 9; j++) {

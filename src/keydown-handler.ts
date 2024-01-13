@@ -1,7 +1,8 @@
 import { med } from '$cmd/infra/services'
 import { DialogKind, MainScreenKind, ScreenAction, type VimScreen } from '$screen/domain/models'
 import { screenState } from '$screen/infra/stores/svelte'
-import { ModeKind, SudokuAction, type ValidNumbers } from '$sudoku/domain/models'
+import type { ValidNumbers } from '$sudoku/domain/entities'
+import { ModeKind, SudokuAction } from '$sudoku/domain/models'
 import { modeState } from '$sudoku/infra/stores/svelte'
 
 let moves = 0

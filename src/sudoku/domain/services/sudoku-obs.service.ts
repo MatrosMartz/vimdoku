@@ -1,46 +1,46 @@
-import { HistoryObsSvc, ObsSvc } from '~/share/domain/services'
+import { HistoryObservable, Observable } from '~/share/domain/entities'
 import { singleton } from '~/share/utils'
 
-import type { Cell, Grid } from '../entities'
-import { IDLE_MODE, IDLE_TIMER, type ModeKind, type MoveMap } from '../models'
+import type { Cell, Grid, MoveMap } from '../entities'
+import { IDLE_MODE, IDLE_TIMER, type ModeKind } from '../models'
 
 @singleton
-export class ModeObs extends ObsSvc<ModeKind> {
+export class ModeObs extends Observable<ModeKind> {
 	constructor() {
 		super(IDLE_MODE)
 	}
 }
 
 @singleton
-export class ErrorsObs extends ObsSvc<number> {
+export class ErrorsObs extends Observable<number> {
 	constructor() {
 		super(0)
 	}
 }
 
 @singleton
-export class TimerObs extends ObsSvc<string> {
+export class TimerObs extends Observable<string> {
 	constructor() {
 		super(IDLE_TIMER)
 	}
 }
 
 @singleton
-export class SavedObs extends ObsSvc<boolean> {
+export class SavedObs extends Observable<boolean> {
 	constructor() {
 		super(false)
 	}
 }
 
 @singleton
-export class BoardObs extends ObsSvc<Grid<Cell> | null> {
+export class BoardObs extends Observable<Grid<Cell> | null> {
 	constructor() {
 		super(null)
 	}
 }
 
 @singleton
-export class MovesObs extends HistoryObsSvc<MoveMap> {
+export class MovesObs extends HistoryObservable<MoveMap> {
 	constructor() {
 		super(new Map(), 30, [])
 	}

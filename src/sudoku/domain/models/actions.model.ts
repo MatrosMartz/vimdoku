@@ -1,9 +1,9 @@
-import type { Pos } from '~/share/domain/models'
+import type { Pos } from '~/share/domain/entities'
 import type { OptionalKeys } from '~/share/types'
 
+import type { ValidNumbers } from '../entities'
 import type { GameOpts } from './game-options.model'
 import type { ModeKind } from './modes.model'
-import type { ValidNumbers } from './notes.model'
 
 export enum SudokuAction {
 	ChangeMode = 'change-mode',

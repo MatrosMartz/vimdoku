@@ -1,9 +1,9 @@
-import type { IHistoryObs, IObs, Obsr } from '../models'
+export type Observer<T> = (data: T) => void
 
 /** Represent a Observable Service */
-export class ObsSvc<T> implements IObs<T> {
+export class Observable<T> {
 	#data: T
-	readonly #observers = new Set<Obsr<T>>()
+	readonly #observers = new Set<Observer<T>>()
 
 	/**
 	 * Creates an instance of the ObservableSvc class.
@@ -13,34 +13,51 @@ export class ObsSvc<T> implements IObs<T> {
 		this.#data = initialData
 	}
 
+	/** Get the current value of data. */
 	get data() {
 		return this.#data
 	}
 
-	add(observer: Obsr<T>) {
+	/**
+	 * Subscribe a new observer.
+	 * @param observer The observer to be added.
+	 */
+	add(observer: Observer<T>) {
 		this.#observers.add(observer)
 		observer(this.#data)
 		return this
 	}
 
-	remove(observer: Obsr<T>) {
+	/**
+	 * Unsubscribe an observer.
+	 * @param observer The observer to be removed.
+	 */
+	remove(observer: Observer<T>) {
 		this.#observers.delete(observer)
 		return this
 	}
 
+	/**
+	 * Set all observer with the new data.
+	 * @param data The new value of data.
+	 */
 	set(data: T) {
 		this.#data = data
 		for (const sub of this.#observers) sub(data)
 		return this
 	}
 
+	/**
+	 * Transforms and updates the previous data
+	 * @param updater The function that updates the data.
+	 */
 	update(updater: (data: T) => T) {
 		return this.set(updater(this.#data))
 	}
 }
 
 /** Represent a History Observable Service */
-export class HistoryObsSvc<T> extends ObsSvc<T> implements IHistoryObs<T> {
+export class HistoryObservable<T> extends Observable<T> {
 	#cursor: number
 	readonly #emptyState: T
 	readonly #history: T[]
@@ -60,6 +77,7 @@ export class HistoryObsSvc<T> extends ObsSvc<T> implements IHistoryObs<T> {
 		this.trunc()
 	}
 
+	/** Get the current value of the entire history. */
 	get history() {
 		return [...this.#history]
 	}
@@ -73,10 +91,18 @@ export class HistoryObsSvc<T> extends ObsSvc<T> implements IHistoryObs<T> {
 		if (this.#history.length > length) this.#history.length = length
 	}
 
+	/**
+	 * Truncates the history based on the cursor and updates based on it.
+	 * @param data The new entry of the history.
+	 */
 	overwrite(data: T) {
 		return this.trunc().push(data)
 	}
 
+	/**
+	 * Adds a new entry to the history and set the current data value to an empty state.
+	 * @param data The new entry of the history.
+	 */
 	push(data: T) {
 		const hasExceed = this.#length - this.#history.length <= 0
 
@@ -90,6 +116,7 @@ export class HistoryObsSvc<T> extends ObsSvc<T> implements IHistoryObs<T> {
 		return this
 	}
 
+	/** Navigate backwards in history. */
 	redo() {
 		if (this.#cursor < this.#history.length) {
 			this.#cursor++
@@ -98,12 +125,14 @@ export class HistoryObsSvc<T> extends ObsSvc<T> implements IHistoryObs<T> {
 		return this
 	}
 
+	/** Truncates the history based on the cursor */
 	trunc() {
 		if (this.#history.length > this.#cursor) this.#history.length = this.#cursor
 
 		return this
 	}
 
+	/** Navigate forwards in history. */
 	undo() {
 		if (this.#cursor > 0) {
 			this.#cursor--

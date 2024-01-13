@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Pos } from '~/share/domain/entities'
 	import { prefsState } from '$pref/infra/stores/svelte'
 	import { boardState } from '$sudoku/infra/stores/svelte'
 
@@ -13,7 +14,7 @@
 		{#each $boardState as row, y (y)}
 			<tr class="row-{y}">
 				{#each row as data, x (`${y},${x}`)}
-					<SudokuCell {data} position={{ y, x }} />
+					<SudokuCell {data} position={new Pos({ y, x })} />
 				{/each}
 			</tr>
 		{/each}

@@ -50,3 +50,7 @@ export function typeFallback<T extends StrTypes>(type: T, value: unknown, fallba
 	// eslint-disable-next-line valid-typeof
 	return typeof value === type ? (value as StrToType<T>) : fallback
 }
+
+export function clamp(min: number, max: number, value: number) {
+	return Math.min(Math.max(value, min), max)
+}

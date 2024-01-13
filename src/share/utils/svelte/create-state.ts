@@ -1,12 +1,12 @@
 import { type Readable, readable } from 'svelte/store'
 
-import type { IObs } from '~/share/domain/models'
+import type { Observable } from '~/share/domain/entities'
 
 interface CustomReadable<T> extends Readable<T> {
 	readonly data: T
 }
 
-export function createState<T>(obs: IObs<T>): CustomReadable<T> {
+export function createState<T>(obs: Observable<T>): CustomReadable<T> {
 	const { subscribe } = readable(obs.data, observer => {
 		obs.add(observer)
 		return () => obs.remove(observer)
@@ -20,7 +20,7 @@ export function createState<T>(obs: IObs<T>): CustomReadable<T> {
 	}
 }
 
-export function createDerived<T, U>(obs: IObs<U>, fn: (value: U) => T): CustomReadable<T> {
+export function createDerived<T, U>(obs: Observable<U>, fn: (value: U) => T): CustomReadable<T> {
 	const { subscribe } = readable(fn(obs.data), observer => {
 		const wrapper = (value: U) => observer(fn(value))
 		obs.add(wrapper)

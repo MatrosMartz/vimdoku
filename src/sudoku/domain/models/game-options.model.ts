@@ -1,6 +1,5 @@
-import type { Solution } from '../entities/solution.entity'
+import type { Solution, SolutionJSON } from '../entities/solution.entity'
 import type { DifficultyKind } from './difficulties.model'
-import type { SolutionJSON } from './solution.model'
 
 export interface GameOpts {
 	/** Number of initials cells */

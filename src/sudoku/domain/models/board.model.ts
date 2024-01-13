@@ -1,9 +1,7 @@
-import type { Pos } from '~/share/domain/models'
+import type { Pos } from '~/share/domain/entities'
 import type { Tuple } from '~/share/types'
 
-import type { Cell } from '../entities'
-import { type CellJSON } from './cell.model'
-import { type ValidNumbers } from './notes.model'
+import type { Cell, CellJSON, ValidNumbers } from '../entities'
 
 export type Board = Tuple<Tuple<Cell, 9>, 9>
 

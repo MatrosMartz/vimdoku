@@ -1,10 +1,8 @@
-import type { Pos } from '~/share/domain/models'
-import { PosSvc } from '~/share/domain/services'
+import { type Pos } from '~/share/domain/entities'
 import { inject, InvalidBoardError } from '~/share/utils'
 
-import { Cell, Grid } from '../entities'
-import { type Board, type BoardJSON, type GameOpts, type IBoard, type SolutionJSON, type ValidNumbers } from '../models'
-import { CellKind, type MoveMap } from '../models/cell.model'
+import { Cell, CellKind, Grid, type MoveMap, type SolutionJSON, type ValidNumbers } from '../entities'
+import { type Board, type BoardJSON, type GameOpts, type IBoard } from '../models'
 import { BoardObs, ErrorsObs, MovesObs } from './sudoku-obs.service'
 
 /** Represent a Sudoku Board Service. */
@@ -120,7 +118,7 @@ export class BoardSvc implements IBoard {
 
 		this.#obs.update(board =>
 			board!.mapAll((cell, pos) => {
-				const key = PosSvc.parseString(pos)
+				const key = pos.toString()
 				if (!move.has(key)) return cell
 
 				return cell.changeByMove(move.get(key)!.next)
@@ -160,7 +158,7 @@ export class BoardSvc implements IBoard {
 
 		this.#obs.update(board =>
 			board!.mapAll((cell, pos) => {
-				const key = PosSvc.parseString(pos)
+				const key = pos.toString()
 				if (!move.has(key)) return cell
 
 				return cell.changeByMove(move.get(key)!.prev)

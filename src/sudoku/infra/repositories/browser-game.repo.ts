@@ -1,7 +1,8 @@
+import { Pos } from '~/share/domain/entities'
 import { createBrowserStorage } from '~/share/infra/repositories'
-import { _throw, createMatrix, RepoItemNotFoundError } from '~/share/utils'
-import { Grid } from '$sudoku/domain/entities'
-import type { BoardJSON, CellJSON, GameInfo, GameOptsJSON } from '$sudoku/domain/models'
+import { _throw, RepoItemNotFoundError } from '~/share/utils'
+import { type CellJSON, Grid } from '$sudoku/domain/entities'
+import type { BoardJSON, GameInfo, GameOptsJSON } from '$sudoku/domain/models'
 import type { GameRepo } from '$sudoku/domain/repositories'
 
 interface StorageNames {
@@ -52,7 +53,7 @@ export class BrowserGameRepo implements GameRepo {
 			boardRaw != null ? (JSON.parse(boardRaw) as CellJSONStore[][]) : _throw(new RepoItemNotFoundError('board'))
 		const notes = notesRaw != null ? (JSON.parse(notesRaw) as number[][]) : _throw(new RepoItemNotFoundError('notes'))
 
-		return createMatrix(9, ({ y, x }): CellJSON => ({ ...board[y][x], notes: notes[y][x] }))
+		return Pos.createMatrix(9, ({ y, x }): CellJSON => ({ ...board[y][x], notes: notes[y][x] }))
 	}
 
 	async getInfo() {

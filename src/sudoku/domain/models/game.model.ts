@@ -1,10 +1,11 @@
-import type { IPos, Pos } from '~/share/domain/models'
+import type { Pos } from '~/share/domain/entities'
+import type { IPos } from '~/share/domain/models'
 
+import type { ValidNumbers } from '../entities'
 import type { GameRepo } from '../repositories'
 import type { Board, IBoard } from './board.model'
 import type { GameOpts } from './game-options.model'
 import type { ModeKind } from './modes.model'
-import type { ValidNumbers } from './notes.model'
 import type { ITimer } from './timer.model'
 
 export interface Game {

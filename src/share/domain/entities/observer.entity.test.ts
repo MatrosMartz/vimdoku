@@ -2,13 +2,13 @@ import { beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { noop } from '~/share/utils'
 
-import { HistoryObsSvc, ObsSvc } from './observer.service'
+import { HistoryObservable, Observable } from './observer.entity'
 
-describe.concurrent('Obs Svc', () => {
-	let obs: ObsSvc<number>
+describe.concurrent('Observable', () => {
+	let obs: Observable<number>
 
 	beforeEach(() => {
-		obs = new ObsSvc(9)
+		obs = new Observable(9)
 	})
 
 	test('Should be the initial data.', () => {
@@ -67,23 +67,23 @@ describe.concurrent('Obs Svc', () => {
 	})
 })
 
-describe.concurrent('History Obs Svc', () => {
+describe.concurrent('History Observable', () => {
 	const EMPTY_STATE = 0
 
 	test('Should be the empty state.', () => {
-		const obs = new HistoryObsSvc<number>(EMPTY_STATE, 20, [])
+		const obs = new HistoryObservable<number>(EMPTY_STATE, 20, [])
 
 		expect(obs.data).toBe(EMPTY_STATE)
 	})
 
 	test('History should be empty.', () => {
-		const obs = new HistoryObsSvc<number>(EMPTY_STATE, 20, [])
+		const obs = new HistoryObservable<number>(EMPTY_STATE, 20, [])
 
 		expect(obs.history).toEqual([])
 	})
 
 	test('Should be the empty state and add the new data to history.', () => {
-		const obs = new HistoryObsSvc<number>(EMPTY_STATE, 20, [])
+		const obs = new HistoryObservable<number>(EMPTY_STATE, 20, [])
 
 		obs.push(1)
 
@@ -92,7 +92,7 @@ describe.concurrent('History Obs Svc', () => {
 	})
 
 	test('Should be the lasted history data.', () => {
-		const obs = new HistoryObsSvc<number>(EMPTY_STATE, 20, [1, 2])
+		const obs = new HistoryObservable<number>(EMPTY_STATE, 20, [1, 2])
 
 		obs.undo()
 
@@ -101,7 +101,7 @@ describe.concurrent('History Obs Svc', () => {
 	})
 
 	test('Should be the first data in case it comes to the begin of the history..', () => {
-		const obs = new HistoryObsSvc<number>(EMPTY_STATE, 20, [1, 2])
+		const obs = new HistoryObservable<number>(EMPTY_STATE, 20, [1, 2])
 
 		obs.undo().undo().undo().undo()
 
@@ -110,7 +110,7 @@ describe.concurrent('History Obs Svc', () => {
 	})
 
 	test('Should be the data after the last undo.', () => {
-		const obs = new HistoryObsSvc<number>(EMPTY_STATE, 20, [1, 2, 3])
+		const obs = new HistoryObservable<number>(EMPTY_STATE, 20, [1, 2, 3])
 
 		obs.undo().undo().undo().redo()
 
@@ -118,7 +118,7 @@ describe.concurrent('History Obs Svc', () => {
 	})
 
 	test('Should be the empty state in the case it comes to the end of the history.', () => {
-		const obs = new HistoryObsSvc<number>(EMPTY_STATE, 20, [1, 2])
+		const obs = new HistoryObservable<number>(EMPTY_STATE, 20, [1, 2])
 
 		obs.undo().redo()
 
@@ -126,7 +126,7 @@ describe.concurrent('History Obs Svc', () => {
 	})
 
 	test('Should overwrite the history from the last undo.', () => {
-		const obs = new HistoryObsSvc<number>(EMPTY_STATE, 20, [1, 2, 3, 4])
+		const obs = new HistoryObservable<number>(EMPTY_STATE, 20, [1, 2, 3, 4])
 
 		obs.undo().undo().overwrite(10)
 
@@ -135,7 +135,7 @@ describe.concurrent('History Obs Svc', () => {
 	})
 
 	test('The history should only contain the same amount of changes as the maximum length of the history.', () => {
-		const obs = new HistoryObsSvc<number>(EMPTY_STATE, 3, [])
+		const obs = new HistoryObservable<number>(EMPTY_STATE, 3, [])
 
 		obs.push(1).push(2).push(3).push(4).push(5)
 
@@ -143,7 +143,7 @@ describe.concurrent('History Obs Svc', () => {
 	})
 
 	test('Should be called when a data is added.', () => {
-		const obs = new HistoryObsSvc<number>(EMPTY_STATE, 20, [])
+		const obs = new HistoryObservable<number>(EMPTY_STATE, 20, [])
 
 		const observer = vi.fn(noop)
 
@@ -155,7 +155,7 @@ describe.concurrent('History Obs Svc', () => {
 	})
 
 	test('Should call after undoing the history.', () => {
-		const obs = new HistoryObsSvc<number>(EMPTY_STATE, 20, [1])
+		const obs = new HistoryObservable<number>(EMPTY_STATE, 20, [1])
 
 		const observer = vi.fn(noop)
 
@@ -167,7 +167,7 @@ describe.concurrent('History Obs Svc', () => {
 	})
 
 	test('Should call it only as many times as it changes the data.', () => {
-		const obs = new HistoryObsSvc<number>(EMPTY_STATE, 20, [1])
+		const obs = new HistoryObservable<number>(EMPTY_STATE, 20, [1])
 
 		const observer = vi.fn(noop)
 
@@ -178,7 +178,7 @@ describe.concurrent('History Obs Svc', () => {
 	})
 
 	test('Should only if it has not reached the beginning of the track record.', () => {
-		const obs = new HistoryObsSvc<number>(EMPTY_STATE, 20, [1, 2])
+		const obs = new HistoryObservable<number>(EMPTY_STATE, 20, [1, 2])
 
 		const observer = vi.fn(noop)
 
