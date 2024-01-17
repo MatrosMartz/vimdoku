@@ -4,9 +4,8 @@ import { noop } from '~/share/utils'
 
 import { HistoryObservable, Observable } from './observer.entity'
 
-describe.concurrent('Observable', () => {
-	let obs: Observable<number>
-
+let obs: Observable<number>
+describe('Observable', () => {
 	beforeEach(() => {
 		obs = new Observable(9)
 	})
