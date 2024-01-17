@@ -3,6 +3,7 @@
 	import { med } from '$cmd/infra/services'
 	import { SudokuAction } from '$sudoku/domain/models'
 
+	/** Check sudoku, check click handler. */
 	function clickHandler() {
 		med.dispatch(SudokuAction.Check)
 	}

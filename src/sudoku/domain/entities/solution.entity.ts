@@ -1,6 +1,6 @@
 import { Pos, type PosData } from '~/share/domain/entities'
 import type { Tuple } from '~/share/types'
-import { InvalidSolutionError, randomNumbers, reg } from '~/share/utils'
+import { InvalidSolutionError, randomNumbers, REG } from '~/share/utils'
 
 import { Grid } from './grid.entity'
 import { type ValidNumbers } from './notes.entity'
@@ -9,7 +9,11 @@ export type SolutionJSON = Tuple<Tuple<ValidNumbers, 9>, 9>
 
 export type SolutionGrid = Grid<ValidNumbers>
 
-function notArrayErrorMsgRgx() {
+/**
+ * Create RegExp to match the error of: "Cannot read properties of undefined"
+ * @returns The RegExp
+ */
+function cannotReadUndefined() {
 	return /^Cannot read properties of undefined \(reading '[0-8]'\)/
 }
 
@@ -25,12 +29,10 @@ export class Solution {
 		this.#grid = grid
 	}
 
-	/** Get the current data of Solution. */
 	get data() {
 		return this.toJSON()
 	}
 
-	/** Get the current grid. */
 	get grid() {
 		return this.#grid.copy()
 	}
@@ -38,6 +40,7 @@ export class Solution {
 	/**
 	 * Check if a given Sudoku solution is valid.
 	 * @param grid The Sudoku solution to check.
+	 * @returns True if it complies with the structure, False if it doesn't.
 	 */
 	static check(grid: SolutionGrid) {
 		try {
@@ -45,12 +48,15 @@ export class Solution {
 				if (grid.compare(pos).withRelated((comp, current) => comp === current)) return false
 			return true
 		} catch (err) {
-			if (err instanceof TypeError && notArrayErrorMsgRgx().test(err.message)) return false
+			if (err instanceof TypeError && cannotReadUndefined().test(err.message)) return false
 			throw err
 		}
 	}
 
-	/** Create an instance of the SolutionSvc. */
+	/**
+	 * Create an instance of the SolutionSvc.
+	 * @returns A new Solution.
+	 */
 	static create() {
 		return new Solution(Solution.#fillSolution())
 	}
@@ -59,9 +65,7 @@ export class Solution {
 	 * Create an instance of the SolutionSvc from a JSON string.
 	 * @param solutionLike JSON representation of solution.
 	 * @throws {InvalidSolutionError} If `solutionLike` is not a valid JSON string.
-	 * @example
-	 * const solutionJSON = JSON.stringify(solutionInstance)
-	 * const newSolutionInstance = Solution.from(solutionJSON)
+	 * @returns A solution based on solution like JSON.
 	 */
 	static fromString(solutionLike: string) {
 		try {
@@ -77,21 +81,25 @@ export class Solution {
 	 * @param value The current Sudoku grid.
 	 * @param num The number to check.
 	 * @param position The position of the cell to check.
-	 * @private
+	 * @returns True if the cell value is safe with related cells.
 	 */
+	static #cellIsSafe(value: number[][], num: number, position: PosData): boolean
 	static #cellIsSafe(value: number[][], num: number, { y, x }: PosData) {
 		if (value[y][x] !== 0) return false
 
 		for (let i = 0; i < 9; i++) {
 			if (value[y][i] === num) return false
 			if (value[i][x] === num) return false
-			if (value[reg.y(i, y)][reg.x(i, x)] === num) return false
+			if (value[REG.Y(i, y)][REG.X(i, x)] === num) return false
 		}
 
 		return true
 	}
 
-	/** Create a Sudoku solution data. */
+	/**
+	 * Create a Sudoku solution data.
+	 * @returns A Grid of valid numbers.
+	 */
 	static #fillSolution() {
 		let value = Pos.createMatrix(9, () => 0)
 		for (let i = 0; i < 9; i++) {
@@ -114,12 +122,10 @@ export class Solution {
 		return new Grid(value as Tuple<Tuple<ValidNumbers, 9>, 9>)
 	}
 
-	/** Converts the solution instance to a array. */
 	toJSON(): SolutionJSON {
 		return this.#grid.data
 	}
 
-	/** Converts Solution instance in sudoku board string representation. */
 	toString() {
 		const col = ' | '
 		const row = '\n- - - + - - - + - - -\n'

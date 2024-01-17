@@ -345,6 +345,7 @@ abstract class GameState implements IGameState {
 	 * Create an instance of GameState with options.
 	 * @param data The game data with create instance.
 	 * @param mode The value to set.
+	 * @returns A new state.
 	 */
 	static create(data: StartedGameData, mode: ModeKind): GameState {
 		data.mode = mode

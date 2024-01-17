@@ -7,10 +7,16 @@
 
 	let value: keyof typeof DifficultyKind = 'Beginner'
 
+	/**
+	 * Go back screen, click handler.
+	 */
 	function backHandler() {
 		med.dispatch(ScreenAction.Exit)
 	}
 
+	/**
+	 * Start new game, submit handler.
+	 */
 	function submitHandler() {
 		med.dispatch(SudokuAction.Start, { difficulty: DifficultyKind[value] })
 	}

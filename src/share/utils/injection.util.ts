@@ -29,6 +29,11 @@ export const singleton: Decorator = Target => {
 	}
 }
 
+/**
+ * Inject a class.
+ * @param C The class.
+ * @returns The class instance that is injected.
+ */
 export function inject<const I extends object>(C: Class<I> | Decorated<I>) {
 	return create in C ? C[create]() : new C()
 }

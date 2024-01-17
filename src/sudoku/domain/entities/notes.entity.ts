@@ -23,12 +23,10 @@ export class Notes extends Entity {
 		this.#data = data
 	}
 
-	/** Get the current set of notes. */
 	get data() {
 		return structuredClone(this.#data)
 	}
 
-	/** Checks if notes set is empty */
 	get isEmpty() {
 		return !this.#data.some(num => num != null)
 	}
@@ -37,6 +35,7 @@ export class Notes extends Entity {
 	 * Creates an instance of the NotesSvc.
 	 * @param initialNotes Initial Sudoku cell notes (optional).
 	 * @throws {InvalidBoardError} If `initialNotes` is not a valid array of numbers.
+	 * @returns A new Notes.
 	 */
 	static create(initialNotes?: ValidNumbers[]) {
 		const value = Array(9).fill(null) as NotesData
@@ -52,6 +51,7 @@ export class Notes extends Entity {
 	 * Creates an instance of the NotesSvc from a JSON string.
 	 * @param notesLike number representation of notes.
 	 * @throws {InvalidBoardError} If `solutionLike` is not a valid JSON string.
+	 * @returns A new Notes based on notes like number.
 	 */
 	static fromNumber(notesLike: number) {
 		const notes = createArray(9, (): ValidNumbers | null => null)
@@ -72,6 +72,7 @@ export class Notes extends Entity {
 	 * Creates an instance of the NotesSvc from a JSON string.
 	 * @param notesLike JSON representation of notes.
 	 * @throws {InvalidBoardError} If `solutionLike` is not a valid JSON string.
+	 * @returns A new Notes based on notes like string.
 	 */
 	static fromString(notesLike: string) {
 		try {
@@ -91,6 +92,7 @@ export class Notes extends Entity {
 	/**
 	 *	Add a note to the set.
 	 * @param num The note add (1-9).
+	 * @returns The updated Notes.
 	 */
 	add(num: ValidNumbers) {
 		if (this.has(num)) return this
@@ -100,7 +102,10 @@ export class Notes extends Entity {
 		return new Notes(newData)
 	}
 
-	/** remove all notes */
+	/**
+	 * remove all notes
+	 * @returns The updated Notes.
+	 */
 	clear() {
 		return this.isEmpty ? this : new Notes(createArray(9, () => null))
 	}
@@ -116,6 +121,7 @@ export class Notes extends Entity {
 	/**
 	 * Check if it contains the note.
 	 * @param num The note to be checked (1-9).
+	 * @returns True if it contains the num.
 	 */
 	has(num: ValidNumbers) {
 		return this.#data[num - 1] != null
@@ -124,6 +130,7 @@ export class Notes extends Entity {
 	/**
 	 * Remove a note to the set.
 	 * @param num The note remove (1-9).
+	 * @returns The updated Notes.
 	 */
 	remove(num: ValidNumbers) {
 		if (!this.has(num)) return this
@@ -133,17 +140,14 @@ export class Notes extends Entity {
 		return new Notes(newData)
 	}
 
-	/** Converts Notes instance in JSON. */
 	toJSON() {
 		return this.#data.filter((val): val is ValidNumbers => val != null) as NotesJSON
 	}
 
-	/** Converts Notes instance to a number. */
 	toNumber() {
 		return this.#data.reduce((acc: number, curr) => (curr != null ? acc * PRIMES[curr - 1] : acc), 1)
 	}
 
-	/** Converts Notes instance to a string. */
 	toString() {
 		return JSON.stringify(this.toJSON())
 	}
@@ -151,6 +155,7 @@ export class Notes extends Entity {
 	/**
 	 * Toggle a note in the set (add if not present, remove if present).
 	 * @param num The note to toggle (1-9).
+	 * @returns The updated Notes.
 	 */
 	toggle(num: ValidNumbers) {
 		return this.has(num) ? this.remove(num) : this.add(num)

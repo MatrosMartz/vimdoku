@@ -1,5 +1,11 @@
 import { xor } from './commons.util'
 
+/**
+ * Comprares the structure of two objects (iterative way).
+ * @param obj1 The first object.
+ * @param obj2 The second object.
+ * @returns The result of the comparative.
+ */
 export function sameStructureIterative(obj1: unknown, obj2: unknown) {
 	const [type1, type2] = [typeof obj1, typeof obj2]
 
@@ -27,6 +33,12 @@ export function sameStructureIterative(obj1: unknown, obj2: unknown) {
 
 type Obj = Record<string | number, unknown>
 
+/**
+ * Comprares the structure of two objects (loop1 way).
+ * @param obj1 The first object.
+ * @param obj2 The second object.
+ * @returns The result of the comparative.
+ */
 export function sameStructureLoop(obj1: unknown, obj2: unknown) {
 	const [stack1, stack2] = [[obj1 as Obj], [obj2 as Obj]]
 
@@ -56,6 +68,12 @@ export function sameStructureLoop(obj1: unknown, obj2: unknown) {
 	return true
 }
 
+/**
+ * Comprares the structure of two objects.
+ * @param obj1 The first object.
+ * @param obj2 The second object.
+ * @returns The result of the comparative.
+ */
 export function sameStructureLoop2(obj1: unknown, obj2: unknown) {
 	const [type1, type2] = [typeof obj1, typeof obj2]
 	if (type1 !== type2 || (obj1 == null) !== (obj2 == null) || Array.isArray(obj1) !== Array.isArray(obj2)) return false

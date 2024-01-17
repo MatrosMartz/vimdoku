@@ -7,6 +7,7 @@
 	import {
 		type Accessibility,
 		ACCESSIBILITY_FIELDS,
+		type Prefs,
 		prefsGroupEntries,
 		type PrefsNamesEntries,
 		type Schema,
@@ -29,18 +30,32 @@
 
 	$: showAll = $screenState.dialog.kind === DialogKind.PrefAll
 
-	function getA<E extends PrefsNamesEntries>(i18n: I18n, [key, field]: E, value: unknown) {
-		if (field.type === 'toggle') return i18n.get(`prefs-toggle-${value as boolean}`, String(value))
-		if (key === 'colorSchema') return i18n.get(`prefs-schema-${value as Schema}`, value as string)
-		if (key === 'language') return i18n.get('langName', value as string)
+	/**
+	 * Gets the translated value of the preference.
+	 * @param i18n the object of internationalization.
+	 * @param fieldEntries the entries in the preference scheme.
+	 * @param prefs The current preferences.
+	 * @returns The translated value of the preference.
+	 */
+	function getPrefText<E extends PrefsNamesEntries>(i18n: I18n, fieldEntries: E, prefs: Prefs): string
+	function getPrefText<E extends PrefsNamesEntries>(i18n: I18n, [key, field]: E, prefs: Prefs) {
+		if (field.type === 'toggle') return i18n.get(`prefs-toggle-${prefs[key] as boolean}`, String(prefs[key]))
+		if (key === 'colorSchema') return i18n.get(`prefs-schema-${prefs[key] as Schema}`, prefs[key])
+		if (key === 'language') return i18n.get('langName', prefs[key])
 		if (ACCESSIBILITY_FIELDS.includes(key))
-			return i18n.get(`prefs-accessibility-${value as Accessibility}`, value as string)
-		return value as string
+			return i18n.get(`prefs-accessibility-${prefs[key] as Accessibility}`, prefs[key])
+		return prefs[key]
 	}
 
+	/**
+	 * Change dialog with preferences all kind.
+	 */
 	function allHandler() {
 		med.dispatch(ScreenAction.OpenDialog, { kind: DialogKind.PrefAll })
 	}
+	/**
+	 * Change dialog with preferences differ kind.
+	 */
 	function diffHandler() {
 		med.dispatch(ScreenAction.OpenDialog, { kind: DialogKind.PrefDiff })
 	}
@@ -56,7 +71,7 @@
 				{#each fields as field (field[0])}
 					<tr class="field" class:strike={!showAll && $prefsState[field[0]] === field[1].default}>
 						<th class="key secondary">{$i18nState.get(`prefs-names-${field[0]}`, capitalCase(field[0]))}</th>
-						<td class="monospace value {field[1].type}">{getA($i18nState, field, $prefsState[field[0]])}</td>
+						<td class="monospace value {field[1].type}">{getPrefText($i18nState, field, $prefsState)}</td>
 					</tr>
 				{/each}
 			</tbody>

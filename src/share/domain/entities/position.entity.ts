@@ -24,21 +24,14 @@ export class Pos<const P extends PosData = PosData> {
 		return new Pos({ y: Math.floor(this.#y / 3) * 3, x: Math.floor(this.#x / 3) * 3 })
 	}
 
-	/**
-	 * Get the region number (0-8) for a given cell position.
-	 * @param pos The position of the cell.
-	 * @returns The box number for the cell.
-	 */
 	get reg() {
 		return this.#y + (this.#x + 3)
 	}
 
-	/** Get the current x coord. */
 	get x() {
 		return this.#x
 	}
 
-	/** Get the current y coord. */
 	get y() {
 		return this.#y
 	}
@@ -47,6 +40,7 @@ export class Pos<const P extends PosData = PosData> {
 	 * Create a bidimensional array with the length selected.
 	 * @param length The matrix length in both directions.
 	 * @param mapFn The mapping function.
+	 * @returns The new matrix with the length defined.
 	 */
 	static createMatrix<const L extends number, MapFn extends (pos: Pos) => any>(length: L, mapFn: MapFn) {
 		return createArray(length, y => createArray(length, (x): ReturnType<MapFn> => mapFn(new Pos({ y, x }))))
@@ -64,54 +58,60 @@ export class Pos<const P extends PosData = PosData> {
 	/**
 	 * Creates an iterator in two dimensions.
 	 * @param length To where it will iterate in both directions.
+	 * @yields The current position.
 	 */
 	static *iterateMatrix(length: number) {
 		for (let y = 0; y < length; y++) for (let x = 0; x < length; x++) yield new Pos({ y, x })
 	}
 
 	/**
-	 * Check if two positions are related.
-	 * @param pos The second cell position.
+	 * Check if other pos are related.
+	 * @param pos The other position.
+	 * @returns True if the other position belongs to the same col, region or row.
 	 */
 	areRelated(pos: Pos) {
 		return this.equalsCol(pos) || this.equalsRow(pos) || this.equalsReg(pos)
 	}
 
 	/**
-	 * Check if two cell positions are in the same column.
-	 * @param pos The second cell position.
+	 * Check if other position are in the same column.
+	 * @param pos The other position.
+	 * @returns True if the other position belongs to the same col.
 	 */
 	equalsCol(pos: Pos) {
 		return this.#x === pos.#x
 	}
 
 	/**
-	 * Check if two cell positions are the same.
-	 * @param pos The second cell position.
+	 * Check if other position are the same.
+	 * @param pos The other position.
+	 * @returns True if the other position is the same.
 	 */
 	equalsPos(pos: Pos) {
 		return this.#y === pos.#y && this.#x === pos.#x
 	}
 
 	/**
-	 * Check if two cell positions are in the same region.
-	 * @param pos The second cell position.
+	 * Check if other position are in the same region.
+	 * @param pos The other position.
+	 * @returns True if the other position belongs to the same region.
 	 */
 	equalsReg(pos: Pos) {
 		return this.initReg.equalsPos(pos.initReg)
 	}
 
 	/**
-	 * Check if two cell positions are in the same row.
-	 * @param pos The second cell position.
+	 * Check if other position are in the same row.
+	 * @param pos The other position.
+	 * @returns True if the other position belongs to the same row.
 	 */
 	equalsRow(pos: Pos) {
 		return this.#y === pos.#y
 	}
 
 	/**
-	 * Sum two cell positions.
-	 * @param pos The second cell position.
+	 * Sum with other position.
+	 * @param pos The other position.
 	 */
 	sum(pos: RequireOne<PosData>): Pos
 	sum({ y = POS_MIN_RANGE, x = POS_MIN_RANGE }: RequireOne<PosData>) {
@@ -122,6 +122,11 @@ export class Pos<const P extends PosData = PosData> {
 		return `${this.#y}-${this.#x}` as const
 	}
 
+	/**
+	 * Abstraction to avoid overhanging from the board,
+	 * @param value The original value.
+	 * @returns The original position if it does not exceed the limits, otherwise the limit will be returned.
+	 */
 	#clamp(value: number) {
 		return clamp(POS_MIN_RANGE, POS_MAX_RANGE, value)
 	}
@@ -132,4 +137,5 @@ export const POS_MAX_RANGE = 8
 /** The minimum range for row and column coordinates. */
 export const POS_MIN_RANGE = 0
 
+/** The initial position. */
 export const IDLE_POS = new Pos({ y: POS_MIN_RANGE, x: POS_MIN_RANGE })

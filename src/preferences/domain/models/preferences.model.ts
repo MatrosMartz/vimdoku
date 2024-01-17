@@ -44,14 +44,17 @@ export interface IPrefs {
 	resetAll(): this
 	/**
 	 * Reset to default value specific preference.
-	 * @param key: The key preference to the reset.
+	 * @param key The key preference to the reset.
+	 * @returns The updated Service.
 	 */
 	resetByKey<K extends keyof Prefs>(key: K): this
 	/** Save the current  */
 	save(): Promise<void>
-	/** Set new Preferences Object.
+	/**
+	 * Set new Preferences Object.
 	 * @param preferences The new value for all preferences.
 	 * @throws {InvalidPreferencesError} If preferences is invalid.
+	 * @returns The updated Service.
 	 */
 	setAll(preferences: Prefs): this
 	/**
@@ -59,27 +62,35 @@ export interface IPrefs {
 	 * @param key The key preference to the establish.
 	 * @param value New value for the specific preference.
 	 * @throws {InvalidPreferencesError} If value or key is invalid.
+	 * @returns The updated Service.
 	 */
 	setByKey<K extends keyof Prefs>(key: K, value: Prefs[K]): this
-	/** Converts the Preferences instance in JSON. */
 	toJSON(): Prefs
-	/** Converts the Preferences instance to a JSON string. */
 	toString(): string
 }
 
 const ALL_FIELDS = { ...sudokuFields, ...userFields, ...vimFields }
 
+/** All preferences names. */
 export const PREFS_NAMES = Object.keys(ALL_FIELDS)
 
-type AllNames = (typeof PREFS_NAMES)[0]
+type AllNames = keyof typeof ALL_FIELDS
 type ToggleNames = KeysByType<Prefs, boolean>
 type NonToggleNames = Exclude<AllNames, ToggleNames>
 
 interface Names {
+	/** The names of preferences type text, number or option. */
 	NON_TOGGLE_NAMES: NonToggleNames[]
+	/** The names of preferences type toggle. */
 	TOGGLE_NAMES: ToggleNames[]
 }
 
+/**
+ * Checks if the preferences is of type 'toggle'.
+ * @param schema The preference schema.
+ * @param name The preference.
+ * @returns The result of the check.
+ */
 function isTogglePref<FG extends FormGroup>(schema: FG, name: keyof FG): name is ToggleNames {
 	return schema[name].type === 'toggle'
 }

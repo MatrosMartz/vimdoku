@@ -14,10 +14,12 @@
 		text: $i18nState.get('gameBtn-resume-disabledReason', 'no saved game.'),
 	} satisfies TooltipProps
 
+	/** Open select game dialog, new game btn click handler. */
 	function newGameHandler() {
 		med.dispatch(ScreenAction.OpenDialog, { kind: DialogKind.sel })
 	}
 
+	/** Resume Game, resume btn click handler. */
 	function resumeHandler() {
 		med.dispatch(SudokuAction.Resume)
 	}

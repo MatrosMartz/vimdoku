@@ -14,6 +14,11 @@
 
 	const placeholder = String(value)
 
+	/**
+	 * Change value, input handler.
+	 * @param ev The event.
+	 */
+	function inputHandler(ev: { currentTarget: HTMLInputElement }): void
 	function inputHandler({ currentTarget }: { currentTarget: HTMLInputElement }) {
 		value = currentTarget.valueAsNumber
 	}

@@ -98,6 +98,7 @@ class GridComparer<T> {
 
 	/**
 	 * Compare a function with cells in the same column of the specified cell.
+	 * @param otherPos The other position.
 	 * @param fn The comparison function.
 	 * @returns True if the comparison function returns true for all cells in the same column, false otherwise.
 	 */
@@ -179,6 +180,13 @@ export interface MapperPropWithoutOrigin<T> extends MapperProp<T> {
 	withoutOrigin: MapperProp<T>
 }
 
+/**
+ * Create a GridMapper property.
+ * @param mapper The mapper to be added.
+ * @param type The type of property.
+ * @param withOrigin If it will affect the origin as well.
+ * @returns The GridMapper property.
+ */
 function createMapperProp<T>(mapper: GridMapper<T>, type: MapperMoveType, withOrigin: boolean) {
 	const prop: MapperProp<T> = <U>(fn: (cell: T, pos: Pos) => T | U) =>
 		GridMapper.addMove(mapper, { fn, type, withOrigin })
@@ -188,6 +196,12 @@ function createMapperProp<T>(mapper: GridMapper<T>, type: MapperMoveType, withOr
 	return prop
 }
 
+/**
+ * Create a GridMapper property with "withoutOrigin" function.
+ * @param mapper The mapper to be added.
+ * @param type The type of the property.
+ * @returns The GridMapper property with "withoutOrigin" function.
+ */
 function createMapperPropWithoutOrigin<T>(mapper: GridMapper<T>, type: Exclude<MapperMoveType, 'cell'>) {
 	const prop = createMapperProp(mapper, type, true) as MapperPropWithoutOrigin<T>
 
@@ -215,6 +229,8 @@ class GridMapper<T> {
 	/**
 	 * Creates an instance of the GridSvc class with the provided data.
 	 * @param data A two-dimensional array representing the Sudoku grid.
+	 * @param origin The origin of the changes.
+	 * @param gridMoves The initials grid moves.
 	 */
 	constructor(data: GridData<T>, origin: Pos, gridMoves: Array<MapperMove<T>> = []) {
 		this.#data = data
@@ -229,6 +245,7 @@ class GridMapper<T> {
 	/**
 	 * Applies the all moves.
 	 * @param effect Function to be executed for each move.
+	 * @returns The updated Grid.
 	 */
 	apply(effect: (cell: { next: T; prev: T }, pos: Pos) => void = noop) {
 		const data = Pos.createMatrix(9, (pos): T => {
@@ -281,12 +298,12 @@ class GridJoiner<T> {
 	 * @param separator The separator for rows in the column.
 	 * @returns A string representation of the column with the specified row separator.
 	 */
-	col(col: number, rowSeparator: string) {
+	col(col: number, separator: string) {
 		let str = ''
 
 		for (const y of iterateArray(9))
 			if (y === 0) str += this.#data[y][col]
-			else str += rowSeparator + this.#data[y][col]
+			else str += separator + this.#data[y][col]
 
 		return str
 	}
@@ -317,8 +334,8 @@ class GridJoiner<T> {
 	 * @param separator The separator for columns in the row.
 	 * @returns A string representation of the row with the specified column separator.
 	 */
-	row(row: number, colSeparator: string) {
-		return this.#data[row].join(colSeparator)
+	row(row: number, separator: string) {
+		return this.#data[row].join(separator)
 	}
 }
 
@@ -396,14 +413,14 @@ export class Grid<T> {
 		this.some = new GridSome(this.#data)
 	}
 
-	/** Get the data as a two-dimensional array representing the Sudoku grid. */
 	get data() {
 		return this.#data
 	}
 
 	/**
 	 * Creates an instance of the GridSvc with map function.
-	 * @param mapFn A mapping function to call on every element of the array.
+	 * @param fn A mapping function to call on every element of the array.
+	 * @returns A new Grid.
 	 */
 	static create<T>(fn: (pos: Pos) => T) {
 		return new Grid(Pos.createMatrix(9, fn))
@@ -414,8 +431,8 @@ export class Grid<T> {
 	 * @param position The position of the cell to retrieve.
 	 * @returns The value of the cell.
 	 */
-	cellBy(pos: PosData) {
-		return this.#data[pos.y][pos.x]
+	cellBy(position: PosData) {
+		return this.#data[position.y][position.x]
 	}
 
 	/**
@@ -437,7 +454,7 @@ export class Grid<T> {
 
 	/**
 	 * Counts the cells that meet the condition.
-	 * @param fnCond The function that holds the condition.
+	 * @param fn The function that holds the condition.
 	 * @returns The number of cells that meet the condition.
 	 */
 	count(fn: (cell: T, pos: Pos) => boolean) {

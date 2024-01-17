@@ -10,6 +10,9 @@
 
 	let btn: HTMLButtonElement
 
+	/**
+	 * Complete search with the suggestion value, click handler.
+	 */
 	function clickHandler() {
 		if ($input != null) {
 			exec.searchAutocomplete(suggestion.input)

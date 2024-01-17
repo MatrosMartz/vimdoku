@@ -13,7 +13,7 @@
 
 	$: open = $screenState.dialog.kind === DialogKind.InLn && $screenState.dialog.opts.type === 'modes'
 
-	let timeoutId: ReturnType<typeof setTimeout> | null = null
+	let openAccordionTimeoutId: ReturnType<typeof setTimeout> | null = null
 
 	$: if (disabled) med.dispatch(ScreenAction.Exit)
 	$: if (open) document.getElementById(`mode-${modeState.data}`)?.focus()
@@ -23,28 +23,47 @@
 		text: $i18nState.get('statusBar-modesDisabledReason', 'The insertion mode can only be changed on the game screen.'),
 	} satisfies TooltipProps
 
+	/**
+	 * Open or close Modes accordion, click handler.
+	 */
 	function toggleHandler() {
 		if (disabled || open) med.dispatch(ScreenAction.Exit)
 		else med.dispatch(ScreenAction.OpenDialog, { kind: DialogKind.InLn, opts: { type: 'modes' } })
 	}
 
+	/**
+	 * Select new Mode, change handler.
+	 * @param ev The input event.
+	 */
+	function modeHandler(ev: { currentTarget: HTMLInputElement }): void
 	function modeHandler({ currentTarget }: { currentTarget: HTMLInputElement }) {
 		const mode = currentTarget.value as ModeKind
 
 		med.dispatch(SudokuAction.ChangeMode, { mode })
 	}
 
+	/**
+	 * Clear timeout, focus handler.
+	 */
 	function focusHandler() {
-		if (timeoutId != null) {
-			clearTimeout(timeoutId)
-			timeoutId = null
+		if (openAccordionTimeoutId != null) {
+			clearTimeout(openAccordionTimeoutId)
+			openAccordionTimeoutId = null
 		}
 	}
 
+	/**
+	 * Create timeout, focus-out handler.
+	 */
 	function focusoutHandler() {
-		if (open) timeoutId = setTimeout(() => med.dispatch(ScreenAction.Exit), 150)
+		if (open) openAccordionTimeoutId = setTimeout(() => med.dispatch(ScreenAction.Exit), 150)
 	}
 
+	/**
+	 * Return focus of the game, Keyup handler.
+	 * @param ev The Keyboard event.
+	 */
+	function keyupHandler(ev: KeyboardEvent): void
 	function keyupHandler({ key }: KeyboardEvent) {
 		if (key === 'Enter') med.dispatch(SudokuAction.Move, { type: 'set', position: posState.data })
 	}

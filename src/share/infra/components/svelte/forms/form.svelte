@@ -21,7 +21,13 @@
 		}
 	}[keyof Schema]
 
-	function schemaEntries(sch: FormSchema, l: typeof labels) {
+	/**
+	 * Create data entries.
+	 * @param sch Form schema.
+	 * @param l The labels.
+	 * @returns Group, fallback and fields in array.
+	 */
+	function createDataEntries(sch: FormSchema, l: typeof labels) {
 		return Object.entries(sch).map(
 			([group, settings]) =>
 				[
@@ -35,10 +41,11 @@
 	}
 
 	const dispatcher = createEventDispatcher<{ submit: SchemaToModel<Schema> }>()
-	$: dataEntries = schemaEntries(schema, labels)
+	$: dataEntries = createDataEntries(schema, labels)
 
 	const values: any = structuredClone(initialValues)
 
+	/** Create submit component event, submit handler. */
 	function submitHandler() {
 		dispatcher('submit', values)
 	}

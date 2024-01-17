@@ -51,7 +51,7 @@ export class PrefsSvc implements IPrefs {
 	/**
 	 * Checks if the object has the structure of the preferences
 	 * @param preferences The object to checked.
-	 * @readonly True if it complies with the structure, False if it doesn't.
+	 * @returns True if it complies with the structure, False if it doesn't.
 	 */
 	static check(preferences: Prefs) {
 		return sameStructure(preferences, IDLE_PREFS)
@@ -62,11 +62,11 @@ export class PrefsSvc implements IPrefs {
 	 * @param preferences The preferences provided.
 	 * @returns Preferences Entries
 	 */
-	static entriesGroup(prefs: Prefs) {
+	static entriesGroup(preferences: Prefs) {
 		return [
-			['sudoku', Object.entries(this.getSudoku(prefs))],
-			['user', Object.entries(this.getUser(prefs))],
-			['vim', Object.entries(this.getVim(prefs))],
+			['sudoku', Object.entries(this.getSudoku(preferences))],
+			['user', Object.entries(this.getUser(preferences))],
+			['vim', Object.entries(this.getVim(preferences))],
 		] as const
 	}
 

@@ -10,6 +10,10 @@
 
 	const dispatch = createEventDispatcher<{ click: MouseEvent }>()
 
+	/**
+	 * Create click component event, click handler.
+	 * @param ev The mouse event.
+	 */
 	function clickHandler(ev: MouseEvent) {
 		if (!disabled) dispatch('click', ev)
 	}

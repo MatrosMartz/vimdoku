@@ -11,14 +11,21 @@
 
 	const dispatcher = createEventDispatcher<{ leave: null; over: null }>()
 
+	/** Create over component event, mouse-over handler. */
 	function overHandler() {
 		if (show) dispatcher('over')
 	}
 
+	/** Create leave component event, mouse-leave handler. */
 	function leaveHandler() {
 		dispatcher('leave')
 	}
 
+	/**
+	 * Close tooltip after hide animation end, animation-end handler.
+	 * @param ev The animation event.
+	 */
+	function animationendHandler(ev: AnimationEvent): void
 	function animationendHandler({ animationName }: AnimationEvent) {
 		if (/tooltip-hide$/.test(animationName)) hidden = true
 	}

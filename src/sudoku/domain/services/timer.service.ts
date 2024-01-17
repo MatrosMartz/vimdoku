@@ -84,13 +84,19 @@ export class TimerSvc implements ITimer {
 		return TimerSvc.parseString(this.#data)
 	}
 
-	/** Decrements the current time value by 1 second. */
+	/**
+	 * Decrements the current time value by 1 second.
+	 * @returns The updated Timer Service.
+	 */
 	#dec() {
 		this.#data--
 		return this
 	}
 
-	/** Increments the current time value by 1 second. */
+	/**
+	 * Increments the current time value by 1 second.
+	 * @returns The updated Timer Service.
+	 */
 	#inc(): this {
 		this.#data++
 		return this

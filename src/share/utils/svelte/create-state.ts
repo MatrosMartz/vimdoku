@@ -6,6 +6,11 @@ interface CustomReadable<T> extends Readable<T> {
 	readonly data: T
 }
 
+/**
+ * Create custom svelte store.
+ * @param obs The observable.
+ * @returns A custom store.
+ */
 export function createState<T>(obs: Observable<T>): CustomReadable<T> {
 	const { subscribe } = readable(obs.data, observer => {
 		obs.add(observer)
@@ -20,6 +25,12 @@ export function createState<T>(obs: Observable<T>): CustomReadable<T> {
 	}
 }
 
+/**
+ * Create a custom svelte store, derived of the observable.
+ * @param obs The observable.
+ * @param fn The derived function.
+ * @returns A custom store
+ */
 export function createDerived<T, U>(obs: Observable<U>, fn: (value: U) => T): CustomReadable<T> {
 	const { subscribe } = readable(fn(obs.data), observer => {
 		const wrapper = (value: U) => observer(fn(value))

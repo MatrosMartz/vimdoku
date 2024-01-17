@@ -13,10 +13,13 @@
 		return tabState ?? 'edit'
 	})($screenState.dialog.kind)
 
-	function createTabHandler(kind: DialogPref) {
-		return () => {
-			med.dispatch(ScreenAction.OpenDialog, { kind })
-		}
+	/**
+	 * Create click handler for open dialog with a selected kind.
+	 * @param kind Dialog preference kind.
+	 * @returns the click handler.
+	 */
+	function createTabHandler(kind: DialogPref): () => void {
+		return () => med.dispatch(ScreenAction.OpenDialog, { kind })
 	}
 </script>
 

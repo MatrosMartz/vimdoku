@@ -4,7 +4,12 @@
 	import { DialogKind, type DialogsWithoutOpts, MainScreenKind, ScreenAction } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
 
-	function openDialog(kind: DialogsWithoutOpts) {
+	/**
+	 * Creates a function which opens a dialogue of the kind defined.
+	 * @param kind The dialog kind.
+	 * @returns The click handler which opens a dialogue.
+	 */
+	function openDialog(kind: DialogsWithoutOpts): () => void {
 		return () => med.dispatch(ScreenAction.OpenDialog, { kind })
 	}
 

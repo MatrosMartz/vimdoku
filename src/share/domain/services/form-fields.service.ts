@@ -1,4 +1,4 @@
-import type { FormGroup, FormSchema } from '../models'
+import type { FormGroup } from '../models'
 
 export const FormFields = {
 	/**
@@ -10,8 +10,5 @@ export const FormFields = {
 		return Object.fromEntries(Object.entries(group).map(([key, value]) => [key, value.default])) as {
 			[K in keyof FG]: FG[K]['default']
 		}
-	},
-	getGroupEntries<FS extends FormSchema>(schema: FS) {
-		return Object.entries(schema).map(([key, value]) => [key, Object.entries(value)] as const)
 	},
 } as const

@@ -9,6 +9,11 @@
 		else if (type === 'dialog') dialog.show()
 	}
 
+	/**
+	 * Close dialog after hide animation end, animation-end handler.
+	 * @param ev The animation event.
+	 */
+	function animationendHandler(ev: AnimationEvent): void
 	function animationendHandler({ animationName }: AnimationEvent) {
 		if (/backdrop-hide$/.test(animationName)) dialog.close()
 	}

@@ -16,6 +16,7 @@ export class BoardSvc implements IBoard {
 	/**
 	 * Creates an instance of the BoardSvc class.
 	 * @param grid Initial Sudoku board.
+	 * @param errors The initials errors.
 	 */
 	constructor(grid: Grid<Cell>, errors: number) {
 		this.#obs.set(grid)
@@ -50,7 +51,9 @@ export class BoardSvc implements IBoard {
 	 * Create an instance of BoardSvc from a JSON string
 	 * @param boardLike JSON representation of board.
 	 * @param solution JSON representation of solutions.
+	 * @param errors The initials errors.
 	 * @throws {InvalidBoardError} If `boardLike` is not a valid JSON.
+	 * @returns A new Board Service.
 	 */
 	static fromJSON(boardLike: BoardJSON, solution: SolutionJSON, errors: number) {
 		try {
@@ -69,7 +72,9 @@ export class BoardSvc implements IBoard {
 	 * Create an instance of BoardSvc from a JSON string
 	 * @param boardLike JSON representation of board.
 	 * @param solution JSON representation of solutions.
+	 * @param errors The initials errors.
 	 * @throws {InvalidBoardError} If `boardLike` is not a valid JSON string.
+	 * @returns A new Board Service.
 	 */
 	static fromString(boardLike: string, solution: SolutionJSON, errors: number) {
 		try {

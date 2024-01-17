@@ -15,6 +15,7 @@
 
 	$: if (selected) btn?.focus()
 
+	/** Change position after focus cell, focus handler. */
 	function focusHandler() {
 		if (position.equalsPos($posState)) return
 		med.dispatch(SudokuAction.Move, { type: 'set', position })

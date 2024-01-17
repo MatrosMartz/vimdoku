@@ -62,7 +62,9 @@ interface CellOpts {
 
 /** Simulated key for protected field. */
 const notesK = Symbol('cell-notes')
+/** Simulated key for protected field. */
 const solutionK = Symbol('cell-solution')
+/** Simulated key for protected field. */
 const valueK = Symbol('cell-value')
 
 export abstract class Cell extends Entity implements CellData {
@@ -165,12 +167,10 @@ export abstract class Cell extends Entity implements CellData {
 		return this
 	}
 
-	/** Converts Cell instance in JSON. */
 	toJSON(): CellJSON {
 		return { kind: this.kind, notes: this.notesNumber, value: this.value }
 	}
 
-	/** Converts the Cell instance to a JSON string. */
 	toString() {
 		return JSON.stringify(this.toJSON())
 	}
@@ -186,6 +186,7 @@ export abstract class Cell extends Entity implements CellData {
 
 	/**
 	 * Change kind if value is the correct or incorrect.
+	 * @param effect The effect function.
 	 * @returns The updated cell state.
 	 */
 	verify(effect: (isIncorrect: boolean) => void): Cell {

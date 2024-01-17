@@ -7,18 +7,30 @@
 
 	$: show = $screenState.dialog.kind === DialogKind.Pause
 
+	/**
+	 * Continue game, click handler.
+	 */
 	function continueHandler() {
 		med.dispatch(ScreenAction.Exit)
 	}
 
+	/**
+	 * Save game, click handler.
+	 */
 	function saveHandler() {
 		med.dispatch(SudokuAction.Save)
 	}
 
+	/**
+	 * Return to home, click handler.
+	 */
 	function homeHandler() {
 		med.dispatch(ScreenAction.OpenScreen, { screen: MainScreenKind.Start })
 	}
 
+	/**
+	 * Edit preferences, click handler.
+	 */
 	function prefsHandler() {
 		med.dispatch(ScreenAction.OpenDialog, { kind: DialogKind.PrefEdit })
 	}

@@ -13,7 +13,6 @@ export class Observable<T> {
 		this.#data = initialData
 	}
 
-	/** Get the current value of data. */
 	get data() {
 		return this.#data
 	}
@@ -21,6 +20,7 @@ export class Observable<T> {
 	/**
 	 * Subscribe a new observer.
 	 * @param observer The observer to be added.
+	 * @returns The updated Observable
 	 */
 	add(observer: Observer<T>) {
 		this.#observers.add(observer)
@@ -31,6 +31,7 @@ export class Observable<T> {
 	/**
 	 * Unsubscribe an observer.
 	 * @param observer The observer to be removed.
+	 * @returns The updated Observable
 	 */
 	remove(observer: Observer<T>) {
 		this.#observers.delete(observer)
@@ -40,6 +41,7 @@ export class Observable<T> {
 	/**
 	 * Set all observer with the new data.
 	 * @param data The new value of data.
+	 * @returns The updated Observable
 	 */
 	set(data: T) {
 		this.#data = data
@@ -50,6 +52,7 @@ export class Observable<T> {
 	/**
 	 * Transforms and updates the previous data
 	 * @param updater The function that updates the data.
+	 * @returns The updated Observable
 	 */
 	update(updater: (data: T) => T) {
 		return this.set(updater(this.#data))
@@ -66,6 +69,7 @@ export class HistoryObservable<T> extends Observable<T> {
 	/**
 	 * Creates an instance of the HistoryObservableSvc class.
 	 * @param emptyState The value that will represent empty state.
+	 * @param length The initial maximum length of the history.
 	 * @param history Optional history with which the context is to be created.
 	 */
 	constructor(emptyState: T, length: number, history: T[]) {
@@ -77,7 +81,6 @@ export class HistoryObservable<T> extends Observable<T> {
 		this.trunc()
 	}
 
-	/** Get the current value of the entire history. */
 	get history() {
 		return [...this.#history]
 	}
@@ -94,6 +97,7 @@ export class HistoryObservable<T> extends Observable<T> {
 	/**
 	 * Truncates the history based on the cursor and updates based on it.
 	 * @param data The new entry of the history.
+	 * @returns The updated History Observable
 	 */
 	overwrite(data: T) {
 		return this.trunc().push(data)
@@ -102,6 +106,7 @@ export class HistoryObservable<T> extends Observable<T> {
 	/**
 	 * Adds a new entry to the history and set the current data value to an empty state.
 	 * @param data The new entry of the history.
+	 * @returns The updated History Observable
 	 */
 	push(data: T) {
 		const hasExceed = this.#length - this.#history.length <= 0
@@ -116,7 +121,10 @@ export class HistoryObservable<T> extends Observable<T> {
 		return this
 	}
 
-	/** Navigate backwards in history. */
+	/**
+	 * Navigate backwards in history.
+	 * @returns The updated History Observable
+	 */
 	redo() {
 		if (this.#cursor < this.#history.length) {
 			this.#cursor++
@@ -125,14 +133,20 @@ export class HistoryObservable<T> extends Observable<T> {
 		return this
 	}
 
-	/** Truncates the history based on the cursor */
+	/**
+	 * Truncates the history based on the cursor
+	 * @returns The updated History Observable
+	 */
 	trunc() {
 		if (this.#history.length > this.#cursor) this.#history.length = this.#cursor
 
 		return this
 	}
 
-	/** Navigate forwards in history. */
+	/**
+	 * Navigate forwards in history.
+	 * @returns The updated History Observable
+	 */
 	undo() {
 		if (this.#cursor > 0) {
 			this.#cursor--

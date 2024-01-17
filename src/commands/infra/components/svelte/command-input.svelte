@@ -8,11 +8,18 @@
 
 	let form: HTMLFormElement
 
+	/**
+	 * Handles the submission of the form.
+	 */
 	function submitHandler() {
 		if ($input != null) exec.run($input.value)
 	}
 
-	function inputHandler({ currentTarget }: { currentTarget: HTMLInputElement }) {
+	/**
+	 * Handle the writing in the input.
+	 * @param ev The input event.
+	 */
+	function inputHandler({ currentTarget }: Event & { currentTarget: HTMLInputElement }) {
 		exec.searchAutocomplete(currentTarget.value)
 	}
 
