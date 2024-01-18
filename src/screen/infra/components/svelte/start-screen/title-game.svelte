@@ -80,7 +80,7 @@
 			display: grid;
 			grid-template-columns: repeat(3, max-content);
 			gap: 0 4ch;
-			width: max-content;
+			width: 80%;
 		}
 
 		.commands tr {
