@@ -50,7 +50,7 @@
 		background-color: rgb(var(--input-background));
 		border: 2px solid rgb(var(--input-border));
 		border-radius: 8px;
-		box-shadow: 0 0 12px rgb(var(--input-shadow));
+		box-shadow: 0 0 12px rgb(var(--input-shadow) / 25%);
 		transition:
 			background-color 200ms ease-out,
 			box-shadow 200ms ease-out;

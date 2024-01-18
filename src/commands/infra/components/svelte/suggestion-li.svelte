@@ -66,6 +66,6 @@
 		height: 2px;
 		margin-inline: auto;
 		content: '';
-		background-color: rgb(var(--input-shadow));
+		background-color: rgb(var(--input-shadow) / 25%);
 	}
 </style>

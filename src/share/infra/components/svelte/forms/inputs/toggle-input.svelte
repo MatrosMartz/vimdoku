@@ -31,8 +31,8 @@
 		overflow: hidden;
 		background-color: rgb(var(--input-border));
 		border: 2px solid rgb(var(--border));
-		border-radius: rgb(var(--height));
-		box-shadow: 0 0 16px rgb(var(--input-shadow));
+		border-radius: var(--height);
+		box-shadow: 0 0 16px rgb(var(--input-shadow) / 25%);
 		transition:
 			background-color 300ms cubic-bezier(0.5, -0.15, 0.5, 1.15),
 			border-color 300ms cubic-bezier(0.5, -0.15, 0.5, 1.15),
@@ -48,8 +48,8 @@
 		height: 100%;
 		content: '';
 		background-color: rgb(var(--input-background));
-		border-radius: rgb(var(--height));
-		box-shadow: 0 0 16px rgb(var(--input-shadow));
+		border-radius: var(--height);
+		box-shadow: 0 0 16px rgb(var(--input-shadow) / 25%);
 		transition: transform 200ms cubic-bezier(0.25, 0.9, 0.5, 1);
 		transform: translateX(var(--x));
 	}
