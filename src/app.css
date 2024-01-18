@@ -217,7 +217,7 @@ h3 {
 
 .highlight .holder {
 	font-style: italic;
-	color: var(--holder-color);
+	color: rgb(var(--holder-color));
 	text-transform: capitalize;
 }
 
@@ -230,7 +230,7 @@ h3 {
 }
 
 .highlight .key {
-	color: var(--key-color);
+	color: rgb(var(--key-color));
 	text-transform: capitalize;
 }
 
