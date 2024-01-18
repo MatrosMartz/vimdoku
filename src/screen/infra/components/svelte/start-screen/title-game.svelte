@@ -65,6 +65,7 @@
 
 	.commands {
 		gap: 1ch;
+		justify-content: center;
 	}
 
 	.commands tr {
