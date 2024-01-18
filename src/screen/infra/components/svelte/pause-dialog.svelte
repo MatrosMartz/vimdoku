@@ -52,11 +52,12 @@
 	.content {
 		display: flex;
 		flex-direction: column;
-		gap: 1rem;
+		gap: 1.25rem;
 		align-items: center;
 		justify-content: center;
-		width: 60vmin;
+		width: 70vmin;
 		min-width: max-content;
+		min-height: 25rem;
 		padding: 48px 1rem;
 		overflow: hidden;
 		background-color: rgb(var(--dialog-background));

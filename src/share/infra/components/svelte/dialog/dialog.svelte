@@ -26,6 +26,7 @@
 <style>
 	dialog {
 		inset: 0;
+		max-width: fit-content;
 		margin: auto;
 		color: inherit;
 		background: none;

@@ -43,7 +43,7 @@
 		align-items: center;
 		width: calc(2rem + 15ch);
 		min-width: max-content;
-		height: 48px;
+		height: 50px;
 		padding-inline: 1rem;
 		font-weight: 500;
 		color: inherit;

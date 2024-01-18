@@ -125,6 +125,7 @@
 		top: 0;
 		left: -2rem;
 		width: calc(25% + 2rem);
+		min-width: max-content;
 		max-width: 12rem;
 		padding: 4px 2rem;
 		font-size: 1rem;

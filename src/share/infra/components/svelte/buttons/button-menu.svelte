@@ -9,7 +9,7 @@
 <style>
 	.btn-menu {
 		display: flex;
-		gap: 0.5rem 1rem;
+		gap: 0.75rem 1rem;
 		list-style: none;
 	}
 </style>
