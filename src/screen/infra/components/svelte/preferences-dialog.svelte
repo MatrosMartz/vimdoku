@@ -54,7 +54,7 @@
 		max-width: 600px;
 		height: 90vh;
 		overflow: hidden;
-		background-color: var(--dialog-background);
+		background-color: rgb(var(--dialog-background));
 		border-radius: 8px;
 	}
 

@@ -19,10 +19,10 @@
 		max-width: 55rem;
 		min-height: 77vh;
 		padding: 2.2rem 2ch;
-		color: var(--primary-color);
-		background-color: var(--editor-background);
+		color: rgb(var(--primary-color));
+		background-color: rgb(var(--editor-background));
 		border-radius: 4px;
-		box-shadow: 0 6px 20px var(--editor-background);
+		box-shadow: 0 6px 20px rgb(var(--editor-background));
 		container: start-screen / inline-size;
 	}
 </style>

@@ -60,11 +60,11 @@
 	}
 
 	.error {
-		color: var(--error-color);
+		color: rgb(var(--error-color));
 	}
 
 	.sync {
-		color: var(--unverified-color);
+		color: rgb(var(--unverified-color));
 	}
 
 	:global(:not(.motion-reduce)) .shake {

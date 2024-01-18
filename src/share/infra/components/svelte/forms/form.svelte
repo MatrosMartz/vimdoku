@@ -110,10 +110,10 @@
 		gap: 1rem 2rem;
 		justify-content: center;
 		padding: 1.5rem 0.5rem;
-		background-color: var(--editor-background);
+		background-color: rgb(var(--editor-background));
 		border: none;
 		border-radius: 8px;
-		box-shadow: 0 4px 16px var(--card-head-shadow);
+		box-shadow: 0 4px 16px rgb(var(--card-head-shadow));
 	}
 
 	fieldset:not(:first-of-type) {
@@ -129,7 +129,7 @@
 		padding: 4px 2rem;
 		font-size: 1rem;
 		font-weight: bold;
-		background-color: var(--card-head-background);
+		background-color: rgb(var(--card-head-background));
 		border-radius: 0 8px 8px 0;
 		transform: translateY(-50%);
 	}

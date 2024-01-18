@@ -72,7 +72,7 @@
 	}
 
 	input::selection {
-		background-color: var(--input-border);
+		background-color: rgb(var(--input-border));
 	}
 
 	.close {

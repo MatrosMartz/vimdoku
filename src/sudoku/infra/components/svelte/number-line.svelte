@@ -25,8 +25,8 @@
 		inset: 0 auto auto 0;
 		display: flex;
 		gap: 4px;
-		color: var(--key-color);
-		background-color: var(--editor-background);
+		color: rgb(var(--key-color));
+		background-color: rgb(var(--editor-background));
 	}
 
 	.horizontal {

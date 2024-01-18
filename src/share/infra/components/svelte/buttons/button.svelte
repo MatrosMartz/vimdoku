@@ -47,10 +47,10 @@
 		padding-inline: 1rem;
 		font-weight: 500;
 		color: inherit;
-		background-color: var(--input-background);
-		border: 2px solid var(--input-border);
+		background-color: rgb(var(--input-background));
+		border: 2px solid rgb(var(--input-border));
 		border-radius: 8px;
-		box-shadow: 0 0 12px var(--input-shadow);
+		box-shadow: 0 0 12px rgb(var(--input-shadow));
 		transition:
 			background-color 200ms ease-out,
 			box-shadow 200ms ease-out;

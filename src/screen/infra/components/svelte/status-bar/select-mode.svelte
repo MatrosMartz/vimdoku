@@ -111,7 +111,7 @@
 	.mode-accordion {
 		position: relative;
 		height: 44px;
-		color: var(--value-color);
+		color: rgb(var(--value-color));
 	}
 
 	#mode-selector-panel form {
@@ -120,8 +120,8 @@
 		z-index: 0;
 		display: grid;
 		grid-template-columns: 1fr;
-		background-color: var(--status-bar-background);
-		border: 1px solid var(--tooltip-border);
+		background-color: rgb(var(--status-bar-background));
+		border: 1px solid rgb(var(--tooltip-border));
 		border-bottom: none;
 		border-radius: 8px 8px 0 0;
 		transition: transform 500ms;
@@ -163,11 +163,11 @@
 	}
 
 	label:has(input:checked) :global(svg) {
-		color: var(--input-border);
+		color: rgb(var(--input-border));
 	}
 
 	label:has(input:focus) :global(svg) {
-		color: var(--key-color);
+		color: rgb(var(--key-color));
 	}
 
 	label span {
@@ -180,7 +180,7 @@
 		position: absolute;
 		z-index: 10;
 		width: 100%;
-		background-color: var(--status-bar-background);
+		background-color: rgb(var(--status-bar-background));
 	}
 
 	.mode[aria-disabled='true'] {

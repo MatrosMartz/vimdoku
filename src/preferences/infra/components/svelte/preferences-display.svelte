@@ -98,9 +98,9 @@
 		position: relative;
 		padding-block: 1.5rem 1rem;
 		padding-inline: 1rem;
-		background-color: var(--editor-background);
+		background-color: rgb(var(--editor-background));
 		border-radius: 8px;
-		box-shadow: 0 4px 16px var(--card-head-shadow);
+		box-shadow: 0 4px 16px rgb(var(--card-head-shadow));
 	}
 
 	.preferences:not(:first-of-type) {
@@ -116,7 +116,7 @@
 		max-width: 12rem;
 		padding: 4px 2rem;
 		text-align: start;
-		background-color: var(--card-head-background);
+		background-color: rgb(var(--card-head-background));
 		border-radius: 0 8px 8px 0;
 		transform: translateY(-50%);
 	}
@@ -158,26 +158,26 @@
 	}
 
 	.text {
-		color: var(--special-color);
+		color: rgb(var(--special-color));
 	}
 
 	.text::before,
 	.text::after {
 		font-weight: 600;
-		color: var(--key-color);
+		color: rgb(var(--key-color));
 		content: '"';
 	}
 
 	.number {
-		color: var(--number-color);
+		color: rgb(var(--number-color));
 	}
 
 	.toggle {
 		font-style: italic;
-		color: var(--boolean-color);
+		color: rgb(var(--boolean-color));
 	}
 
 	.options {
-		color: var(--notes-color);
+		color: rgb(var(--notes-color));
 	}
 </style>

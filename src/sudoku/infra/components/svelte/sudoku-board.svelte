@@ -34,7 +34,7 @@
 		width: fit-content;
 		padding: 4px;
 		margin: min(44px, 8vw) 0 0 min(44px, 8vw);
-		background-color: var(--editor-background);
+		background-color: rgb(var(--editor-background));
 		border-radius: 8px;
 	}
 

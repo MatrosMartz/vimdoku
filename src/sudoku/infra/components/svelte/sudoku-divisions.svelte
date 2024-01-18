@@ -11,7 +11,7 @@
 
 		position: absolute;
 		margin: auto;
-		background-color: var(--alternative-border);
+		background-color: rgb(var(--alternative-border));
 		border-radius: 1px;
 	}
 

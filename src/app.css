@@ -1,36 +1,36 @@
 :root {
-	--surface: rgb(234 215 227);
-	--input-background: rgb(224 212 224);
-	--input-border: rgb(137 134 139);
-	--alternative-border: rgb(152 152 192);
-	--focus-border: rgb(105 82 119);
-	--primary-color: rgb(36 26 37);
-	--secondary-color: rgb(31 29 31);
-	--editor-background: rgb(240 232 255);
-	--error-color: rgb(122 8 14);
-	--value-color: rgb(120 51 8);
-	--key-color: rgb(6 75 126);
-	--holder-color: rgb(139 125 111);
-	--special-color: rgb(6 92 31);
-	--unverified-color: rgb(69 84 99);
+	--surface: 234 215 227;
+	--input-background: 224 212 224;
+	--input-border: 137 134 139;
+	--alternative-border: 152 152 192;
+	--focus-border: 105 82 119;
+	--primary-color: 36 26 37;
+	--secondary-color: 31 29 31;
+	--editor-background: 240 232 255;
+	--error-color: 122 8 14;
+	--value-color: 120 51 8;
+	--key-color: 6 75 126;
+	--holder-color: 139 125 111;
+	--special-color: 6 92 31;
+	--unverified-color: 69 84 99;
 	--assert-color: var(--special-color);
-	--number-color: rgb(177 92 27);
+	--number-color: 177 92 27;
 	--string-color: var(--special-color);
 	--boolean-color: var(--error-color);
-	--status-bar-background: rgb(203 201 209);
-	--command-color: rgb(84 69 12);
+	--status-bar-background: 203 201 209;
+	--command-color: 84 69 12;
 	--notes-color: var(--command-color);
-	--anchor-color: rgb(36 74 88);
-	--visited-color: rgb(52 33 92);
-	--tooltip-background: rgb(231 217 255);
-	--tooltip-border: rgb(145 104 196);
+	--anchor-color: 36 74 88;
+	--visited-color: 52 33 92;
+	--tooltip-background: 231 217 255;
+	--tooltip-border: 145 104 196;
 	--card-head-background: var(--status-bar-background);
-	--card-shadow: rgb(170 152 192 / 50%);
-	--dialog-background: rgb(187 176 194);
-	--input-shadow: rgb(15 17 34 / 25%);
-	--hover-shadow: rgb(49 2 114 / 20%);
+	--card-shadow: 170 152 192 / 50%;
+	--dialog-background: 187 176 194;
+	--input-shadow: 15 17 34 / 25%;
+	--hover-shadow: 49 2 114 / 20%;
 	--focus-brightness: brightness(107%);
-	--blink-background: rgb(227 219 229);
+	--blink-background: 227 219 229;
 
 	font-family: Poppins, sans-serif;
 	font-weight: 400;
@@ -45,33 +45,33 @@
 }
 
 :root.dark {
-	--surface: rgb(31 24 32);
-	--input-background: rgb(26 23 27);
-	--input-border: rgb(74 70 77);
-	--alternative-border: rgb(63 63 89);
-	--focus-border: rgb(133 136 166);
-	--primary-color: rgb(216 200 231);
-	--secondary-color: rgb(226 216 182);
-	--editor-background: rgb(12 6 17);
-	--error-color: rgb(236 132 132);
-	--value-color: rgb(228 160 97);
-	--key-color: rgb(132 170 220);
-	--holder-color: rgb(166 145 125);
-	--special-color: rgb(101 219 78);
-	--unverified-color: rgb(103 109 112);
-	--number-color: rgb(196 114 43);
-	--status-bar-background: rgb(19 15 24);
-	--command-color: rgb(211 199 129);
-	--anchor-color: rgb(137 192 212);
-	--visited-color: rgb(174 137 255);
-	--tooltip-background: rgb(6 0 15);
-	--tooltip-border: rgb(31 11 59);
-	--card-shadow: rgb(19 15 24 / 50%);
-	--dialog-background: rgb(38 30 42);
-	--input-shadow: rgb(3 3 5 / 80%);
-	--hover-shadow: rgb(9 0 20 / 75%);
+	--surface: 31 24 32;
+	--input-background: 26 23 27;
+	--input-border: 74 70 77;
+	--alternative-border: 63 63 89;
+	--focus-border: 133 136 166;
+	--primary-color: 216 200 231;
+	--secondary-color: 226 216 182;
+	--editor-background: 12 6 17;
+	--error-color: 236 132 132;
+	--value-color: 228 160 97;
+	--key-color: 132 170 220;
+	--holder-color: 166 145 125;
+	--special-color: 101 219 78;
+	--unverified-color: 103 109 112;
+	--number-color: 196 114 43;
+	--status-bar-background: 19 15 24;
+	--command-color: 211 199 129;
+	--anchor-color: 137 192 212;
+	--visited-color: 174 137 255;
+	--tooltip-background: 6 0 15;
+	--tooltip-border: 31 11 59;
+	--card-shadow: 19 15 24 / 50%;
+	--dialog-background: 38 30 42;
+	--input-shadow: 3 3 5 / 80%;
+	--hover-shadow: 9 0 20 / 75%;
 	--focus-brightness: brightness(120%);
-	--blink-background: rgb(20 9 28);
+	--blink-background: 20 9 28;
 }
 
 * {
@@ -82,8 +82,8 @@
 }
 
 *::selection {
-	color: var(--editor-background);
-	background-color: var(--focus-border);
+	color: rgb(var(--editor-background));
+	background-color: rgb(var(--focus-border));
 }
 
 *:focus {
@@ -124,11 +124,11 @@ a {
 	position: relative;
 	z-index: 1;
 	overflow: hidden;
-	color: var(--anchor-color);
+	color: rgb(var(--anchor-color));
 }
 
 a:visited {
-	color: var(--visited-color);
+	color: rgb(var(--visited-color));
 }
 
 a:hover {
@@ -142,7 +142,7 @@ a::before {
 	width: calc(100% + 12px);
 	height: calc(100% + 4px);
 	content: '';
-	border: 1px solid var(--focus-border);
+	border: 1px solid rgb(var(--focus-border));
 	border-radius: 4px;
 	transition: transform 200ms;
 	transform: scaleY(0);
@@ -158,10 +158,10 @@ form .field :where(input:where([type='text'], [type='number']), select, button),
 	height: 40px;
 	padding-inline: 1rem;
 	color: inherit;
-	background: var(--input-background);
-	border: 2px solid var(--input-border);
+	background-color: rgb(var(--input-background));
+	border: 2px solid rgb(var(--input-border));
 	border-radius: 8px;
-	box-shadow: 0 0 16px var(--input-shadow);
+	box-shadow: 0 0 16px rgb(var(--input-shadow));
 	transition:
 		border 200ms ease-out,
 		box-shadow 200ms ease-out;
@@ -190,7 +190,7 @@ h3 {
 }
 
 :where(h1, h2, h3):not(.highlight, .not-colorize) {
-	color: var(--secondary-color);
+	color: rgb(var(--secondary-color));
 }
 
 .highlight .command {
@@ -199,7 +199,7 @@ h3 {
 
 .highlight .command::before {
 	font-weight: 700;
-	color: var(--command-color);
+	color: rgb(var(--command-color));
 	content: ':';
 }
 
@@ -243,11 +243,11 @@ h3 {
 }
 
 .highlight .value {
-	color: var(--value-color);
+	color: rgb(var(--value-color));
 }
 
 .highlight .special {
-	color: var(--special-color);
+	color: rgb(var(--special-color));
 }
 
 .monospace,
@@ -256,7 +256,7 @@ input {
 }
 
 .secondary {
-	color: var(--secondary-color);
+	color: rgb(var(--secondary-color));
 }
 
 .status-bar {
@@ -267,7 +267,7 @@ input {
 	align-items: center;
 	justify-content: space-between;
 	width: 100%;
-	background-color: var(--status-bar-background);
+	background-color: rgb(var(--status-bar-background));
 }
 
 .status-bar section {
@@ -287,7 +287,7 @@ input {
 	font-size: inherit;
 	color: inherit;
 	background-color: inherit;
-	border: 2px solid var(--border-color);
+	border: 2px solid rgb(var(--border-color));
 }
 
 .item-separation {
@@ -305,7 +305,7 @@ input {
 }
 
 .icon-dialog {
-	background-color: var(--alternative-border);
+	background-color: rgb(var(--alternative-border));
 }
 
 @keyframes shake {

@@ -35,7 +35,7 @@
 	}
 
 	button:not(:disabled):focus {
-		color: var(--focus-border);
+		color: rgb(var(--focus-border));
 		text-decoration: underline 2px;
 	}
 

@@ -43,9 +43,9 @@
 		width: 100%;
 		min-height: 48px;
 		padding: 12px 1rem;
-		color: var(--primary-color);
+		color: rgb(var(--primary-color));
 		text-align: left;
-		background-color: var(--editor-background);
+		background-color: rgb(var(--editor-background));
 		border: none;
 		transition: filter 200ms;
 	}
@@ -66,6 +66,6 @@
 		height: 2px;
 		margin-inline: auto;
 		content: '';
-		background-color: var(--input-shadow);
+		background-color: rgb(var(--input-shadow));
 	}
 </style>

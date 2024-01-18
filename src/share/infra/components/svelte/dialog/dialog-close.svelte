@@ -14,9 +14,9 @@
 		width: 100%;
 		height: 100%;
 		color: inherit;
-		background-color: var(--alternative-border);
+		background-color: rgb(var(--alternative-border));
 		border: none;
-		border: 2px solid var(--border);
+		border: 2px solid rgb(var(--border));
 		border-radius: inherit;
 	}
 

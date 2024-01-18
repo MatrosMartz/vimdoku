@@ -8,7 +8,7 @@
 	.container {
 		position: relative;
 		padding-bottom: 0.5rem;
-		box-shadow: 0 8px 16px var(--card-head-shadow);
+		box-shadow: 0 8px 16px rgb(var(--card-head-shadow));
 	}
 
 	ul {

@@ -25,7 +25,7 @@
 		min-width: max-content;
 		padding: 48px 1rem;
 		overflow: hidden;
-		background-color: var(--dialog-background);
+		background-color: rgb(var(--dialog-background));
 		border-radius: 8px;
 	}
 </style>

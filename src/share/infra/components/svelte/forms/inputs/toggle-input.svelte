@@ -29,10 +29,10 @@
 		height: var(--height);
 		margin-inline: auto;
 		overflow: hidden;
-		background-color: var(--input-border);
-		border: 2px solid var(--border);
-		border-radius: var(--height);
-		box-shadow: 0 0 16px var(--input-shadow);
+		background-color: rgb(var(--input-border));
+		border: 2px solid rgb(var(--border));
+		border-radius: rgb(var(--height));
+		box-shadow: 0 0 16px rgb(var(--input-shadow));
 		transition:
 			background-color 300ms cubic-bezier(0.5, -0.15, 0.5, 1.15),
 			border-color 300ms cubic-bezier(0.5, -0.15, 0.5, 1.15),
@@ -47,9 +47,9 @@
 		width: 50%;
 		height: 100%;
 		content: '';
-		background-color: var(--input-background);
-		border-radius: var(--height);
-		box-shadow: 0 0 16px var(--input-shadow);
+		background-color: rgb(var(--input-background));
+		border-radius: rgb(var(--height));
+		box-shadow: 0 0 16px rgb(var(--input-shadow));
 		transition: transform 200ms cubic-bezier(0.25, 0.9, 0.5, 1);
 		transform: translateX(var(--x));
 	}

@@ -48,13 +48,13 @@
 		width: 44px;
 		max-width: 8vw;
 		aspect-ratio: 1 / 1;
-		color: var(--primary-color);
-		background-color: var(--editor-background);
+		color: rgb(var(--primary-color));
+		background-color: rgb(var(--editor-background));
 		border-radius: 8px;
 	}
 
 	.cell.selected {
-		background-color: var(--blink-background);
+		background-color: rgb(var(--blink-background));
 	}
 
 	.cell:focus {
@@ -63,36 +63,36 @@
 
 	@keyframes blink-cursor {
 		from {
-			background-color: var(--editor-background);
+			background-color: rgb(var(--editor-background));
 		}
 
 		to {
-			background-color: var(--blink-background);
+			background-color: rgb(var(--blink-background));
 		}
 	}
 
 	.incorrect {
-		color: var(--error-color);
+		color: rgb(var(--error-color));
 		text-decoration: underline wavy;
 	}
 
 	.correct {
-		color: var(--assert-color);
+		color: rgb(var(--assert-color));
 	}
 
 	.initial {
 		font-weight: 700;
-		color: var(--number-color);
+		color: rgb(var(--number-color));
 	}
 
 	.notes {
 		display: inherit;
-		color: var(--notes-color);
+		color: rgb(var(--notes-color));
 	}
 
 	.unverified {
 		font-style: italic;
-		color: var(--unverified-color);
+		color: rgb(var(--unverified-color));
 	}
 
 	.note-icon {

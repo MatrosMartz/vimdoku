@@ -58,12 +58,12 @@
 		z-index: 100;
 		width: 100%;
 		padding: 0.25rem 0.5rem;
-		color: var(--primary-color);
+		color: rgb(var(--primary-color));
 		text-align: center;
 		text-overflow: ellipsis;
 		content: var(--reason);
-		background-color: var(--tooltip-background);
-		border: 1px solid var(--tooltip-border);
+		background-color: rgb(var(--tooltip-background));
+		border: 1px solid rgb(var(--tooltip-border));
 		border-radius: 8px;
 		opacity: 0;
 		transform: translateX(-50%);
@@ -107,13 +107,13 @@
 		margin-inline: auto;
 		clip-path: polygon(0 0, 100% 0, 50% 100%);
 		content: '';
-		background-color: var(--tooltip-background);
+		background-color: rgb(var(--tooltip-background));
 	}
 
 	.tooltip::before {
 		top: calc(100% + 1px);
 		width: 1.6rem;
-		background-color: var(--tooltip-border);
+		background-color: rgb(var(--tooltip-border));
 	}
 
 	.tooltip.hidden {

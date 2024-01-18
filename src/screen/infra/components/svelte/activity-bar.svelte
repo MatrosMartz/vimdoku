@@ -5,6 +5,6 @@
 
 <style>
 	.activity-bar {
-		background-color: var(--status-bar-background);
+		background-color: rgb(var(--status-bar-background));
 	}
 </style>
