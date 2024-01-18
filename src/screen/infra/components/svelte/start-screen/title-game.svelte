@@ -4,7 +4,7 @@
 	$: typeText = $i18nState.get('titleScreen-cmd-type', 'Type')
 </script>
 
-<img height="200" width="200" alt="vimdoku logo" src="./favicon.svg" />
+<img height="200" width="200" alt="vimdoku logo" src="./favicon.svg" class="vimdoku-logo" />
 
 <h2>VIMDOKU - VIM suDOKU</h2>
 
@@ -52,6 +52,13 @@
 </table>
 
 <style>
+	.vimdoku-logo {
+		width: 40vmin;
+		min-width: 200px;
+		height: 40vmin;
+		min-height: 200px;
+	}
+
 	.data {
 		text-align: center;
 	}
@@ -76,11 +83,11 @@
 		align-self: flex-end;
 	}
 
-	@container (width >= 768px) {
+	@container (width >= 480px) {
 		.commands {
 			display: grid;
 			grid-template-columns: repeat(3, max-content);
-			gap: 0 4ch;
+			gap: 0.5rem 4ch;
 			width: 80%;
 		}
 

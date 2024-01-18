@@ -12,7 +12,7 @@
 	.start-screen {
 		display: flex;
 		flex-direction: column;
-		gap: 1rem;
+		gap: max(2rem, 5vh) 2rem;
 		align-items: center;
 		justify-content: center;
 		width: 93%;
