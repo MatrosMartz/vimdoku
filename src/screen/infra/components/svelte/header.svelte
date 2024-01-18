@@ -33,6 +33,8 @@
 <style>
 	.status-bar {
 		top: 0;
-		margin-bottom: 0.5rem;
+		margin-bottom: 2rem;
+		background-color: rgb(var(--status-bar-background) / 50%);
+		backdrop-filter: blur(3px);
 	}
 </style>

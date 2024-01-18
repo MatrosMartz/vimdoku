@@ -59,6 +59,15 @@
 		bottom: 0;
 	}
 
+	@media (width >= 480px) {
+		.status-bar {
+			width: 85%;
+			max-width: 55ch;
+			margin: 0 auto 0.75rem;
+			border-radius: 16px;
+		}
+	}
+
 	.error {
 		color: rgb(var(--error-color));
 	}

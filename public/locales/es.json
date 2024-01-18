@@ -154,7 +154,7 @@
 		"pref": "preferencia"
 	},
 	"modes": {
-		"annotation": "ANOTACIÓN",
+		"notes": "ANOTACIÓN",
 		"insert": "INSERCIÓN",
 		"visual": "VISUAL",
 		"normal": "NORMAL"

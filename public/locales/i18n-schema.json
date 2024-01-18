@@ -291,11 +291,11 @@
 			"type": "object",
 			"properties": {
 				"normal": { "type": "string" },
-				"annotation": { "type": "string" },
+				"notes": { "type": "string" },
 				"visual": { "type": "string" },
 				"insert": { "type": "string" }
 			},
-			"required": ["normal", "annotation", "visual", "insert"]
+			"required": ["normal", "notes", "visual", "insert"]
 		},
 		"sync": {
 			"type": "object",

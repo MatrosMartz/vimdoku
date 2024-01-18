@@ -25,9 +25,9 @@
 	--tooltip-background: 231 217 255;
 	--tooltip-border: 145 104 196;
 	--card-head-background: var(--status-bar-background);
-	--card-shadow: 170 152 192 / 50%;
+	--card-shadow: 170 152 192;
 	--dialog-background: 187 176 194;
-	--input-shadow: 15 17 34 / 25%;
+	--input-shadow: 15 17 34;
 	--hover-shadow: 49 2 114 / 20%;
 	--focus-brightness: brightness(107%);
 	--blink-background: 227 219 229;
@@ -35,9 +35,9 @@
 	font-family: Poppins, sans-serif;
 	font-weight: 400;
 	line-height: 1.5;
-	color: var(--primary-color);
+	color: rgb(var(--primary-color));
 	color-scheme: light dark;
-	background-color: var(--surface);
+	background-color: rgb(var(--surface));
 	font-synthesis: none;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
@@ -66,9 +66,9 @@
 	--visited-color: 174 137 255;
 	--tooltip-background: 6 0 15;
 	--tooltip-border: 31 11 59;
-	--card-shadow: 19 15 24 / 50%;
+	--card-shadow: 19 15 24;
 	--dialog-background: 38 30 42;
-	--input-shadow: 3 3 5 / 80%;
+	--input-shadow: 3 3 5;
 	--hover-shadow: 9 0 20 / 75%;
 	--focus-brightness: brightness(120%);
 	--blink-background: 20 9 28;
@@ -161,7 +161,7 @@ form .field :where(input:where([type='text'], [type='number']), select, button),
 	background-color: rgb(var(--input-background));
 	border: 2px solid rgb(var(--input-border));
 	border-radius: 8px;
-	box-shadow: 0 0 16px rgb(var(--input-shadow));
+	box-shadow: 0 0 16px rgb(var(--input-shadow) / 25%);
 	transition:
 		border 200ms ease-out,
 		box-shadow 200ms ease-out;
@@ -281,8 +281,8 @@ input {
 	gap: 0.2rem;
 	align-items: center;
 	justify-content: center;
-	min-width: 44px;
-	height: 44px;
+	min-width: 50px;
+	height: 50px;
 	font-family: inherit;
 	font-size: inherit;
 	color: inherit;
@@ -291,8 +291,8 @@ input {
 }
 
 .item-separation {
-	gap: 0.7rem;
-	padding-inline: 0.5rem;
+	gap: 0.5rem;
+	padding-inline: 0.4rem;
 }
 
 .status-icon:hover {
@@ -305,7 +305,7 @@ input {
 }
 
 .icon-dialog {
-	background-color: rgb(var(--alternative-border));
+	background-color: rgb(var(--alternative-border) / 50%);
 }
 
 @keyframes shake {
@@ -327,12 +327,6 @@ input {
 
 	100% {
 		transform: rotate(0);
-	}
-}
-
-@media (orientation: portrait) {
-	.portrait-hidden {
-		display: none;
 	}
 }
 
@@ -369,4 +363,21 @@ input {
 .text-size {
 	width: 1.5em;
 	height: 1.5em;
+}
+
+@media (orientation: portrait) {
+	.portrait-hidden {
+		display: none;
+	}
+}
+
+@media (width >= 480px) {
+	.status-icon {
+		padding-inline: 0.5rem;
+	}
+
+	.item-separation {
+		gap: 0.7rem;
+		padding-inline: 0.7rem;
+	}
 }

@@ -180,14 +180,20 @@
 		position: absolute;
 		z-index: 10;
 		width: 100%;
+		padding-left: 0.85rem;
 		background-color: rgb(var(--status-bar-background));
+		transition: border-top-left-radius 500ms;
+	}
+
+	.open .mode {
+		border-top-left-radius: 0;
 	}
 
 	.mode[aria-disabled='true'] {
 		opacity: 0.75;
 	}
 
-	@media (width >= 768px) {
+	@media (width >= 480px) {
 		#mode-selector {
 			grid-template-columns: 1fr auto;
 		}
@@ -201,10 +207,8 @@
 			display: initial;
 		}
 
-		.mode::before,
-		.mode::after {
-			display: contents;
-			content: '--';
+		.mode {
+			border-radius: 16px 0 0 16px;
 		}
 	}
 </style>

@@ -1,5 +1,5 @@
 export enum ModeKind {
-	N = 'annotation',
+	N = 'notes',
 	I = 'insert',
 	V = 'visual',
 	X = 'normal',
