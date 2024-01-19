@@ -11,8 +11,16 @@
 
 	const flyParams = direction === 'horizontal' ? { y: '100%' } : { x: '100%' }
 
-	$: getText = (num: number) => {
-		const printNum = $prefsState.relativeNumbers ? Math.abs(num - dirCoord) : num + 1
+	/**
+	 * Get text por number.
+	 * @param num Original number.
+	 * @returns Text for the number
+	 */
+	let getText: (num: number) => string
+
+	$: getText = num => {
+		const abs = Math.abs(num - dirCoord)
+		const printNum = $prefsState.relativeNumbers && (!$prefsState.numbers || abs === 0) ? abs : num + 1
 		return printNum === 0 ? '~' : String(printNum)
 	}
 </script>
