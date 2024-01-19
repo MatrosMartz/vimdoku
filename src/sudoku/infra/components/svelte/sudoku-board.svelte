@@ -19,10 +19,12 @@
 			</tr>
 		{/each}
 	{/if}
-	<div aria-hidden="true" class="lines-container">
-		<NumberLine direction="horizontal" />
-		<NumberLine direction="vertical" />
-	</div>
+	{#if $prefsState.numbers || $prefsState.relativeNumbers}
+		<div aria-hidden="true" class="lines-container">
+			<NumberLine direction="horizontal" />
+			<NumberLine direction="vertical" />
+		</div>
+	{/if}
 </table>
 
 <style>
@@ -53,10 +55,6 @@
 
 	.lines-container {
 		position: absolute;
-		display: none;
-	}
-
-	.board.numbers .lines-container {
 		display: initial;
 	}
 

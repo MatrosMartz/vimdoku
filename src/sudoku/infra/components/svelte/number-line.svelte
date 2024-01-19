@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { fly } from 'svelte/transition'
+
 	import { posState } from '~/share/infra/stores/svelte'
 	import { iterateArray } from '~/share/utils'
 	import { prefsState } from '$pref/infra/stores/svelte'
@@ -7,13 +9,15 @@
 
 	$: dirCoord = direction === 'horizontal' ? $posState.x : $posState.y
 
+	const flyParams = direction === 'horizontal' ? { y: '100%' } : { x: '100%' }
+
 	$: getText = (num: number) => {
 		const printNum = $prefsState.relativeNumbers ? Math.abs(num - dirCoord) : num + 1
 		return printNum === 0 ? '~' : String(printNum)
 	}
 </script>
 
-<div class="number-line {direction}">
+<div class="number-line {direction}" transition:fly={flyParams}>
 	{#each iterateArray(9) as num}
 		<span class="number" class:selected={dirCoord === num}>{getText(num)}</span>
 	{/each}
