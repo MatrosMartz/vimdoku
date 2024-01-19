@@ -57,8 +57,9 @@
 		justify-content: center;
 		width: 70vmin;
 		min-width: max-content;
-		min-height: 25rem;
-		padding: 48px 1rem;
+		height: max-content;
+		min-height: 60vh;
+		padding: 1em;
 		overflow: hidden;
 		background-color: rgb(var(--dialog-background));
 		border-radius: 8px;
