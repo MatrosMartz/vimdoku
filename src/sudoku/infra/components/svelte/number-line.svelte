@@ -46,7 +46,7 @@
 	.number {
 		display: grid;
 		place-content: center;
-		width: 44px;
+		width: var(--cell-size);
 		max-width: 8vw;
 		aspect-ratio: 1 /1;
 		opacity: 0.4;

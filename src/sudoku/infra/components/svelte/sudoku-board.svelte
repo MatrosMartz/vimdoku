@@ -27,13 +27,15 @@
 
 <style>
 	.board {
+		--cell-size: 44px;
+
 		position: relative;
 		display: grid;
 		grid-template-columns: repeat(9, 1fr);
 		gap: 4px;
 		width: fit-content;
 		padding: 4px;
-		margin: min(44px, 8vw) 0 0 min(44px, 8vw);
+		margin: min(calc(var(--cell-size) * 0.6), 5vw) 0 0 min(var(--cell-size), 8vw);
 		background-color: rgb(var(--editor-background));
 		border-radius: 8px;
 	}
@@ -56,5 +58,11 @@
 
 	.board.numbers .lines-container {
 		display: initial;
+	}
+
+	@media (width >= 768px) and (orientation: portrait) {
+		.board {
+			--cell-size: 7vw;
+		}
 	}
 </style>
