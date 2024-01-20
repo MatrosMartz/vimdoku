@@ -31,6 +31,7 @@
 	--hover-shadow: 49 2 114 / 20%;
 	--focus-brightness: brightness(107%);
 	--blink-background: 227 219 229;
+	--icon-size: 48px;
 
 	font-family: Poppins, sans-serif;
 	font-weight: 400;
@@ -281,8 +282,8 @@ input {
 	gap: 0.2rem;
 	align-items: center;
 	justify-content: center;
-	min-width: 48px;
-	height: 48px;
+	min-width: var(--icon-size);
+	height: var(--icon-size);
 	font-family: inherit;
 	font-size: inherit;
 	color: inherit;
@@ -383,8 +384,7 @@ input {
 }
 
 @media (width >= 768px) {
-	.status-icon {
-		min-width: 52px;
-		height: 52px;
+	:root {
+		--icon-size: 52px;
 	}
 }
