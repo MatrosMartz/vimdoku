@@ -16,11 +16,11 @@
 	$: inGame = $screenState.main === MainScreenKind.Game
 </script>
 
-<header class="status-bar monospace">
+<header class="status-bar vimdoku-header monospace">
 	<section>
 		<button class="status-icon icon-dialog" on:click={openDialog(DialogKind.Cmd)}><Icon id="cmd" /></button>
 	</section>
-	<section>
+	<section class="vimdoku-title">
 		<h1>Vimdoku</h1>
 	</section>
 	<section>
@@ -31,10 +31,28 @@
 </header>
 
 <style>
-	.status-bar {
+	.vimdoku-header {
 		top: 0;
-		margin-bottom: 2rem;
+		margin: 0 auto 2rem;
 		background-color: rgb(var(--status-bar-background) / 50%);
 		backdrop-filter: blur(3px);
+	}
+
+	.icon-dialog {
+		margin: 0.4rem;
+	}
+
+	.vimdoku-title {
+		height: calc(var(--icon-size) + 0.8rem);
+		padding: 0 2.5rem;
+		border-bottom: 3px solid rgb(var(--alternative-border) / 50%);
+	}
+
+	@media (width >= 768px) {
+		.vimdoku-header {
+			width: 40rem;
+			min-width: fit-content;
+			border-radius: 0 0 16px 16px;
+		}
 	}
 </style>

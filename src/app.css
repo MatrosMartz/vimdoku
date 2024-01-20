@@ -273,6 +273,7 @@ input {
 
 .status-bar section {
 	display: flex;
+	align-items: center;
 }
 
 .status-icon {
@@ -307,6 +308,7 @@ input {
 
 .icon-dialog {
 	background-color: rgb(var(--alternative-border) / 50%);
+	border-radius: 16px;
 }
 
 @keyframes shake {
@@ -383,7 +385,7 @@ input {
 	}
 }
 
-@media (width >= 768px) {
+@media (width >= 1024px) {
 	:root {
 		--icon-size: 52px;
 	}
