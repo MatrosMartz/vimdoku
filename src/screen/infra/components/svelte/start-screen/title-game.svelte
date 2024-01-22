@@ -63,27 +63,28 @@
 		text-align: center;
 	}
 
-	.commands,
-	.commands tr {
+	.commands {
 		display: flex;
 		flex-direction: column;
-		align-items: flex-start;
-	}
-
-	.commands {
 		gap: 1ch;
 		justify-content: center;
 	}
 
 	.commands tr {
-		width: 100%;
+		display: grid;
+		grid-template-columns: auto 1fr;
+		gap: 0.25rem 4ch;
+	}
+
+	.commands tr th {
+		align-self: flex-start;
 	}
 
 	.commands tr td:last-of-type {
-		align-self: flex-end;
+		grid-column: span 2;
 	}
 
-	@container (width >= 480px) {
+	@container (width >= 768px) {
 		.commands {
 			display: grid;
 			grid-template-columns: repeat(3, max-content);
@@ -103,7 +104,7 @@
 			text-align: left;
 		}
 
-		tr td {
+		.commands tr td:last-of-type {
 			grid-column: span 1;
 		}
 	}
