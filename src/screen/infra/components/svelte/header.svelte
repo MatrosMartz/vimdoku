@@ -48,10 +48,10 @@
 		border-bottom: 3px solid rgb(var(--alternative-border) / 50%);
 	}
 
-	@media (width >= 768px) {
+	@media (width >= 480px) {
 		.vimdoku-header {
-			width: 40rem;
-			min-width: fit-content;
+			width: 85%;
+			max-width: 40rem;
 			border-radius: 0 0 16px 16px;
 		}
 	}
