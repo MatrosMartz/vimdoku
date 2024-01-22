@@ -45,7 +45,7 @@
 	.vimdoku-title {
 		height: calc(var(--icon-size) + 0.8rem);
 		padding: 0 2.5rem;
-		border-bottom: 3px solid rgb(var(--alternative-border) / 50%);
+		border-bottom: 3px solid rgb(var(--alternative-border));
 	}
 
 	@media (width >= 480px) {

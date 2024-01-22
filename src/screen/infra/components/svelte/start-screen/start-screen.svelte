@@ -22,7 +22,7 @@
 		color: rgb(var(--primary-color));
 		background-color: rgb(var(--editor-background));
 		border-radius: 4px;
-		box-shadow: 0 6px 20px rgb(var(--editor-background));
+		box-shadow: 0 6px 20px rgb(var(--editor-background) / 50%);
 		container: start-screen / inline-size;
 	}
 

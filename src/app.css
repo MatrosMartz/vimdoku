@@ -1,11 +1,11 @@
 :root {
-	--surface: 174 164 188;
+	--surface: 192 179 213;
 	--input-background: 224 212 224;
 	--input-border: 137 134 139;
 	--alternative-border: 152 152 192;
 	--focus-border: 105 82 119;
 	--primary-color: 36 26 37;
-	--secondary-color: 31 29 31;
+	--secondary-color: 39 35 19;
 	--editor-background: 241 232 255;
 	--error-color: 147 13 20;
 	--value-color: 120 51 8;
@@ -309,7 +309,7 @@ input {
 }
 
 .icon-dialog {
-	background-color: rgb(var(--alternative-border) / 50%);
+	background-color: rgb(var(--alternative-border));
 	border-radius: 16px;
 }
 
