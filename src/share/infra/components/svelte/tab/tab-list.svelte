@@ -1,5 +1,5 @@
 <div class="container">
-	<ul role="tablist">
+	<ul role="tablist" class="tablist">
 		<slot />
 	</ul>
 </div>
@@ -7,13 +7,15 @@
 <style>
 	.container {
 		position: relative;
-		padding-bottom: 0.5rem;
+		padding-bottom: 0.4rem;
+		background-color: rgb(var(--dialog-header));
 		box-shadow: 0 8px 16px rgb(var(--card-head-shadow));
 	}
 
-	ul {
+	.tablist {
 		position: relative;
 		display: flex;
+		padding: 0.4rem 0.4rem 0;
 		list-style: none;
 	}
 
@@ -21,8 +23,8 @@
 		position: absolute;
 		inset: auto 0 0;
 		width: 100%;
-		height: 0.5rem;
+		height: 0.4rem;
 		content: '';
-		backdrop-filter: var(--focus-brightness);
+		background-color: rgb(var(--alternative-border));
 	}
 </style>

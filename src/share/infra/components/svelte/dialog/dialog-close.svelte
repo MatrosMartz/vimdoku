@@ -11,13 +11,13 @@
 	button {
 		--border: var(--alternative-border);
 
-		width: 100%;
-		height: 100%;
+		width: var(--icon-size);
+		height: var(--icon-size);
 		color: inherit;
 		background-color: rgb(var(--alternative-border));
 		border: none;
 		border: 2px solid rgb(var(--border));
-		border-radius: inherit;
+		border-radius: 16px;
 	}
 
 	button:focus {

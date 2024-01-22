@@ -52,17 +52,13 @@
 		flex-direction: column;
 		width: 90vw;
 		max-width: 600px;
-		height: 90vh;
+		height: 93vh;
 		overflow: hidden;
-		background-color: rgb(var(--dialog-background));
-		border-radius: 8px;
+		border-radius: 16px;
 	}
 
 	.close {
 		position: absolute;
-		right: 0;
-		height: 100%;
-		aspect-ratio: 1 / 1;
-		border-top-right-radius: 8px;
+		right: 0.4rem;
 	}
 </style>

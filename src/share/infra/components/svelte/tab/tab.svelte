@@ -23,15 +23,16 @@
 
 		position: relative;
 		width: 100%;
-		height: 48px;
+		height: calc(var(--icon-size) + 0.4rem);
 		color: inherit;
 		background-color: transparent;
 		border: none;
+		border-radius: 8px 8px 0 0;
 		transition: backdrop-filter 200ms;
 	}
 
 	button:disabled {
-		backdrop-filter: var(--focus-brightness);
+		background-color: rgb(var(--alternative-border));
 	}
 
 	button:not(:disabled):focus {

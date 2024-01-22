@@ -14,6 +14,7 @@
 	div {
 		padding: 2rem 2rem 1rem;
 		overflow: hidden scroll;
+		background-color: rgb(var(--dialog-background) / 75%);
 	}
 
 	div[aria-hidden='true'] {
