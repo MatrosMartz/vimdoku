@@ -2,12 +2,13 @@
 	<ul role="tablist" class="tablist">
 		<slot />
 	</ul>
+	<slot name="close" />
 </div>
 
 <style>
 	.container {
 		position: relative;
-		padding-bottom: 0.4rem;
+		padding: 0.4rem;
 		background-color: rgb(var(--dialog-header) / 70%);
 		box-shadow: 0 8px 16px rgb(var(--card-head-shadow));
 	}
@@ -15,8 +16,10 @@
 	.tablist {
 		position: relative;
 		display: flex;
-		padding: 0.4rem 0.4rem 0;
+		width: max-content;
+		overflow: hidden;
 		list-style: none;
+		border-radius: 12px 12px 0 0;
 	}
 
 	.container::after {

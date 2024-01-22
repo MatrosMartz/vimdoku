@@ -32,9 +32,9 @@
 				<Tab key="edit" on:click={createTabHandler(DialogKind.PrefEdit)}
 					>{$i18nState.get('prefs-tabs-edit', 'Edit')}</Tab
 				>
-				<li class="close">
+				<div slot="close" class="close">
 					<DialogClose />
-				</li>
+				</div>
 			</TabList>
 			<TabPanel key="show">
 				<PreferencesDisplay />
@@ -59,6 +59,6 @@
 
 	.close {
 		position: absolute;
-		right: 0.4rem;
+		inset: 0.4rem 0.4rem auto auto;
 	}
 </style>

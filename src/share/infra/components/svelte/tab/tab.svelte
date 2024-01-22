@@ -14,7 +14,7 @@
 
 <style>
 	li {
-		width: 25%;
+		width: 8rem;
 		min-width: max-content;
 	}
 
@@ -27,7 +27,6 @@
 		color: inherit;
 		background-color: transparent;
 		border: none;
-		border-radius: 8px 8px 0 0;
 		transition: backdrop-filter 200ms;
 	}
 
