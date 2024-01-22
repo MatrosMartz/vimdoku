@@ -136,7 +136,7 @@
 		place-items: center;
 		width: 100%;
 		height: var(--icon-size);
-		padding-inline: 0.5rem;
+		padding-inline: 0.75rem;
 		opacity: 0.6;
 	}
 
@@ -160,7 +160,7 @@
 		position: absolute;
 		z-index: 10;
 		width: 100%;
-		padding-left: 0.85rem;
+		padding-left: 0.4rem;
 		background-color: rgb(var(--status-bar-background));
 		transition: border-top-left-radius 500ms;
 	}

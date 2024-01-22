@@ -61,7 +61,7 @@
 
 	@media (width >= 480px) {
 		.status-bar {
-			width: 85%;
+			width: 80%;
 			max-width: 32rem;
 			margin: 0 auto 0.75rem;
 			border-radius: 16px;
