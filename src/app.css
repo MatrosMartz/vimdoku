@@ -1,23 +1,23 @@
 :root {
-	--surface: 192 179 213;
+	--surface: 174 168 179;
 	--input-background: 224 212 224;
 	--input-border: 137 134 139;
-	--alternative-border: 152 152 192;
+	--alternative-border: 155 147 203;
 	--focus-border: 105 82 119;
-	--primary-color: 36 26 37;
-	--secondary-color: 39 35 19;
-	--editor-background: 241 232 255;
+	--primary-color: 32 23 34;
+	--secondary-color: 39 25 3;
+	--editor-background: 231 220 240;
 	--error-color: 147 13 20;
-	--value-color: 120 51 8;
+	--value-color: 47 31 20;
 	--key-color: 6 75 126;
-	--holder-color: 139 125 111;
+	--holder-color: 72 61 50;
 	--special-color: 6 92 31;
-	--unverified-color: 69 84 99;
+	--unverified-color: 48 51 55;
 	--assert-color: var(--special-color);
-	--number-color: 132 46 2;
+	--number-color: 112 38 1;
 	--string-color: var(--special-color);
 	--boolean-color: var(--error-color);
-	--status-bar-background: 205 201 214;
+	--status-bar-background: 206 198 222;
 	--command-color: 72 56 106;
 	--notes-color: var(--command-color);
 	--anchor-color: 36 74 88;
@@ -26,11 +26,11 @@
 	--tooltip-border: 145 104 196;
 	--card-head-background: var(--status-bar-background);
 	--card-shadow: 170 152 192;
-	--dialog-header: 175 167 215;
-	--dialog-background: 187 176 194;
+	--dialog-header: 181 175 248;
+	--dialog-background: 175 160 182;
 	--input-shadow: 15 17 34;
 	--hover-shadow: 49 2 114 / 20%;
-	--focus-brightness: brightness(107%);
+	--focus-brightness: brightness(105%);
 	--blink-background: 227 219 229;
 	--icon-size: 48px;
 
@@ -53,10 +53,10 @@
 	--alternative-border: 63 63 89;
 	--focus-border: 133 136 166;
 	--primary-color: 216 200 231;
-	--secondary-color: 226 216 182;
+	--secondary-color: 182 179 168;
 	--editor-background: 12 6 17;
 	--error-color: 230 107 107;
-	--value-color: 228 160 97;
+	--value-color: 233 178 127;
 	--key-color: 132 170 220;
 	--holder-color: 166 145 125;
 	--special-color: 84 171 133;
@@ -73,7 +73,7 @@
 	--dialog-background: 38 30 42;
 	--input-shadow: 3 3 5;
 	--hover-shadow: 9 0 20 / 75%;
-	--focus-brightness: brightness(120%);
+	--focus-brightness: brightness(130%);
 	--blink-background: 20 9 28;
 }
 
@@ -181,7 +181,7 @@ form .field :where(input:where([type='text'], [type='number']), select, button):
 }
 
 form .field:has(input:hover, select:hover) span {
-	filter: brightness(90%) saturate(200%);
+	filter: brightness(120%) saturate(250%);
 }
 
 form .field select option {
@@ -310,7 +310,7 @@ input {
 
 .icon-dialog {
 	background-color: rgb(var(--alternative-border));
-	border-radius: 16px;
+	border-radius: 12px;
 }
 
 @keyframes shake {
