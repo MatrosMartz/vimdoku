@@ -279,7 +279,7 @@ input {
 }
 
 .status-icon {
-	--border-color: transparent;
+	--border-transparency: 0;
 
 	display: flex;
 	gap: 0.2rem;
@@ -291,7 +291,7 @@ input {
 	font-size: inherit;
 	color: inherit;
 	background-color: inherit;
-	border: 2px solid rgb(var(--border-color));
+	border: 2px solid rgb(var(--focus-border) / var(--border-transparency));
 }
 
 .item-separation {
@@ -305,7 +305,7 @@ input {
 }
 
 .status-icon:focus {
-	--border-color: var(--focus-border);
+	--border-transparency: 100%;
 }
 
 .icon-dialog {
