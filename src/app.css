@@ -11,7 +11,7 @@
 	--value-color: 47 31 20;
 	--key-color: 6 75 126;
 	--holder-color: 72 61 50;
-	--special-color: 6 92 31;
+	--special-color: 1 66 20;
 	--unverified-color: 45 52 60;
 	--assert-color: var(--special-color);
 	--number-color: 112 38 1;
@@ -31,7 +31,7 @@
 	--input-shadow: 15 17 34;
 	--hover-shadow: 49 2 114 / 20%;
 	--focus-brightness: brightness(105%);
-	--blink-background: 227 219 229;
+	--blink-background: 246 239 247;
 	--icon-size: 48px;
 
 	font-family: Poppins, sans-serif;
