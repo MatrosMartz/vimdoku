@@ -45,7 +45,7 @@
 		padding: 12px 1rem;
 		color: rgb(var(--primary-color));
 		text-align: left;
-		background-color: rgb(var(--editor-background));
+		background-color: rgb(var(--tooltip-background));
 		border: none;
 		transition: filter 200ms;
 	}
@@ -66,6 +66,6 @@
 		height: 2px;
 		margin-inline: auto;
 		content: '';
-		background-color: rgb(var(--input-shadow) / 25%);
+		background-color: rgb(var(--dialog-header) / 75%);
 	}
 </style>

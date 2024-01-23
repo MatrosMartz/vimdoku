@@ -17,7 +17,7 @@
 		background-color: rgb(var(--alternative-border));
 		border: none;
 		border: 2px solid rgb(var(--border));
-		border-radius: 16px;
+		border-radius: 12px;
 	}
 
 	button:focus {

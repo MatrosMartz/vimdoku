@@ -8,7 +8,7 @@
 </script>
 
 <Dialog type="modal" {show}>
-	<div class="command-dialog">
+	<div role="search" class="command-dialog">
 		<CommandInput />
 		<SuggestionsList />
 	</div>
@@ -23,6 +23,5 @@
 		width: 80vw;
 		max-width: 60ch;
 		height: 80vh;
-		padding: 1rem;
 	}
 </style>

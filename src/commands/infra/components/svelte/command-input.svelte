@@ -26,7 +26,7 @@
 	$: if ($screenState.dialog.kind === DialogKind.Cmd) form.reset()
 </script>
 
-<form bind:this={form} method="dialog" on:submit|preventDefault={submitHandler}>
+<form bind:this={form} class="command-search" method="dialog" on:submit|preventDefault={submitHandler}>
 	<label class="command-input">
 		<input bind:this={$input} type="text" on:input={inputHandler} />
 	</label>
@@ -36,18 +36,21 @@
 </form>
 
 <style>
-	form {
+	.command-search {
 		display: flex;
 		gap: 1rem;
 		justify-content: center;
+		padding: 0.4rem;
+		background-color: rgb(var(--dialog-header) / 70%);
+		border-radius: 16px;
 	}
 
 	.command-input {
-		box-sizing: content-box;
 		display: flex;
 		flex-shrink: 20;
 		align-items: center;
 		width: 100%;
+		height: var(--icon-size);
 		overflow: hidden;
 		font: 1rem monospace;
 	}

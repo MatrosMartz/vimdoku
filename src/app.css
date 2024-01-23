@@ -22,7 +22,7 @@
 	--notes-color: var(--command-color);
 	--anchor-color: 36 74 88;
 	--visited-color: 52 33 92;
-	--tooltip-background: 231 217 255;
+	--tooltip-background: 238 228 255;
 	--tooltip-border: 145 104 196;
 	--card-head-background: var(--status-bar-background);
 	--card-shadow: 170 152 192;
@@ -163,7 +163,7 @@ form .field :where(input:where([type='text'], [type='number']), select, button),
 	color: inherit;
 	background-color: rgb(var(--input-background));
 	border: 2px solid rgb(var(--input-border));
-	border-radius: 8px;
+	border-radius: 12px;
 	box-shadow: 0 0 16px rgb(var(--input-shadow) / 25%);
 	transition:
 		border 200ms ease-out,
