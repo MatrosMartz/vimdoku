@@ -1,5 +1,7 @@
 :root {
-	--surface: 174 168 179;
+	--surface-1: 254 185 235;
+	--surface-2: 174 168 179;
+	--surface-3: 177 188 228;
 	--input-background: 224 212 224;
 	--input-border: 137 134 139;
 	--alternative-border: 155 147 203;
@@ -8,10 +10,10 @@
 	--secondary-color: 39 25 3;
 	--editor-background: 231 220 240;
 	--error-color: 147 13 20;
-	--value-color: 47 31 20;
+	--value-color: 87 49 24;
 	--key-color: 6 75 126;
 	--holder-color: 72 61 50;
-	--special-color: 1 66 20;
+	--special-color: 13 78 32;
 	--unverified-color: 45 52 60;
 	--assert-color: var(--special-color);
 	--number-color: 112 38 1;
@@ -37,9 +39,7 @@
 	font-family: Poppins, sans-serif;
 	font-weight: 400;
 	line-height: 1.5;
-	color: rgb(var(--primary-color));
 	color-scheme: light dark;
-	background-color: rgb(var(--surface));
 	font-synthesis: none;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
@@ -47,7 +47,9 @@
 }
 
 :root.dark {
-	--surface: 31 24 32;
+	--surface-1: 36 21 32;
+	--surface-2: 31 24 32;
+	--surface-3: 19 24 43;
 	--input-background: 26 23 27;
 	--input-border: 74 70 77;
 	--alternative-border: 63 63 89;
@@ -69,7 +71,7 @@
 	--tooltip-background: 6 0 15;
 	--tooltip-border: 31 11 59;
 	--card-shadow: 19 15 24;
-	--dialog-header: 31 26 51;
+	--dialog-header: 39 33 60;
 	--dialog-background: 38 30 42;
 	--input-shadow: 3 3 5;
 	--hover-shadow: 9 0 20 / 75%;
@@ -91,6 +93,13 @@
 
 *:focus {
 	outline: none;
+}
+
+body {
+	min-height: 100vh;
+	color: rgb(var(--primary-color));
+	background: linear-gradient(45deg, rgb(var(--surface-1)), rgb(var(--surface-2)), rgb(var(--surface-3)));
+	background-attachment: fixed;
 }
 
 #app {
