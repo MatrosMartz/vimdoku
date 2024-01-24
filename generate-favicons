@@ -1,0 +1,30 @@
+#!/bin/sh
+
+default_sizes=(16 32 48 72 96 128 144 180 192 256 384 512 1024)
+
+sizes=("${@:-${default_sizes[@]}}")
+
+generate_favicon() {
+	local size=$1
+	local favicon=./public/favicon-"$size"
+
+	if [ -e "${favicon}.png" ]; then
+		echo "  $favicon already exist"
+	else
+		echo "  generation $favicon..."
+		inkscape \
+		--export-type=png \
+		--export-width="$size" \
+		--export-filename="$favicon" \
+		./public/vimdoku.svg
+		echo "  $favicon has been generated!"
+	fi
+}
+
+for size in "${sizes[@]}"; do
+	generate_favicon $size &
+done
+
+wait
+
+echo "done!"
