@@ -16,7 +16,7 @@
 		align-items: center;
 		justify-content: center;
 		width: 90%;
-		max-width: 55rem;
+		max-width: 50rem;
 		min-height: 77vh;
 		padding: 2.2rem 4rem;
 		color: rgb(var(--primary-color));

@@ -63,7 +63,7 @@
 		.status-bar {
 			width: 80%;
 			max-width: 32rem;
-			margin: 0 auto 0.75rem;
+			margin: 0 auto 1rem;
 			border-radius: 16px;
 		}
 	}
