@@ -21,8 +21,8 @@
 		padding: 2.2rem 4rem;
 		color: rgb(var(--primary-color));
 		background-color: rgb(var(--editor-background));
-		border-radius: 4px;
-		box-shadow: 0 6px 20px rgb(var(--editor-background) / 50%);
+		border-radius: 16px;
+		box-shadow: 0 6px 20px rgb(var(--card-shadow) / 75%);
 		container: start-screen / inline-size;
 	}
 
