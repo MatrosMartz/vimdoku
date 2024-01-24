@@ -10,14 +10,14 @@ export const HELP_SUGGS: Sugg[] = [
 		id: `help-cmd-${cmd}`,
 	})),
 	new Sugg({
-		cmdStr: 'h[elp] {subject}',
-		descriptions: 'Like ":help", additionally jump to the tag {subject}.',
-		id: 'help-subject',
-	}),
-	new Sugg({
 		cmdStr: 'h[elp]',
 		descriptions: 'Open dialog and display the help file in read-only mode.',
 		id: 'help-main',
+	}),
+	new Sugg({
+		cmdStr: 'h[elp] {subject}',
+		descriptions: 'Like ":help", additionally jump to the tag {subject}.',
+		id: 'help-subject',
 	}),
 ]
 
@@ -28,7 +28,7 @@ export const SET_SUGGS: Sugg[] = [
 		id: 'set-show-all',
 	}),
 	new Sugg({
-		cmdStr: 'se[t] <all&>',
+		cmdStr: 'se[t] <all><&>',
 		descriptions: 'Reset all preferences',
 		id: 'set-reset-all',
 	}),
@@ -52,6 +52,41 @@ export const SET_SUGGS: Sugg[] = [
 		descriptions: `Set, ${pref} switch it on.`,
 		id: `set-switch-on-${pref}`,
 	})),
+	...Sugg.createArray(NON_TOGGLE_NAMES, pref => ({
+		cmdStr: `se[t] (${pref})`,
+		descriptions: `Show value of ${pref}.`,
+		id: `set-show-b-${pref}`,
+	})),
+	...Sugg.createArray(TOGGLE_NAMES, pref => ({
+		cmdStr: `se[t] <no>(${pref})`,
+		descriptions: `Reset, ${pref} switch it off.`,
+		id: `set-switch-off-${pref}`,
+	})),
+	...Sugg.createArray(TOGGLE_NAMES, pref => ({
+		cmdStr: `se[t] (${pref})<!>`,
+		descriptions: `${pref} invert value.`,
+		id: `set-switch-excl-${pref}`,
+	})),
+	...Sugg.createArray(TOGGLE_NAMES, pref => ({
+		cmdStr: `se[t] <inv>(${pref})`,
+		descriptions: `${pref} invert value.`,
+		id: `set-switch-invert-${pref}`,
+	})),
+	...Sugg.createArray(NON_TOGGLE_NAMES, pref => ({
+		cmdStr: `se[t] (${pref})<=>value`,
+		descriptions: `Assing to ${pref} the {value}.`,
+		id: `set-assign-eql-${pref}`,
+	})),
+	...Sugg.createArray(NON_TOGGLE_NAMES, pref => ({
+		cmdStr: `se[t] (${pref})<:>value`,
+		descriptions: `Assign to ${pref} the {value}.`,
+		id: `set-assign-col-${pref}`,
+	})),
+	new Sugg({
+		cmdStr: 'se[t]',
+		descriptions: 'Show all preferences that differ from their default value.',
+		id: 'set-show-differ',
+	}),
 	new Sugg({
 		cmdStr: 'se[t] {preference}',
 		descriptions: [
@@ -60,15 +95,40 @@ export const SET_SUGGS: Sugg[] = [
 		],
 		id: 'set-switch-on-show',
 	}),
-	...Sugg.createArray(NON_TOGGLE_NAMES, pref => ({
-		cmdStr: `se[t] (${pref})`,
-		descriptions: `Show value of ${pref}.`,
-		id: `set-show-b-${pref}`,
-	})),
 	new Sugg({
-		cmdStr: 'se[t]',
-		descriptions: 'Show all preferences that differ from their default value.',
-		id: 'set-show-differ',
+		cmdStr: 'se[t] {preference}<?>',
+		descriptions: 'Show value of {preference}.',
+		id: 'set-show-holder',
+	}),
+	new Sugg({
+		cmdStr: 'se[t] {preference}<&>',
+		descriptions: "Reset option to it's default value.",
+		id: 'set-reset-holder',
+	}),
+	new Sugg({
+		cmdStr: 'se[t] <no>{preference}',
+		descriptions: 'Toggle preference: Reset, switch it off.',
+		id: 'set-switch-off-holer',
+	}),
+	new Sugg({
+		cmdStr: 'se[t] {preference}<!>',
+		descriptions: 'Toggle preference: Invert value.',
+		id: 'set-switch-excl-holder',
+	}),
+	new Sugg({
+		cmdStr: 'se[t] <inv>{preference}',
+		descriptions: 'Toggle preference: Invert value.',
+		id: 'set-switch-invert-holder',
+	}),
+	new Sugg({
+		cmdStr: 'se[t] {preference}<=>{value}',
+		descriptions: 'String or Number preference: Assign to {pref} the {value}.',
+		id: 'set-assign-eql-holder',
+	}),
+	new Sugg({
+		cmdStr: 'se[t] {preference}<:>{value}',
+		descriptions: 'String or Number preference: Assign to {pref} the {value}.',
+		id: 'set-assign-col-holder',
 	}),
 ]
 
@@ -97,6 +157,31 @@ export const GAME_SUGGS: Sugg[] = [
 		cmdStr: 're[sume]',
 		descriptions: ['Resume the current game.', 'Resume the saved game only if no game active.'],
 		id: 'resume',
+	}),
+	new Sugg({
+		cmdStr: 'q[uit]',
+		descriptions: 'Close the current windows.',
+		id: 'quit',
+	}),
+	new Sugg({
+		cmdStr: 'q[uit]<!>',
+		descriptions: 'Close without save, also when the current game has changes.',
+		id: 'quit-unsave',
+	}),
+	new Sugg({
+		cmdStr: 'wq[uit]',
+		descriptions: 'Save the current game and close the windows.',
+		id: 'quit-save',
+	}),
+	new Sugg({
+		cmdStr: 'x[it]',
+		descriptions: 'Like ":wq", but save only when changes have been made.',
+		id: 'xit',
+	}),
+	new Sugg({
+		cmdStr: 'exi[t]',
+		descriptions: 'Like ":wq", but save only when changes have been made.',
+		id: 'xit',
 	}),
 ]
 
