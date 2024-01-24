@@ -23,5 +23,6 @@
 		width: 80vw;
 		max-width: 60ch;
 		height: 80vh;
+		box-shadow: 0 6px 20px rgb(var(--card-shadow) / 75%);
 	}
 </style>
