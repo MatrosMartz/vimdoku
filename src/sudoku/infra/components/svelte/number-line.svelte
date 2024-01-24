@@ -35,6 +35,7 @@
 	.number-line {
 		position: absolute;
 		inset: 0 auto auto 0;
+		z-index: -1;
 		display: flex;
 		gap: 4px;
 		color: rgb(var(--key-color));
