@@ -5,7 +5,7 @@ export type SchemaStr<T> = T extends object
 					? `${K}`
 					: `${K & string}-${SchemaStr<T[K]>}`
 				: never
-	  }[keyof T]
+		}[keyof T]
 	: never
 
 export type SchemaValue<T extends string, O> = T extends `${infer P}-${infer S}`
@@ -13,5 +13,5 @@ export type SchemaValue<T extends string, O> = T extends `${infer P}-${infer S}`
 		? { [K in P]: SchemaValue<S, O[K]> }[P]
 		: never
 	: T extends keyof O
-	  ? { [K in T]: O[K] }[T]
-	  : never
+		? { [K in T]: O[K] }[T]
+		: never

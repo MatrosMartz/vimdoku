@@ -14,13 +14,14 @@ type IsNumberType<N extends number> = number extends N ? true : false
 	? L
 	: Tuple<T, N, [T, ...L]> */
 
-export type Tuple<T, N extends number> = IsNumberType<N> extends true
-	? T[]
-	: IsInteger<N> extends false
-	  ? never
-	  : IsUnsigned<N> extends false
-	    ? never
-	    : T[] & { length: N }
+export type Tuple<T, N extends number> =
+	IsNumberType<N> extends true
+		? T[]
+		: IsInteger<N> extends false
+			? never
+			: IsUnsigned<N> extends false
+				? never
+				: T[] & { length: N }
 
 /* export type ReadonlyTuple<T, N extends number, L extends readonly T[] = []> = IsNumberType<N> extends true
 	? readonly T[]
@@ -32,10 +33,11 @@ export type Tuple<T, N extends number> = IsNumberType<N> extends true
 	? L
 	: ReadonlyTuple<T, N, readonly [T, ...L]> */
 
-export type ReadonlyTuple<T, N extends number> = IsNumberType<N> extends true
-	? readonly T[]
-	: IsInteger<N> extends false
-	  ? never
-	  : IsUnsigned<N> extends false
-	    ? never
-	    : readonly T[] & { length: N }
+export type ReadonlyTuple<T, N extends number> =
+	IsNumberType<N> extends true
+		? readonly T[]
+		: IsInteger<N> extends false
+			? never
+			: IsUnsigned<N> extends false
+				? never
+				: readonly T[] & { length: N }

@@ -58,18 +58,18 @@ type StrTypes = 'bigint' | 'boolean' | 'function' | 'number' | 'object' | 'strin
 type StrToType<T extends StrTypes> = T extends 'string'
 	? string
 	: T extends 'number'
-	  ? number
-	  : T extends 'boolean'
-	    ? boolean
-	    : T extends 'object'
-	      ? object
-	      : T extends 'bigint'
-	        ? bigint
-	        : T extends 'symbol'
-	          ? symbol
-	          : T extends 'function'
-	            ? (...args: any[]) => any
-	            : never
+		? number
+		: T extends 'boolean'
+			? boolean
+			: T extends 'object'
+				? object
+				: T extends 'bigint'
+					? bigint
+					: T extends 'symbol'
+						? symbol
+						: T extends 'function'
+							? (...args: any[]) => any
+							: never
 
 /**
  * Returns the fallback if the value is not of the indicated type.
