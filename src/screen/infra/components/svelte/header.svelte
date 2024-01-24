@@ -33,7 +33,7 @@
 <style>
 	.vimdoku-header {
 		top: 0;
-		margin: 0 auto 2rem;
+		margin: 0 auto 1.5rem;
 		background-color: rgb(var(--status-bar-background) / 50%);
 		backdrop-filter: blur(3px);
 	}
@@ -53,6 +53,12 @@
 			width: 85%;
 			max-width: 40rem;
 			border-radius: 0 0 16px 16px;
+		}
+	}
+
+	@media (width >= 768px) {
+		.vimdoku-header {
+			margin-bottom: 2.5rem;
 		}
 	}
 </style>

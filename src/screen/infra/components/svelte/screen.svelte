@@ -21,6 +21,6 @@
 		gap: 1em;
 		align-items: center;
 		justify-content: center;
-		margin-bottom: calc(var(--icon-size) + 2rem);
+		margin-bottom: calc(var(--icon-size) + 1.6rem);
 	}
 </style>
