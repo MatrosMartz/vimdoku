@@ -12,7 +12,7 @@ export enum Accessibility {
 	LESS = 'less',
 }
 
-export enum Schema {
+export enum ColorSchema {
 	SYSTEM = 'systemValue',
 	DARK_MODE = 'darkMode',
 	LIGHT_MODE = 'lightMode',
@@ -26,7 +26,7 @@ export enum IconTheme {
 }
 
 export const userFields = {
-	colorSchema: { type: 'options', opts: Object.values(Schema), default: Schema.SYSTEM },
+	colorSchema: { type: 'options', opts: Object.values(ColorSchema), default: ColorSchema.SYSTEM },
 	colorTheme: { type: 'text', default: 'default' },
 	contrast: { type: 'options', opts: Object.values(Accessibility), default: Accessibility.SYSTEM },
 	iconTheme: { type: 'options', opts: Object.values(IconTheme), default: IconTheme.Heroicons },

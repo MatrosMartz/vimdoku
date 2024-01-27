@@ -16,7 +16,7 @@
 	import '@fontsource-variable/jetbrains-mono'
 	import '@fontsource-variable/jetbrains-mono/wght-italic.css'
 
-	import { Accessibility, Schema } from '$pref/domain/models'
+	import { Accessibility, ColorSchema } from '$pref/domain/models'
 	import { prefsState } from '$pref/infra/stores/svelte'
 	import { Dialogs, Header, Screen, StatusBar } from '$screen/infra/components/svelte'
 
@@ -26,7 +26,7 @@
 	$: document.documentElement.lang = $prefsState.language
 	$: toggleClass(
 		$prefsState.colorSchema,
-		{ main: Schema.DARK_MODE, default: Schema.SYSTEM, media: '(prefers-color-scheme: dark)' },
+		{ main: ColorSchema.DARK_MODE, default: ColorSchema.SYSTEM, media: '(prefers-color-scheme: dark)' },
 		'dark'
 	)
 	$: toggleClass(
