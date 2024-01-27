@@ -66,7 +66,7 @@ describe.concurrent('SuggestionSvc', () => {
 			expect(suggestion.input).toBe(expected.input)
 		})
 
-		test('should be correct innerText', () => {
+		test('Should be correct innerText', () => {
 			expect(suggestion.header.innerHTML).toBe(expected.innerText)
 		})
 	})
