@@ -17,7 +17,7 @@ function cannotReadUndefined() {
 	return /^Cannot read properties of undefined \(reading '[0-8]'\)/
 }
 
-/** Represent a Sudoku Solution Service. */
+/** Represent a Sudoku Solution. */
 export class Solution {
 	readonly #grid
 

@@ -67,6 +67,7 @@ const solutionK = Symbol('cell-solution')
 /** Simulated key for protected field. */
 const valueK = Symbol('cell-value')
 
+/** Represent a Sudoku Cell. */
 export abstract class Cell extends Entity implements CellData {
 	protected [notesK]: Notes
 	protected [solutionK]: ValidNumbers
