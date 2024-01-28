@@ -12,7 +12,7 @@ export type RequireOne<T> = {
 	}
 }[keyof T]
 
-export type Entries<T> = Array<
+export type GetEntries<T> = Array<
 	{
 		[K in keyof T]: [K, T[K]]
 	}[keyof T]

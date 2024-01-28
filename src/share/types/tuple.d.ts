@@ -41,3 +41,5 @@ export type ReadonlyTuple<T, N extends number> =
 			: IsUnsigned<N> extends false
 				? never
 				: readonly T[] & { length: N }
+
+export type Entry<K = unknown, V = unknown> = [K, V]

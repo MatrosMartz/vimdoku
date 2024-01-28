@@ -1,5 +1,5 @@
 import type { FormGroup, FormSchema } from '~/share/domain/models'
-import type { Entries, KeysByType } from '~/share/types'
+import type { GetEntries, KeysByType } from '~/share/types'
 
 import { SUDOKU_IDLE_PREFS, sudokuFields, type SudokuPrefs } from './sudoku.model'
 import { USER_IDLE_PREFS, userFields, type UserPrefs } from './user.model'
@@ -14,9 +14,9 @@ export const prefsGroupEntries = [
 ] as const
 
 export type PrefsNamesEntries = (
-	| Entries<typeof sudokuFields>
-	| Entries<typeof userFields>
-	| Entries<typeof vimFields>
+	| GetEntries<typeof sudokuFields>
+	| GetEntries<typeof userFields>
+	| GetEntries<typeof vimFields>
 )[0]
 
 export const PrefFields = { ...sudokuFields, ...userFields, ...vimFields }

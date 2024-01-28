@@ -45,36 +45,36 @@ export class MedSvc implements IMed {
 	dispatch<Action extends Med.UnDataActions>(action: Action): this
 	dispatch<Action extends Med.DataActions>(action: Action, data: Med.DataDispatch[Action]): this
 	dispatch(action: Med.Actions, data?: any) {
-		match(action, {
-			[ScreenAction.Exit]: () => this.#dExitScreen(),
-			[ScreenAction.OpenDialog]: () => this.#dOpenDialog(data),
-			[ScreenAction.OpenScreen]: () => this.#dOpenScreen(data),
-			[SudokuAction.ChangeMode]: () => this.#dChangeMode(data),
-			[SudokuAction.Check]: () => this.#dSudokuCheck(),
-			[SudokuAction.Erase]: () => this.#dCellErase(),
-			[SudokuAction.Move]: () => this.#dSudokuMove(data),
-			[SudokuAction.End]: () => {
+		match(action)
+			.case([ScreenAction.Exit], () => this.#dExitScreen())
+			.case([ScreenAction.OpenDialog], () => this.#dOpenDialog(data))
+			.case([ScreenAction.OpenScreen], () => this.#dOpenScreen(data))
+			.case([SudokuAction.ChangeMode], () => this.#dChangeMode(data))
+			.case([SudokuAction.Check], () => this.#dSudokuCheck())
+			.case([SudokuAction.Erase], () => this.#dCellErase())
+			.case([SudokuAction.Move], () => this.#dSudokuMove(data))
+			.case([SudokuAction.End], () => {
 				void this.#dSudokuEnd()
-			},
-			[SudokuAction.Redo]: () => this.#dRedo(),
-			[SudokuAction.Resume]: () => {
+			})
+			.case([SudokuAction.Redo], () => this.#dRedo())
+			.case([SudokuAction.Resume], () => {
 				void this.#dSudokuResume()
-			},
-			[SudokuAction.Save]: () => {
+			})
+			.case([SudokuAction.Save], () => {
 				void this.#dSudokuSave()
-			},
-			[SudokuAction.Start]: () => {
+			})
+			.case([SudokuAction.Start], () => {
 				void this.#dSudokuStart(data)
-			},
-			[SudokuAction.Undo]: () => this.#dUndo(),
-			[SudokuAction.Write]: () => this.#dSudokuWrite(data),
-			[PrefAction.Reset]: () => {
+			})
+			.case([SudokuAction.Undo], () => this.#dUndo())
+			.case([SudokuAction.Write], () => this.#dSudokuWrite(data))
+			.case([PrefAction.Reset], () => {
 				void this.#dPrefReset(data)
-			},
-			[PrefAction.Save]: () => {
+			})
+			.case([PrefAction.Save], () => {
 				void this.#dPrefSave(data)
-			},
-		})
+			})
+			.done()
 
 		return this
 	}

@@ -349,12 +349,12 @@ abstract class GameState implements IGameState {
 	 */
 	static create(data: StartedGameData, mode: ModeKind): GameState {
 		data.mode = mode
-		return match(mode, {
-			[ModeKind.N]: () => new AnnotationGameState(data),
-			[ModeKind.I]: () => new InsertGameState(data),
-			[ModeKind.V]: () => new VisualGameState(data),
-			[ModeKind.X]: () => new NormalGameState(data),
-		})
+		return match(mode)
+			.case([ModeKind.N], () => new AnnotationGameState(data))
+			.case([ModeKind.I], () => new InsertGameState(data))
+			.case([ModeKind.V], () => new VisualGameState(data))
+			.case([ModeKind.X], () => new NormalGameState(data))
+			.done()
 	}
 
 	changeMode(mode: ModeKind) {

@@ -122,14 +122,14 @@ export abstract class Cell extends Entity implements CellData {
 	static fromJSON(opts: CellFromJSONOpts): Cell
 	static fromJSON({ cellLike: { kind, notes, value }, solution }: CellFromJSONOpts) {
 		const data: CellOpts = { solution, value, notes: Notes.fromNumber(notes) }
-		return match<CellKind, Cell>(kind, {
-			[CellKind.Correct]: () => new CorrectCell(data),
-			[CellKind.Empty]: () => new EmptyCell(data),
-			[CellKind.Incorrect]: () => new IncorrectCell(data),
-			[CellKind.Initial]: () => new InitialCell(data),
-			[CellKind.Unverified]: () => new UnverifiedCell(data),
-			[CellKind.WhitNotes]: () => new NotesCellSvc(data),
-		})
+		return match(kind)
+			.case([CellKind.Correct], () => new CorrectCell(data))
+			.case([CellKind.Empty], () => new EmptyCell(data))
+			.case([CellKind.Incorrect], () => new IncorrectCell(data))
+			.case([CellKind.Initial], () => new InitialCell(data))
+			.case([CellKind.Unverified], () => new UnverifiedCell(data))
+			.case([CellKind.WhitNotes], () => new NotesCellSvc(data))
+			.done()
 	}
 
 	/**
