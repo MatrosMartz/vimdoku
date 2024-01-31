@@ -1,3 +1,5 @@
+export * from './command.service'
 export * from './executor.service'
 export * from './mediator.service'
+export * from './subcommand.service'
 export * from './suggestions-obs.service'

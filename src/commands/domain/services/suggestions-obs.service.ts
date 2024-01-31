@@ -4,7 +4,7 @@ import { singleton } from '~/share/utils'
 import type { Sugg } from '../entities'
 
 @singleton
-export class SuggsObs extends Observable<Sugg[]> {
+export class SuggsObs<T> extends Observable<Array<Sugg<T>>> {
 	constructor() {
 		super([])
 	}

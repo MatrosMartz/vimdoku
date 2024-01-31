@@ -13,11 +13,11 @@
 	--value-color: 87 49 24;
 	--key-color: 6 75 126;
 	--holder-color: 72 61 50;
-	--special-color: 13 78 32;
+	--symbol-color: 13 78 32;
 	--unverified-color: 45 52 60;
-	--assert-color: var(--special-color);
+	--assert-color: var(--symbol-color);
 	--number-color: 112 38 1;
-	--string-color: var(--special-color);
+	--string-color: var(--symbol-color);
 	--boolean-color: var(--error-color);
 	--status-bar-background: 206 198 222;
 	--command-color: 72 56 106;
@@ -61,7 +61,7 @@
 	--value-color: 233 178 127;
 	--key-color: 132 170 220;
 	--holder-color: 166 145 125;
-	--special-color: 84 171 133;
+	--symbol-color: 84 171 133;
 	--unverified-color: 130 134 135;
 	--number-color: 215 140 71;
 	--status-bar-background: 16 9 28;
@@ -258,8 +258,8 @@ h3 {
 	color: rgb(var(--value-color));
 }
 
-.highlight .special {
-	color: rgb(var(--special-color));
+.highlight .symbol {
+	color: rgb(var(--symbol-color));
 }
 
 .monospace,

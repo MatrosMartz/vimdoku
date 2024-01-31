@@ -1,7 +1,7 @@
 import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { inject } from '~/share/utils'
-import { ALL_SUGGS } from '$cmd/infra/services'
+import { cmdList } from '$cmd/infra/services'
 
 import type { IMed, Med } from '../models'
 import { ExecSvc } from './executor.service'
@@ -24,7 +24,7 @@ beforeAll(() => {
 })
 
 beforeEach(() => {
-	executor = new ExecSvc({ allSuggestions: ALL_SUGGS, mediator: mockMediator })
+	executor = new ExecSvc({ cmdList, mediator: mockMediator })
 })
 
 describe.concurrent('ExecutorSvc suggestions', () => {
@@ -37,7 +37,7 @@ describe.concurrent('ExecutorSvc suggestions', () => {
 
 		vi.advanceTimersByTime(500)
 
-		expect(suggsObs.data.every(({ id }) => id.startsWith('help'))).toBe(true)
+		expect(suggsObs.data.every(({ value }) => value.startsWith('help'))).toBe(true)
 	})
 
 	test('Should be first suggestions are help commands', () => {
@@ -45,7 +45,7 @@ describe.concurrent('ExecutorSvc suggestions', () => {
 
 		vi.advanceTimersByTime(500)
 
-		expect(suggsObs.data.every(({ input }) => input.startsWith('help :'))).toBe(true)
+		expect(suggsObs.data.every(({ value }) => value.startsWith('help :'))).toBe(true)
 	})
 
 	test('Should be first suggestion are "help :help"', () => {
@@ -55,7 +55,7 @@ describe.concurrent('ExecutorSvc suggestions', () => {
 
 		expect(suggsObs.data).length(1)
 
-		expect(suggsObs.data[0].id).toBe('help-cmd-help')
+		expect(suggsObs.data[0].id).toBe('{required.h}-{optional.elp}-{symbol.:}-{value.help}')
 	})
 
 	test('Should be if search empty string suggestions length are zero', () => {

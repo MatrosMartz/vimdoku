@@ -6,17 +6,23 @@ export enum Lang {
 	ES = 'es',
 }
 
+export const LANGS = Object.values(Lang)
+
 export enum Accessibility {
 	SYSTEM = 'systemValue',
 	MORE = 'more',
 	LESS = 'less',
 }
 
+export const ACCESSIBILITY_KINDS = Object.values(Accessibility)
+
 export enum ColorSchema {
 	SYSTEM = 'systemValue',
 	DARK_MODE = 'darkMode',
 	LIGHT_MODE = 'lightMode',
 }
+
+export const COLOR_SCHEMAS = Object.values(ColorSchema)
 
 export enum IconTheme {
 	Heroicons = 'heroicons',
@@ -25,13 +31,15 @@ export enum IconTheme {
 	Feather = 'feather',
 }
 
+export const ICON_THEMES = Object.values(IconTheme)
+
 export const userFields = {
-	colorSchema: { type: 'options', opts: Object.values(ColorSchema), default: ColorSchema.SYSTEM },
+	colorSchema: { type: 'options', opts: COLOR_SCHEMAS, default: ColorSchema.SYSTEM },
 	colorTheme: { type: 'text', default: 'default' },
-	contrast: { type: 'options', opts: Object.values(Accessibility), default: Accessibility.SYSTEM },
-	iconTheme: { type: 'options', opts: Object.values(IconTheme), default: IconTheme.Heroicons },
-	language: { type: 'options', opts: Object.values(Lang), default: Lang.EN },
-	motionReduce: { type: 'options', opts: Object.values(Accessibility), default: Accessibility.SYSTEM },
+	contrast: { type: 'options', opts: ACCESSIBILITY_KINDS, default: Accessibility.SYSTEM },
+	iconTheme: { type: 'options', opts: ICON_THEMES, default: IconTheme.Heroicons },
+	language: { type: 'options', opts: LANGS, default: Lang.EN },
+	motionReduce: { type: 'options', opts: ACCESSIBILITY_KINDS, default: Accessibility.SYSTEM },
 } as const satisfies FormGroup
 
 export type UserPrefs = FieldsToModel<typeof userFields>

@@ -1,6 +1,6 @@
 import { ExecSvc } from '$cmd/domain/services'
 
+import { cmdList } from './command.service'
 import { med } from './mediator.service'
-import { ALL_SUGGS } from './suggestions.service'
 
-export const exec = new ExecSvc({ allSuggestions: ALL_SUGGS, mediator: med })
+export const exec = new ExecSvc({ cmdList, mediator: med })

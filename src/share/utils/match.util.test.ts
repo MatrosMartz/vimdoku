@@ -57,7 +57,7 @@ describe.concurrent('regexp match util', () => {
 
 		const result = match
 			.rgx(str)
-			.case('o', () => 'does include "o" character')
+			.case('o', () => 'does includes "o" character')
 			.default(() => 'does not include "o" character')
 			.done()
 

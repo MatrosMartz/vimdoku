@@ -1,0 +1,282 @@
+import { match } from '~/share/utils'
+
+export type VariablesFromStr<
+	S extends string,
+	InitialKeys = never,
+> = S extends `${string}{|${infer VarKey}|}${infer Next}` ? VariablesFromStr<Next, InitialKeys | VarKey> : InitialKeys
+
+export enum TokenGroupKind {
+	COMMAND = 'command',
+	SUB_CMD = 'subcommand',
+}
+
+export enum CmdTokenKind {
+	OPTIONAL = 'optional',
+	REQUIRED = 'required',
+}
+
+export enum SubTokenKind {
+	HOLDER = 'holder',
+	SYMBOL = 'symbol',
+	VALUE = 'value',
+	VARIABLE = 'variable',
+	NORMAL = 'normal',
+}
+
+export interface CmdToken {
+	kind: CmdTokenKind
+	value: string
+}
+
+export interface SubToken {
+	kind: SubTokenKind
+	value: string
+}
+
+export type CmdTokenTuple = [
+	{ kind: CmdTokenKind.REQUIRED; value: string },
+	{ kind: CmdTokenKind.OPTIONAL; value: string },
+]
+
+/**
+ * Create pattern for optional cmd Tokens.
+ * @param str The value of token.
+ * @returns The optional pattern.
+ */
+function optionally(str: string) {
+	return str.length > 0 ? str.split(/(?<!\\)/).reduceRight((acc, curr) => `(?:${curr}${acc}?)`) + '?' : ''
+}
+
+/** Represent a Command Token Group. */
+export class CmdTokenGroup {
+	#execRgx?: string
+	#value?: string
+	#weightRgx?: string
+	readonly #tokens
+
+	constructor(tokens: CmdTokenTuple) {
+		this.#tokens = tokens
+	}
+
+	get tokens() {
+		return this.#tokens
+	}
+
+	get value() {
+		this.#value ??= this.#tokens.map(t => t.value).join('')
+
+		return this.#value
+	}
+
+	/**
+	 * Create a new CmdToken instance from string.
+	 * @param str The command string like.
+	 * @returns A new CmdTokenGroup instance.
+	 */
+	static fromString(str: string) {
+		const [req, opt] = str.split(/\[|\]/)
+
+		if (req == null || opt == null) throw new Error(`The "${str}" string are invalid.`)
+
+		return new CmdTokenGroup([
+			{ kind: CmdTokenKind.REQUIRED, value: req },
+			{ kind: CmdTokenKind.OPTIONAL, value: opt },
+		])
+	}
+
+	/**
+	 * Create new instance of SubTokenGroup using this CmdTokenGroup instance.
+	 * @param str The subcommand string representation.
+	 * @returns A new SubTokenGroup instance.
+	 */
+	createSub<const S extends string>(str: S) {
+		return SubTokenGroup.fromString(str, this)
+	}
+
+	/**
+	 * Gets the exec command pattern.
+	 * @returns The exec pattern command only.
+	 */
+	getExecRgx() {
+		this.#execRgx ??= this.#tokens
+			.map(({ kind, value }) =>
+				match(kind)
+					.case(CmdTokenKind.REQUIRED, () => value.toLowerCase())
+					.case(CmdTokenKind.OPTIONAL, () => `(?:${value.toLowerCase()})?`)
+					.done()
+			)
+			.join('')
+
+		return this.#execRgx
+	}
+
+	/**
+	 * Gets the weight command pattern.
+	 * @returns The weight pattern command only.
+	 */
+	getWeightRgx() {
+		this.#weightRgx ??= this.#tokens
+			.map(({ kind, value }) =>
+				match(kind)
+					.case(CmdTokenKind.REQUIRED, () => value.toLowerCase())
+					.case(CmdTokenKind.OPTIONAL, () => optionally(value.toLowerCase()))
+					.done()
+			)
+			.join('')
+
+		return this.#weightRgx
+	}
+}
+
+export type TokenVariables<S extends string> = Record<VariablesFromStr<S>, string>
+
+export type MatchResult<S extends string> = { match: false } | { match: true; variables: TokenVariables<S> }
+
+interface SubTokenGroupOpts<S extends string = string> {
+	cmdTokenGroup: CmdTokenGroup
+	defaultVariables: TokenVariables<S>
+	tokens: SubToken[]
+}
+
+export type TokenList = [
+	{ group: TokenGroupKind.COMMAND; tokens: CmdTokenTuple },
+	{ group: TokenGroupKind.SUB_CMD; tokens: SubToken[] },
+]
+
+/** Represent a Subcommand Token Group. */
+export class SubTokenGroup<S extends string = string> {
+	#execRgx?: string
+	#weightRgx?: string
+	readonly #cmdTokenGroup
+	readonly #defaultVariables
+	readonly #tokens
+
+	constructor({ cmdTokenGroup, defaultVariables, tokens }: SubTokenGroupOpts<S>) {
+		this.#cmdTokenGroup = cmdTokenGroup
+		this.#tokens = tokens
+		this.#defaultVariables = defaultVariables
+	}
+
+	get tokens(): TokenList {
+		return [
+			{ group: TokenGroupKind.COMMAND, tokens: this.#cmdTokenGroup.tokens },
+			{ group: TokenGroupKind.SUB_CMD, tokens: this.#tokens },
+		]
+	}
+
+	get value() {
+		if (this.#tokens.length <= 0) return this.#cmdTokenGroup.value
+
+		const value = this.#tokens
+			.filter(t => t.kind !== SubTokenKind.HOLDER)
+			.map(t => t.value)
+			.join('')
+
+		return `${this.#cmdTokenGroup.value} ${value}`
+	}
+
+	/**
+	 * Create a new SubTokenGroup instance from string.
+	 * @param str The subcommand string like.
+	 * @param cmdTokenGroup The command tokens.
+	 * @returns A new SubTokenGroup instance.
+	 */
+	static fromString<const S extends string>(str: S, cmdTokenGroup: CmdTokenGroup) {
+		const tokens =
+			str.length > 0
+				? str.split(/(?<=[>)}])|(?=[<({])/).map(t =>
+						match
+							.rgx(t)
+							.case('^\\{\\|[^{}|]+\\|\\}$', (): SubToken => ({ kind: SubTokenKind.VARIABLE, value: t.slice(2, -2) }))
+							.case('^{[^{}]+}$', (): SubToken => ({ kind: SubTokenKind.HOLDER, value: t.slice(1, -1) }))
+							.case('^<[^<>]+>$', (): SubToken => ({ kind: SubTokenKind.SYMBOL, value: t.slice(1, -1) }))
+							.case('^\\([^()]+\\)$', (): SubToken => ({ kind: SubTokenKind.VALUE, value: t.slice(1, -1) }))
+							.case('[<>(){}]', (): SubToken => {
+								throw new Error('tokenListLike are invalid')
+							})
+							.default<SubToken>(() => ({ kind: SubTokenKind.NORMAL, value: t }))
+							.done()
+					)
+				: []
+
+		const defaultProps = Object.fromEntries(
+			tokens.filter(p => p.kind === SubTokenKind.VARIABLE).map(({ value }) => [value, ''])
+		) as TokenVariables<S>
+
+		return new SubTokenGroup({ tokens, defaultVariables: defaultProps, cmdTokenGroup })
+	}
+
+	/**
+	 * Gets the input variables if matched.
+	 * @param input The string to checked.
+	 * @returns An object with match property and variables property if as matched.
+	 */
+	exec(input: string): MatchResult<S> {
+		this.#execRgx ??= '^' + this.#cmdTokenGroup.getExecRgx() + this.#getExecRgx() + '$'
+		const ExecArray = new RegExp(this.#execRgx).exec(input.trim())
+
+		if (ExecArray == null) return { match: false }
+		return {
+			match: true,
+			variables: { ...this.#defaultVariables, ...ExecArray.groups },
+		}
+	}
+
+	/**
+	 * Get the weight compared with a string.
+	 * @param input The string with compared.
+	 * @returns The weight.
+	 */
+	getWeight(input: string) {
+		this.#weightRgx ??=
+			(this.#tokens.length > 0
+				? (this.#cmdTokenGroup.getWeightRgx() + this.#getWeightRgx())
+						.replace(/.*\\s\+(?=[^\\w+])/, match => `(?:${match})?`)
+						.replace(/\\s\+(?=\\w)/, match => `[^${match}]`)
+				: this.#cmdTokenGroup.getWeightRgx()) + '$'
+
+		return new RegExp(this.#weightRgx).exec(input.toLowerCase())?.[0].length ?? 0
+	}
+
+	/**
+	 * Gets the exec subcommand pattern.
+	 * @returns The exec pattern subcommand only.
+	 */
+	#getExecRgx() {
+		if (this.#tokens.length <= 0) return ''
+
+		return (
+			'\\s+' +
+			this.#tokens
+				.map(({ kind, value }) =>
+					match(kind)
+						.case(SubTokenKind.VARIABLE, () => `(?<${value.toLowerCase()}>\\w+)`)
+						.case(SubTokenKind.SYMBOL, () => value.toLowerCase().replace(/[?!:=\\^<>&*+]/g, m => '\\' + m))
+						.default(() => value.toLowerCase())
+						.done()
+				)
+				.join('')
+		)
+	}
+
+	/**
+	 * Gets the weight subcommand pattern.
+	 * @returns The weight pattern subcommand only.
+	 */
+	#getWeightRgx() {
+		if (this.#tokens.length <= 0) return ''
+
+		return (
+			'\\s+' +
+			this.#tokens
+				.map(({ kind, value }) =>
+					match(kind)
+						.case([SubTokenKind.HOLDER, SubTokenKind.VARIABLE], () => '\\w')
+						.case(SubTokenKind.SYMBOL, () => optionally(value.toLowerCase().replace(/[?!:=\\^<>&*+]/g, m => '\\' + m)))
+						.default(() => optionally(value.toLowerCase()))
+						.done()
+				)
+				.join('')
+		)
+	}
+}

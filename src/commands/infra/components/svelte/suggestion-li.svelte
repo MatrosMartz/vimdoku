@@ -6,19 +6,17 @@
 
 	import { input } from './input.store'
 
-	export let suggestion: Sugg
+	export let suggestion: Sugg<HTMLHeadElement>
 
 	let btn: HTMLButtonElement
 
-	/**
-	 * Complete search with the suggestion value, click handler.
-	 */
+	/** Complete search with the suggestion value, click handler. */
 	function clickHandler() {
-		if ($input != null) {
-			exec.searchAutocomplete(suggestion.input)
-			$input.value = suggestion.input
-			$input.focus()
-		}
+		if ($input == null) return
+
+		exec.searchAutocomplete(suggestion.value)
+		$input.value = suggestion.value
+		$input.focus()
 	}
 
 	onMount(() => {
@@ -28,7 +26,7 @@
 
 <li>
 	<button bind:this={btn} tabindex="0" on:click={clickHandler}>
-		{#each suggestion.descriptions as desc}
+		{#each suggestion.desc as desc}
 			<p>{desc}</p>
 		{/each}
 	</button>
