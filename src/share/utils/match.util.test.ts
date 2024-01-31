@@ -52,7 +52,7 @@ describe.concurrent('regexp match util', () => {
 		expect(result).toBe('is foo')
 	})
 
-	test('Should match with foo.', () => {
+	test('Should match if a string contains an "o".', () => {
 		const str = 'foo'
 
 		const result = match
@@ -61,10 +61,10 @@ describe.concurrent('regexp match util', () => {
 			.default(() => 'does not include "o" character')
 			.done()
 
-		expect(result).toBe('includes "o" character')
+		expect(result).toBe('does includes "o" character')
 	})
 
-	test('Should match with foo.', () => {
+	test('Should return the default case if it contains any alphanumeric characters.', () => {
 		const str = 'some text'
 
 		const result = match
@@ -73,6 +73,6 @@ describe.concurrent('regexp match util', () => {
 			.default(() => 'include some alphanumeric character')
 			.done()
 
-		expect(result).toBe('does not include any alphanumeric character')
+		expect(result).toBe('include some alphanumeric character')
 	})
 })
