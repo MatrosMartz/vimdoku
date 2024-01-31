@@ -213,7 +213,7 @@ export class SubTokenGroup<S extends string = string> {
 	 */
 	exec(input: string): MatchResult<S> {
 		this.#execRgx ??= '^' + this.#cmdTokenGroup.getExecRgx() + this.#getExecRgx() + '$'
-		const ExecArray = new RegExp(this.#execRgx).exec(input.trim())
+		const ExecArray = new RegExp(this.#execRgx).exec(input.trim().toLowerCase())
 
 		if (ExecArray == null) return { match: false }
 		return {
