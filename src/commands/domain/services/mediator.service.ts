@@ -1,3 +1,4 @@
+import { IDLE_POS } from '~/share/domain/entities'
 import { match } from '~/share/utils'
 import type { II18n } from '$i18n/domain/models'
 import { type IPrefs, type Lang, PrefAction, type PrefData } from '$pref/domain/models'
@@ -10,7 +11,7 @@ import {
 	type ScreenData,
 } from '$screen/domain/models'
 import { Solution } from '$sudoku/domain/entities'
-import { type IGame, SudokuAction, type SudokuData } from '$sudoku/domain/models'
+import { type IGame, ModeKind, SudokuAction, type SudokuData } from '$sudoku/domain/models'
 
 import type { IMed, Med } from '../models'
 
@@ -103,7 +104,9 @@ export class MedSvc implements IMed {
 		this.#screen.close()
 		if (this.#screen.data.main === MainScreenKind.Game && this.#screen.data.dialog.kind === DialogKind.None)
 			this.#game.timerStart()
-		if (this.#screen.data.main !== MainScreenKind.Game) this.#game.timerReset()
+		else if (this.#screen.data.main === MainScreenKind.Game || this.#screen.data.dialog.kind !== DialogKind.None)
+			this.#game.timerPause()
+		else void this.#game.timerPause().timerReset().changeMode(ModeKind.X).changePos(IDLE_POS).load()
 	}
 
 	#dOpenDialog(data: DialogData) {

@@ -12,17 +12,19 @@ import { ModeObs, SavedObs } from './sudoku-obs.service'
 import { TimerSvc } from './timer.service'
 
 /** Simulated key for protected field. */
+const isASaved = Symbol('is-a-saved-board')
+/** Simulated key for protected field. */
 const savedObs = Symbol('board-obs')
 /** Simulated key for protected field. */
 const repo = Symbol('board-repo')
 
 abstract class GameSvc implements IGame {
+	protected [isASaved] = false
 	protected readonly [repo]: GameRepo
 	protected readonly [savedObs] = inject(SavedObs)
 	abstract readonly board: Board | null
 	abstract readonly errors: number
 	abstract readonly hasWin: boolean
-	abstract readonly isASaved: boolean
 	abstract readonly isStarted: boolean
 	abstract readonly mode: ModeKind
 	abstract readonly pos: Pos
@@ -35,6 +37,10 @@ abstract class GameSvc implements IGame {
 	constructor(repo: GameRepo)
 	constructor(gRepo: GameRepo) {
 		this[repo] = gRepo
+	}
+
+	get isASaved() {
+		return this[isASaved]
 	}
 
 	changeMode(mode: ModeKind) {
@@ -53,7 +59,10 @@ abstract class GameSvc implements IGame {
 		return this
 	}
 
-	async load() {}
+	async load() {
+		this[isASaved] = await this[repo].hasData()
+		this[savedObs].set(this[isASaved])
+	}
 
 	moveDown(times: number) {
 		return this
@@ -120,8 +129,6 @@ export class NonStartedGameSvc extends GameSvc {
 	readonly pos = IDLE_POS
 	readonly timer = IDLE_TIMER
 
-	#isASaved = false
-
 	/**
 	 * Creates an instance of the NonStartedGameSvc class.
 	 * @param repo The repository for game data.
@@ -129,15 +136,6 @@ export class NonStartedGameSvc extends GameSvc {
 	constructor(repo: GameRepo) {
 		super(repo)
 		this[savedObs].set(false)
-	}
-
-	get isASaved() {
-		return this.#isASaved
-	}
-
-	async load() {
-		this.#isASaved = await this[repo].hasData()
-		this[savedObs].set(this.#isASaved)
 	}
 
 	async resume() {
@@ -191,7 +189,6 @@ class StartedGameData implements Game {
 class StartedGameSvc extends GameSvc {
 	readonly isStarted = true
 	readonly #data
-	#isASaved = true
 	readonly #modeObs = inject(ModeObs)
 	#state: IGameState
 
@@ -216,10 +213,6 @@ class StartedGameSvc extends GameSvc {
 
 	get hasWin() {
 		return this.#data.board.hasWin
-	}
-
-	get isASaved() {
-		return this.#isASaved
 	}
 
 	get mode() {
@@ -247,7 +240,7 @@ class StartedGameSvc extends GameSvc {
 
 	clear() {
 		this.#state.clear()
-		this.#isASaved = false
+		this[isASaved] = false
 		this[savedObs].set(false)
 		return this
 	}
@@ -288,7 +281,7 @@ class StartedGameSvc extends GameSvc {
 			board: this.#data.board.toJSON(),
 			info: { errors: this.#data.errors, timer: this.#data.timer.data },
 		})
-		this.#isASaved = true
+		this[isASaved] = true
 		this[savedObs].set(true)
 	}
 
@@ -315,7 +308,7 @@ class StartedGameSvc extends GameSvc {
 
 	verify() {
 		this.#state = this.#state.verify()
-		this.#isASaved = false
+		this[isASaved] = false
 		this[savedObs].set(false)
 		return this
 	}
@@ -324,7 +317,7 @@ class StartedGameSvc extends GameSvc {
 		this.#state = this.#state.write(num, opts)
 		if (opts.validate) this.#state.validateWrite()
 
-		this.#isASaved = false
+		this[isASaved] = false
 		this[savedObs].set(false)
 		return this
 	}

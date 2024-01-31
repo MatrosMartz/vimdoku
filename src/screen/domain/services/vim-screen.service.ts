@@ -32,6 +32,7 @@ export class ScreenSvc implements IScreen {
 		this.#obs.update(({ dialog, main }) => {
 			if (dialog.kind === DialogKind.Win) return { main: IDLE_MAIN_SCREEN, dialog: { ...IDLE_DIALOG } }
 			else if (dialog.kind !== DialogKind.None) return { main, dialog: { ...IDLE_DIALOG } }
+			else if (this.#prev != null) return { main: this.#prev, dialog: { ...IDLE_DIALOG } }
 			return { dialog, main }
 		})
 	}

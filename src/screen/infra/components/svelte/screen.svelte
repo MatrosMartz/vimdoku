@@ -4,6 +4,7 @@
 	import { SudokuGame } from '$sudoku/infra/components/svelte'
 
 	import { StartScreen } from './start-screen'
+	$: console.log($screenState)
 </script>
 
 <main>
