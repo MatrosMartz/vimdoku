@@ -101,12 +101,23 @@ export class MedSvc implements IMed {
 	}
 
 	#dExitScreen() {
+		if (
+			this.#screen.data.main === MainScreenKind.Game &&
+			this.#screen.data.dialog.kind === DialogKind.None &&
+			!this.#game.isASaved
+		) {
+			this.#screen.setDialog({ kind: DialogKind.Warn, opts: { type: 'unsave' } })
+			return
+		}
+
 		this.#screen.close()
-		if (this.#screen.data.main === MainScreenKind.Game && this.#screen.data.dialog.kind === DialogKind.None)
+		if (this.#screen.data.main === MainScreenKind.Game && this.#screen.data.dialog.kind === DialogKind.None) {
 			this.#game.timerStart()
-		else if (this.#screen.data.main === MainScreenKind.Game || this.#screen.data.dialog.kind !== DialogKind.None)
+		} else if (this.#screen.data.main === MainScreenKind.Game || this.#screen.data.dialog.kind !== DialogKind.None) {
 			this.#game.timerPause()
-		else void this.#game.timerPause().timerReset().changeMode(ModeKind.X).changePos(IDLE_POS).load()
+		} else {
+			this.#game.timerPause().timerReset().changeMode(ModeKind.X).changePos(IDLE_POS)
+		}
 	}
 
 	#dOpenDialog(data: DialogData) {
@@ -116,6 +127,10 @@ export class MedSvc implements IMed {
 	}
 
 	#dOpenScreen(data: ScreenData.OpenScreen) {
+		if (this.#screen.data.main === MainScreenKind.Game && !this.#game.isASaved) {
+			this.#screen.setDialog({ kind: DialogKind.Warn, opts: { type: 'unsave' } })
+			return
+		}
 		this.#screen.setMain(data.screen)
 	}
 
