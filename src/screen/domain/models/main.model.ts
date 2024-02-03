@@ -1,4 +1,5 @@
 export enum MainScreenKind {
+	Help = 'help',
 	Game = 'Game',
 	Start = 'Start',
 }

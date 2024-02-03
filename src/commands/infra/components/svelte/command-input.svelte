@@ -8,12 +8,10 @@
 
 	let form: HTMLFormElement
 
-	/**
-	 * Handles the submission of the form.
-	 */
+	/** Handles the submission of the form. */
 	function submitHandler() {
-		if ($input != null) exec.run($input.value)
 		med.dispatch(ScreenAction.Exit)
+		if ($input != null) exec.run($input.value)
 	}
 
 	/**

@@ -4,7 +4,7 @@
 
 	let dialog: HTMLDialogElement
 
-	$: if (show) {
+	$: if (show && dialog != null) {
 		if (type === 'modal') dialog.showModal()
 		else if (type === 'dialog') dialog.show()
 	}
