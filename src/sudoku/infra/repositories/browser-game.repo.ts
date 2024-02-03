@@ -1,6 +1,6 @@
 import { Pos } from '~/share/domain/entities'
 import { createBrowserStorage } from '~/share/infra/repositories'
-import { _throw, RepoItemNotFoundError } from '~/share/utils'
+import { RepoItemNotFoundError } from '~/share/utils'
 import { type CellJSON, Grid } from '$sudoku/domain/entities'
 import type { BoardJSON, GameInfo, GameOptsJSON } from '$sudoku/domain/models'
 import type { GameRepo } from '$sudoku/domain/repositories'
@@ -50,8 +50,17 @@ export class BrowserGameRepo implements GameRepo {
 		const [boardRaw, notesRaw] = [this.#boardStorage.get(), this.#notesStorage.get()]
 
 		const board =
-			boardRaw != null ? (JSON.parse(boardRaw) as CellJSONStore[][]) : _throw(new RepoItemNotFoundError('board'))
-		const notes = notesRaw != null ? (JSON.parse(notesRaw) as number[][]) : _throw(new RepoItemNotFoundError('notes'))
+			boardRaw != null
+				? (JSON.parse(boardRaw) as CellJSONStore[][])
+				: (() => {
+						throw new RepoItemNotFoundError('board')
+					})()
+		const notes =
+			notesRaw != null
+				? (JSON.parse(notesRaw) as number[][])
+				: (() => {
+						throw new RepoItemNotFoundError('notes')
+					})()
 
 		return Pos.createMatrix(9, ({ y, x }): CellJSON => ({ ...board[y][x], notes: notes[y][x] }))
 	}
@@ -59,13 +68,21 @@ export class BrowserGameRepo implements GameRepo {
 	async getInfo() {
 		const infoRaw = this.#infoStorage.get()
 
-		return infoRaw != null ? (JSON.parse(infoRaw) as GameInfo) : _throw(new RepoItemNotFoundError('info'))
+		return infoRaw != null
+			? (JSON.parse(infoRaw) as GameInfo)
+			: (() => {
+					throw new RepoItemNotFoundError('info')
+				})()
 	}
 
 	async getOpts() {
 		const optsRaw = this.#optsStorage.get()
 
-		return optsRaw != null ? (JSON.parse(optsRaw) as GameOptsJSON) : _throw(new RepoItemNotFoundError('boardOpts'))
+		return optsRaw != null
+			? (JSON.parse(optsRaw) as GameOptsJSON)
+			: (() => {
+					throw new RepoItemNotFoundError('boardOpts')
+				})()
 	}
 
 	async hasData() {
@@ -77,5 +94,8 @@ export class BrowserGameRepo implements GameRepo {
 		)
 	}
 
-	async save(data: { board: BoardJSON; info: GameInfo }) {}
+	async save(data: { board: BoardJSON; info: GameInfo }) {
+		this.#boardStorage.set(JSON.stringify(data.board))
+		this.#infoStorage.set(JSON.stringify(data.info))
+	}
 }
