@@ -1,19 +1,14 @@
 <script lang="ts">
 	import { Button, ButtonMenu } from '~/share/infra/components/svelte/buttons'
 	import { capitalCase } from '~/share/utils'
+	import { SCREEN_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
 	import type { I18n } from '$i18n/domain/models'
 	import { i18nState } from '$i18n/infra/stores/svelte'
-	import {
-		type Accessibility,
-		ACCESSIBILITY_FIELDS,
-		type ColorSchema,
-		type Prefs,
-		prefsGroupEntries,
-		type PrefsNamesEntries,
-	} from '$pref/domain/models'
+	import { type Prefs, prefsGroupEntries, type PrefsNamesEntries } from '$pref/domain/models'
+	import { type Accessibility, ACCESSIBILITY_FIELDS, type ColorSchema } from '$pref/domain/models/user.model'
 	import { prefsState } from '$pref/infra/stores/svelte'
-	import { DialogKind, ScreenAction } from '$screen/domain/models'
+	import { DialogKind } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
 
 	$: allTooltip = {
@@ -51,13 +46,13 @@
 	 * Change dialog with preferences all kind.
 	 */
 	function allHandler() {
-		med.dispatch(ScreenAction.OpenDialog, { kind: DialogKind.PrefAll })
+		med.dispatch(SCREEN_ACTIONS.openDialog, { kind: DialogKind.PrefAll })
 	}
 	/**
 	 * Change dialog with preferences differ kind.
 	 */
 	function diffHandler() {
-		med.dispatch(ScreenAction.OpenDialog, { kind: DialogKind.PrefDiff })
+		med.dispatch(SCREEN_ACTIONS.openDialog, { kind: DialogKind.PrefDiff })
 	}
 </script>
 

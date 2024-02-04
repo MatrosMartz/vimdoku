@@ -75,8 +75,8 @@ const ALL_FIELDS = { ...sudokuFields, ...userFields, ...vimFields }
 export const PREFS_NAMES = Object.keys(ALL_FIELDS)
 
 type AllNames = keyof typeof ALL_FIELDS
-type ToggleNames = KeysByType<Prefs, boolean>
-type NonToggleNames = Exclude<AllNames, ToggleNames>
+export type ToggleNames = KeysByType<Prefs, boolean>
+export type NonToggleNames = Exclude<AllNames, ToggleNames>
 
 interface Names {
 	/** The names of preferences type text, number or option. */

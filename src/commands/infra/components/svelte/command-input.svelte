@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { DialogClose } from '~/share/infra/components/svelte'
+	import { SCREEN_ACTIONS } from '$cmd/domain/services'
 	import { exec, med } from '$cmd/infra/services'
-	import { DialogKind, ScreenAction } from '$screen/domain/models'
+	import { DialogKind } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
 
 	import { input } from './input.store'
@@ -10,7 +11,7 @@
 
 	/** Handles the submission of the form. */
 	function submitHandler() {
-		med.dispatch(ScreenAction.Exit)
+		med.dispatch(SCREEN_ACTIONS.close)
 		if ($input != null) exec.run($input.value)
 	}
 

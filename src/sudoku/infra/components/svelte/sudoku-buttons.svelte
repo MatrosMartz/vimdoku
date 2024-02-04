@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { Button, ButtonMenu } from '~/share/infra/components/svelte'
+	import { SUDOKU_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
-	import { SudokuAction } from '$sudoku/domain/models'
 
 	/** Check sudoku, check click handler. */
 	function clickHandler() {
-		med.dispatch(SudokuAction.Check)
+		med.dispatch(SUDOKU_ACTIONS.verify)
 	}
 </script>
 

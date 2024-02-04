@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { Button, ButtonMenu, OptionsInput } from '~/share/infra/components/svelte'
+	import { SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
 	import { i18nState } from '$i18n/infra/stores/svelte'
-	import { ScreenAction } from '$screen/domain/models'
-	import { DIFFICULTIES_NAMES, DifficultyKind, SudokuAction } from '$sudoku/domain/models'
+	import { DIFFICULTIES_NAMES, DifficultyKind } from '$sudoku/domain/models'
 
 	let value: keyof typeof DifficultyKind = 'Beginner'
 
@@ -11,14 +11,14 @@
 	 * Go back screen, click handler.
 	 */
 	function backHandler() {
-		med.dispatch(ScreenAction.Exit)
+		med.dispatch(SCREEN_ACTIONS.close)
 	}
 
 	/**
 	 * Start new game, submit handler.
 	 */
 	function submitHandler() {
-		med.dispatch(SudokuAction.Start, { difficulty: DifficultyKind[value] })
+		med.dispatch(SUDOKU_ACTIONS.start, { difficulty: DifficultyKind[value] })
 	}
 </script>
 

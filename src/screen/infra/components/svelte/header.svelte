@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { Icon } from '~/share/infra/components/svelte'
+	import { SCREEN_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
-	import { DialogKind, type DialogsWithoutOpts, MainScreenKind, ScreenAction } from '$screen/domain/models'
+	import { DialogKind, type DialogsWithoutOpts, MainScreenKind } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
 
 	/**
@@ -10,7 +11,7 @@
 	 * @returns The click handler which opens a dialogue.
 	 */
 	function openDialog(kind: DialogsWithoutOpts): () => void {
-		return () => med.dispatch(ScreenAction.OpenDialog, { kind })
+		return () => med.dispatch(SCREEN_ACTIONS.openDialog, { kind })
 	}
 
 	$: inGame = $screenState.main === MainScreenKind.Game

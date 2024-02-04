@@ -3,12 +3,12 @@ import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 import { inject } from '~/share/utils'
 import { cmdList } from '$cmd/infra/services'
 
-import type { IMed, Med } from '../models'
+import type { IMed } from '../models'
 import { ExecSvc } from './executor.service'
 import { SuggsObs } from './suggestions-obs.service'
 
 const mockMediator: IMed = {
-	dispatch(action: Med.Actions, data?: Record<string, unknown>) {
+	dispatch(action, data) {
 		return this
 	},
 	async load() {},

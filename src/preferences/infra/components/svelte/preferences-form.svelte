@@ -1,8 +1,9 @@
 <script>
 	import { Form } from '~/share/infra/components/svelte'
+	import { PREFS_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
 	import { i18nState } from '$i18n/infra/stores/svelte'
-	import { IDLE_PREFS_GROUPS, PrefAction, prefsFormSchema } from '$pref/domain/models'
+	import { IDLE_PREFS_GROUPS, prefsFormSchema } from '$pref/domain/models'
 	import { PrefsSvc } from '$pref/domain/services'
 	import { prefsState } from '$pref/infra/stores/svelte'
 </script>
@@ -39,6 +40,6 @@
 	}}
 	schema={prefsFormSchema}
 	on:submit={({ detail: { sudoku, user, vim } }) => {
-		med.dispatch(PrefAction.Save, { type: 'all', replace: { ...sudoku, ...user, ...vim } })
+		med.dispatch(PREFS_ACTIONS.set, { type: 'all', prefs: { ...sudoku, ...user, ...vim } })
 	}}
 />

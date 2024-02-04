@@ -1,18 +1,11 @@
 import { match } from '~/share/utils'
 import { CmdTokenKind, SubTokenKind } from '$cmd/domain/entities'
 import { CmdListSvc, CmdSvc, type CreateHeader, SubCmdSvc } from '$cmd/domain/services'
-import {
-	ACCESSIBILITY_KINDS,
-	COLOR_SCHEMAS,
-	ICON_THEMES,
-	LANGS,
-	NON_TOGGLE_NAMES,
-	PrefAction,
-	PREFS_NAMES,
-	TOGGLE_NAMES,
-} from '$pref/domain/models'
-import { DialogKind, ScreenAction } from '$screen/domain/models'
-import { DIFFICULTIES_NAMES, DifficultyKind, SudokuAction } from '$sudoku/domain/models'
+import { PREFS_ACTIONS, SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services/actions.service'
+import { NON_TOGGLE_NAMES, PREFS_NAMES, TOGGLE_NAMES } from '$pref/domain/models'
+import { ACCESSIBILITY_KINDS, COLOR_SCHEMAS, ICON_THEMES, LANGS } from '$pref/domain/models/user.model'
+import { DialogKind } from '$screen/domain/models'
+import { DIFFICULTIES_NAMES, DifficultyKind } from '$sudoku/domain/models'
 
 import { med } from './mediator.service'
 
@@ -62,7 +55,7 @@ export const createHeader: CreateHeader<HTMLHeadingElement> = ([cmdToken, subTok
 
 const SET_CMD = CmdSvc.create('se[t]', {
 	desc: 'Show all preferences that differ from their default value.',
-	fn: () => med.dispatch(ScreenAction.OpenDialog, { kind: DialogKind.PrefDiff }),
+	fn: () => med.dispatch(SCREEN_ACTIONS.openDialog, { kind: DialogKind.PrefDiff }),
 })
 	.sub(
 		SubCmdSvc.create('{preference}', {
@@ -90,55 +83,55 @@ const SET_CMD = CmdSvc.create('se[t]', {
 	.sub(
 		SubCmdSvc.create('<all>', {
 			desc: 'Show all preferences.',
-			fn: () => med.dispatch(ScreenAction.OpenDialog, { kind: DialogKind.PrefAll }),
+			fn: () => med.dispatch(SCREEN_ACTIONS.openDialog, { kind: DialogKind.PrefAll }),
 		})
 	)
 	.sub(
 		SubCmdSvc.create('<all><&>', {
 			desc: 'Reset all preferences.',
-			fn: () => med.dispatch(PrefAction.Reset, { type: 'all' }),
+			fn: () => med.dispatch(PREFS_ACTIONS.reset, { type: 'all' }),
 		})
 	)
 	.subFromArray(PREFS_NAMES, pref =>
 		SubCmdSvc.create(`(${pref})<?>`, {
 			desc: `Show value of ${pref}.`,
-			// TODO: fn: () => med.dispatch(ScreenAction.OpenDialog, {kind: DialogKind.ViewPref, pref })
+			fn: () => med.dispatch(SCREEN_ACTIONS.openDialog, { kind: DialogKind.ShowPref, opts: { pref } }),
 		})
 	)
 	.subFromArray(PREFS_NAMES, pref =>
 		SubCmdSvc.create(`(${pref})<&>`, {
 			desc: `Reset value of ${pref}.`,
-			fn: () => med.dispatch(PrefAction.Reset, { type: 'by-key', key: pref }),
+			fn: () => med.dispatch(PREFS_ACTIONS.reset, { type: 'by-key', key: pref }),
 		})
 	)
 	.subFromArray(TOGGLE_NAMES, pref =>
 		SubCmdSvc.create(`(${pref})`, {
 			desc: `Set, ${pref} switch it on.`,
-			// TODO: fn: () => med.dispatch(PrefAction.Set, {type:'by-key', key: pref, value: true})
+			fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: pref, value: true }),
 		})
 	)
 	.subFromArray(NON_TOGGLE_NAMES, pref =>
 		SubCmdSvc.create(`(${pref})`, {
 			desc: `Show value of ${pref}.`,
-			// TODO: fn: () => med.dispatch(ScreenAction.OpenDialog, {kind: DialogKind.ViewPref, pref })
+			fn: () => med.dispatch(SCREEN_ACTIONS.openDialog, { kind: DialogKind.ShowPref, opts: { pref } }),
 		})
 	)
 	.subFromArray(TOGGLE_NAMES, pref =>
 		SubCmdSvc.create(`<no>(${pref})`, {
 			desc: `Set, ${pref} switch it off.`,
-			// TODO: fn: () => med.dispatch(PrefAction.Set, {type:'by-key', key: pref, value: false})
+			fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: pref, value: false }),
 		})
 	)
 	.subFromArray(TOGGLE_NAMES, pref =>
 		SubCmdSvc.create(`(${pref})<!>`, {
 			desc: `Set, ${pref} invert value.`,
-			// TODO: fn: () => med.dispatch(PrefAction.Set, {type:'by-key', key: pref, toggle: true })
+			fn: () => med.dispatch(PREFS_ACTIONS.invert, { pref }),
 		})
 	)
 	.subFromArray(TOGGLE_NAMES, pref =>
 		SubCmdSvc.create(`<inv>(${pref})`, {
 			desc: `Set, ${pref} invert value.`,
-			// TODO: fn: () => med.dispatch(PrefAction.Set, {type:'by-key', key: pref, toggle: true })
+			fn: () => med.dispatch(PREFS_ACTIONS.invert, { pref }),
 		})
 	)
 	.subFromArray(NON_TOGGLE_NAMES, pref =>
@@ -154,122 +147,122 @@ const SET_CMD = CmdSvc.create('se[t]', {
 	.subFromArray(LANGS, lang =>
 		SubCmdSvc.create(`(language)<=>(${lang})`, {
 			desc: `Assign to language the "${lang}".`,
-			// TODO: fn: () => med.dispatch(PrefAction.Set, {type:'by-key', key: 'language', value: lang})
+			fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'language', value: lang }),
 		})
 	)
 	.subFromArray(LANGS, lang =>
 		SubCmdSvc.create(`(language)<:>(${lang})`, {
 			desc: `Assign to language the "${lang}".`,
-			// TODO: fn: () => med.dispatch(PrefAction.Set, {type:'by-key', key: 'language', value: lang})
+			fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'language', value: lang }),
 		})
 	)
 	.subFromArray(COLOR_SCHEMAS, schema =>
 		SubCmdSvc.create(`(colorSchema)<=>(${schema})`, {
 			desc: `Assign to colorSchema the "${schema}".`,
-			// TODO: fn: () => med.dispatch(PrefAction.Set, {type:'by-key', key: 'colorSchema', value: schema})
+			fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'colorSchema', value: schema }),
 		})
 	)
 	.subFromArray(COLOR_SCHEMAS, schema =>
 		SubCmdSvc.create(`(colorSchema)<:>(${schema})`, {
 			desc: `Assign to colorSchema the "${schema}".`,
-			// TODO: fn: () => med.dispatch(PrefAction.Set, {type:'by-key', key: 'colorSchema', value: schema})
+			fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'colorSchema', value: schema }),
 		})
 	)
 	.subFromArray(ACCESSIBILITY_KINDS, accessibility =>
 		SubCmdSvc.create(`(contrast)<=>(${accessibility})`, {
 			desc: `Assign to contrast the "${accessibility}".`,
-			// TODO: fn: () => med.dispatch(PrefAction.Set, {type:'by-key', key: 'contrast', value: accessibility})
+			fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'contrast', value: accessibility }),
 		})
 	)
 	.subFromArray(ACCESSIBILITY_KINDS, accessibility =>
 		SubCmdSvc.create(`(contrast)<:>(${accessibility})`, {
 			desc: `Assign to contrast the "${accessibility}".`,
-			// TODO: fn: () => med.dispatch(PrefAction.Set, {type:'by-key', key: 'contrast', value: accessibility})
+			fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'contrast', value: accessibility }),
 		})
 	)
 	.subFromArray(ACCESSIBILITY_KINDS, accessibility =>
 		SubCmdSvc.create(`(motionReduce)<=>(${accessibility})`, {
 			desc: `Assign to motionReduce the "${accessibility}".`,
-			// TODO: fn: () => med.dispatch(PrefAction.Set, {type:'by-key', key: 'motionReduce', value: accessibility})
+			fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'motionReduce', value: accessibility }),
 		})
 	)
 	.subFromArray(ACCESSIBILITY_KINDS, accessibility =>
 		SubCmdSvc.create(`(motionReduce)<:>(${accessibility})`, {
 			desc: `Assign to motionReduce the "${accessibility}".`,
-			// TODO: fn: () => med.dispatch(PrefAction.Set, {type:'by-key', key: 'motionReduce', value: accessibility})
+			fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'motionReduce', value: accessibility }),
 		})
 	)
 	.subFromArray(ICON_THEMES, theme =>
 		SubCmdSvc.create(`(iconTheme)<=>(${theme})`, {
 			desc: `Assign to iconTheme the "${theme}".`,
-			// TODO: fn: () => med.dispatch(PrefAction.Set, {type:'by-key', key: 'iconTheme', value: theme})
+			fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'iconTheme', value: theme }),
 		})
 	)
 	.subFromArray(ICON_THEMES, theme =>
 		SubCmdSvc.create(`(iconTheme)<:>(${theme})`, {
 			desc: `Assign to iconTheme the "${theme}".`,
-			// TODO: fn: () => med.dispatch(PrefAction.Set, {type:'by-key', key: 'iconTheme', value: theme})
+			fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'iconTheme', value: theme }),
 		})
 	)
 	.sub(
 		SubCmdSvc.create('(history)<=>{|value|}', {
 			desc: 'Assign to contrast the {value}.',
-			// TODO: fn: ({value}) => med.dispatch(PrefAction.Set, {type:'by-key', key: 'history', value})
+			fn: ({ value }) => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'history', value }),
 		})
 	)
 	.sub(
 		SubCmdSvc.create('(history)<:>{|value|}', {
 			desc: 'Assign to contrast the {value}.',
-			// TODO: fn: ({value}) => med.dispatch(PrefAction.Set, {type:'by-key', key: 'history', value})
+			fn: ({ value }) => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'history', value }),
 		})
 	)
 	.done()
 
 const START_CMD = CmdSvc.create('st[art]', {
 	desc: 'Start new game with Easy difficulty.',
-	fn: () => med.dispatch(SudokuAction.Start, { difficulty: DifficultyKind.Easy }),
+	fn: () => med.dispatch(SUDOKU_ACTIONS.start, { difficulty: DifficultyKind.Easy }),
 })
 	.sub(SubCmdSvc.create('{difficulty}', { desc: 'Start new game with the selected difficulty.' }))
 	.subFromArray(DIFFICULTIES_NAMES, difficulty =>
 		SubCmdSvc.create(`(${difficulty})`, {
 			desc: `Start new game with the "${difficulty}" difficulty.`,
-			fn: () => med.dispatch(SudokuAction.Start, { difficulty: DifficultyKind[difficulty] }),
+			fn: () => med.dispatch(SUDOKU_ACTIONS.start, { difficulty: DifficultyKind[difficulty] }),
 		})
 	)
 	.done()
 const PAUSE_CMD = CmdSvc.create('pa[use]', {
 	desc: 'Pause current game.',
-	fn: () => med.dispatch(ScreenAction.OpenDialog, { kind: DialogKind.Pause }),
+	fn: () => med.dispatch(SCREEN_ACTIONS.openDialog, { kind: DialogKind.Pause }),
 }).done()
 
 const WRITE_CMD = CmdSvc.create('w[rite]', {
 	desc: 'Save current game.',
-	fn: () => med.dispatch(SudokuAction.Save),
+	fn: () => med.dispatch(SUDOKU_ACTIONS.save),
 }).done()
 
 const RESUME_CMD = CmdSvc.create('re[sume]', {
 	desc: ['Resume the current game.', 'Resume the saved game only if no game active.'],
-	fn: () => med.dispatch(SudokuAction.Resume),
+	fn: () => med.dispatch(SUDOKU_ACTIONS.resume),
 }).done()
 
 const QUIT_CMD = CmdSvc.create('q[uit]', {
 	desc: 'Close the current windows.',
-	fn: () => med.dispatch(ScreenAction.Exit),
+	fn: () => med.dispatch(SCREEN_ACTIONS.close),
 }).done()
 
 const WQUIT_CMD = CmdSvc.create('wq[uit]', {
 	desc: 'Save the current game and close the windows.',
-	fn: () => med.dispatch(SudokuAction.Save).dispatch(ScreenAction.Exit),
+	fn: () => med.dispatch(SUDOKU_ACTIONS.save).dispatch(SCREEN_ACTIONS.close),
 }).done()
 
 const XIT_CMD = CmdSvc.create('x[it]', {
 	desc: 'Like ":wq", but save only when changes have been made.',
-	fn: () => med.dispatch(ScreenAction.Exit),
+	fn: () => med.dispatch(SCREEN_ACTIONS.close),
 }).done()
 
 const EXIT_CMD = CmdSvc.create('exi[t]', {
 	desc: 'Like ":wq", but save only when changes have been made.',
-	fn: () => med.dispatch(ScreenAction.Exit),
+	fn: () => med.dispatch(SCREEN_ACTIONS.close),
 }).done()
 
 const HELP_CMD = CmdSvc.create('h[elp]', {

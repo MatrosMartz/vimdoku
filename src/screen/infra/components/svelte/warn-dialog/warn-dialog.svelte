@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { Button, ButtonMenu, Dialog, DialogClose, Icon } from '~/share/infra/components/svelte'
+	import { SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
-	import { DialogKind, ScreenAction } from '$screen/domain/models'
+	import { DialogKind } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
-	import { SudokuAction } from '$sudoku/domain/models'
 
 	let type = 'unsave'
 
@@ -12,7 +12,7 @@
 
 	/** Game save and Exit, click handler. */
 	function saveAndExitHandler() {
-		med.dispatch(SudokuAction.Save).dispatch(ScreenAction.Exit)
+		med.dispatch(SUDOKU_ACTIONS.save).dispatch(SCREEN_ACTIONS.close)
 	}
 </script>
 

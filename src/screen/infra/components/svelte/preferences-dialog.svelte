@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { Dialog, DialogClose } from '~/share/infra/components/svelte/dialog'
 	import { Tab, TabGroup, TabList, TabPanel } from '~/share/infra/components/svelte/tab'
+	import { SCREEN_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
 	import { i18nState } from '$i18n/infra/stores/svelte'
 	import { PreferencesDisplay, PreferencesForm } from '$pref/infra/components/svelte'
-	import { DialogKind, type DialogPref, dialogPref, ScreenAction } from '$screen/domain/models'
+	import { DialogKind, type DialogPref, dialogPref } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
 
 	$: show = dialogPref.includes($screenState.dialog.kind)
@@ -19,7 +20,7 @@
 	 * @returns the click handler.
 	 */
 	function createTabHandler(kind: DialogPref): () => void {
-		return () => med.dispatch(ScreenAction.OpenDialog, { kind })
+		return () => med.dispatch(SCREEN_ACTIONS.openDialog, { kind })
 	}
 </script>
 

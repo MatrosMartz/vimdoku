@@ -14,7 +14,7 @@
 		{#each $boardState as row, y (y)}
 			<tr class="row-{y}">
 				{#each row as data, x (`${y},${x}`)}
-					<SudokuCell {data} position={new Pos({ y, x })} />
+					<SudokuCell {data} pos={new Pos({ y, x })} />
 				{/each}
 			</tr>
 		{/each}

@@ -1,17 +1,18 @@
 <script lang="ts">
 	import { tooltip, type TooltipProps } from '~/share/infra/components/svelte/tooltip'
+	import { SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
 	import { i18nState } from '$i18n/infra/stores/svelte'
-	import { DialogKind, MainScreenKind, ScreenAction } from '$screen/domain/models'
+	import { DialogKind, MainScreenKind } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
-	import { MODE_KEYS, ModeKind, SudokuAction } from '$sudoku/domain/models'
+	import { MODE_KEYS, ModeKind } from '$sudoku/domain/models'
 	import { modeState } from '$sudoku/infra/stores/svelte'
 
 	$: disabled = $screenState.main !== MainScreenKind.Game
 
 	$: open = $screenState.dialog.kind === DialogKind.InLn && $screenState.dialog.opts.type === 'modes'
 
-	$: if (disabled) med.dispatch(ScreenAction.Exit)
+	$: if (disabled) med.dispatch(SCREEN_ACTIONS.close)
 	$: if (open) setTimeout(() => document.getElementById(`mode-${modeState.data}`)?.focus(), 500)
 
 	$: tooltipProps = {
@@ -23,8 +24,8 @@
 	 * Open or close Modes accordion, click handler.
 	 */
 	function toggleHandler() {
-		if (disabled || open) med.dispatch(ScreenAction.Exit)
-		else med.dispatch(ScreenAction.OpenDialog, { kind: DialogKind.InLn, opts: { type: 'modes' } })
+		if (disabled || open) med.dispatch(SCREEN_ACTIONS.close)
+		else med.dispatch(SCREEN_ACTIONS.openDialog, { kind: DialogKind.InLn, opts: { type: 'modes' } })
 	}
 
 	/**
@@ -35,7 +36,7 @@
 	function modeHandler({ currentTarget }: { currentTarget: HTMLInputElement }) {
 		const mode = currentTarget.value as ModeKind
 
-		med.dispatch(SudokuAction.ChangeMode, { mode })
+		med.dispatch(SUDOKU_ACTIONS.changeMode, { mode })
 	}
 
 	/**
@@ -46,7 +47,7 @@
 	function closeHandler({ relatedTarget }: FocusEvent) {
 		const relatedIsModeSelector = relatedTarget instanceof HTMLElement && relatedTarget.id === 'mode-selector-header'
 		const relatedIsModeInput = relatedTarget instanceof HTMLInputElement && relatedTarget.name === 'mode'
-		if (!(relatedIsModeInput || relatedIsModeSelector)) med.dispatch(ScreenAction.Exit)
+		if (!(relatedIsModeInput || relatedIsModeSelector)) med.dispatch(SCREEN_ACTIONS.close)
 	}
 
 	/**
@@ -54,7 +55,7 @@
 	 * @param ev The Keyboard event.
 	 */
 	function keyupHandler(ev: KeyboardEvent) {
-		if (ev.key === 'Enter') med.dispatch(ScreenAction.Exit)
+		if (ev.key === 'Enter') med.dispatch(SCREEN_ACTIONS.close)
 	}
 </script>
 

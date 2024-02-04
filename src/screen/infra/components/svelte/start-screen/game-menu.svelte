@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { Button, ButtonMenu } from '~/share/infra/components/svelte'
 	import type { TooltipProps } from '~/share/infra/components/svelte/tooltip'
+	import { SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
 	import { i18nState } from '$i18n/infra/stores/svelte'
-	import { DialogKind, ScreenAction } from '$screen/domain/models'
-	import { SudokuAction } from '$sudoku/domain/models'
+	import { DialogKind } from '$screen/domain/models'
 	import { savedState } from '$sudoku/infra/stores/svelte'
 
 	$: disabled = !$savedState
@@ -16,12 +16,12 @@
 
 	/** Open select game dialog, new game btn click handler. */
 	function newGameHandler() {
-		med.dispatch(ScreenAction.OpenDialog, { kind: DialogKind.sel })
+		med.dispatch(SCREEN_ACTIONS.openDialog, { kind: DialogKind.sel })
 	}
 
 	/** Resume Game, resume btn click handler. */
 	function resumeHandler() {
-		med.dispatch(SudokuAction.Resume)
+		med.dispatch(SUDOKU_ACTIONS.resume)
 	}
 </script>
 

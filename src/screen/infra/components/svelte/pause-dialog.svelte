@@ -1,9 +1,9 @@
 <script>
 	import { Button, ButtonMenu, Dialog, Icon } from '~/share/infra/components/svelte'
+	import { SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
-	import { DialogKind, MainScreenKind, ScreenAction } from '$screen/domain/models'
+	import { DialogKind, MainScreenKind } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
-	import { SudokuAction } from '$sudoku/domain/models'
 
 	$: show = $screenState.dialog.kind === DialogKind.Pause
 
@@ -11,28 +11,28 @@
 	 * Continue game, click handler.
 	 */
 	function continueHandler() {
-		med.dispatch(ScreenAction.Exit)
+		med.dispatch(SCREEN_ACTIONS.close)
 	}
 
 	/**
 	 * Save game, click handler.
 	 */
 	function saveHandler() {
-		med.dispatch(SudokuAction.Save)
+		med.dispatch(SUDOKU_ACTIONS.save)
 	}
 
 	/**
 	 * Return to home, click handler.
 	 */
 	function homeHandler() {
-		med.dispatch(ScreenAction.OpenScreen, { screen: MainScreenKind.Start })
+		med.dispatch(SCREEN_ACTIONS.openMain, { mainScreen: MainScreenKind.Start })
 	}
 
 	/**
 	 * Edit preferences, click handler.
 	 */
 	function prefsHandler() {
-		med.dispatch(ScreenAction.OpenDialog, { kind: DialogKind.PrefEdit })
+		med.dispatch(SCREEN_ACTIONS.openDialog, { kind: DialogKind.PrefEdit })
 	}
 </script>
 

@@ -1,4 +1,3 @@
-export * from './actions.model'
 export * from './board.model'
 export * from './difficulties.model'
 export * from './game.model'

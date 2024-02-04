@@ -1,3 +1,4 @@
+export * from './actions.service'
 export * from './command.service'
 export * from './executor.service'
 export * from './mediator.service'
