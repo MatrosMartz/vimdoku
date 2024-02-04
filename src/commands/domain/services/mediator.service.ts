@@ -3,6 +3,7 @@ import type { Action, DataAction, IMed, State } from '../models'
 /** Represent a Mediator Service. */
 export class MedSvc implements IMed {
 	#hasLoaded = false
+	#prev: Promise<void> | null = null
 	#state: State
 
 	/**
@@ -15,7 +16,12 @@ export class MedSvc implements IMed {
 	}
 
 	dispatch<const Data extends DataAction | never>(action: Action<Data>, data?: Data) {
-		void (async () => (this.#state = await action(this.#state, data!)))()
+		const promise = async () => {
+			this.#state = await action(this.#state, data!)
+			this.#prev = null
+		}
+
+		this.#prev = this.#prev != null ? this.#prev.then(promise) : promise()
 
 		return this
 	}
