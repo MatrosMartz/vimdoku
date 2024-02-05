@@ -12,7 +12,7 @@
 
 	/** Game save and Exit, click handler. */
 	function saveAndExitHandler() {
-		med.dispatch(SUDOKU_ACTIONS.save).dispatch(SCREEN_ACTIONS.close)
+		med.dispatch(SUDOKU_ACTIONS.save).dispatch(SCREEN_ACTIONS.close).dispatch(SCREEN_ACTIONS.close)
 	}
 </script>
 
