@@ -21,7 +21,7 @@
 	import { Dialogs, Header, Screen, StatusBar } from '$screen/infra/components/svelte'
 
 	import { keydownHandler } from './keydown-handler'
-	import { toggleClass } from './toggleClass'
+	import { toggleClass } from './toggle-class'
 
 	$: document.documentElement.lang = $prefsState.language
 	$: toggleClass(

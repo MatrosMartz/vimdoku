@@ -9,8 +9,8 @@ import { modeState } from '$sudoku/infra/stores/svelte'
 let moves = 0
 
 /**
- *
- * @param key
+ * Sudoku move controller.
+ * @param key The key string value.
  */
 function movePosition(key: string) {
 	// move with arrow keys
@@ -30,8 +30,8 @@ function movePosition(key: string) {
 }
 
 /**
- *
- * @param key
+ * Sudoku change mode controller.
+ * @param key The key string value.
  */
 function changeMode(key: string) {
 	if (modeState.data === ModeKind.X) {
@@ -42,8 +42,8 @@ function changeMode(key: string) {
 }
 
 /**
- *
- * @param value
+ * Sudoku press num controller.
+ * @param value The sudoku valid number.
  */
 function pressNum(value: ValidNumbers) {
 	if (Number.isNaN(value)) moves = 0
@@ -54,8 +54,8 @@ function pressNum(value: ValidNumbers) {
 }
 
 /**
- *
- * @param ev
+ * Sudoku move controller.
+ * @param ev The keyboard event.
  */
 function sudoku(ev: KeyboardEvent) {
 	movePosition(ev.key)
@@ -68,16 +68,17 @@ function sudoku(ev: KeyboardEvent) {
 }
 
 /**
- *
- * @param screen
+ * Get if the screen is Game without some dialog.
+ * @param screen The screen.
+ * @returns True if screen is Game without some dialog, false if not.
  */
 function isGameScreen(screen: VimScreen) {
 	return screen.main === MainScreenKind.Game && screen.dialog.kind === DialogKind.None
 }
 
 /**
- *
- * @param ev
+ * keyboard controller, keydown handler.
+ * @param ev The keyboard event.
  */
 export function keydownHandler(ev: KeyboardEvent) {
 	if (ev.key === ':' && screenState.data.dialog.kind !== DialogKind.Cmd) {
