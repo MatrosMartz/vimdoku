@@ -1,23 +1,19 @@
-import { IDLE_POS, type Pos } from '~/share/domain/entities'
+import { type Pos } from '~/share/domain/entities'
 import type { OptionalKeys } from '~/share/types'
 import type { Lang, Prefs, ToggleNames } from '$pref/domain/models'
 import { type DialogData, DialogKind, MainScreenKind } from '$screen/domain/models'
 import { Solution, type ValidNumbers } from '$sudoku/domain/entities'
-import { type GameOpts, ModeKind } from '$sudoku/domain/models'
+import { type ModeKind, type SudokuSetts } from '$sudoku/domain/models'
 
 import type { ActionUnData, ActionWithData, DataAction } from '../models'
 
 // i18n Actions.
-const changeLang: ActionWithData<{ lang: Lang }> = async (state, { lang }) => {
-	await state.i18n.changeLang(lang)
-	return state
-}
+const changeLang: ActionWithData<{ lang: Lang }> = async (state, { lang }) => await state.i18n.changeLang(lang)
 
 export const I18N_ACTIONS = { changeLang }
 
 // Pref actions.
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-type SetPrefByKey<K extends keyof Prefs = keyof Prefs> = {
+interface SetPrefByKey<K extends keyof Prefs = keyof Prefs> {
 	key: K
 	type: 'by-key'
 	value: Prefs[K]
@@ -25,13 +21,11 @@ type SetPrefByKey<K extends keyof Prefs = keyof Prefs> = {
 
 type SetPrefData = { prefs: Prefs; type: 'all' } | SetPrefByKey
 
-const setPref: ActionWithData<SetPrefData> = async (state, data) => {
+const setPref: ActionWithData<SetPrefData & DataAction> = async (state, data) => {
 	if (data.type === 'all') state.prefs.setAll(data.prefs)
 	else state.prefs.setByKey(data.key, data.value)
 
 	await state.i18n.changeLang(state.prefs.data.language)
-
-	return state
 }
 
 type ResetPrefData = { type: 'all' } | { key: keyof Prefs; type: 'by-key' }
@@ -41,13 +35,10 @@ const resetPref: ActionWithData<ResetPrefData> = async (state, data) => {
 	else state.prefs.resetByKey(data.key)
 
 	await state.i18n.changeLang(state.prefs.data.language)
-
-	return state
 }
 
 const invertPref: ActionWithData<{ pref: ToggleNames }> = async (state, data) => {
 	state.prefs.setByKey(data.pref, !state.prefs.data[data.pref])
-	return state
 }
 
 export const PREFS_ACTIONS = { set: setPref, reset: resetPref, invert: invertPref }
@@ -56,66 +47,53 @@ export const PREFS_ACTIONS = { set: setPref, reset: resetPref, invert: invertPre
 const closeScreen: ActionUnData = async state => {
 	const isGameScreen = state.screen.mainScreen === MainScreenKind.Game
 	const isNoneDialog = state.screen.dialog.kind === DialogKind.None
-	if (isGameScreen && isNoneDialog && !state.game.isASaved)
-		return await openDialog(state, { kind: DialogKind.Warn, opts: { type: 'unsave' } })
+	if (isGameScreen && isNoneDialog && !state.sudoku.isASaved) {
+		state.screen.setDialog({ kind: DialogKind.Warn, opts: { type: 'unsave' } })
+		return
+	}
 
 	state.screen.close()
 
-	if (isGameScreen && isNoneDialog) {
-		state.game.timerStart()
-	} else if (isGameScreen) {
-		state.game.timerPause()
-	} else {
-		state.game.timerPause().timerReset().changeMode(ModeKind.X).changePos(IDLE_POS)
-	}
-
-	return state
+	if (isGameScreen && !isNoneDialog) state.sudoku.continue()
+	else await state.sudoku.load()
 }
 
-const openDialog: ActionWithData<DialogData> = async (state, data) => {
-	state.screen.setDialog(data)
-	return state
-}
+const openDialog: ActionWithData<DialogData> = async (state, data) => state.screen.setDialog(data)
 
 const openMain: ActionWithData<{ mainScreen: MainScreenKind }> = async (state, data) => {
 	const isGameScreen = state.screen.mainScreen === MainScreenKind.Game
 	const nextIsGameScreen = data.mainScreen === MainScreenKind.Game
-	if (!nextIsGameScreen && isGameScreen && !state.game.isASaved)
-		return await openDialog(state, { kind: DialogKind.Warn, opts: { type: 'unsave' } })
+	if (!nextIsGameScreen && isGameScreen && !state.sudoku.isASaved) {
+		state.screen.setDialog({ kind: DialogKind.Warn, opts: { type: 'unsave' } })
+		return
+	}
 
 	state.screen.setMain(data.mainScreen)
-	return state
 }
 
 export const SCREEN_ACTIONS = { close: closeScreen, openDialog, openMain }
 
 // Sudoku actions.
 const clearCell: ActionUnData = async state => {
-	state.game.clear()
-
-	return state
+	state.sudoku.clear()
 }
 
 const writeCell: ActionWithData<{ value: ValidNumbers | 0 }> = async (state, data) => {
 	if (data.value === 0) return await clearCell(state)
 
 	const { autoNoteDeletion: removeNotes, autoValidation: validate } = state.prefs.data
-	state.game.write(data.value, { removeNotes, validate })
+	state.sudoku.write(data.value, { removeNotes, validate })
 
-	if (state.game.hasWin) return await openDialog(state, { kind: DialogKind.Win })
-
-	return state
+	if (state.sudoku.hasWin) state.screen.setDialog({ kind: DialogKind.Win })
 }
 
 const verifyBoard: ActionUnData = async state => {
-	state.game.verify()
-
-	return state
+	state.sudoku.verify()
 }
 
 interface MoveDir {
 	times: number
-	type: 'down' | 'left' | 'right' | 'up'
+	type: 'Down' | 'Left' | 'Right' | 'Up'
 }
 interface MoveSet {
 	pos: Pos
@@ -125,61 +103,39 @@ interface MoveSet {
 type MoveSelectionData = MoveDir | MoveSet
 
 const moveSelection: ActionWithData<MoveSelectionData & DataAction> = async (state, data) => {
-	if (data.type === 'down') state.game.moveDown(data.times)
-	if (data.type === 'left') state.game.moveLeft(data.times)
-	if (data.type === 'right') state.game.moveRight(data.times)
-	if (data.type === 'up') state.game.moveUp(data.times)
-	if (data.type === 'set') state.game.changePos(data.pos)
-
-	return state
+	if (data.type === 'set') state.sudoku.moveTo(data.pos)
+	else state.sudoku.move(data.type, data.times)
 }
 
 const changeMode: ActionWithData<{ mode: ModeKind }> = async (state, data) => {
-	state.game.changeMode(data.mode)
-	return state
+	state.sudoku.changeMode(data.mode)
 }
 
 const redoGame: ActionUnData = async state => {
-	state.game.redo()
-	return state
+	state.sudoku.redo()
 }
 const undoGame: ActionUnData = async state => {
-	state.game.undo()
-	return state
+	state.sudoku.undo()
 }
 
-const sudokuEnd: ActionUnData = async state => {
-	const game = await state.game.end()
-	game.timerPause()
-
-	return { ...state, game }
-}
+const sudokuEnd: ActionUnData = async state => await state.sudoku.end()
 
 const sudokuResume: ActionUnData = async state => {
-	const game = await state.game.resume()
-	if (game == null) return state
-
-	state.screen.setMain(MainScreenKind.Game)
-	if (state.prefs.data.timer) game.timerStart()
-
-	return { ...state, game }
+	const isGameScreen = state.screen.mainScreen === MainScreenKind.Game
+	if (state.sudoku.isASaved && !isGameScreen) {
+		await state.sudoku.resume(state.prefs.data.timer)
+		state.screen.setMain(MainScreenKind.Game)
+	} else state.sudoku.continue()
 }
 
-const sudokuSave: ActionUnData = async state => {
-	await state.game.save()
+const sudokuSave: ActionUnData = async state => await state.sudoku.save()
 
-	return state
-}
-
-const sudokuStart: ActionWithData<OptionalKeys<GameOpts, 'solution'> & DataAction> = async (
+const sudokuStart: ActionWithData<OptionalKeys<SudokuSetts, 'solution'> & DataAction> = async (
 	state,
 	{ difficulty, solution = Solution.create() }
 ) => {
+	await state.sudoku.start({ difficulty, solution }, state.prefs.data.timer)
 	state.screen.setMain(MainScreenKind.Game)
-	const game = await state.game.start({ difficulty, solution })
-	if (state.prefs.data.timer) game.timerStart()
-
-	return { ...state, game }
 }
 
 export const SUDOKU_ACTIONS = {

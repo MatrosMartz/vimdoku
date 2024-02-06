@@ -2,47 +2,47 @@ import { Pos } from '~/share/domain/entities'
 import { createBrowserStorage } from '~/share/infra/repositories'
 import { RepoItemNotFoundError } from '~/share/utils'
 import { type CellJSON, Grid } from '$sudoku/domain/entities'
-import type { BoardJSON, GameInfo, GameOptsJSON } from '$sudoku/domain/models'
-import type { GameRepo } from '$sudoku/domain/repositories'
+import type { BoardJSON, SudokuInfo, SudokuSettsJSON } from '$sudoku/domain/models'
+import type { SudokuRepo } from '$sudoku/domain/repositories'
 
 interface StorageNames {
 	board?: string
 	info?: string
 	notes?: string
-	opts?: string
+	setts?: string
 }
 
 type CellJSONStore = Omit<CellJSON, 'notes'>
 
-export class BrowserGameRepo implements GameRepo {
+export class BrowserSudokuRepo implements SudokuRepo {
 	readonly #boardStorage
 	readonly #infoStorage
 	readonly #notesStorage
-	readonly #optsStorage
+	readonly #settsStorage
 
-	constructor({ board = 'board', notes = 'notes', opts = 'opts', info = 'game-info' }: StorageNames = {}) {
+	constructor({ board = 'board', notes = 'notes', setts = 'sudoku-setts', info = 'sudoku-info' }: StorageNames = {}) {
 		this.#boardStorage = createBrowserStorage(board)
 		this.#notesStorage = createBrowserStorage(notes)
-		this.#optsStorage = createBrowserStorage(opts)
+		this.#settsStorage = createBrowserStorage(setts)
 		this.#infoStorage = createBrowserStorage(info)
 	}
 
-	async create(data: { board: BoardJSON; info: GameInfo; opts: GameOptsJSON }): Promise<void>
-	async create({ board, info, opts }: { board: BoardJSON; info: GameInfo; opts: GameOptsJSON }) {
+	async create(data: { board: BoardJSON; info: SudokuInfo; setts: SudokuSettsJSON }): Promise<void>
+	async create({ board, info, setts }: { board: BoardJSON; info: SudokuInfo; setts: SudokuSettsJSON }) {
 		const { boardJSON, notes } = new Grid(board).createSubgrids(({ notes, ...boardJSON }) => ({
 			boardJSON,
 			notes,
 		}))
 		this.#boardStorage.set(JSON.stringify(boardJSON.data))
 		this.#notesStorage.set(JSON.stringify(notes.data))
-		this.#optsStorage.set(JSON.stringify(opts))
+		this.#settsStorage.set(JSON.stringify(setts))
 		this.#infoStorage.set(JSON.stringify(info))
 	}
 
 	async delete() {
 		this.#boardStorage.del()
 		this.#notesStorage.del()
-		this.#optsStorage.del()
+		this.#settsStorage.del()
 		this.#infoStorage.del()
 	}
 
@@ -69,19 +69,19 @@ export class BrowserGameRepo implements GameRepo {
 		const infoRaw = this.#infoStorage.get()
 
 		return infoRaw != null
-			? (JSON.parse(infoRaw) as GameInfo)
+			? (JSON.parse(infoRaw) as SudokuInfo)
 			: (() => {
 					throw new RepoItemNotFoundError('info')
 				})()
 	}
 
-	async getOpts() {
-		const optsRaw = this.#optsStorage.get()
+	async getSetts() {
+		const optsRaw = this.#settsStorage.get()
 
 		return optsRaw != null
-			? (JSON.parse(optsRaw) as GameOptsJSON)
+			? (JSON.parse(optsRaw) as SudokuSettsJSON)
 			: (() => {
-					throw new RepoItemNotFoundError('boardOpts')
+					throw new RepoItemNotFoundError('sudoku settings')
 				})()
 	}
 
@@ -90,11 +90,11 @@ export class BrowserGameRepo implements GameRepo {
 			this.#boardStorage.get() != null &&
 			this.#notesStorage.get() != null &&
 			this.#infoStorage.get() != null &&
-			this.#optsStorage.get() != null
+			this.#settsStorage.get() != null
 		)
 	}
 
-	async save(data: { board: BoardJSON; info: GameInfo }) {
+	async save(data: { board: BoardJSON; info: SudokuInfo }) {
 		this.#boardStorage.set(JSON.stringify(data.board))
 		this.#infoStorage.set(JSON.stringify(data.info))
 	}

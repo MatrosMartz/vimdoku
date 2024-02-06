@@ -4,7 +4,7 @@ import type { Action, DataAction, IMed, State } from '../models'
 export class MedSvc implements IMed {
 	#hasLoaded = false
 	#prev: Promise<void> | null = null
-	#state: State
+	readonly #state: State
 
 	/**
 	 * Creates an instance of the MedSvc class.
@@ -17,7 +17,7 @@ export class MedSvc implements IMed {
 
 	dispatch<const Data extends DataAction | never>(action: Action<Data>, data?: Data) {
 		const promise = async () => {
-			this.#state = await action(this.#state, data!)
+			await action(this.#state, data!)
 			this.#prev = null
 		}
 
@@ -28,7 +28,7 @@ export class MedSvc implements IMed {
 
 	async load() {
 		if (this.#hasLoaded) return
-		await Promise.all([this.#state.prefs.load(), this.#state.game.load()])
+		await Promise.all([this.#state.prefs.load(), this.#state.sudoku.load()])
 		await this.#state.i18n.changeLang(this.#state.prefs.data.language)
 		this.#hasLoaded = true
 	}

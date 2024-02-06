@@ -2,13 +2,12 @@ import { type Pos } from '~/share/domain/entities'
 import { inject, InvalidBoardError } from '~/share/utils'
 
 import { Cell, CellKind, Grid, type MoveMap, type SolutionJSON, type ValidNumbers } from '../entities'
-import { type Board, type BoardJSON, type GameOpts, type IBoard } from '../models'
+import { type Board, type BoardJSON, type IBoard, type SudokuSetts } from '../models'
 import { BoardObs, ErrorsObs, MovesObs } from './sudoku-obs.service'
 
 /** Represent a Sudoku Board Service. */
 export class BoardSvc implements IBoard {
 	#correctCells = 0
-	#errors
 	readonly #errorsObs = inject(ErrorsObs)
 	readonly #movesObs = inject(MovesObs)
 	readonly #obs = inject(BoardObs)
@@ -21,11 +20,15 @@ export class BoardSvc implements IBoard {
 	constructor(grid: Grid<Cell>, errors: number) {
 		this.#obs.set(grid)
 		this.#correctCells = this.#obs.data!.count(({ isCorrect }) => isCorrect)
-		this.#errors = errors
+		this.#errorsObs.set(errors)
 	}
 
 	get data(): Board {
 		return this.#obs.data!.data
+	}
+
+	get errors() {
+		return this.#errorsObs.data
 	}
 
 	get hasWin() {
@@ -34,10 +37,11 @@ export class BoardSvc implements IBoard {
 
 	/**
 	 * Create an instance of BoardSvc with options.
-	 * @param opts Options for create board (optional).
+	 * @param settings Settings for create board.
+	 * @param errors The previous game errors, if is new game is 0.
 	 */
-	static create(opts: GameOpts, errors: number): BoardSvc
-	static create({ difficulty, solution }: GameOpts, errors: number) {
+	static create(settings: SudokuSetts, errors: number): BoardSvc
+	static create({ difficulty, solution }: SudokuSetts, errors: number) {
 		const diffNum = Number(difficulty)
 		const grid = Grid.create<Cell>(pos => {
 			const isInitial = Boolean(Math.floor(Math.random() * diffNum))
@@ -51,7 +55,7 @@ export class BoardSvc implements IBoard {
 	 * Create an instance of BoardSvc from a JSON string
 	 * @param boardLike JSON representation of board.
 	 * @param solution JSON representation of solutions.
-	 * @param errors The initials errors.
+	 * @param errors The previous game errors, if is new game is 0.
 	 * @throws {InvalidBoardError} If `boardLike` is not a valid JSON.
 	 * @returns A new Board Service.
 	 */
@@ -72,7 +76,7 @@ export class BoardSvc implements IBoard {
 	 * Create an instance of BoardSvc from a JSON string
 	 * @param boardLike JSON representation of board.
 	 * @param solution JSON representation of solutions.
-	 * @param errors The initials errors.
+	 * @param errors The previous game errors, if is new game is 0.
 	 * @throws {InvalidBoardError} If `boardLike` is not a valid JSON string.
 	 * @returns A new Board Service.
 	 */
@@ -182,13 +186,11 @@ export class BoardSvc implements IBoard {
 				.cell(cell => cell.verify(this.#verify))
 				.apply()
 		)
-		this.#errorsObs.set(this.#errors)
 		return this
 	}
 
 	validateAllBoard() {
 		this.#obs.update(board => board!.mapAll(cell => cell.verify(this.#verify)))
-		this.#errorsObs.set(this.#errors)
 		return this
 	}
 
@@ -222,6 +224,6 @@ export class BoardSvc implements IBoard {
 	}
 
 	readonly #verify = (isIncorrect: boolean) => {
-		if (isIncorrect) this.#errors++
+		if (isIncorrect) this.#errorsObs.update(err => ++err)
 	}
 }

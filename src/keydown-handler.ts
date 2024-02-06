@@ -14,18 +14,18 @@ let moves = 0
  */
 function movePosition(key: string) {
 	// move with arrow keys
-	if (key === 'ArrowDown') med.dispatch(SUDOKU_ACTIONS.move, { type: 'down', times: 1 })
-	if (key === 'ArrowLeft') med.dispatch(SUDOKU_ACTIONS.move, { type: 'left', times: 1 })
-	if (key === 'ArrowRight') med.dispatch(SUDOKU_ACTIONS.move, { type: 'right', times: 1 })
-	if (key === 'ArrowUp') med.dispatch(SUDOKU_ACTIONS.move, { type: 'up', times: 1 })
+	if (key === 'ArrowDown') med.dispatch(SUDOKU_ACTIONS.move, { type: 'Down', times: 1 })
+	if (key === 'ArrowLeft') med.dispatch(SUDOKU_ACTIONS.move, { type: 'Left', times: 1 })
+	if (key === 'ArrowRight') med.dispatch(SUDOKU_ACTIONS.move, { type: 'Right', times: 1 })
+	if (key === 'ArrowUp') med.dispatch(SUDOKU_ACTIONS.move, { type: 'Up', times: 1 })
 
 	// move with vim shortcuts
 	if (['j', 'h', 'k', 'l', 'J', 'H', 'K', 'L'].includes(key)) {
 		const times = moves === 0 ? 1 : moves
-		if (['j', 'J'].includes(key)) med.dispatch(SUDOKU_ACTIONS.move, { type: 'down', times })
-		if (['h', 'h'].includes(key)) med.dispatch(SUDOKU_ACTIONS.move, { type: 'left', times })
-		if (['l', 'L'].includes(key)) med.dispatch(SUDOKU_ACTIONS.move, { type: 'right', times })
-		if (['k', 'K'].includes(key)) med.dispatch(SUDOKU_ACTIONS.move, { type: 'up', times })
+		if (['j', 'J'].includes(key)) med.dispatch(SUDOKU_ACTIONS.move, { type: 'Down', times })
+		if (['h', 'h'].includes(key)) med.dispatch(SUDOKU_ACTIONS.move, { type: 'Left', times })
+		if (['l', 'L'].includes(key)) med.dispatch(SUDOKU_ACTIONS.move, { type: 'Right', times })
+		if (['k', 'K'].includes(key)) med.dispatch(SUDOKU_ACTIONS.move, { type: 'Up', times })
 	}
 }
 

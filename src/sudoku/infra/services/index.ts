@@ -1,1 +1,1 @@
-export * from './game.service'
+export * from './sudoku.service'

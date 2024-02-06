@@ -1,1 +1,1 @@
-export {default as WarnDialog} from './warn-dialog.svelte'
+export { default as WarnDialog } from './warn-dialog.svelte'

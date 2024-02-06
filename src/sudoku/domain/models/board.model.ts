@@ -10,6 +10,7 @@ export type BoardJSON = Tuple<Tuple<CellJSON, 9>, 9>
 export interface IBoard {
 	/** Get the current cells of board. */
 	readonly data: Board
+	readonly errors: number
 	/** Get if the all board are correct. */
 	readonly hasWin: boolean
 	/**

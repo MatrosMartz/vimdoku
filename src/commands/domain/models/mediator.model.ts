@@ -1,19 +1,19 @@
 import type { II18n } from '$i18n/domain/models'
 import type { IPrefs } from '$pref/domain/models'
 import type { IScreen } from '$screen/domain/models'
-import type { IGame } from '$sudoku/domain/models'
+import type { ISudoku } from '$sudoku/domain/models'
 
 export interface State {
-	game: IGame
 	i18n: II18n
 	prefs: IPrefs
 	screen: IScreen
+	sudoku: ISudoku
 }
 
 export type DataAction = Record<string, unknown>
 
-export type ActionUnData = (states: State) => Promise<State>
-export type ActionWithData<Data extends DataAction> = (states: State, data: Data) => Promise<State>
+export type ActionUnData = (states: State) => Promise<void>
+export type ActionWithData<Data extends DataAction> = (states: State, data: Data) => Promise<void>
 
 export type Action<Data extends DataAction | never = never> = Data extends never ? ActionUnData : ActionWithData<Data>
 

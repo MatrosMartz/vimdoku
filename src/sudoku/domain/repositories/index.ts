@@ -1,1 +1,1 @@
-export * from './game.repo'
+export * from './sudoku.repo'
