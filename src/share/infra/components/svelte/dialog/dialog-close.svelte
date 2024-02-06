@@ -11,6 +11,8 @@
 	button {
 		--border: var(--alternative-border);
 
+		display: grid;
+		place-content: center;
 		width: var(--icon-size);
 		height: var(--icon-size);
 		color: inherit;
