@@ -22,8 +22,8 @@ interface SetPrefByKey<K extends keyof Prefs = keyof Prefs> {
 type SetPrefData = { prefs: Prefs; type: 'all' } | SetPrefByKey
 
 const setPref: ActionWithData<SetPrefData & DataAction> = async (state, data) => {
-	if (data.type === 'all') state.prefs.setAll(data.prefs)
-	else state.prefs.setByKey(data.key, data.value)
+	if (data.type === 'all') await state.prefs.setAll(data.prefs).save()
+	else await state.prefs.setByKey(data.key, data.value).save()
 
 	await state.i18n.changeLang(state.prefs.data.language)
 }
@@ -31,15 +31,14 @@ const setPref: ActionWithData<SetPrefData & DataAction> = async (state, data) =>
 type ResetPrefData = { type: 'all' } | { key: keyof Prefs; type: 'by-key' }
 
 const resetPref: ActionWithData<ResetPrefData> = async (state, data) => {
-	if (data.type === 'all') state.prefs.resetAll()
-	else state.prefs.resetByKey(data.key)
+	if (data.type === 'all') await state.prefs.resetAll().save()
+	else await state.prefs.resetByKey(data.key).save()
 
 	await state.i18n.changeLang(state.prefs.data.language)
 }
 
-const invertPref: ActionWithData<{ pref: ToggleNames }> = async (state, data) => {
-	state.prefs.setByKey(data.pref, !state.prefs.data[data.pref])
-}
+const invertPref: ActionWithData<{ pref: ToggleNames }> = async (state, data) =>
+	await state.prefs.setByKey(data.pref, !state.prefs.data[data.pref]).save()
 
 export const PREFS_ACTIONS = { set: setPref, reset: resetPref, invert: invertPref }
 
