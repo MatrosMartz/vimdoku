@@ -59,5 +59,5 @@ export interface IGame {
 	 * @param num The valid number to write.
 	 * @param opts removeNotes: Indicates if it should remove the related notes.
 	 */
-	write(num: ValidNumbers, opts: { removeNotes: boolean }): this
+	write(num: ValidNumbers, opts: { removeNotes: boolean; validate: boolean }): this
 }

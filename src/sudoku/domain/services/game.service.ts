@@ -87,7 +87,7 @@ export abstract class GameSvc implements IGame {
 		return this
 	}
 
-	write(num: ValidNumbers, opts: { removeNotes: boolean }) {
+	write(num: ValidNumbers, opts: { removeNotes: boolean; validate: boolean }) {
 		return this
 	}
 }
@@ -122,9 +122,10 @@ class InsertGameSvc extends EditedGameSvc {
 		return this
 	}
 
-	write(num: ValidNumbers, { removeNotes }: { removeNotes: boolean }) {
+	write(num: ValidNumbers, { removeNotes, validate }: { removeNotes: boolean; validate: boolean }) {
 		this[board].write(this[pos].data, num)
 		if (removeNotes) this[board].noteDeletion(this[pos].data, num)
+		if (validate) this[board].validate(this[pos].data)
 		return this
 	}
 }
