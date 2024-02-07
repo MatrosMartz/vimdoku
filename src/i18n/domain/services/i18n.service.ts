@@ -1,7 +1,7 @@
 import { inject } from '~/share/utils'
 import { IDLE_PREFS, type Lang } from '$pref/domain/models'
 
-import { type I18nKeys, type I18nSchema, type I18nValue, type II18n } from '../models'
+import { type I18nKeys, type I18nSchema, type II18n } from '../models'
 import { I18nObs } from './i18n-obs.service'
 
 export class I18nSvc implements II18n {
@@ -22,6 +22,12 @@ export class I18nSvc implements II18n {
 
 		this.#obs.set({
 			get: (key, fallBack) => this.#getText(key, resource) ?? fallBack,
+			getTemplate: (key, fallback, value) => {
+				const head = this.#getText(`${key}-head`, resource) ?? fallback.head
+				const tail = this.#getText(`${key}-tail`, resource) ?? fallback.tail
+
+				return head + value + tail
+			},
 		})
 	}
 
@@ -40,7 +46,7 @@ export class I18nSvc implements II18n {
 	 * @param resource The resource in the find text.
 	 * @returns The text or null if was not exist in the resource.
 	 */
-	#getText<K extends I18nKeys>(key: K, resource: I18nSchema | null): I18nValue<K> | null {
+	#getText<K extends I18nKeys>(key: K, resource: I18nSchema | null): string | null {
 		if (resource == null) return null
 
 		let result: any = resource

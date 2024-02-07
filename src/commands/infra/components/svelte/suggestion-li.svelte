@@ -27,7 +27,7 @@
 <li>
 	<button bind:this={btn} tabindex="0" on:click={clickHandler}>
 		{#each suggestion.desc as desc}
-			<p>{desc}</p>
+			<p>{desc()}</p>
 		{/each}
 	</button>
 </li>

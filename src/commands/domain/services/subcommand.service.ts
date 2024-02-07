@@ -12,7 +12,7 @@ export type CreateHeader<H> = (tokens: TokenList) => H
 export interface SubCmdSvcOpts<S extends string, H> {
 	fn?(variables: TokenVariables<S>): void
 	createHeader: CreateHeader<H>
-	desc: string | Desc
+	desc: (() => string) | Desc
 	tokens: SubTokenGroup<S>
 }
 

@@ -1,4 +1,4 @@
-export type Desc = [string, ...string[]]
+export type Desc = [() => string, ...Array<() => string>]
 
 export interface SuggOpts<T> {
 	desc: Desc

@@ -4,7 +4,7 @@ import { type CreateHeader, type SubCmdFn, SubCmdSvc } from './subcommand.servic
 export interface CmdBuilderOpts {
 	fn?(): void
 	cmdLike: string
-	desc: string | Desc
+	desc: (() => string) | Desc
 }
 
 export type CmdFn = <H>(createHeader: CreateHeader<H>) => Array<SubCmdSvc<H>>

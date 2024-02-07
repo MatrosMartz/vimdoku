@@ -174,10 +174,12 @@
 				},
 				"pause": { "type": "string" },
 				"quit": { "type": "string" },
-				"resume": { "type": "array", "items": { "type": "string" } },
+				"resume-1": { "type": "string" },
+				"resume-2": { "type": "string" },
 				"set": {
 					"type": "object",
 					"properties": {
+						"showSuggest": { "type": "string" },
 						"showDiffer": { "type": "string" },
 						"showAll": { "type": "string" },
 						"resetAll": { "type": "string" },
@@ -192,7 +194,8 @@
 							"required": ["head", "tail"]
 						},
 						"resetSuggest": { "type": "string" },
-						"suggest": { "type": "array", "items": { "type": "string" } },
+						"suggest-1": { "type": "string" },
+						"suggest-2": { "type": "string" },
 						"toggleOnPref": {
 							"type": "object",
 							"properties": { "head": { "type": "string" }, "tail": { "type": "string" } },
@@ -215,7 +218,7 @@
 							"required": ["head", "tail"]
 						},
 						"toggleInvSuggest": { "type": "string" },
-						"setNonToggle": {
+						"setNonTogglePref": {
 							"type": "object",
 							"properties": { "head": { "type": "string" }, "tail": { "type": "string" } },
 							"required": ["head", "tail"]
@@ -223,8 +226,10 @@
 						"setNonToggleSuggest": { "type": "string" }
 					},
 					"required": [
+						"showSuggest",
 						"showDiffer",
-						"suggest",
+						"suggest-1",
+						"suggest-2",
 						"showAll",
 						"resetAll",
 						"showPref",
@@ -234,7 +239,7 @@
 						"showNonToggle",
 						"toggleOffPref",
 						"toggleInvPref",
-						"setNonToggle"
+						"setNonTogglePref"
 					]
 				},
 				"start": {
@@ -250,9 +255,21 @@
 					"required": ["subject", "difficulty"]
 				},
 				"write": { "type": "string" },
-				"writeAndQuit": { "type": "string" }
+				"writeAndQuit": { "type": "string" },
+				"writeLike": { "type": "string" }
 			},
-			"required": ["help", "pause", "quit", "resume", "set", "start", "write"]
+			"required": [
+				"help",
+				"pause",
+				"quit",
+				"resume-1",
+				"resume-2",
+				"set",
+				"start",
+				"write",
+				"writeAndQuit",
+				"writeLike"
+			]
 		},
 		"form": {
 			"type": "object",

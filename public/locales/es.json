@@ -78,40 +78,40 @@
 			"main": "Abre un dialogo y muestra las instrucciones de la aplicación.",
 			"suggest": "Parecido a \":help\", con la adicción de brincar a la etiqueta {subject}",
 			"withArg": {
-				"head": "Abre un dialogo y muestra las instrucciones sobre",
+				"head": "Abre un dialogo y muestra las instrucciones sobre ",
 				"tail": "."
 			}
 		},
 		"pause": "Pausa la partida actual.",
 		"quit": "Cierra la ventana o dialog actual.",
-		"resume": ["Continua con la partida actual.", "Continua con la partida guardada."],
+		"resume-1": "Continua con la partida actual.",
+		"resume-2": "Continua con la partida guardada.",
 		"set": {
+			"showSuggest": "Muestra el valor de {preference}",
 			"showAll": "Muestra todas las preferencias.",
 			"resetAll": "Restablece todas las preferencias",
 			"showPref": {
-				"head": "Muestra el valor de",
+				"head": "Muestra el valor de ",
 				"tail": "."
 			},
 			"resetPref": {
-				"head": "Restablece el valor de",
+				"head": "Restablece el valor de ",
 				"tail": "."
 			},
-			"resetSuggest": "Restablece la {option} a su valor por defecto.",
+			"resetSuggest": "Restablece la {preference} a su valor por defecto.",
 			"toggleOnPref": {
 				"head": "Establece",
-				"tail": "a verdadero."
+				"tail": " a verdadero."
 			},
 			"showNonToggle": {
 				"head": "Muestra el valor de",
 				"tail": "."
 			},
-			"suggest": [
-				"Preferencia de interruptor: La establece a verdadero.",
-				"Preferencia de texto o numero: Muestra su valor."
-			],
+			"suggest-1": "Preferencia de interruptor: La establece a verdadero.",
+			"suggest-2": "Preferencia de texto o numero: Muestra su valor.",
 			"toggleOffPref": {
-				"head": "Establece",
-				"tail": "a falso."
+				"head": "Establece ",
+				"tail": " a falso."
 			},
 			"toggleOffSuggest": "Preferencia de interruptor: La establece a falso.",
 			"toggleInvPref": {
@@ -119,22 +119,23 @@
 				"tail": "."
 			},
 			"toggleInvSuggest": "Preferencia de interruptor: Invierte el valor.",
-			"setNonToggle": {
-				"head": "Establece",
-				"tail": "al valor definido."
+			"setNonTogglePref": {
+				"head": "Establece ",
+				"tail": " al valor de {value} ."
 			},
-			"setNonToggleSuggest": "Establece un nuevo valor para la preferencia.",
+			"setNonToggleSuggest": "Preferencia de texto o numero: Establece {preference} al valor de {value}.",
 			"showDiffer": "Muestra todas las preferencias que difieren con el valor por defecto."
 		},
 		"start": {
 			"subject": "Inicia una nueva partida con la dificultad seleccionada.",
 			"difficulty": {
-				"head": "Inicia una nueva partida en la dificultad:",
+				"head": "Inicia una nueva partida en la dificultad: ",
 				"tail": "."
 			}
 		},
 		"write": "Guarda la partida actual.",
-		"writeAndQuit": "Guarda la partida actual y cierra la ventana o dialogo actual."
+		"writeAndQuit": "Guarda la partida actual y cierra la ventana o dialogo actual.",
+		"writeLike": "Como \":wq\", pero solo si se han echo cambios.."
 	},
 	"form": {
 		"reset": "Restablece a los valores por defecto",

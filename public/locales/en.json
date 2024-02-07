@@ -86,30 +86,33 @@
 		},
 		"pause": "Pause the current game.",
 		"quit": "Close the current screen or dialog.",
-		"resume": ["Resume the current game.", "Resume the saved game only if no game active."],
+		"resume-1": "Resume the current game.",
+		"resume-2": "Resume the saved game only if no game active.",
 		"set": {
+			"showSuggest": "Show value of {preference}.",
 			"showAll": "Show all preferences.",
 			"resetAll": "Reset all preferences.",
 			"showPref": {
-				"head": "Show value of",
+				"head": "Show value of ",
 				"tail": "."
 			},
 			"resetPref": {
-				"head": "Reset value of",
+				"head": "Reset value of ",
 				"tail": "."
 			},
-			"resetSuggest": "Reset {option} to it's default value.",
+			"resetSuggest": "Reset {preference} to it's default value.",
 			"toggleOnPref": {
-				"head": "Set,",
+				"head": "Set, ",
 				"tail": "to switch it on."
 			},
 			"showNonToggle": {
-				"head": "Show value of",
+				"head": "Show value of ",
 				"tail": "."
 			},
-			"suggest": ["Toggle preference: Set, switch it on.", "String or Number preference: Shows it's value"],
+			"suggest-1": "Toggle preference: Set, switch it on.",
+			"suggest-2": "String or Number preference: Shows it's value",
 			"toggleOffPref": {
-				"head": "Set,",
+				"head": "Set, ",
 				"tail": "to switch off."
 			},
 			"toggleOffSuggest": "Toggle preference: Set, switch it off.",
@@ -118,11 +121,11 @@
 				"tail": "."
 			},
 			"toggleInvSuggest": "Toggle preference: Invert value.",
-			"setNonToggle": {
-				"head": "Set",
-				"tail": "to {value}."
+			"setNonTogglePref": {
+				"head": "Assign to ",
+				"tail": " the {value}."
 			},
-			"setNonToggleSuggest": "Sets a new value for the preference.",
+			"setNonToggleSuggest": "String or Number preference: Assign to {preference} the {value}.",
 			"showDiffer": "Show all preferences that differ from their default value."
 		},
 		"start": {
@@ -133,7 +136,8 @@
 			}
 		},
 		"write": "Save the current game.",
-		"writeAndQuit": "Save the current game and close the current screen or dialog."
+		"writeAndQuit": "Save the current game and close the current screen or dialog.",
+		"writeLike": "Like \":wq\", but save only when changes have been made."
 	},
 	"form": {
 		"reset": "Reset to default values",
