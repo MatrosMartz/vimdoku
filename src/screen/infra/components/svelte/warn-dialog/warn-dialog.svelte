@@ -37,8 +37,8 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		width: max-content;
-		max-width: 60vw;
+		width: min(70vw, 20rem);
+		min-width: min-content;
 		overflow: hidden;
 		border-radius: 16px;
 	}
@@ -49,7 +49,7 @@
 		width: 100%;
 		padding: 0.4rem;
 		background-color: rgb(var(--dialog-header) / 50%);
-		border-bottom: 2px solid rgb(var(--alternative-border));
+		border-bottom: 0.4rem solid rgb(var(--alternative-border));
 	}
 
 	.warn-title {
