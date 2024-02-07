@@ -153,7 +153,7 @@
 	}
 
 	.text {
-		color: rgb(var(--special-color));
+		color: rgb(var(--string-color));
 	}
 
 	.text::before,
