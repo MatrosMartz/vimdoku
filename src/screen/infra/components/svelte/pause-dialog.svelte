@@ -69,7 +69,7 @@
 		justify-content: center;
 		width: 100%;
 		padding: 0.4rem;
-		background-color: rgb(var(--dialog-header) / 50%);
+		background-color: rgb(var(--dialog-header) / 70%);
 		border-bottom: 0.4rem solid rgb(var(--alternative-border));
 	}
 

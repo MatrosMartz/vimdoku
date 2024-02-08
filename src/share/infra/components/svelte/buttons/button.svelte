@@ -48,9 +48,8 @@
 		font-weight: 500;
 		color: inherit;
 		background-color: rgb(var(--input-background));
-		border: 2px solid rgb(var(--input-border));
+		border: 2px solid transparent;
 		border-radius: 8px;
-		box-shadow: 0 0 12px rgb(var(--input-shadow) / 25%);
 		transition:
 			background-color 200ms ease-out,
 			box-shadow 200ms ease-out;
@@ -61,7 +60,7 @@
 	}
 
 	button:focus {
-		--input-border: var(--focus-border);
+		border: 2px solid rgb(var(--focus-border));
 	}
 
 	button[aria-disabled='true'] {
@@ -69,7 +68,7 @@
 	}
 
 	button:not([aria-disabled='true']):active {
-		--input-background: var(--focus-border);
-		--input-border: var(--focus-border);
+		background-color: rgb(var(--alternative-border));
+		border: 2px solid rgb(var(--focus-border));
 	}
 </style>

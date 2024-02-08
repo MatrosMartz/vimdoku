@@ -1,25 +1,26 @@
 :root {
-	--surface-1: 254 185 235;
-	--surface-2: 174 168 179;
-	--surface-3: 177 188 228;
-	--input-background: 224 212 224;
+	--surface-1: 219 191 225;
+	--surface-2: 207 186 224;
+	--surface-3: 174 179 210;
+	--input-background: 223 216 216;
 	--input-border: 137 134 139;
-	--alternative-border: 155 147 203;
+	--alternative-border: 172 161 225;
 	--focus-border: 105 82 119;
 	--primary-color: 32 23 34;
 	--secondary-color: 39 25 3;
-	--editor-background: 231 220 240;
-	--error-color: 147 13 20;
-	--value-color: 87 49 24;
+	--editor-background: 238 230 253;
+	--error-color: 139 4 20;
+	--value-color: 97 59 19;
+	--optional-color: 101 77 110;
 	--key-color: 6 75 126;
-	--holder-color: 72 61 50;
-	--symbol-color: 13 78 32;
+	--holder-color: 73 62 48;
+	--symbol-color: 6 78 19;
 	--unverified-color: 45 52 60;
 	--assert-color: var(--symbol-color);
-	--number-color: 112 38 1;
+	--number-color: 112 53 10;
 	--string-color: var(--symbol-color);
 	--boolean-color: var(--error-color);
-	--status-bar-background: 206 198 222;
+	--status-bar-background: 213 209 234;
 	--command-color: 72 56 106;
 	--notes-color: var(--command-color);
 	--anchor-color: 36 74 88;
@@ -28,12 +29,12 @@
 	--tooltip-border: 145 104 196;
 	--card-head-background: var(--status-bar-background);
 	--card-shadow: 170 152 192;
-	--dialog-header: 181 175 248;
-	--dialog-background: 175 160 182;
+	--dialog-header: 186 180 254;
+	--dialog-background: 202 191 226;
 	--input-shadow: 15 17 34;
 	--hover-shadow: 49 2 114 / 20%;
-	--focus-brightness: brightness(105%);
-	--blink-background: 246 239 247;
+	--focus-brightness: brightness(97%);
+	--blink-background: 227 223 233;
 	--icon-size: 48px;
 
 	font-family: Poppins, sans-serif;
@@ -50,21 +51,22 @@
 	--surface-1: 36 21 32;
 	--surface-2: 31 24 32;
 	--surface-3: 19 24 43;
-	--input-background: 26 23 27;
+	--input-background: 24 14 27;
 	--input-border: 74 70 77;
 	--alternative-border: 63 63 89;
 	--focus-border: 133 136 166;
 	--primary-color: 216 200 231;
 	--secondary-color: 182 179 168;
 	--editor-background: 12 6 17;
-	--error-color: 230 107 107;
+	--error-color: 248 121 123;
 	--value-color: 233 178 127;
+	--optional-color: 126 129 139;
 	--key-color: 132 170 220;
 	--holder-color: 166 145 125;
 	--symbol-color: 84 171 133;
 	--unverified-color: 130 134 135;
 	--number-color: 215 140 71;
-	--status-bar-background: 16 9 28;
+	--status-bar-background: 15 8 25;
 	--command-color: 157 137 164;
 	--anchor-color: 137 192 212;
 	--visited-color: 174 137 255;
@@ -72,10 +74,10 @@
 	--tooltip-border: 31 11 59;
 	--card-shadow: 19 15 24;
 	--dialog-header: 39 33 60;
-	--dialog-background: 38 30 42;
+	--dialog-background: 31 22 39;
 	--input-shadow: 3 3 5;
 	--hover-shadow: 9 0 20 / 75%;
-	--focus-brightness: brightness(130%);
+	--focus-brightness: brightness(120%);
 	--blink-background: 20 9 28;
 }
 
@@ -216,7 +218,7 @@ h3 {
 }
 
 .highlight .optional {
-	color: rgb(120 118 133);
+	color: rgb(var(--optional-color));
 }
 
 .highlight .optional::before {
