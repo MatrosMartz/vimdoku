@@ -18,21 +18,21 @@ describe.concurrent('Cmd Group entity', () => {
 	test('Their weight should be "h(?:e(?:lp?)?)?\\s+"', () => {
 		const cmd = CmdTokenGroup.fromString('h[elp]')
 
-		expect(cmd.getWeightRgx()).toBe('h(?:e(?:lp?)?)?')
+		expect(cmd.getWeightRgx()).toBe('(h(?:e(?:lp?)?)?)?')
 	})
 })
 
 describe.concurrent('Sub Group entity', () => {
 	test('Their value should be "help :set"', () => {
 		const cmd = CmdTokenGroup.fromString('h[elp]')
-		const subCmd = cmd.createSub('<:>set')
+		const subCmd = cmd.createSub('<:>(set)')
 
 		expect(subCmd.value).toBe('help :set')
 	})
 
 	test('Should return an object with the "match" key on true if matched, otherwise on false.', () => {
 		const cmd = CmdTokenGroup.fromString('h[elp]')
-		const subCmd = cmd.createSub('<:>set')
+		const subCmd = cmd.createSub('<:>(set)')
 
 		expect(subCmd.exec('help :set')).toEqual({ match: true, variables: {} })
 		expect(subCmd.exec('help :set   ')).toEqual({ match: true, variables: {} })
@@ -45,10 +45,10 @@ describe.concurrent('Sub Group entity', () => {
 
 	test('Should return zero if it does not match or one greater if it does match.', () => {
 		const cmd = CmdTokenGroup.fromString('h[elp]')
-		const subCmd = cmd.createSub('<:>set')
+		const subCmd = cmd.createSub('<:>(set)')
 
-		expect(subCmd.getWeight('h')).toBe(0)
-		expect(subCmd.getWeight('help')).toBe(0)
+		expect(subCmd.getWeight('h')).toBe(1)
+		expect(subCmd.getWeight('help')).toBe(4)
 		expect(subCmd.getWeight('h ')).toBe(2)
 		expect(subCmd.getWeight('help ')).toBe(5)
 		expect(subCmd.getWeight('help 1')).toBe(0)

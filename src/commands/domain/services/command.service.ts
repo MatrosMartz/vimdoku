@@ -96,9 +96,11 @@ export class CmdListSvc<H> {
 	}
 
 	suggestions(input: string) {
-		return this.subCmds
+		const suggs = this.subCmds
 			.map(subCmd => subCmd.getSuggestion(input))
 			.filter(sugg => sugg.weight > 0)
 			.sort((a, b) => b.weight - a.weight)
+
+		return suggs.filter(sugg => sugg.weight > suggs[0].weight - 1)
 	}
 }

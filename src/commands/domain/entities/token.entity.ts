@@ -124,7 +124,7 @@ export class CmdTokenGroup {
 			)
 			.join('')
 
-		return this.#weightRgx
+		return '(' + this.#weightRgx + ')?'
 	}
 }
 
@@ -146,7 +146,7 @@ export type TokenList = [
 /** Represent a Subcommand Token Group. */
 export class SubTokenGroup<S extends string = string> {
 	#execRgx?: string
-	#weightRgx?: string
+	#weightPattern?: string
 	readonly #cmdTokenGroup
 	readonly #defaultVariables
 	readonly #tokens
@@ -228,14 +228,16 @@ export class SubTokenGroup<S extends string = string> {
 	 * @returns The weight.
 	 */
 	getWeight(input: string) {
-		this.#weightRgx ??=
-			(this.#tokens.length > 0
-				? (this.#cmdTokenGroup.getWeightRgx() + this.#getWeightRgx())
-						.replace(/.*\\s\+(?=[^\\w+])/, match => `(?:${match})?`)
-						.replace(/\\s\+(?=\\w)/, match => `[^${match}]`)
-				: this.#cmdTokenGroup.getWeightRgx()) + '$'
+		this.#weightPattern = this.#cmdTokenGroup.getWeightRgx() + this.#getWeightRgx() + '$'
 
-		return new RegExp(this.#weightRgx).exec(input.toLowerCase())?.[0].length ?? 0
+		/* const [fullMatch, ...matches] = new RegExp(this.#weightPattern).exec(input)?.filter(m => m != null) ?? ['']
+
+		if (fullMatch.length > 0) console.log({ pattern: this.value, fullMatch, matches })
+		return {
+			weight: fullMatch.length,
+			matches: matches.reduce((acc, curr) => acc + curr.length, 0),
+		} */
+		return new RegExp(this.#weightPattern).exec(input)?.[0].length ?? 0
 	}
 
 	/**
@@ -266,17 +268,22 @@ export class SubTokenGroup<S extends string = string> {
 	#getWeightRgx() {
 		if (this.#tokens.length <= 0) return ''
 
-		return (
-			'\\s+' +
-			this.#tokens
-				.map(({ kind, value }) =>
-					match(kind)
-						.case([SubTokenKind.HOLDER, SubTokenKind.VARIABLE], () => '\\w')
-						.case(SubTokenKind.SYMBOL, () => optionally(value.toLowerCase().replace(/[?!:=\\^<>&*+]/g, m => '\\' + m)))
-						.default(() => optionally(value.toLowerCase()))
-						.done()
-				)
-				.join('')
-		)
+		const a = this.#tokens
+			.map(({ kind, value }) =>
+				match(kind)
+					.case([SubTokenKind.HOLDER, SubTokenKind.VARIABLE], () => '([^\\w?!:=\\\\^<>&*+])?')
+					.case(SubTokenKind.SYMBOL, () => {
+						const newValue = value.toLowerCase().replace(/[?!:=\\^<>&*+]/g, m => '\\' + m)
+						return `(${newValue[0]}${optionally(newValue.slice(1))})?`
+					})
+					.default(() => {
+						const newValue = value.toLowerCase()
+						return `(${newValue[0]}${optionally(newValue.slice(1))})?`
+					})
+					.done()
+			)
+			.join('')
+
+		return '(\\s)?' + a
 	}
 }
