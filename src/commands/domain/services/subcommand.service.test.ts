@@ -15,7 +15,7 @@ describe.concurrent('Subcommand Service', () => {
 	test('The name should be the union of the tokens.', () => {
 		const subCmd = new SubCmdSvc({
 			createHeader: noop,
-			desc: 'foobar',
+			desc: () => 'foobar',
 			tokens: new SubTokenGroup({
 				cmdTokenGroup: new CmdTokenGroup([
 					{ kind: CmdTokenKind.REQUIRED, value: 'foo' },
@@ -32,7 +32,7 @@ describe.concurrent('Subcommand Service', () => {
 	test('The suggestion id should contain the tokens, their kind followed by their value.', () => {
 		const subCmd = new SubCmdSvc({
 			createHeader: noop,
-			desc: 'foobar',
+			desc: () => 'foobar',
 			tokens: new SubTokenGroup({
 				cmdTokenGroup: new CmdTokenGroup([
 					{ kind: CmdTokenKind.REQUIRED, value: 'foo' },
@@ -49,7 +49,7 @@ describe.concurrent('Subcommand Service', () => {
 	test('The more the input matches, the greater the weight of the suggestion should be.', () => {
 		const subCmd = new SubCmdSvc({
 			createHeader: noop,
-			desc: 'foobar',
+			desc: () => 'foobar',
 			tokens: new SubTokenGroup({
 				cmdTokenGroup: new CmdTokenGroup([
 					{ kind: CmdTokenKind.REQUIRED, value: 'foo' },
@@ -67,7 +67,7 @@ describe.concurrent('Subcommand Service', () => {
 	test('The "createHeader" function should work correctly.', () => {
 		const subCmd = new SubCmdSvc({
 			createHeader,
-			desc: 'foobar',
+			desc: () => 'foobar',
 			tokens: new SubTokenGroup({
 				cmdTokenGroup: new CmdTokenGroup([
 					{ kind: CmdTokenKind.REQUIRED, value: 'foo' },
@@ -85,7 +85,7 @@ describe.concurrent('Subcommand Service', () => {
 		const fn = vi.fn(() => 'foo')
 		const subCmd = new SubCmdSvc({
 			createHeader: noop,
-			desc: 'foobar',
+			desc: () => 'foobar',
 			fn,
 			tokens: new SubTokenGroup({
 				cmdTokenGroup: new CmdTokenGroup([
@@ -105,7 +105,7 @@ describe.concurrent('Subcommand Service', () => {
 		const fn = vi.fn(() => 'foo')
 		const subCmd = new SubCmdSvc({
 			createHeader: noop,
-			desc: 'foobar',
+			desc: () => 'foobar',
 			fn,
 			tokens: new SubTokenGroup({
 				cmdTokenGroup: new CmdTokenGroup([

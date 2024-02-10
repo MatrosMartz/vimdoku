@@ -3,6 +3,7 @@
 
 	import { type Sugg } from '$cmd/domain/entities'
 	import { exec } from '$cmd/infra/services'
+	import { i18nState } from '$i18n/infra/stores/svelte'
 
 	import { input } from './input.store'
 
@@ -27,7 +28,7 @@
 <li>
 	<button bind:this={btn} tabindex="0" on:click={clickHandler}>
 		{#each suggestion.desc as desc}
-			<p>{desc()}</p>
+			<p>{desc(i18nState.data)}</p>
 		{/each}
 	</button>
 </li>

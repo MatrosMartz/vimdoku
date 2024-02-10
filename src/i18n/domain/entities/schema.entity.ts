@@ -1,9 +1,9 @@
-export type SchemaStr<T> = T extends object
+export type SchemaKeys<T> = T extends object
 	? {
 			[K in keyof T]-?: K extends string
 				? T[K] extends string | string[]
 					? `${K}`
-					: `${K & string}-${SchemaStr<T[K]>}`
+					: `${K & string}-${SchemaKeys<T[K]>}`
 				: never
 		}[keyof T]
 	: never

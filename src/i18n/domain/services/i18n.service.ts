@@ -1,7 +1,8 @@
 import { inject } from '~/share/utils'
 import { IDLE_PREFS, type Lang } from '$pref/domain/models'
 
-import { type I18nKeys, type I18nSchema, type II18n } from '../models'
+import { type I18nKeys, type I18nSchema } from '../entities'
+import { type II18n } from '../models'
 import { I18nObs } from './i18n-obs.service'
 
 export class I18nSvc implements II18n {

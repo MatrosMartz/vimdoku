@@ -1,10 +1,10 @@
-import { CmdTokenGroup, type Desc } from '../entities'
+import { CmdTokenGroup, type Desc, type DescFn } from '../entities'
 import { type CreateHeader, type SubCmdFn, SubCmdSvc } from './subcommand.service'
 
 export interface CmdBuilderOpts {
 	fn?(): void
 	cmdLike: string
-	desc: (() => string) | Desc
+	desc: DescFn | Desc
 }
 
 export type CmdFn = <H>(createHeader: CreateHeader<H>) => Array<SubCmdSvc<H>>

@@ -3,20 +3,8 @@ import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 import { cmdListMock } from '~/__mocks__/command.service'
 import { inject } from '~/share/utils'
 
-import type { IMed } from '../models'
 import { ExecSvc } from './executor.service'
 import { SuggsObs } from './suggestions-obs.service'
-
-vi.mock('$i18n/infra/stores/svelte', async () => ({
-	i18nState: { data: (await import('$i18n/domain/models')).IDLE_I18N },
-}))
-
-const mockMediator: IMed = {
-	dispatch(action, data) {
-		return this
-	},
-	async load() {},
-}
 
 const suggsObs = inject(SuggsObs)
 let executor: ExecSvc
@@ -28,7 +16,7 @@ beforeAll(() => {
 })
 
 beforeEach(() => {
-	executor = new ExecSvc({ cmdList: cmdListMock, mediator: mockMediator })
+	executor = new ExecSvc({ cmdList: cmdListMock })
 })
 
 describe.concurrent('ExecutorSvc suggestions', () => {

@@ -1,4 +1,8 @@
-export type Desc = [() => string, ...Array<() => string>]
+import type { I18n } from '$i18n/domain/entities'
+
+export type DescFn = (i18n: I18n) => string
+
+export type Desc = [DescFn, ...DescFn[]]
 
 export interface SuggOpts<T> {
 	desc: Desc

@@ -3,7 +3,7 @@
 	import { capitalCase } from '~/share/utils'
 	import { SCREEN_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
-	import type { I18n } from '$i18n/domain/models'
+	import type { I18n } from '$i18n/domain/entities'
 	import { i18nState } from '$i18n/infra/stores/svelte'
 	import { type Prefs, prefsGroupEntries, type PrefsNamesEntries } from '$pref/domain/models'
 	import { type Accessibility, ACCESSIBILITY_FIELDS, type ColorSchema } from '$pref/domain/models/user.model'

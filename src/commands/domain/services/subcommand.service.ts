@@ -1,18 +1,12 @@
-import {
-	type CmdTokenGroup,
-	type Desc,
-	type SubTokenGroup,
-	Sugg,
-	type TokenList,
-	type TokenVariables,
-} from '../entities'
+import { type Desc, type DescFn, Sugg } from '../entities/suggestion.entity'
+import { type CmdTokenGroup, type SubTokenGroup, type TokenList, type TokenVariables } from '../entities/token.entity'
 
 export type CreateHeader<H> = (tokens: TokenList) => H
 
 export interface SubCmdSvcOpts<S extends string, H> {
 	fn?(variables: TokenVariables<S>): void
 	createHeader: CreateHeader<H>
-	desc: (() => string) | Desc
+	desc: DescFn | Desc
 	tokens: SubTokenGroup<S>
 }
 
