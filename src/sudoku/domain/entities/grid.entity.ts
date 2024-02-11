@@ -1,6 +1,6 @@
 import { IDLE_POS, Pos, type PosData } from '~/share/domain/entities'
 import type { Tuple } from '~/share/types'
-import { iterateArray, noop } from '~/share/utils'
+import { iterateArray, keysBy, noop } from '~/share/utils'
 
 export type GridData<T> = Tuple<Tuple<T, 9>, 9>
 
@@ -469,7 +469,7 @@ export class Grid<T> {
 	 * @param fn The transformation function to apply to subgrids.
 	 * @returns An object containing subgrids with the transformed values.
 	 */
-	createSubgrids<U>(fn: (cell: T, pos: Pos) => U) {
+	createSubgrids<U extends Record<string, unknown>>(fn: (cell: T, pos: Pos) => U) {
 		const newGrid = {} as {
 			[K in keyof U]: Grid<U[K]>
 		}
@@ -477,7 +477,7 @@ export class Grid<T> {
 		for (const pos of Pos.iterateMatrix(9)) {
 			const result = fn(this.cellBy(pos), pos)
 
-			for (const key of Object.keys(result)) {
+			for (const key of keysBy(result)) {
 				if (!(key in newGrid)) newGrid[key] = new Grid(Pos.createMatrix(9, () => null as U[keyof U]))
 				newGrid[key].#mutateCell(pos, result[key])
 			}

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button, ButtonMenu } from '~/share/infra/components/svelte/buttons'
-	import { capitalCase } from '~/share/utils'
+	import { capitalCase, inArray } from '~/share/utils'
 	import { SCREEN_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
 	import type { I18n } from '$i18n/domain/entities'
@@ -37,7 +37,7 @@
 		if (field.type === 'toggle') return i18n.get(`prefs-toggle-${prefs[key] as boolean}`, String(prefs[key]))
 		if (key === 'colorSchema') return i18n.get(`prefs-schema-${prefs[key] as ColorSchema}`, prefs[key])
 		if (key === 'language') return i18n.get('langName', prefs[key])
-		if (ACCESSIBILITY_FIELDS.includes(key))
+		if (inArray(ACCESSIBILITY_FIELDS, key))
 			return i18n.get(`prefs-accessibility-${prefs[key] as Accessibility}`, prefs[key])
 		return prefs[key]
 	}

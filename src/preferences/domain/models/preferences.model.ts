@@ -1,5 +1,6 @@
 import type { FormGroup, FormSchema } from '~/share/domain/models'
 import type { GetEntries, KeysByType } from '~/share/types'
+import { entriesBy, keysBy } from '~/share/utils'
 
 import { SUDOKU_IDLE_PREFS, sudokuFields, type SudokuPrefs } from './sudoku.model'
 import { USER_IDLE_PREFS, userFields, type UserPrefs } from './user.model'
@@ -8,9 +9,9 @@ import { VIM_IDLE_PREFS, vimFields, type VimPrefs } from './vim.model'
 export type Prefs = SudokuPrefs & UserPrefs & VimPrefs
 
 export const prefsGroupEntries = [
-	['sudoku', Object.entries(sudokuFields)],
-	['user', Object.entries(userFields)],
-	['vim', Object.entries(vimFields)],
+	['sudoku', entriesBy(sudokuFields)],
+	['user', entriesBy(userFields)],
+	['vim', entriesBy(vimFields)],
 ] as const
 
 export type PrefsNamesEntries = (
@@ -72,7 +73,7 @@ export interface IPrefs {
 const ALL_FIELDS = { ...sudokuFields, ...userFields, ...vimFields }
 
 /** All preferences names. */
-export const PREFS_NAMES = Object.keys(ALL_FIELDS)
+export const PREFS_NAMES = keysBy(ALL_FIELDS)
 
 type AllNames = keyof typeof ALL_FIELDS
 export type ToggleNames = KeysByType<Prefs, boolean>

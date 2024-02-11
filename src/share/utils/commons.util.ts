@@ -1,3 +1,5 @@
+import type { GetEntries } from '../types'
+
 /** The no operation function. */
 export function noop() {}
 
@@ -92,4 +94,28 @@ export function typeFallback<T extends StrTypes>(type: T, value: unknown, fallba
  */
 export function clamp(min: number, max: number, value: number) {
 	return Math.min(Math.max(value, min), max)
+}
+
+/**
+ * Get array of keys and values properties of object.
+ * @param obj Object contains properties and methods.
+ * @returns The entries.
+ */
+export const entriesBy: <O extends Record<string, unknown>>(obj: O) => GetEntries<O> = Object.entries
+
+/**
+ * Get array of the property keys of object.
+ * @param obj Object contains properties ans methods.
+ * @returns The Keys.
+ */
+export const keysBy: <O>(obj: O) => Array<keyof O> = Object.keys
+
+/**
+ * Determines if element exist in array.
+ * @param arr Array in search element.
+ * @param search Element to be searched.
+ * @returns If element exist in array
+ */
+export function inArray<T>(arr: T[], search: any): search is T {
+	return arr.includes(search)
 }

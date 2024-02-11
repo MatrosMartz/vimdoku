@@ -2,7 +2,7 @@
 	import { createEventDispatcher } from 'svelte'
 
 	import type { FormSchema, SchemaToModel } from '~/share/domain/models'
-	import { capitalCase, typeFallback } from '~/share/utils'
+	import { capitalCase, entriesBy, typeFallback } from '~/share/utils'
 	import { i18nState } from '$i18n/infra/stores/svelte'
 
 	import { Button, ButtonMenu } from '../buttons'
@@ -28,12 +28,12 @@
 	 * @returns Group, fallback and fields in array.
 	 */
 	function createDataEntries(sch: FormSchema, l: typeof labels) {
-		return Object.entries(sch).map(
+		return entriesBy(sch).map(
 			([group, settings]) =>
 				[
 					group,
 					l.groups[group],
-					Object.entries(settings).map(
+					entriesBy(settings).map(
 						([name, settings]) => [name, l.names[name], settings] satisfies [string, (a: string) => string, unknown]
 					),
 				] satisfies [string, (a: string) => string, unknown]

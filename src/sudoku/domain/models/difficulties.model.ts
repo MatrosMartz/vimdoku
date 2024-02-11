@@ -1,3 +1,5 @@
+import { keysBy } from '~/share/utils'
+
 export enum DifficultyKind {
 	Beginner = '1.92',
 	Basic = '1.87',
@@ -8,4 +10,4 @@ export enum DifficultyKind {
 	Expert = '1.2',
 }
 
-export const DIFFICULTIES_NAMES = Object.keys(DifficultyKind)
+export const DIFFICULTIES_NAMES = keysBy(DifficultyKind)

@@ -1,4 +1,4 @@
-import { xor } from './commons.util'
+import { keysBy, xor } from './commons.util'
 
 /**
  * Comprares the structure of two objects (iterative way).
@@ -13,7 +13,7 @@ export function sameStructureIterative(obj1: unknown, obj2: unknown) {
 	if (obj1 == null || obj2 == null) return obj1 === obj2
 	if (Array.isArray(obj1) !== Array.isArray(obj2)) return false
 
-	const [keys1, keys2] = [Object.keys(obj1), Object.keys(obj2)]
+	const [keys1, keys2] = [keysBy(obj1), keysBy(obj2)]
 
 	if (keys1.length !== keys2.length) return false
 
@@ -53,7 +53,7 @@ export function sameStructureLoop(obj1: unknown, obj2: unknown) {
 
 		if (type1 !== 'object' || curr1 == null) continue
 
-		const [keys1, keys2] = [Object.keys(curr1), Object.keys(curr2)]
+		const [keys1, keys2] = [keysBy(curr1), keysBy(curr2)]
 
 		if (keys1.length !== keys2.length) return false
 
@@ -85,7 +85,7 @@ export function sameStructureLoop2(obj1: unknown, obj2: unknown) {
 	while (stack.length > 0) {
 		const [curr1, curr2] = stack.pop()!
 
-		const [keys1, keys2] = [Object.keys(curr1), Object.keys(curr2)]
+		const [keys1, keys2] = [keysBy(curr1), keysBy(curr2)]
 
 		if (keys1.length !== keys2.length) return false
 

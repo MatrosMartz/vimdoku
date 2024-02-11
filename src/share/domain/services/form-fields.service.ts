@@ -1,3 +1,5 @@
+import { entriesBy } from '~/share/utils'
+
 import type { FormGroup } from '../models'
 
 export const FormFields = {
@@ -7,7 +9,7 @@ export const FormFields = {
 	 * @returns New object with keys of the form group and the default value.
 	 */
 	getDefaultValues<FG extends FormGroup>(group: FG) {
-		return Object.fromEntries(Object.entries(group).map(([key, value]) => [key, value.default])) as {
+		return Object.fromEntries(entriesBy(group).map(([key, value]) => [key, value.default])) as {
 			[K in keyof FG]: FG[K]['default']
 		}
 	},

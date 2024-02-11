@@ -1,4 +1,4 @@
-import { inject, InvalidPreferencesError, sameStructure } from '~/share/utils'
+import { entriesBy, inject, InvalidPreferencesError, sameStructure } from '~/share/utils'
 
 import { IDLE_PREFS, type IPrefs, type Prefs } from '../models'
 import { SUDOKU_IDLE_PREFS, type SudokuPrefs } from '../models/sudoku.model'
@@ -64,9 +64,9 @@ export class PrefsSvc implements IPrefs {
 	 */
 	static entriesGroup(preferences: Prefs) {
 		return [
-			['sudoku', Object.entries(this.getSudoku(preferences))],
-			['user', Object.entries(this.getUser(preferences))],
-			['vim', Object.entries(this.getVim(preferences))],
+			['sudoku', entriesBy(this.getSudoku(preferences))],
+			['user', entriesBy(this.getUser(preferences))],
+			['vim', entriesBy(this.getVim(preferences))],
 		] as const
 	}
 
