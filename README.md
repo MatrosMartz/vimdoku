@@ -1,4 +1,4 @@
-![Vimdoku Logo](./public/vimdoku.svg)
+![Vimdoku Logo](./public/favicon-144.png)
 
 # Vimdoku - A Sudoku-like Web Game with Vim Shortcuts
 
