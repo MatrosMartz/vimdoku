@@ -9,7 +9,7 @@ export enum Lang {
 export const LANGS = Object.values(Lang)
 
 export enum Accessibility {
-	SYSTEM = 'systemValue',
+	SYSTEM = 'system',
 	MORE = 'more',
 	LESS = 'less',
 }
@@ -17,9 +17,9 @@ export enum Accessibility {
 export const ACCESSIBILITY_KINDS = Object.values(Accessibility)
 
 export enum ColorSchema {
-	SYSTEM = 'systemValue',
-	DARK_MODE = 'darkMode',
-	LIGHT_MODE = 'lightMode',
+	SYSTEM = 'system',
+	DARK_MODE = 'dark',
+	LIGHT_MODE = 'light',
 }
 
 export const COLOR_SCHEMAS = Object.values(ColorSchema)

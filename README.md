@@ -57,6 +57,57 @@ npm run dev
 
 Vimdoku offers puzzles with varying levels of difficulty to challenge players of all skill levels. You can choose between beginner, easy, medium, hard, etc. puzzles to test your problem-solving skills.
 
+Example:
+
+```vim
+:st[art] easy
+```
+
+## Language
+
+Vimdoku supports different languages for a better user experience. The currently available languages are English and Spanish. To change the language, use the following Vim commands while playing:
+
+```vim
+:se[t] language=es
+```
+
+or:
+
+```vim
+:se[t] language:es
+```
+
+This will change the user interface language to Spanish. To switch back to English, simply replace `es` with `en`.
+
+The game is currently available in the following languages:
+
+- Español (`es`)
+- English (`en`, by default)
+
+If you would like to contribute translations into other languages, you are more than welcome to do so.
+
+## Color schema
+
+Vimdoku allows you to choose between different color schemes for the game interface. You can select a color scheme using the `:set colorschema` Vim command followed by one of the following values:
+
+- `system`: Uses the color scheme set in your system preferences
+- `dark`: Applies a dark mode color scheme
+- `light`: Applies a light mode color scheme
+
+For example:
+
+```vim
+:se[t] colorschema=dark
+```
+
+![dark mode example](./public/screenshots/darkmode.png)
+
+```vim
+:se[t] colorschema=light
+```
+
+![light mode example](./public/screenshots/lightmode.png)
+
 ## Validation
 
 Vimdoku provides real-time validation, so you'll know immediately if your input is correct or if there are any errors in your solution.
@@ -64,10 +115,20 @@ Vimdoku provides real-time validation, so you'll know immediately if your input 
 To disable real-time validation, you can use the following Vim command:
 
 ```vim
-:set noautomaticvalidation
+:se[t] noautomaticvalidation
 ```
 
 Simply enter this command in Vim while playing the game to turn off automatic validation.
+
+To reactivate the real-time validation in Vimdoku, you can use the following Vim command:
+
+```vim
+:se[t] automaticvalidation
+```
+
+This will enable automatic validation in the game, so you can see immediately if your input is correct or if there are any errors in your solution.
+
+I hope this helps! Let me know if you have any other questions.
 
 ## Technologies Used
 
