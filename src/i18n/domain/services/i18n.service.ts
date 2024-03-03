@@ -38,7 +38,9 @@ export class I18nSvc implements II18n {
 	 * @returns The resource.
 	 */
 	async #fetchResource(lang: Lang) {
-		return await fetch(`locales/${lang}.json`).then<I18nSchema | null>(async res => await res.json())
+		return await fetch(globalThis.location.origin + `/locales/${lang}.json`).then<I18nSchema | null>(
+			async res => await res.json()
+		)
 	}
 
 	/**

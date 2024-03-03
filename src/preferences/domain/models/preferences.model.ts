@@ -39,6 +39,7 @@ export interface IPrefs {
 	readonly user: UserPrefs
 	/** Get the current value of the VIM preferences. */
 	readonly vim: VimPrefs
+	get<P extends keyof Prefs>(preference: P): Prefs[P]
 	/** Load from the repo. */
 	load(): Promise<void>
 	/** Reset to default values all preferences. */

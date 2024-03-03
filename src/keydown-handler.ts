@@ -1,6 +1,7 @@
 import { SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services'
 import { med } from '$cmd/infra/services'
-import { DialogKind, MainScreenKind, type VimScreen } from '$screen/domain/models'
+import { Route } from '$screen/domain/entities'
+import { DialogKind, type VimScreen } from '$screen/domain/models'
 import { screenState } from '$screen/infra/stores/svelte'
 import type { ValidNumbers } from '$sudoku/domain/entities'
 import { ModeKind } from '$sudoku/domain/models'
@@ -73,7 +74,7 @@ function sudoku(ev: KeyboardEvent) {
  * @returns True if screen is Game without some dialog, false if not.
  */
 function isGameScreen(screen: VimScreen) {
-	return screen.main === MainScreenKind.Game && screen.dialog.kind === DialogKind.None
+	return Route.isGame(screen.route) && screen.dialog.kind === DialogKind.None
 }
 
 /**

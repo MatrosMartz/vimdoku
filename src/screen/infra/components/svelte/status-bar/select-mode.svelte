@@ -3,12 +3,13 @@
 	import { SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
 	import { i18nState } from '$i18n/infra/stores/svelte'
-	import { DialogKind, MainScreenKind } from '$screen/domain/models'
+	import { Route } from '$screen/domain/entities'
+	import { DialogKind } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
 	import { MODE_KEYS, ModeKind } from '$sudoku/domain/models'
 	import { modeState } from '$sudoku/infra/stores/svelte'
 
-	$: disabled = $screenState.main !== MainScreenKind.Game
+	$: disabled = !Route.isGame($screenState.route)
 
 	$: open = $screenState.dialog.kind === DialogKind.InLn && $screenState.dialog.opts.type === 'modes'
 

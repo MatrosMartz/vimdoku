@@ -3,7 +3,7 @@ import { PosSvc } from '~/share/domain/services'
 import { inject } from '~/share/utils'
 
 import { type ValidNumbers } from '../entities'
-import type { IGame, ISudoku, SudokuSetts } from '../models'
+import type { DifficultyKind, IGame, ISudoku, SudokuSetts } from '../models'
 import { ModeKind } from '../models'
 import type { SudokuRepo } from '../repositories'
 import { BoardSvc } from './board.service'
@@ -16,6 +16,7 @@ interface SudokuOpts {
 }
 
 export class SudokuSvc implements ISudoku {
+	#difficulty?: DifficultyKind
 	#game?: IGame | null = null
 	readonly #modeObs = inject(ModeObs)
 	readonly #pos
@@ -27,6 +28,10 @@ export class SudokuSvc implements ISudoku {
 		this.#pos = new PosSvc()
 		this.#repo = repo
 		this.#timer = new TimerSvc()
+	}
+
+	get difficulty() {
+		return this.#difficulty
 	}
 
 	get hasWin() {
@@ -97,6 +102,8 @@ export class SudokuSvc implements ISudoku {
 		const settsData = await this.#repo.getSetts()
 		const infoData = await this.#repo.getInfo()
 
+		this.#difficulty = settsData.difficulty
+
 		this.#game = GameSvc.create(
 			{ board: BoardSvc.fromJSON(boardData, settsData.solution, infoData.errors), pos: this.#pos },
 			ModeKind.X
@@ -117,6 +124,8 @@ export class SudokuSvc implements ISudoku {
 
 	async start(setts: SudokuSetts, withTimer: boolean) {
 		const board = BoardSvc.create(setts, 0)
+
+		this.#difficulty = setts.difficulty
 
 		await this.#repo.create({
 			board: board.toJSON(),

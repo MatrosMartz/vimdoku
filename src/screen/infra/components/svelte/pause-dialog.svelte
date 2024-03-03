@@ -2,7 +2,8 @@
 	import { Button, ButtonMenu, Dialog, Icon } from '~/share/infra/components/svelte'
 	import { SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
-	import { DialogKind, MainScreenKind } from '$screen/domain/models'
+	import { Route } from '$screen/domain/entities'
+	import { DialogKind } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
 
 	$: show = $screenState.dialog.kind === DialogKind.Pause
@@ -25,7 +26,7 @@
 	 * Return to home, click handler.
 	 */
 	function homeHandler() {
-		med.dispatch(SCREEN_ACTIONS.openMain, { mainScreen: MainScreenKind.Start })
+		med.dispatch(SCREEN_ACTIONS.goTo, { route: Route.createHome() })
 	}
 
 	/**

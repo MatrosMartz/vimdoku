@@ -122,6 +122,10 @@ export class PrefsSvc implements IPrefs {
 		}
 	}
 
+	get<P extends keyof Prefs>(preference: P): Prefs[P] {
+		return this.#obs.data[preference]
+	}
+
 	async load() {
 		if (!(await this.#repo.has())) return
 

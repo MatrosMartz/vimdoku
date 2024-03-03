@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { MainScreenKind } from '$screen/domain/models'
+	import { Route } from '$screen/domain/entities'
 	import { screenState } from '$screen/infra/stores/svelte'
 	import { SudokuGame } from '$sudoku/infra/components/svelte'
 
@@ -7,9 +7,9 @@
 </script>
 
 <main>
-	{#if $screenState.main === MainScreenKind.Start}
+	{#if Route.isHome($screenState.route)}
 		<StartScreen />
-	{:else if $screenState.main === MainScreenKind.Game}
+	{:else if Route.isGame($screenState.route)}
 		<SudokuGame />
 	{/if}
 </main>

@@ -2,9 +2,11 @@
 	import { i18nState } from '$i18n/infra/stores/svelte'
 
 	$: typeText = $i18nState.get('titleScreen-cmd-type', 'Type')
+
+	const faviconURL = globalThis.location.origin + '/favicon.svg'
 </script>
 
-<img height="200" width="200" alt="vimdoku logo" src="./favicon.svg" class="vimdoku-logo" />
+<img height="200" width="200" alt="vimdoku logo" src={faviconURL} class="vimdoku-logo" />
 
 <h2>VIMDOKU - VIM suDOKU</h2>
 
