@@ -18,7 +18,7 @@ To get started with Vimdoku, follow these simple steps:
 1. Clone this repository to your local machine:
 
 ```bash
-git clone https://github.com/tsonkoalt/vimdoku.git
+git clone https://github.com/matrosmartz/vimdoku.git
 ```
 
 2.Navigate to the project directory:
