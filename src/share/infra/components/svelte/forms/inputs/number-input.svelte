@@ -8,7 +8,7 @@
 	export let label = capitalCase(name)
 	export let settings: NumberField
 	export let defaultValue: number
-	export let value: number
+	export let value = defaultValue
 
 	let input: HTMLInputElement
 
@@ -29,7 +29,16 @@
 	})
 </script>
 
-<label class="field">
+<label class="field container">
 	<span class="secondary">{label}</span>
-	<input bind:this={input} id={name} {name} {...settings} required {placeholder} on:input={inputHandler} />
+	<input
+		bind:this={input}
+		id={name}
+		{name}
+		{placeholder}
+		class="text-or-number"
+		{...settings}
+		required
+		on:input={inputHandler}
+	/>
 </label>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button, ButtonMenu } from '~/share/infra/components/svelte/buttons'
+	import { ToggleInput } from '~/share/infra/components/svelte/forms/inputs'
 	import { capitalCase, inArray } from '~/share/utils'
 	import { SCREEN_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
@@ -11,19 +11,10 @@
 	import { DialogKind } from '$screen/domain/models'
 	import { screenState } from '$screen/infra/stores/svelte'
 
-	$: allTooltip = {
-		id: 'all-disabled-describe',
-		text: $i18nState.get('prefs-btn-showAll-disabledReason', 'All preferences are being displayed.'),
-	}
-	$: diffTooltip = {
-		id: 'diff-disabled-describe',
-		text: $i18nState.get(
-			'prefs-btn-showDiffer-disabledReason',
-			'Only preferences with values different from the default values are being displayed.'
-		),
-	}
+	let showDiff: boolean = false
 
-	$: showAll = $screenState.dialog.kind === DialogKind.PrefAll
+	$: if (inArray([DialogKind.PrefAll, DialogKind.PrefDiff], $screenState.dialog.kind))
+		showDiff = $screenState.dialog.kind === DialogKind.PrefDiff
 
 	/**
 	 * Gets the translated value of the preference.
@@ -43,16 +34,12 @@
 	}
 
 	/**
-	 * Change dialog with preferences all kind.
+	 * Toggle show pref, change handler.
+	 * @param ev Change Event
 	 */
-	function allHandler() {
-		med.dispatch(SCREEN_ACTIONS.openDialog, { kind: DialogKind.PrefAll })
-	}
-	/**
-	 * Change dialog with preferences differ kind.
-	 */
-	function diffHandler() {
-		med.dispatch(SCREEN_ACTIONS.openDialog, { kind: DialogKind.PrefDiff })
+	function toggleHandler({ currentTarget: tar }: Event) {
+		if (tar instanceof HTMLInputElement)
+			med.dispatch(SCREEN_ACTIONS.openDialog, { kind: tar.checked ? DialogKind.PrefDiff : DialogKind.PrefAll })
 	}
 </script>
 
@@ -64,22 +51,23 @@
 			</thead>
 			<tbody>
 				{#each fields as field (field[0])}
-					<tr class="field" class:strike={!showAll && $prefsState[field[0]] === field[1].default}>
-						<th class="key secondary">{$i18nState.get(`prefs-names-${field[0]}`, capitalCase(field[0]))}</th>
+					<tr class="field highlight" class:strike={showDiff && $prefsState[field[0]] === field[1].default}>
+						<th class="bold secondary">{$i18nState.get(`prefs-names-${field[0]}`, capitalCase(field[0]))}</th>
 						<td class="monospace value {field[1].type}">{getPrefText($i18nState, field, $prefsState)}</td>
 					</tr>
 				{/each}
 			</tbody>
 		</table>
 	{/each}
-	<ButtonMenu direction="auto">
-		<Button disabled={showAll} tooltipProps={allTooltip} on:click={allHandler}
-			>{$i18nState.get('prefs-btn-showAll-text', 'Show all')}</Button
-		>
-		<Button disabled={!showAll} tooltipProps={diffTooltip} on:click={diffHandler}
-			>{$i18nState.get('prefs-btn-showDiffer-text', 'Show different from default values')}</Button
-		>
-	</ButtonMenu>
+	<div class="toggle-show">
+		<ToggleInput
+			name="show-all-pref"
+			checked={showDiff}
+			defaultChecked={false}
+			label="Show only that differ from default value:"
+			on:change={toggleHandler}
+		/>
+	</div>
 </article>
 
 <style>
@@ -142,37 +130,7 @@
 		opacity: 0.3;
 	}
 
-	.key {
-		overflow: hidden;
-		font-weight: 500;
-		text-align: left;
-	}
-
-	.key::after {
-		content: ':';
-	}
-
-	.text {
-		color: rgb(var(--string-color));
-	}
-
-	.text::before,
-	.text::after {
-		font-weight: 600;
-		color: rgb(var(--key-color));
-		content: '"';
-	}
-
-	.number {
-		color: rgb(var(--number-color));
-	}
-
-	.toggle {
-		font-style: italic;
-		color: rgb(var(--boolean-color));
-	}
-
-	.options {
-		color: rgb(var(--notes-color));
+	.toggle-show {
+		max-width: max-content;
 	}
 </style>

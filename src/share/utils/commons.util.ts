@@ -119,3 +119,13 @@ export const keysBy: <O>(obj: O) => Array<keyof O> = Object.keys
 export function inArray<T>(arr: T[], search: any): search is T {
 	return arr.includes(search)
 }
+
+/**
+ * Pipe function.
+ * @param val Initial value.
+ * @param fn Function for map value.
+ * @returns The mapped value.
+ */
+export function p<T, R>(val: T, fn: (val: T) => R) {
+	return fn(val)
+}

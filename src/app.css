@@ -97,6 +97,11 @@
 	outline: none;
 }
 
+button {
+	font-family: inherit;
+	font-size: inherit;
+}
+
 body {
 	min-height: 100vh;
 	color: rgb(var(--primary-color));
@@ -116,17 +121,19 @@ legend {
 
 form .field {
 	display: flex;
-	flex-basis: calc(2rem + 15ch);
 	flex-direction: column;
-	flex-grow: 1;
 	gap: 6px;
 	align-items: center;
+}
+
+form .container {
+	flex-basis: calc(2rem + 15ch);
+	flex-grow: 1;
 	text-align: center;
 }
 
 form .field span {
 	height: 1lh;
-	overflow: hidden;
 }
 
 input,
@@ -166,10 +173,9 @@ a:focus::before {
 	transform: scaleY(100%);
 }
 
-form .field :where(input:where([type='text'], [type='number']), select, button),
-.command-input {
+.text-or-number {
 	width: calc(100% - 4rem);
-	height: 40px;
+	height: var(--icon-size);
 	padding-inline: 1rem;
 	color: inherit;
 	background-color: rgb(var(--input-background));
@@ -181,22 +187,12 @@ form .field :where(input:where([type='text'], [type='number']), select, button),
 		box-shadow 200ms ease-out;
 }
 
-form .field :where(input:where([type='text'], [type='number']), select, button):hover,
-.command-input:has(input:hover) {
+.text-or-number:hover {
 	filter: var(--focus-brightness);
 }
 
-form .field :where(input:where([type='text'], [type='number']), select, button):focus,
-.command-input:has(input:focus) {
+.text-or-number:focus {
 	--input-border: var(--focus-border);
-}
-
-form .field:has(input:hover, select:hover) span {
-	filter: brightness(120%) saturate(250%);
-}
-
-form .field select option {
-	height: 40px;
 }
 
 h3 {
@@ -262,6 +258,40 @@ h3 {
 
 .highlight .symbol {
 	color: rgb(var(--symbol-color));
+}
+
+.highlight .text {
+	color: rgb(var(--string-color));
+}
+
+.highlight .text::before,
+.highlight .text::after {
+	font-weight: 600;
+	color: rgb(var(--key-color));
+	content: '"';
+}
+
+.highlight .number {
+	color: rgb(var(--number-color));
+}
+
+.highlight .toggle {
+	font-style: italic;
+	color: rgb(var(--boolean-color));
+}
+
+.highlight .options {
+	color: rgb(var(--notes-color));
+}
+
+.highlight .bold {
+	overflow: hidden;
+	font-weight: 500;
+	text-align: left;
+}
+
+.highlight .bold::after {
+	content: ':';
 }
 
 .monospace,
@@ -400,6 +430,6 @@ input {
 
 @media (width >= 1024px) {
 	:root {
-		--icon-size: 52px;
+		--icon-size: 44px;
 	}
 }

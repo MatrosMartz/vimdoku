@@ -8,7 +8,7 @@
 	export let label = capitalCase(name)
 	export let settings: TextField
 	export let defaultValue: string
-	export let value: string
+	export let value = defaultValue
 
 	const placeholder = value
 
@@ -19,7 +19,7 @@
 	})
 </script>
 
-<label class="field">
+<label class="field container">
 	<span class="secondary">{label}</span>
-	<input bind:this={input} id={name} {name} {...settings} required {placeholder} bind:value />
+	<input bind:this={input} id={name} {name} {placeholder} class="text-or-number" {...settings} required bind:value />
 </label>

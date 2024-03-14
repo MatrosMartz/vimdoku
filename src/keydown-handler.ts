@@ -82,13 +82,15 @@ function isGameScreen(screen: VimScreen) {
  * @param ev The keyboard event.
  */
 export function keydownHandler(ev: KeyboardEvent) {
+	const t = ev.target
 	if (ev.key === ':' && screenState.data.dialog.kind !== DialogKind.Cmd) {
 		ev.preventDefault()
 		med.dispatch(SCREEN_ACTIONS.openDialog, { kind: DialogKind.Cmd })
 	}
 	if (ev.key === 'Escape') {
 		if (screenState.data.dialog.kind !== DialogKind.None) ev.preventDefault()
-		med.dispatch(SCREEN_ACTIONS.close)
+		if (!(t instanceof HTMLElement && t.classList.contains('combobox') && t.ariaExpanded === 'true'))
+			med.dispatch(SCREEN_ACTIONS.close)
 	}
 	if (ev.key === ' ' && screenState.data.dialog.kind === DialogKind.None) {
 		med.dispatch(SCREEN_ACTIONS.openDialog, { kind: DialogKind.Pause })

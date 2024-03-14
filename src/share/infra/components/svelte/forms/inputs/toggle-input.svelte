@@ -7,27 +7,32 @@
 	export let label = capitalCase(name)
 	export let checked = true
 	export let defaultChecked: boolean
-
+	export let onMsg = 'on'
+	export let offMsg = 'off'
 	let input: HTMLInputElement
 
 	onMount(() => (input.defaultChecked = defaultChecked))
 </script>
 
-<label class="field">
-	<input bind:this={input} id={name} {name} type="checkbox" bind:checked />
+<label class="field container">
+	<input bind:this={input} id={name} {name} role="switch" type="checkbox" bind:checked on:change />
 	<span class="secondary">{label}</span>
-	<div aria-hidden="true" class="switch"></div>
+	<span class="state">
+		<span class="switch"></span>
+		<span aria-hidden="true" class="off">{offMsg}</span>
+		<span aria-hidden="true" class="on">{onMsg}</span>
+	</span>
 </label>
 
 <style>
 	.switch {
-		--height: 40px;
+		--height: var(--icon-size);
 		--border: var(--input-border);
 
 		position: relative;
+		display: inline-block;
 		width: calc(var(--height) * 2.2);
 		height: var(--height);
-		margin-inline: auto;
 		overflow: hidden;
 		background-color: rgb(var(--input-border));
 		border: 2px solid rgb(var(--border));
@@ -54,7 +59,14 @@
 		transform: translateX(var(--x));
 	}
 
-	label:hover > .switch {
+	.state {
+		display: flex;
+		gap: 1rem;
+		align-items: center;
+		height: fit-content;
+	}
+
+	label:hover .switch {
 		filter: var(--focus-brightness);
 	}
 
@@ -62,15 +74,20 @@
 		appearance: none;
 	}
 
-	label:has(input:checked) > .switch {
+	input:checked ~ .state .switch {
 		--input-border: var(--alternative-border);
 	}
 
-	label:has(input:checked) > .switch::after {
+	input:checked ~ .state .switch::after {
 		--x: 100%;
 	}
 
-	label:has(input:focus) > .switch {
+	input:focus ~ .state .switch {
 		--border: var(--focus-border);
+	}
+
+	input:not(:checked) ~ .state .on,
+	input:checked ~ .state .off {
+		display: none;
 	}
 </style>
