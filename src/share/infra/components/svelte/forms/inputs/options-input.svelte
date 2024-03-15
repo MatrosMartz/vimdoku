@@ -16,6 +16,7 @@
 	export let settings: Omit<OptionField<T>, 'type'>
 	export let value = settings.default
 	export let icons: Record<T, IconsProps> | null = null
+	export let i18n: Record<T, string> | null = null
 
 	let index = Math.max(settings.opts.indexOf(value), 0)
 	let expanded = false
@@ -143,7 +144,7 @@
 			on:blur={blurHandler}
 			on:keydown={keydownHandler}
 		>
-			<span class="combo-value">{value}</span><Icon id="chevron-down" />
+			<span class="combo-value">{i18n?.[value] ?? capitalCase(value)}</span><Icon id="chevron-down" />
 		</button>
 	</label>
 	<ul
@@ -169,7 +170,7 @@
 					on:click={() => (expanded = false)}
 				/>
 				<label for="opt-{name}-{opt}" class="listbox-label">
-					<span>{opt}</span>
+					<span>{i18n?.[opt] ?? capitalCase(opt)}</span>
 					{#if icons != null}
 						<span class="icon">
 							<Icon {...icons[opt]} />
@@ -221,37 +222,16 @@
 		border: 2px solid rgb(var(--input-border));
 		border-top: none;
 		border-radius: 0 0 12px 12px;
-		transform: scaleY(0);
+		transition: transform 500ms;
 		transform-origin: top;
 	}
 
 	label:has(.combobox[aria-expanded='false']) ~ .listbox {
-		animation: listbox-close 500ms;
-	}
-
-	@keyframes listbox-close {
-		to {
-			transform: scaleY(0);
-		}
-
-		from {
-			transform: scaleY(100%);
-		}
+		transform: scaleY(0);
 	}
 
 	label:has(.combobox[aria-expanded='true']) ~ .listbox {
 		transform: scaleY(100%);
-		animation: listbox-open 500ms;
-	}
-
-	@keyframes listbox-open {
-		from {
-			transform: scaleY(0);
-		}
-
-		to {
-			transform: scaleY(100%);
-		}
 	}
 
 	.listbox-item {

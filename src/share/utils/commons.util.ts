@@ -1,4 +1,4 @@
-import type { GetEntries } from '../types'
+import type { Entries, EntriesToObj, GetEntries } from '../types'
 
 /** The no operation function. */
 export function noop() {}
@@ -102,6 +102,8 @@ export function clamp(min: number, max: number, value: number) {
  * @returns The entries.
  */
 export const entriesBy: <O extends Record<string, unknown>>(obj: O) => GetEntries<O> = Object.entries
+
+export const entriesToObj: <E extends Entries>(entries: E) => EntriesToObj<E> = Object.fromEntries
 
 /**
  * Get array of the property keys of object.

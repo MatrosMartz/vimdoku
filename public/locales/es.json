@@ -22,14 +22,14 @@
 	},
 	"prefs": {
 		"accessibility": {
-			"systemValue": "Valor del sistema",
+			"system": "Sistema",
 			"less": "Menos",
 			"more": "más"
 		},
 		"schema": {
-			"systemValue": "Valor del sistema",
-			"darkMode": "Modo obscuro",
-			"lightMode": "Modo luminoso"
+			"system": "Sistema",
+			"dark": "Obscuro",
+			"light": "Luminoso"
 		},
 		"groups": {
 			"sudoku": "Sudoku",
@@ -69,8 +69,8 @@
 			"show": "Visualizar"
 		},
 		"toggle": {
-			"false": "apagado",
-			"true": "encendido"
+			"false": "no",
+			"true": "si"
 		}
 	},
 	"cmdDesc": {

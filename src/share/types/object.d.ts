@@ -4,6 +4,18 @@ export type KeysByType<O, T> = {
 	[K in keyof O]: O[K] extends T ? K : never
 }[keyof O]
 
+/** Basic Entry type. */
+export type Entry = [string | number | symbol, unknown]
+
+/** Types valid as key for entry. */
+export type EntryKeys = string | number | symbol
+
+/** Basic Entries type. */
+export type Entries = Entry[]
+
+/** Transform entries type in to object type. */
+export type EntriesToObj<E extends Entries> = { [P in E[number][0]]: Extract<E[number], [P, unknown]>[1] }
+
 export type RequireOne<T> = {
 	[K in keyof T]: {
 		[O in keyof T]?: T[O]
@@ -12,6 +24,7 @@ export type RequireOne<T> = {
 	}
 }[keyof T]
 
+/** Gets the entries for an object. */
 export type GetEntries<T> = Array<
 	{
 		[K in keyof T]: [K, T[K]]

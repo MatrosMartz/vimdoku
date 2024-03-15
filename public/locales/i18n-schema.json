@@ -48,20 +48,20 @@
 				"accessibility": {
 					"type": "object",
 					"properties": {
-						"systemValue": { "type": "string" },
+						"system": { "type": "string" },
 						"less": { "type": "string" },
 						"more": { "type": "string" }
 					},
-					"required": ["systemValue", "less", "more"]
+					"required": ["system", "less", "more"]
 				},
 				"schema": {
 					"type": "object",
 					"properties": {
-						"systemValue": { "type": "string" },
-						"darkMode": { "type": "string" },
-						"lightMode": { "type": "string" }
+						"system": { "type": "string" },
+						"dark": { "type": "string" },
+						"light": { "type": "string" }
 					},
-					"required": ["systemValue", "darkMode", "lightMode"]
+					"required": ["system", "dark", "light"]
 				},
 				"groups": {
 					"type": "object",

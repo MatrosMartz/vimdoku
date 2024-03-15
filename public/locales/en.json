@@ -22,14 +22,14 @@
 	},
 	"prefs": {
 		"accessibility": {
-			"systemValue": "System value",
+			"system": "System",
 			"less": "Less",
 			"more": "More"
 		},
 		"schema": {
-			"systemValue": "System Value",
-			"darkMode": "dark mode",
-			"lightMode": "Light mode"
+			"system": "System",
+			"dark": "dark",
+			"light": "Light"
 		},
 		"groups": {
 			"sudoku": "Sudoku",
