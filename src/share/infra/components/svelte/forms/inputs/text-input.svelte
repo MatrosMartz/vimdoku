@@ -7,15 +7,14 @@
 	export let name: string
 	export let label = capitalCase(name)
 	export let settings: TextField
-	export let defaultValue: string
-	export let value = defaultValue
+	export let value = settings.default
 
-	const placeholder = value
+	const placeholder = settings.default
 
 	let input: HTMLInputElement
 
 	onMount(() => {
-		input.defaultValue = defaultValue
+		input.defaultValue = settings.default
 	})
 </script>
 

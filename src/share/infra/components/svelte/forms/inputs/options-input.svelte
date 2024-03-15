@@ -1,14 +1,23 @@
 <script generics="T extends string" lang="ts">
+	import { onMount } from 'svelte'
+
+	import type { OptionField } from '~/share/domain/models'
 	import { capitalCase } from '~/share/utils'
 
 	import { Icon } from '../..'
 
+	interface IconsProps {
+		type?: 'icon' | 'flag' | 'logo'
+		id: string
+	}
+
 	export let name: string
 	export let label = capitalCase(name)
-	export let options: readonly T[]
-	export let value = options[0]
+	export let settings: Omit<OptionField<T>, 'type'>
+	export let value = settings.default
+	export let icons: Record<T, IconsProps> | null = null
 
-	let index = options.indexOf(value) ?? 0
+	let index = Math.max(settings.opts.indexOf(value), 0)
 	let expanded = false
 	let listbox: HTMLUListElement
 
@@ -22,6 +31,17 @@
 		expanded = false
 	}
 
+	/** Set new value. */
+	function setValue() {
+		value = settings.opts[index]
+	}
+
+	/** Close Listbox and set the selected value for the new value. */
+	function closeAndSet() {
+		setValue()
+		closeListbox()
+	}
+
 	/** Generic go to first option. */
 	function goToFirst() {
 		index = 0
@@ -29,7 +49,7 @@
 
 	/** Generic go to last option. */
 	function goToLast() {
-		index = options.length - 1
+		index = settings.opts.length - 1
 	}
 
 	const CLOSED_CODE_MAP: Record<string, () => void> = {
@@ -43,10 +63,8 @@
 			openListbox()
 			goToLast()
 		},
-		Enter() {
-			openListbox()
-			value = options[index]
-		},
+		Enter: setValue,
+		Tab: setValue,
 	}
 
 	const EXPANDED_CODE_MAP: Record<string, () => void> = {
@@ -54,16 +72,17 @@
 			index = Math.max(index - 1, 0)
 		},
 		ArrowDown() {
-			index = Math.min(index + 1, options.length - 1)
+			index = Math.min(index + 1, settings.opts.length - 1)
 		},
 		Home: goToFirst,
 		End: goToLast,
 		Escape: closeListbox,
+		' ': setValue,
 		PageUp() {
 			index = Math.max(index - 10, 0)
 		},
 		PageDown() {
-			index = Math.min(index + 10, options.length - 1)
+			index = Math.min(index + 10, settings.opts.length - 1)
 		},
 	}
 
@@ -88,14 +107,22 @@
 		if (ev.key.startsWith('Arrow')) ev.preventDefault()
 		setTimeout(() => {
 			if (expanded) {
-				if (ev.key.length === 1) {
-					index = options.findIndex(o => o.startsWith(ev.key)) ?? index
+				if (ev.key !== ' ' && ev.key.length === 1) {
+					index = Math.max(
+						0,
+						settings.opts.findIndex(o => o.startsWith(ev.key))
+					)
 				} else if (ev.altKey) {
-					if (ev.key === 'ArrowUp' || ev.key === 'ArrowDown') closeListbox()
+					if (ev.key === 'ArrowUp' || ev.key === 'ArrowDown') closeAndSet()
 				} else EXPANDED_CODE_MAP[ev.key]?.()
 			} else CLOSED_CODE_MAP[ev.key]?.()
 		}, 0)
 	}
+
+	onMount(() => {
+		const el = document.getElementById(`opt-${name}-${settings.default}`)
+		if (el instanceof HTMLInputElement) el.defaultChecked = true
+	})
 </script>
 
 <div class="combo-container container">
@@ -127,8 +154,8 @@
 		tabindex="-1"
 		class="listbox"
 	>
-		{#each options as opt (opt)}
-			<li class:current={opt === options[index]}>
+		{#each settings.opts as opt, i (opt)}
+			<li class="listbox-item" class:current={i === index}>
 				<input
 					id="opt-{name}-{opt}"
 					name="opt-{name}"
@@ -141,7 +168,14 @@
 					bind:group={value}
 					on:click={() => (expanded = false)}
 				/>
-				<label for="opt-{name}-{opt}"><span>{opt}</span></label>
+				<label for="opt-{name}-{opt}" class="listbox-label">
+					<span>{opt}</span>
+					{#if icons != null}
+						<span class="icon">
+							<Icon {...icons[opt]} />
+						</span>
+					{/if}
+				</label>
 			</li>
 		{/each}
 	</ul>
@@ -220,7 +254,7 @@
 		}
 	}
 
-	.listbox li {
+	.listbox-item {
 		height: var(--icon-size);
 		list-style: none;
 		background-color: rgb(var(--input-background));
@@ -228,19 +262,31 @@
 		transition: border 250ms;
 	}
 
-	.listbox li:last-child {
+	.listbox-item:last-child {
 		border-radius: 0 0 10px 10px;
 	}
 
-	.listbox li:hover {
+	.listbox-item:hover {
 		filter: var(--focus-brightness);
 	}
 
-	.listbox label {
+	.listbox-label {
 		display: flex;
 		align-items: center;
+		justify-content: space-between;
 		height: 100%;
 		padding-inline: 1rem;
+	}
+
+	.icon {
+		display: grid;
+		place-content: center;
+		width: 2em;
+		height: 2em;
+		filter: opacity(50%);
+		border-radius: 50%;
+		transition: filter 200ms;
+		transform: translateX(20%);
 	}
 
 	.listbox-option {
@@ -248,11 +294,15 @@
 		appearance: none;
 	}
 
-	li.current label {
-		text-decoration: underline 2px;
+	.current .listbox-label .icon {
+		filter: opacity(100%);
 	}
 
-	li.current {
+	.listbox-option:checked ~ .listbox-label .icon {
+		border: 2px solid rgb(var(--focus-border));
+	}
+
+	.listbox-item.current {
 		border: 2px solid rgb(var(--focus-border));
 	}
 </style>

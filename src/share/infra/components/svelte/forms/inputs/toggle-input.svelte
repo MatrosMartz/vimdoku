@@ -1,17 +1,18 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 
+	import type { ToggleField } from '~/share/domain/models'
 	import { capitalCase } from '~/share/utils'
 
 	export let name: string
 	export let label = capitalCase(name)
 	export let checked = true
-	export let defaultChecked: boolean
+	export let settings: Omit<ToggleField, 'type'>
 	export let onMsg = 'on'
 	export let offMsg = 'off'
 	let input: HTMLInputElement
 
-	onMount(() => (input.defaultChecked = defaultChecked))
+	onMount(() => (input.defaultChecked = settings.default))
 </script>
 
 <label class="field container">

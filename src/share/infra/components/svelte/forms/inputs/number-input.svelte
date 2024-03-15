@@ -7,8 +7,7 @@
 	export let name: string
 	export let label = capitalCase(name)
 	export let settings: NumberField
-	export let defaultValue: number
-	export let value = defaultValue
+	export let value = settings.default
 
 	let input: HTMLInputElement
 
@@ -24,7 +23,7 @@
 	}
 
 	onMount(() => {
-		input.defaultValue = String(defaultValue)
+		input.defaultValue = String(settings.default)
 		input.valueAsNumber = value
 	})
 </script>

@@ -26,7 +26,7 @@
 	<OptionsInput
 		name="difficulty-selector"
 		label={$i18nState.get('gameBtn-selectDifficulty', 'Select difficulty')}
-		options={DIFFICULTIES_NAMES}
+		settings={{ opts: DIFFICULTIES_NAMES, default: 'Easy'}}
 		bind:value
 	/>
 

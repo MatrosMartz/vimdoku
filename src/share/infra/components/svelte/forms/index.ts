@@ -1,2 +1,2 @@
-export { default as Form } from './form.svelte'
+export { default as Fieldset } from './fieldset.svelte'
 export * from './inputs'

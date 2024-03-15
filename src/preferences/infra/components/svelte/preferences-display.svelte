@@ -63,8 +63,8 @@
 		<ToggleInput
 			name="show-all-pref"
 			checked={showDiff}
-			defaultChecked={false}
 			label="Show only that differ from default value:"
+			settings={{ default: false }}
 			on:change={toggleHandler}
 		/>
 	</div>
