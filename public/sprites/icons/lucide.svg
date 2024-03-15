@@ -53,11 +53,48 @@
 			<polyline points="17 21 17 13 7 13 7 21" />
 			<polyline points="7 3 7 8 15 8" />
 		</symbol>
-		<svg id="warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+		<symbol id="warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
 			stroke-linejoin="round">
 			<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
 			<path d="M12 9v4" />
 			<path d="M12 17h.01" />
-		</svg>
+		</symbol>
+		<symbol id="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+			stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down">
+			<path d="m6 9 6 6 6-6" />
+		</symbol>
+		<symbol id="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+			stroke-linejoin="round">
+			<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+		</symbol>
+		<symbol id="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+			stroke-linejoin="round">
+			<circle cx="12" cy="12" r="4" />
+			<path d="M12 2v2" />
+			<path d="M12 20v2" />
+			<path d="m4.93 4.93 1.41 1.41" />
+			<path d="m17.66 17.66 1.41 1.41" />
+			<path d="M2 12h2" />
+			<path d="M20 12h2" />
+			<path d="m6.34 17.66-1.41 1.41" />
+			<path d="m19.07 4.93-1.41 1.41" />
+		</symbol>
+		<symbol id="device" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+			stroke-linejoin="round">
+			<rect width="20" height="14" x="2" y="3" rx="2" />
+			<line x1="8" x2="16" y1="21" y2="21" />
+			<line x1="12" x2="12" y1="17" y2="21" />
+		</symbol>
+		<symbol id="contrast-on" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+			stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-contrast">
+			<circle cx="12" cy="12" r="10" />
+			<path d="M12 18a6 6 0 0 0 0-12v12z" />
+		</symbol>
+		<symbol id="contrast-off" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+			stroke-linejoin="round" class="lucide lucide-contrast" viewBox="0 0 24 24">
+			<path
+				d="m1.9996 2.004 20 20M12 12.004V18a6 6 0 0 0 4.2402-1.7559m1.6504-3.1718C18.5586 9.3946 15.7378 6.008 12 6v1.1816" />
+			<path d="M8.3496 2.694a10 10 0 0 1 12.95 12.96m-2.22 3.43a10.0126 10.0126 0 1 1-14.16-14.16" />
+		</symbol>
 	</defs>
 </svg>

@@ -28,7 +28,7 @@ export enum IconTheme {
 	Heroicons = 'heroicons',
 	Lucide = 'lucide',
 	Iconoir = 'iconoir',
-	Feather = 'feather',
+	Tabler = 'tabler',
 }
 
 export const ICON_THEMES = Object.values(IconTheme)
