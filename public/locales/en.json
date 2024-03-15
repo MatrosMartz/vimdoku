@@ -59,13 +59,7 @@
 			"numbers": "Numbers",
 			"relativeNumbers": "Relative numbers"
 		},
-		"btn": {
-			"showAll": { "text": "Show All", "disabledReason": "All preferences are being displayed." },
-			"showDiffer": {
-				"text": "Show different from default values",
-				"disabledReason": "Only preferences with values different from the default values are being displayed."
-			}
-		},
+		"showToggle": "Show only that differ from default value",
 		"tabs": {
 			"edit": "Edit",
 			"show": "Show"

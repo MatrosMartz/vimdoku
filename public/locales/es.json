@@ -57,13 +57,7 @@
 			"numbers": "Números",
 			"relativeNumbers": "Números relativos"
 		},
-		"btn": {
-			"showAll": { "text": "Mostrar todas", "disabledReason": "Todas las preferencias se están mostrando." },
-			"showDiffer": {
-				"text": "Mostrar las diferentes de los valores por defecto",
-				"disabledReason": "Se están mostrando solo las preferencias que difieren con el valor por defecto."
-			}
-		},
+		"showToggle": "Resaltar diferentes al valor por defecto",
 		"tabs": {
 			"edit": "Editar",
 			"show": "Visualizar"

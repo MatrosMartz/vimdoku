@@ -117,27 +117,8 @@
 						"relativeNumbers"
 					]
 				},
-				"btn": {
-					"type": "object",
-					"properties": {
-						"showAll": {
-							"type": "object",
-							"properties": {
-								"text": { "type": "string" },
-								"disabledReason": { "type": "string" }
-							},
-							"required": ["text", "disabledReason"]
-						},
-						"showDiffer": {
-							"type": "object",
-							"properties": {
-								"text": { "type": "string" },
-								"disabledReason": { "type": "string" }
-							},
-							"required": ["text", "disabledReason"]
-						}
-					},
-					"required": ["showAll", "showDiffer"]
+				"showToggle": {
+					"type": "string"
 				},
 				"tabs": {
 					"type": "object",
@@ -153,7 +134,7 @@
 					"required": ["true", "false"]
 				}
 			},
-			"required": ["accessibility", "schema", "groups", "names", "btn", "tabs", "toggle"]
+			"required": ["accessibility", "schema", "groups", "names", "showToggle", "tabs", "toggle"]
 		},
 		"langName": { "type": "string" },
 		"cmdDesc": {

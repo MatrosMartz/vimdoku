@@ -63,7 +63,9 @@
 		<ToggleInput
 			name="show-all-pref"
 			checked={showDiff}
-			label="Show only that differ from default value:"
+			label="{$i18nState.get('prefs-showToggle', 'Show only that differ from default value')}:"
+			offMsg={$i18nState.get('prefs-toggle-false', 'off')}
+			onMsg={$i18nState.get('prefs-toggle-true', 'on')}
 			settings={{ default: false }}
 			on:change={toggleHandler}
 		/>
