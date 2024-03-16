@@ -1,8 +1,7 @@
 import { type Pos } from '~/share/domain/entities'
 import type { OptionalKeys } from '~/share/types'
 import type { Lang, Prefs, ToggleNames } from '$pref/domain/models'
-import { Page } from '$screen/domain/entities'
-import { type DialogData, DialogKind } from '$screen/domain/models'
+import { ModalEntity, Page } from '$screen/domain/entities'
 import { Solution, type ValidNumbers } from '$sudoku/domain/entities'
 import { type ModeKind, type SudokuSetts } from '$sudoku/domain/models'
 
@@ -51,9 +50,9 @@ export const PREFS_ACTIONS = { set: setPref, reset: resetPref, invert: invertPre
 // Screen Actions.
 const closeScreen: ActionUnData = async ({ screen, sudoku }) => {
 	const isGameRoute = Page.isGame(screen.route)
-	const isNoneDialog = screen.dialog.kind === DialogKind.None
+	const isNoneDialog = ModalEntity.isNone(screen.modal)
 	if (isGameRoute && isNoneDialog && !sudoku.isASaved) {
-		screen.setDialog({ kind: DialogKind.Warn, opts: { type: 'unsave' } })
+		screen.setModal(ModalEntity.createWarn('unsave'))
 		return
 	}
 
@@ -63,18 +62,18 @@ const closeScreen: ActionUnData = async ({ screen, sudoku }) => {
 	else await sudoku.load()
 }
 
-const openDialog: ActionWithData<DialogData> = async ({ screen }, data) => screen.setDialog(data)
+const openModal: ActionWithData<{ modal: ModalEntity }> = async ({ screen }, data) => screen.setModal(data.modal)
 
 const goTo: ActionWithData<{ route: Page }> = async ({ screen, sudoku }, data) => {
 	if (!Page.isGame(screen.route) && Page.isGame(data.route) && !sudoku.isASaved) {
-		screen.setDialog({ kind: DialogKind.Warn, opts: { type: 'unsave' } })
+		screen.setModal(ModalEntity.createWarn('unsave'))
 		return
 	}
 
 	screen.gotTo(data.route)
 }
 
-export const SCREEN_ACTIONS = { close: closeScreen, openDialog, goTo }
+export const SCREEN_ACTIONS = { close: closeScreen, openModal, goTo }
 
 // Sudoku actions.
 const clearCell: ActionUnData = async ({ sudoku }) => {
@@ -87,7 +86,7 @@ const writeCell: ActionWithData<{ value: ValidNumbers | 0 }> = async (state, dat
 	const { autoNoteDeletion: removeNotes, autoValidation: validate } = state.prefs.data
 	state.sudoku.write(data.value, { removeNotes, validate })
 
-	if (state.sudoku.hasWin) state.screen.setDialog({ kind: DialogKind.Win })
+	if (state.sudoku.hasWin) state.screen.setModal(ModalEntity.createWin())
 }
 
 const verifyBoard: ActionUnData = async ({ sudoku }) => {

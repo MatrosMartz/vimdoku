@@ -1,14 +1,12 @@
 <script>
 	import { Dialog } from '~/share/infra/components/svelte'
-	import { DialogKind } from '$screen/domain/models'
+	import { ModalEntity } from '$screen/domain/entities'
 	import { screenState } from '$screen/infra/stores/svelte'
 
 	import SelectGame from './select-game.svelte'
-
-	$: show = $screenState.dialog.kind === DialogKind.sel
 </script>
 
-<Dialog type="modal" {show}>
+<Dialog type="modal" show={ModalEntity.isSelGame($screenState.modal)}>
 	<div class="content">
 		<SelectGame />
 	</div>

@@ -2,7 +2,7 @@
 	import { DialogClose } from '~/share/infra/components/svelte'
 	import { SCREEN_ACTIONS } from '$cmd/domain/services'
 	import { exec, med } from '$cmd/infra/services'
-	import { DialogKind } from '$screen/domain/models'
+	import { ModalEntity } from '$screen/domain/entities'
 	import { screenState } from '$screen/infra/stores/svelte'
 
 	import { input } from './input.store'
@@ -23,7 +23,7 @@
 		exec.searchAutocomplete(currentTarget.value)
 	}
 
-	$: if ($screenState.dialog.kind === DialogKind.Cmd) form.reset()
+	$: if (ModalEntity.isCmd($screenState.modal)) form.reset()
 </script>
 
 <form bind:this={form} class="command-search" method="dialog" on:submit|preventDefault={submitHandler}>

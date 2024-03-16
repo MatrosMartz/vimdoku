@@ -50,7 +50,7 @@ function getMatcher<V, R = never>(
 ): Matcher<V> & EndMatcher<R> {
 	return {
 		case<C extends V, CR>(c: C | C[], fn: () => CR) {
-			const cases = (Array.isArray(c) ? c : [c]).map(c => [c, fn] satisfies Entry)
+			const cases = (Array.isArray(c) ? c : [c]).map(c => [c, fn] satisfies [unknown, unknown])
 			const newEntries = [...entries, ...cases]
 
 			return getMatcher<V, R | CR>(value, newEntries, defaultFn) as any

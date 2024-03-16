@@ -2,11 +2,8 @@
 	import { Button, ButtonMenu, Dialog, Icon } from '~/share/infra/components/svelte'
 	import { SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
-	import { Page } from '$screen/domain/entities'
-	import { DialogKind } from '$screen/domain/models'
+	import { ModalEntity, Page } from '$screen/domain/entities'
 	import { screenState } from '$screen/infra/stores/svelte'
-
-	$: show = $screenState.dialog.kind === DialogKind.Pause
 
 	/**
 	 * Continue game, click handler.
@@ -33,11 +30,11 @@
 	 * Edit preferences, click handler.
 	 */
 	function prefsHandler() {
-		med.dispatch(SCREEN_ACTIONS.openDialog, { kind: DialogKind.PrefEdit })
+		med.dispatch(SCREEN_ACTIONS.openModal, { modal: ModalEntity.createPref('edit') })
 	}
 </script>
 
-<Dialog type="modal" {show}>
+<Dialog type="modal" show={ModalEntity.isPause($screenState.modal)}>
 	<div class="content">
 		<header class="pause-header">
 			<h3 class="pause-title">Pause</h3>

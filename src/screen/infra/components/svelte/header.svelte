@@ -2,17 +2,16 @@
 	import { Icon } from '~/share/infra/components/svelte'
 	import { SCREEN_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
-	import { Page } from '$screen/domain/entities'
-	import { DialogKind, type DialogsWithoutOpts } from '$screen/domain/models'
+	import { ModalEntity, Page } from '$screen/domain/entities'
 	import { screenState } from '$screen/infra/stores/svelte'
 
 	/**
 	 * Creates a function which opens a dialogue of the kind defined.
-	 * @param kind The dialog kind.
+	 * @param modal The dialog kind.
 	 * @returns The click handler which opens a dialogue.
 	 */
-	function openDialog(kind: DialogsWithoutOpts): () => void {
-		return () => med.dispatch(SCREEN_ACTIONS.openDialog, { kind })
+	function openModal(modal: ModalEntity): () => void {
+		return () => med.dispatch(SCREEN_ACTIONS.openModal, { modal })
 	}
 
 	$: inGame = Page.isGame($screenState.route)
@@ -20,13 +19,15 @@
 
 <header class="status-bar vimdoku-header monospace">
 	<section>
-		<button class="status-icon icon-dialog" on:click={openDialog(DialogKind.Cmd)}><Icon id="cmd" /></button>
+		<button class="status-icon icon-dialog" on:click={openModal(ModalEntity.createCmd())}><Icon id="cmd" /></button>
 	</section>
 	<section class="vimdoku-title">
 		<h1>Vimdoku</h1>
 	</section>
 	<section>
-		<button class="status-icon icon-dialog" on:click={openDialog(inGame ? DialogKind.Pause : DialogKind.PrefEdit)}
+		<button
+			class="status-icon icon-dialog"
+			on:click={openModal(inGame ? ModalEntity.createPause() : ModalEntity.createPref('edit'))}
 			><Icon id={inGame ? 'pause' : 'pref'} /></button
 		>
 	</section>

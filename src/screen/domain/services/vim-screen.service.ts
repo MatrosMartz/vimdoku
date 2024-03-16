@@ -1,8 +1,8 @@
 import { inject } from '~/share/utils'
 import type { Lang } from '$pref/domain/models'
 
-import { IDLE_ROUTE, Page } from '../entities'
-import { type DialogData, DialogKind, IDLE_DIALOG, type IScreen, type VimScreen } from '../models'
+import { IDLE_MODAL, IDLE_ROUTE, ModalEntity, Page } from '../entities'
+import { type IScreen, type VimScreen } from '../models'
 import type { RouteRepo } from '../repositories'
 import { ScreenObs } from './vim-screen-obs.service'
 
@@ -18,19 +18,19 @@ export class ScreenSvc implements IScreen {
 
 	constructor({ repo }: ScreenOpts) {
 		this.#repo = repo
-		this.#obs.set({ dialog: IDLE_DIALOG, route: this.#repo.get().page })
+		this.#obs.set({ modal: IDLE_MODAL, route: this.#repo.get().page })
 	}
 
 	get data(): VimScreen {
 		return this.#obs.data
 	}
 
-	get dialog() {
-		return this.#obs.data.dialog
-	}
-
 	get lang() {
 		return this.#repo.get().lang
+	}
+
+	get modal() {
+		return this.#obs.data.modal
 	}
 
 	get route() {
@@ -38,16 +38,16 @@ export class ScreenSvc implements IScreen {
 	}
 
 	close() {
-		this.#obs.update(({ dialog, route }) => {
-			if (dialog.kind === DialogKind.Win) {
+		this.#obs.update(({ modal, route }) => {
+			if (ModalEntity.isWin(modal)) {
 				this.#repo.update(full => full.withPage(IDLE_ROUTE))
-				return { route: IDLE_ROUTE, dialog: { ...IDLE_DIALOG } }
-			} else if (dialog.kind !== DialogKind.None) return { route, dialog: { ...IDLE_DIALOG } }
+				return { route: IDLE_ROUTE, modal: IDLE_MODAL }
+			} else if (!ModalEntity.isNone(modal)) return { route, modal: IDLE_MODAL }
 			else if (this.#prev != null) {
 				this.#repo.update(full => full.withPage(this.#prev!))
-				return { route: this.#prev, dialog: { ...IDLE_DIALOG } }
+				return { route: this.#prev, modal: IDLE_MODAL }
 			}
-			return { dialog, route }
+			return { modal, route }
 		})
 	}
 
@@ -55,20 +55,20 @@ export class ScreenSvc implements IScreen {
 		this.#obs.update(screen => {
 			this.#prev = Page.isHome(route) ? null : screen.route
 
-			return { route, dialog: { ...IDLE_DIALOG } }
+			return { route, modal: IDLE_MODAL }
 		})
 
 		this.#repo.update(full => full.withPage(route))
 	}
 
-	setDialog(dialog: DialogData) {
-		this.#obs.update(({ dialog: prevDialog, route }) => {
-			if (dialog.kind === DialogKind.Pause && Page.isGame(route)) return { dialog, prevDialog, route }
-			return { dialog, route }
-		})
-	}
-
 	setLang(lang: Lang) {
 		this.#repo.update(full => full.withLang(lang))
+	}
+
+	setModal(modal: ModalEntity) {
+		this.#obs.update(({ route }) => {
+			if ((ModalEntity.isPause(modal) || ModalEntity.isWin(modal)) && Page.isGame(route)) return { modal, route }
+			return { modal, route }
+		})
 	}
 }

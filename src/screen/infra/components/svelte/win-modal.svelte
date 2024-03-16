@@ -1,15 +1,13 @@
 <script>
 	import { Dialog } from '~/share/infra/components/svelte'
-	import { DialogKind } from '$screen/domain/models'
+	import { ModalEntity } from '$screen/domain/entities'
 	import { screenState } from '$screen/infra/stores/svelte'
 	import { errorsState, timerState } from '$sudoku/infra/stores/svelte'
 
 	import { SelectGame } from './select-dialog'
-
-	$: show = $screenState.dialog.kind === DialogKind.Win
 </script>
 
-<Dialog type="modal" {show}>
+<Dialog type="modal" show={ModalEntity.isWin($screenState.modal)}>
 	<div class="content">
 		<h2>You are win!</h2>
 		<section>

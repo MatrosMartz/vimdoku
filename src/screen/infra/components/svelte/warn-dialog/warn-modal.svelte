@@ -2,13 +2,12 @@
 	import { Button, ButtonMenu, Dialog, DialogClose, Icon } from '~/share/infra/components/svelte'
 	import { SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
-	import { DialogKind } from '$screen/domain/models'
+	import { ModalEntity } from '$screen/domain/entities'
 	import { screenState } from '$screen/infra/stores/svelte'
 
 	let type = 'unsave'
 
-	$: show = $screenState.dialog.kind === DialogKind.Warn
-	$: type = $screenState.dialog.kind === DialogKind.Warn ? $screenState.dialog.opts.type : type
+	$: type = ModalEntity.isWarn($screenState.modal) ? $screenState.modal.type : type
 
 	/** Game save and Exit, click handler. */
 	function saveAndExitHandler() {
@@ -16,7 +15,7 @@
 	}
 </script>
 
-<Dialog type="modal" {show}>
+<Dialog type="modal" show={ModalEntity.isWarn($screenState.modal)}>
 	<section class="content">
 		<header class="warn-header">
 			<h3 class="warn-title"><Icon id="warn" />{type}:</h3>

@@ -1,7 +1,7 @@
 import { SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services'
 import { med } from '$cmd/infra/services'
-import { Page } from '$screen/domain/entities'
-import { DialogKind, type VimScreen } from '$screen/domain/models'
+import { ModalEntity, Page } from '$screen/domain/entities'
+import { type VimScreen } from '$screen/domain/models'
 import { screenState } from '$screen/infra/stores/svelte'
 import type { ValidNumbers } from '$sudoku/domain/entities'
 import { ModeKind } from '$sudoku/domain/models'
@@ -74,7 +74,7 @@ function sudoku(ev: KeyboardEvent) {
  * @returns True if screen is Game without some dialog, false if not.
  */
 function isGameScreen(screen: VimScreen) {
-	return Page.isGame(screen.route) && screen.dialog.kind === DialogKind.None
+	return Page.isGame(screen.route) && ModalEntity.isNone(screen.modal)
 }
 
 /**
@@ -83,17 +83,17 @@ function isGameScreen(screen: VimScreen) {
  */
 export function keydownHandler(ev: KeyboardEvent) {
 	const t = ev.target
-	if (ev.key === ':' && screenState.data.dialog.kind !== DialogKind.Cmd) {
+	if (ev.key === ':' && !ModalEntity.isCmd(screenState.data.modal)) {
 		ev.preventDefault()
-		med.dispatch(SCREEN_ACTIONS.openDialog, { kind: DialogKind.Cmd })
+		med.dispatch(SCREEN_ACTIONS.openModal, { modal: ModalEntity.createCmd() })
 	}
 	if (ev.key === 'Escape') {
-		if (screenState.data.dialog.kind !== DialogKind.None) ev.preventDefault()
+		if (ModalEntity.isNone(screenState.data.modal)) ev.preventDefault()
 		if (!(t instanceof HTMLElement && t.classList.contains('combobox') && t.ariaExpanded === 'true'))
 			med.dispatch(SCREEN_ACTIONS.close)
 	}
-	if (ev.key === ' ' && screenState.data.dialog.kind === DialogKind.None) {
-		med.dispatch(SCREEN_ACTIONS.openDialog, { kind: DialogKind.Pause })
+	if (ev.key === ' ' && ModalEntity.isNone(screenState.data.modal)) {
+		med.dispatch(SCREEN_ACTIONS.openModal, { modal: ModalEntity.createPause() })
 	}
 
 	if (isGameScreen(screenState.data)) sudoku(ev)
