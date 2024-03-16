@@ -24,7 +24,6 @@
 
 	onMount(() => {
 		input.defaultValue = String(settings.default)
-		input.valueAsNumber = value
 	})
 </script>
 
@@ -36,6 +35,7 @@
 		{name}
 		{placeholder}
 		class="text-or-number"
+		bind:value
 		{...settings}
 		required
 		on:input={inputHandler}
