@@ -1,7 +1,7 @@
-import type { FullRoute } from '../entities'
+import type { PageWithLang } from '../entities'
 
 export interface RouteRepo {
-	get(): FullRoute
-	set(fullRoute: FullRoute): void
-	update(fn: (fullRoute: FullRoute) => FullRoute): void
+	get(): PageWithLang
+	set(fullRoute: PageWithLang): void
+	update(fn: (fullRoute: PageWithLang) => PageWithLang): void
 }

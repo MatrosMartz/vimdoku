@@ -1,11 +1,11 @@
 import type { Lang } from '$pref/domain/models'
 
-import { IDLE_ROUTE, type Route } from '../entities'
+import { IDLE_ROUTE, type Page } from '../entities'
 import { type DialogData, IDLE_DIALOG } from './dialog.model'
 
 export interface VimScreen {
 	dialog: DialogData
-	route: Route
+	route: Page
 }
 
 export interface IScreen {
@@ -15,11 +15,11 @@ export interface IScreen {
 	/** Get the current dialog. */
 	readonly dialog: DialogData
 	/** Get the current main screen. */
-	readonly route: Route
+	readonly route: Page
 	/** Return to previous screen or close dialog. */
 	close(): void
 	/** Set main screen. */
-	gotTo(route: Route): void
+	gotTo(route: Page): void
 	/** Set dialog and options. */
 	setDialog(dialog: DialogData): void
 	setLang(lang: Lang): void

@@ -34,3 +34,5 @@ export class RepoItemNotFoundError extends Error {
 		this.name = 'RepoItemNotFoundError'
 	}
 }
+
+export class InvalidStringPageError extends Error {}

@@ -1,7 +1,7 @@
 import { type Pos } from '~/share/domain/entities'
 import type { OptionalKeys } from '~/share/types'
 import type { Lang, Prefs, ToggleNames } from '$pref/domain/models'
-import { Route } from '$screen/domain/entities'
+import { Page } from '$screen/domain/entities'
 import { type DialogData, DialogKind } from '$screen/domain/models'
 import { Solution, type ValidNumbers } from '$sudoku/domain/entities'
 import { type ModeKind, type SudokuSetts } from '$sudoku/domain/models'
@@ -50,7 +50,7 @@ export const PREFS_ACTIONS = { set: setPref, reset: resetPref, invert: invertPre
 
 // Screen Actions.
 const closeScreen: ActionUnData = async ({ screen, sudoku }) => {
-	const isGameRoute = Route.isGame(screen.route)
+	const isGameRoute = Page.isGame(screen.route)
 	const isNoneDialog = screen.dialog.kind === DialogKind.None
 	if (isGameRoute && isNoneDialog && !sudoku.isASaved) {
 		screen.setDialog({ kind: DialogKind.Warn, opts: { type: 'unsave' } })
@@ -65,8 +65,8 @@ const closeScreen: ActionUnData = async ({ screen, sudoku }) => {
 
 const openDialog: ActionWithData<DialogData> = async ({ screen }, data) => screen.setDialog(data)
 
-const goTo: ActionWithData<{ route: Route }> = async ({ screen, sudoku }, data) => {
-	if (!Route.isGame(screen.route) && Route.isGame(data.route) && !sudoku.isASaved) {
+const goTo: ActionWithData<{ route: Page }> = async ({ screen, sudoku }, data) => {
+	if (!Page.isGame(screen.route) && Page.isGame(data.route) && !sudoku.isASaved) {
 		screen.setDialog({ kind: DialogKind.Warn, opts: { type: 'unsave' } })
 		return
 	}
@@ -124,9 +124,9 @@ const undoGame: ActionUnData = async ({ sudoku }) => {
 const sudokuEnd: ActionUnData = async ({ sudoku }) => await sudoku.end()
 
 const sudokuResume: ActionUnData = async ({ prefs, screen, sudoku }) => {
-	if (sudoku.isASaved && !Route.isGame(screen.route)) {
+	if (sudoku.isASaved && !Page.isGame(screen.route)) {
 		await sudoku.resume(prefs.get('timer'))
-		screen.gotTo(Route.createGame(sudoku.difficulty!))
+		screen.gotTo(Page.createGame(sudoku.difficulty!))
 	} else sudoku.continue()
 }
 
@@ -137,7 +137,7 @@ const sudokuStart: ActionWithData<OptionalKeys<SudokuSetts, 'solution'> & DataAc
 	{ difficulty, solution = Solution.create() }
 ) => {
 	await sudoku.start({ difficulty, solution }, prefs.data.timer)
-	screen.gotTo(Route.createGame(difficulty))
+	screen.gotTo(Page.createGame(difficulty))
 }
 
 export const SUDOKU_ACTIONS = {

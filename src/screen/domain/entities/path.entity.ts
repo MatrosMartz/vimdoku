@@ -11,4 +11,4 @@ export const SIMPLE_PATHS = [Path.Home, Path.NotFound]
 
 export const PATHS = Object.values(Path)
 
-export const COMPLEX_PATHS = PATHS.filter(path => !SIMPLE_PATHS.includes(path))
+export const COMPOUND_PATHS = PATHS.filter(path => !SIMPLE_PATHS.includes(path))

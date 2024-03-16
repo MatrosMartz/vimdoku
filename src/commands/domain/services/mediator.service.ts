@@ -1,4 +1,4 @@
-import { Route } from '$screen/domain/entities'
+import { Page } from '$screen/domain/entities'
 import { Solution } from '$sudoku/domain/entities'
 
 import type { Action, DataAction, IMed, State } from '../models'
@@ -41,10 +41,10 @@ export class MedSvc implements IMed {
 		if (this.#screen.lang != null) await this.#prefs.setByKey('language', this.#screen.lang).save()
 		else this.#screen.setLang(this.#prefs.get('language'))
 		await this.#i18n.changeLang(this.#prefs.get('language'))
-		if (Route.isGame(this.#screen.route)) {
+		if (Page.isGame(this.#screen.route)) {
 			if (this.#sudoku.isASaved) {
 				await this.#sudoku.resume(this.#prefs.get('timer'))
-				this.#screen.gotTo(Route.createGame(this.#sudoku.difficulty!))
+				this.#screen.gotTo(Page.createGame(this.#sudoku.difficulty!))
 			} else {
 				await this.#sudoku.start(
 					{ difficulty: this.#screen.route.difficulty, solution: Solution.create() },
