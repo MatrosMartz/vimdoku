@@ -2,7 +2,7 @@
 	import { Button, ButtonMenu, Dialog, Icon } from '~/share/infra/components/svelte'
 	import { SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
-	import { ModalEntity, Page } from '$screen/domain/entities'
+	import { Modal, Page } from '$screen/domain/entities'
 	import { screenState } from '$screen/infra/stores/svelte'
 
 	/**
@@ -23,18 +23,18 @@
 	 * Return to home, click handler.
 	 */
 	function homeHandler() {
-		med.dispatch(SCREEN_ACTIONS.goTo, { route: Page.createHome() })
+		med.dispatch(SCREEN_ACTIONS.goTo, { page: Page.createHome() })
 	}
 
 	/**
 	 * Edit preferences, click handler.
 	 */
 	function prefsHandler() {
-		med.dispatch(SCREEN_ACTIONS.openModal, { modal: ModalEntity.createPref('edit') })
+		med.dispatch(SCREEN_ACTIONS.openModal, { modal: Modal.createPref('edit') })
 	}
 </script>
 
-<Dialog type="modal" show={ModalEntity.isPause($screenState.modal)}>
+<Dialog type="modal" show={Modal.isPause($screenState.modal)}>
 	<div class="content">
 		<header class="pause-header">
 			<h3 class="pause-title">Pause</h3>

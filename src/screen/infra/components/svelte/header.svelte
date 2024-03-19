@@ -2,7 +2,7 @@
 	import { Icon } from '~/share/infra/components/svelte'
 	import { SCREEN_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
-	import { ModalEntity, Page } from '$screen/domain/entities'
+	import { Modal, Page } from '$screen/domain/entities'
 	import { screenState } from '$screen/infra/stores/svelte'
 
 	/**
@@ -10,16 +10,16 @@
 	 * @param modal The dialog kind.
 	 * @returns The click handler which opens a dialogue.
 	 */
-	function openModal(modal: ModalEntity): () => void {
+	function openModal(modal: Modal): () => void {
 		return () => med.dispatch(SCREEN_ACTIONS.openModal, { modal })
 	}
 
-	$: inGame = Page.isGame($screenState.route)
+	$: inGame = Page.isGame($screenState.page)
 </script>
 
 <header class="status-bar vimdoku-header monospace">
 	<section>
-		<button class="status-icon icon-dialog" on:click={openModal(ModalEntity.createCmd())}><Icon id="cmd" /></button>
+		<button class="status-icon icon-dialog" on:click={openModal(Modal.createCmd())}><Icon id="cmd" /></button>
 	</section>
 	<section class="vimdoku-title">
 		<h1>Vimdoku</h1>
@@ -27,7 +27,7 @@
 	<section>
 		<button
 			class="status-icon icon-dialog"
-			on:click={openModal(inGame ? ModalEntity.createPause() : ModalEntity.createPref('edit'))}
+			on:click={openModal(inGame ? Modal.createPause() : Modal.createPref('edit'))}
 			><Icon id={inGame ? 'pause' : 'pref'} /></button
 		>
 	</section>

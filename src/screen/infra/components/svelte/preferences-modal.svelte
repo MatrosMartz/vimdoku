@@ -5,11 +5,11 @@
 	import { med } from '$cmd/infra/services'
 	import { i18nState } from '$i18n/infra/stores/svelte'
 	import { PreferencesDisplay, PreferencesForm } from '$pref/infra/components/svelte'
-	import { ModalEntity, type PrefModalType } from '$screen/domain/entities'
+	import { Modal, type PrefModalType } from '$screen/domain/entities'
 	import { screenState } from '$screen/infra/stores/svelte'
 
 	$: tabState = ((modal): 'edit' | 'show' => {
-		if (ModalEntity.isPref(modal)) return ModalEntity.isPref(modal, 'edit') ? 'edit' : 'show'
+		if (Modal.isPref(modal)) return Modal.isPref(modal, 'edit') ? 'edit' : 'show'
 		return tabState ?? 'edit'
 	})($screenState.modal)
 
@@ -19,11 +19,11 @@
 	 * @returns the click handler.
 	 */
 	function createTabHandler(type: PrefModalType): () => void {
-		return () => med.dispatch(SCREEN_ACTIONS.openModal, { modal: ModalEntity.createPref(type) })
+		return () => med.dispatch(SCREEN_ACTIONS.openModal, { modal: Modal.createPref(type) })
 	}
 </script>
 
-<Dialog type="modal" show={ModalEntity.isPref($screenState.modal)}>
+<Dialog type="modal" show={Modal.isPref($screenState.modal)}>
 	<div class="content">
 		<TabGroup {tabState}>
 			<TabList>

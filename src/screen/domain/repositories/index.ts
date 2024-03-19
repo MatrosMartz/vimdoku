@@ -1,1 +1,1 @@
-export * from './route.repo'
+export * from './page.repo'

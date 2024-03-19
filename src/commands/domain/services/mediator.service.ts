@@ -39,15 +39,15 @@ export class MedSvc implements IMed {
 		if (this.#hasLoaded) return
 		await Promise.all([this.#prefs.load(), this.#sudoku.load()])
 		if (this.#screen.lang != null) await this.#prefs.setByKey('language', this.#screen.lang).save()
-		else this.#screen.setLang(this.#prefs.get('language'))
+		else await this.#screen.setLang(this.#prefs.get('language'))
 		await this.#i18n.changeLang(this.#prefs.get('language'))
-		if (Page.isGame(this.#screen.route)) {
+		if (Page.isGame(this.#screen.page)) {
 			if (this.#sudoku.isASaved) {
 				await this.#sudoku.resume(this.#prefs.get('timer'))
-				this.#screen.gotTo(Page.createGame(this.#sudoku.difficulty!))
+				await this.#screen.gotTo(Page.createGame(this.#sudoku.difficulty!))
 			} else {
 				await this.#sudoku.start(
-					{ difficulty: this.#screen.route.difficulty, solution: Solution.create() },
+					{ difficulty: this.#screen.page.difficulty, solution: Solution.create() },
 					this.#prefs.get('timer')
 				)
 			}

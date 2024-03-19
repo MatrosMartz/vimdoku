@@ -4,7 +4,7 @@
 	import { SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
 	import { i18nState } from '$i18n/infra/stores/svelte'
-	import { ModalEntity } from '$screen/domain/entities'
+	import { Modal } from '$screen/domain/entities'
 	import { savedState } from '$sudoku/infra/stores/svelte'
 
 	$: disabled = !$savedState
@@ -16,7 +16,7 @@
 
 	/** Open select game dialog, new game btn click handler. */
 	function newGameHandler() {
-		med.dispatch(SCREEN_ACTIONS.openModal, { modal: ModalEntity.createSelGame() })
+		med.dispatch(SCREEN_ACTIONS.openModal, { modal: Modal.createSelGame() })
 	}
 
 	/** Resume Game, resume btn click handler. */

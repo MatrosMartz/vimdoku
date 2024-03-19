@@ -8,13 +8,13 @@
 	import { type Prefs, prefsGroupEntries, type PrefsNamesEntries } from '$pref/domain/models'
 	import { type Accessibility, ACCESSIBILITY_FIELDS, type ColorSchema } from '$pref/domain/models/user.model'
 	import { prefsState } from '$pref/infra/stores/svelte'
-	import { ModalEntity } from '$screen/domain/entities'
+	import { Modal } from '$screen/domain/entities'
 	import { screenState } from '$screen/infra/stores/svelte'
 
 	let showDiff: boolean = false
 
-	$: if (ModalEntity.isPref($screenState.modal) && !ModalEntity.isPref($screenState.modal, 'edit'))
-		showDiff = ModalEntity.isPref($screenState.modal, 'show-differ')
+	$: if (Modal.isPref($screenState.modal) && !Modal.isPref($screenState.modal, 'edit'))
+		showDiff = Modal.isPref($screenState.modal, 'show-differ')
 
 	/**
 	 * Gets the translated value of the preference.
@@ -39,7 +39,7 @@
 	 */
 	function toggleHandler({ currentTarget: t }: Event) {
 		if (t instanceof HTMLInputElement)
-			med.dispatch(SCREEN_ACTIONS.openModal, { modal: ModalEntity.createPref(t.checked ? 'show-differ' : 'show-all') })
+			med.dispatch(SCREEN_ACTIONS.openModal, { modal: Modal.createPref(t.checked ? 'show-differ' : 'show-all') })
 	}
 </script>
 

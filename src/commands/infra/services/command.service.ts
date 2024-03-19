@@ -4,7 +4,7 @@ import { CmdListSvc, CmdSvc, type CreateHeader, SubCmdSvc } from '$cmd/domain/se
 import { PREFS_ACTIONS, SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services/actions.service'
 import { NON_TOGGLE_NAMES, PREFS_NAMES, TOGGLE_NAMES } from '$pref/domain/models'
 import { ACCESSIBILITY_KINDS, COLOR_SCHEMAS, ICON_THEMES, LANGS } from '$pref/domain/models/user.model'
-import { ModalEntity } from '$screen/domain/entities'
+import { Modal } from '$screen/domain/entities'
 import { DIFFICULTIES_NAMES, DifficultyKind } from '$sudoku/domain/models'
 
 import { med } from './mediator.service'
@@ -55,7 +55,7 @@ export const createHeader: CreateHeader<HTMLHeadingElement> = ([cmdToken, subTok
 
 const SET_CMD = CmdSvc.create('se[t]', {
 	desc: i18n => i18n.get('cmdDesc-set-showAll', 'Show all preferences that differ from their default value.'),
-	fn: () => med.dispatch(SCREEN_ACTIONS.openModal, { modal: ModalEntity.createPref('show-differ') }),
+	fn: () => med.dispatch(SCREEN_ACTIONS.openModal, { modal: Modal.createPref('show-differ') }),
 })
 	.sub(
 		SubCmdSvc.create('{preference}', {
@@ -105,7 +105,7 @@ const SET_CMD = CmdSvc.create('se[t]', {
 	.sub(
 		SubCmdSvc.create('<all>', {
 			desc: i18n => i18n.get('cmdDesc-set-showAll', 'Show all preferences.'),
-			fn: () => med.dispatch(SCREEN_ACTIONS.openModal, { modal: ModalEntity.createPref('show-all') }),
+			fn: () => med.dispatch(SCREEN_ACTIONS.openModal, { modal: Modal.createPref('show-all') }),
 		})
 	)
 	.sub(
@@ -298,7 +298,7 @@ const START_CMD = CmdSvc.create('st[art]', {
 	.done()
 const PAUSE_CMD = CmdSvc.create('pa[use]', {
 	desc: i18n => i18n.get('cmdDesc-pause', 'Pause current game.'),
-	fn: () => med.dispatch(SCREEN_ACTIONS.openModal, { modal: ModalEntity.createPause() }),
+	fn: () => med.dispatch(SCREEN_ACTIONS.openModal, { modal: Modal.createPause() }),
 }).done()
 
 const WRITE_CMD = CmdSvc.create('w[rite]', {

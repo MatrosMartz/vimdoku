@@ -1,7 +1,7 @@
 import { type Pos } from '~/share/domain/entities'
 import type { OptionalKeys } from '~/share/types'
 import type { Lang, Prefs, ToggleNames } from '$pref/domain/models'
-import { ModalEntity, Page } from '$screen/domain/entities'
+import { Modal, Page } from '$screen/domain/entities'
 import { Solution, type ValidNumbers } from '$sudoku/domain/entities'
 import { type ModeKind, type SudokuSetts } from '$sudoku/domain/models'
 
@@ -9,7 +9,7 @@ import type { ActionUnData, ActionWithData, DataAction } from '../models'
 
 // i18n Actions.
 const changeLang: ActionWithData<{ lang: Lang }> = async ({ i18n, screen }, { lang }) => {
-	screen.setLang(lang)
+	await screen.setLang(lang)
 	await i18n.changeLang(lang)
 }
 
@@ -28,7 +28,7 @@ const setPref: ActionWithData<SetPrefData & DataAction> = async ({ i18n, prefs, 
 	if (data.type === 'all') await prefs.setAll(data.prefs).save()
 	else await prefs.setByKey(data.key, data.value).save()
 
-	screen.setLang(prefs.get('language'))
+	await screen.setLang(prefs.get('language'))
 	await i18n.changeLang(prefs.get('language'))
 }
 
@@ -38,7 +38,7 @@ const resetPref: ActionWithData<ResetPrefData> = async ({ i18n, prefs, screen },
 	if (data.type === 'all') await prefs.resetAll().save()
 	else await prefs.resetByKey(data.key).save()
 
-	screen.setLang(prefs.get('language'))
+	await screen.setLang(prefs.get('language'))
 	await i18n.changeLang(prefs.get('language'))
 }
 
@@ -49,28 +49,28 @@ export const PREFS_ACTIONS = { set: setPref, reset: resetPref, invert: invertPre
 
 // Screen Actions.
 const closeScreen: ActionUnData = async ({ screen, sudoku }) => {
-	const isGameRoute = Page.isGame(screen.route)
-	const isNoneDialog = ModalEntity.isNone(screen.modal)
+	const isGameRoute = Page.isGame(screen.page)
+	const isNoneDialog = Modal.isNone(screen.modal)
 	if (isGameRoute && isNoneDialog && !sudoku.isASaved) {
-		screen.setModal(ModalEntity.createWarn('unsave'))
+		screen.setModal(Modal.createWarn('unsave'))
 		return
 	}
 
-	screen.close()
+	await screen.close()
 
 	if (isGameRoute && !isNoneDialog) sudoku.continue()
 	else await sudoku.load()
 }
 
-const openModal: ActionWithData<{ modal: ModalEntity }> = async ({ screen }, data) => screen.setModal(data.modal)
+const openModal: ActionWithData<{ modal: Modal }> = async ({ screen }, data) => screen.setModal(data.modal)
 
-const goTo: ActionWithData<{ route: Page }> = async ({ screen, sudoku }, data) => {
-	if (!Page.isGame(screen.route) && Page.isGame(data.route) && !sudoku.isASaved) {
-		screen.setModal(ModalEntity.createWarn('unsave'))
+const goTo: ActionWithData<{ page: Page }> = async ({ screen, sudoku }, data) => {
+	if (!Page.isGame(screen.page) && Page.isGame(data.page) && !sudoku.isASaved) {
+		screen.setModal(Modal.createWarn('unsave'))
 		return
 	}
 
-	screen.gotTo(data.route)
+	await screen.gotTo(data.page)
 }
 
 export const SCREEN_ACTIONS = { close: closeScreen, openModal, goTo }
@@ -86,7 +86,7 @@ const writeCell: ActionWithData<{ value: ValidNumbers | 0 }> = async (state, dat
 	const { autoNoteDeletion: removeNotes, autoValidation: validate } = state.prefs.data
 	state.sudoku.write(data.value, { removeNotes, validate })
 
-	if (state.sudoku.hasWin) state.screen.setModal(ModalEntity.createWin())
+	if (state.sudoku.hasWin) state.screen.setModal(Modal.createWin())
 }
 
 const verifyBoard: ActionUnData = async ({ sudoku }) => {
@@ -123,9 +123,9 @@ const undoGame: ActionUnData = async ({ sudoku }) => {
 const sudokuEnd: ActionUnData = async ({ sudoku }) => await sudoku.end()
 
 const sudokuResume: ActionUnData = async ({ prefs, screen, sudoku }) => {
-	if (sudoku.isASaved && !Page.isGame(screen.route)) {
+	if (sudoku.isASaved && !Page.isGame(screen.page)) {
 		await sudoku.resume(prefs.get('timer'))
-		screen.gotTo(Page.createGame(sudoku.difficulty!))
+		await screen.gotTo(Page.createGame(sudoku.difficulty!))
 	} else sudoku.continue()
 }
 
@@ -136,7 +136,7 @@ const sudokuStart: ActionWithData<OptionalKeys<SudokuSetts, 'solution'> & DataAc
 	{ difficulty, solution = Solution.create() }
 ) => {
 	await sudoku.start({ difficulty, solution }, prefs.data.timer)
-	screen.gotTo(Page.createGame(difficulty))
+	await screen.gotTo(Page.createGame(difficulty))
 }
 
 export const SUDOKU_ACTIONS = {

@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { Dialog } from '~/share/infra/components/svelte/dialog'
 	import { CommandInput, SuggestionsList } from '$cmd/infra/components/svelte'
-	import { ModalEntity } from '$screen/domain/entities'
+	import { Modal } from '$screen/domain/entities'
 	import { screenState } from '$screen/infra/stores/svelte'
 </script>
 
-<Dialog type="modal" show={ModalEntity.isCmd($screenState.modal)}>
+<Dialog type="modal" show={Modal.isCmd($screenState.modal)}>
 	<div role="search" class="command-dialog">
 		<CommandInput />
 		<SuggestionsList />

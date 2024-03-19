@@ -18,7 +18,7 @@ export abstract class Page {
 	}
 
 	static createHome() {
-		return new HomeRoute()
+		return new HomePage()
 	}
 
 	static isGame(route: Page): route is GamePage {
@@ -29,7 +29,7 @@ export abstract class Page {
 		return route.path === Path.Help
 	}
 
-	static isHome(route: Page): route is HomeRoute {
+	static isHome(route: Page): route is HomePage {
 		return route.path === Path.Home
 	}
 
@@ -40,9 +40,16 @@ export abstract class Page {
 	static notFound(route: string) {
 		return new NotFoundPage(route)
 	}
+
+	toJSON() {
+		return {
+			path: this.path,
+			route: this.route,
+		}
+	}
 }
 
-class HomeRoute extends Page {
+class HomePage extends Page {
 	get path() {
 		return Path.Home as const
 	}
@@ -52,7 +59,7 @@ class HomeRoute extends Page {
 	}
 }
 
-export const IDLE_ROUTE = Page.createHome()
+export const IDLE_PAGE = Page.createHome()
 
 const GET_DIFFICULTY_NAME = {
 	[DifficultyKind.Beginner]: 'beginner',
@@ -126,7 +133,7 @@ class NotFoundPage extends Page {
 	}
 }
 
-export type AvailableRoutes = (GamePage | HelpPage | HomeRoute)['route']
+export type AvailableRoutes = (GamePage | HelpPage | HomePage)['route']
 
 export class PageWithLang {
 	static readonly #firstPattern = new RegExp(
@@ -184,11 +191,18 @@ export class PageWithLang {
 		return { lang: lang as Lang | undefined, path, rest }
 	}
 
+	toJSON() {
+		return {
+			lang: this.#lang,
+			page: this.#page,
+		}
+	}
+
 	withLang(lang: Lang) {
 		return new PageWithLang({ lang, page: this.#page })
 	}
 
-	withPage(route: Page) {
-		return new PageWithLang({ lang: this.#lang, page: route })
+	withPage(page: Page) {
+		return new PageWithLang({ lang: this.#lang, page })
 	}
 }

@@ -1,1 +1,1 @@
-export * from './browser-route.repo'
+export * from './browser-page.repo'

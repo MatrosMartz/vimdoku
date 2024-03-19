@@ -1,13 +1,13 @@
 <script>
 	import { Dialog } from '~/share/infra/components/svelte'
-	import { ModalEntity } from '$screen/domain/entities'
+	import { Modal } from '$screen/domain/entities'
 	import { screenState } from '$screen/infra/stores/svelte'
 	import { errorsState, timerState } from '$sudoku/infra/stores/svelte'
 
 	import { SelectGame } from './select-dialog'
 </script>
 
-<Dialog type="modal" show={ModalEntity.isWin($screenState.modal)}>
+<Dialog type="modal" show={Modal.isWin($screenState.modal)}>
 	<div class="content">
 		<h2>You are win!</h2>
 		<section>

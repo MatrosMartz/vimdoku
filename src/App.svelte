@@ -18,7 +18,7 @@
 
 	import { Accessibility, ColorSchema } from '$pref/domain/models'
 	import { prefsState } from '$pref/infra/stores/svelte'
-	import { Modals, Header, Screen, StatusBar } from '$screen/infra/components/svelte'
+	import { Header, Modals, Screen, StatusBar } from '$screen/infra/components/svelte'
 
 	import { keydownHandler } from './keydown-handler'
 	import { toggleClass } from './toggle-class'

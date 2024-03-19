@@ -1,10 +1,10 @@
 import type { Lang } from '$pref/domain/models'
 
-import { IDLE_MODAL, IDLE_ROUTE, type ModalEntity, type Page } from '../entities'
+import { IDLE_MODAL, IDLE_PAGE, type Modal, type Page } from '../entities'
 
 export interface VimScreen {
-	modal: ModalEntity
-	route: Page
+	modal: Modal
+	page: Page
 }
 
 export interface IScreen {
@@ -12,16 +12,17 @@ export interface IScreen {
 	/** Get the current main screen and dialog. */
 	readonly data: VimScreen
 	/** Get the current modal. */
-	readonly modal: ModalEntity
+	readonly modal: Modal
 	/** Get the current main screen. */
-	readonly route: Page
+	readonly page: Page
 	/** Return to previous screen or close dialog. */
-	close(): void
+	close(): Promise<void>
 	/** Set main screen. */
-	gotTo(route: Page): void
-	setLang(lang: Lang): void
+	gotTo(route: Page): Promise<void>
+	load(): Promise<void>
+	setLang(lang: Lang): Promise<void>
 	/** Set dialog and options. */
-	setModal(dialog: ModalEntity): void
+	setModal(dialog: Modal): void
 }
 
-export const IDLE_SCREEN = { modal: IDLE_MODAL, route: IDLE_ROUTE } as const satisfies VimScreen
+export const IDLE_SCREEN = { modal: IDLE_MODAL, page: IDLE_PAGE } as const satisfies VimScreen
