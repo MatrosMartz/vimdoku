@@ -16,21 +16,16 @@ class CmdBuilder {
 	constructor(opts: CmdBuilderOpts)
 	constructor({ desc, fn, cmdLike }: CmdBuilderOpts) {
 		this.#cmdTokenList = CmdTokenGroup.fromString(cmdLike)
-		this.#subCmdFnList = [SubCmdSvc.create('', { desc, fn })]
+		this.#subCmdFnList = [SubCmdSvc.buildFn('', { desc, fn })]
+	}
+
+	addSubFn(...subCmdFn: SubCmdFn[]) {
+		this.#subCmdFnList = this.#subCmdFnList.concat(...subCmdFn)
+		return this
 	}
 
 	done(): CmdFn {
 		return createHeader => this.#subCmdFnList.map(fn => fn(this.#cmdTokenList, createHeader))
-	}
-
-	sub(subCmdFn: SubCmdFn) {
-		this.#subCmdFnList = this.#subCmdFnList.concat(subCmdFn)
-		return this
-	}
-
-	subFromArray<T>(array: T[], fn: (value: T) => SubCmdFn) {
-		this.#subCmdFnList = this.#subCmdFnList.concat(...array.map(fn))
-		return this
 	}
 }
 
@@ -49,7 +44,7 @@ export class CmdSvc<H> {
 		return this.#subCmds
 	}
 
-	static create(cmdLike: string, opts: Omit<CmdBuilderOpts, 'cmdLike'>) {
+	static buildFn(cmdLike: string, opts: Omit<CmdBuilderOpts, 'cmdLike'>) {
 		return new CmdBuilder({ ...opts, cmdLike })
 	}
 }
@@ -62,8 +57,8 @@ class CmdListBuilder<H> {
 		this.#createHeader = createHeader
 	}
 
-	cmd(CmdFn: CmdFn) {
-		this.#cmdFnList = this.#cmdFnList.concat(new CmdSvc(CmdFn(this.#createHeader)))
+	addCmdFn(...cmdFn: CmdFn[]) {
+		this.#cmdFnList = this.#cmdFnList.concat(...cmdFn.map(fn => new CmdSvc(fn(this.#createHeader))))
 		return this
 	}
 
@@ -87,7 +82,7 @@ export class CmdListSvc<H> {
 		return this.#list.flatMap(cmd => cmd.subCmds)
 	}
 
-	static create<H>(createHeader: CreateHeader<H>) {
+	static buildFn<H>(createHeader: CreateHeader<H>) {
 		return new CmdListBuilder(createHeader)
 	}
 

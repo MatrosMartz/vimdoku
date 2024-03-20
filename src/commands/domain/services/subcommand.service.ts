@@ -31,7 +31,7 @@ export class SubCmdSvc<T> {
 		return this.#tokens.value
 	}
 
-	static create<const S extends string>(
+	static buildFn<const S extends string>(
 		subLike: S,
 		opts: Omit<SubCmdSvcOpts<S, unknown>, 'createHeader' | 'tokens'>
 	): SubCmdFn {
