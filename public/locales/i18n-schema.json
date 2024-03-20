@@ -86,7 +86,6 @@
 						"colorTheme": { "type": "string" },
 						"iconTheme": { "type": "string" },
 						"motionReduce": { "type": "string" },
-						"language": { "type": "string" },
 						"cursorBox": { "type": "string" },
 						"cursorCol": { "type": "string" },
 						"cursorRow": { "type": "string" },
@@ -107,7 +106,6 @@
 						"colorTheme",
 						"iconTheme",
 						"motionReduce",
-						"language",
 						"cursorBox",
 						"cursorCol",
 						"cursorRow",
@@ -302,7 +300,35 @@
 				"true": { "type": "string" }
 			},
 			"required": ["false", "true"]
+		},
+		"language": {
+			"type": "object",
+			"properties": {
+				"show": { "type": "string" },
+				"set": { "type": "string" },
+				"setSuggest": {
+					"type": "object",
+					"properties": {
+						"head": { "type": "string" },
+						"tail": { "type": "string" }
+					},
+					"required": ["head", "tail"]
+				}
+			},
+			"required": ["show", "set", "setSuggest"]
 		}
 	},
-	"required": ["titleScreen", "gameBtn", "prefs", "langName", "cmdDesc", "form", "statusBar", "help", "modes", "sync"]
+	"required": [
+		"titleScreen",
+		"gameBtn",
+		"prefs",
+		"langName",
+		"cmdDesc",
+		"form",
+		"statusBar",
+		"help",
+		"modes",
+		"sync",
+		"language"
+	]
 }

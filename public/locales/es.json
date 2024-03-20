@@ -81,7 +81,7 @@
 		"resume-1": "Continua con la partida actual.",
 		"resume-2": "Continua con la partida guardada.",
 		"set": {
-			"showSuggest": "Muestra el valor de {preference}",
+			"showSuggest": "Muestra el valor de la preferencia.",
 			"showAll": "Muestra todas las preferencias.",
 			"resetAll": "Restablece todas las preferencias",
 			"showPref": {
@@ -92,7 +92,7 @@
 				"head": "Restablece el valor de ",
 				"tail": "."
 			},
-			"resetSuggest": "Restablece la {preference} a su valor por defecto.",
+			"resetSuggest": "Restablece la preferencia a su valor por defecto.",
 			"toggleOnPref": {
 				"head": "Establece",
 				"tail": " a verdadero."
@@ -114,10 +114,10 @@
 			},
 			"toggleInvSuggest": "Preferencia de interruptor: Invierte el valor.",
 			"setNonTogglePref": {
-				"head": "Establece ",
-				"tail": " al valor de {value} ."
+				"head": "Establece {value} como el valor de ",
+				"tail": "."
 			},
-			"setNonToggleSuggest": "Preferencia de texto o numero: Establece {preference} al valor de {value}.",
+			"setNonToggleSuggest": "Preferencia de texto o numero: Establece {value} como su valor.",
 			"showDiffer": "Muestra todas las preferencias que difieren con el valor por defecto."
 		},
 		"start": {
@@ -157,5 +157,13 @@
 	"sync": {
 		"false": "Sin guardar",
 		"true": "Guardado"
+	},
+	"language": {
+		"set": "Establece el lenguaje actual como {name}.",
+		"setSuggest": {
+			"head": "Establece el lenguaje actual como ",
+			"tail": "."
+		},
+		"show": "Muestra el valor actual del lenguaje."
 	}
 }

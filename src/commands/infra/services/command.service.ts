@@ -1,7 +1,8 @@
 import { match } from '~/share/utils'
 import { CmdTokenKind, SubTokenKind } from '$cmd/domain/entities'
 import { CmdListSvc, CmdSvc, type CreateHeader, SubCmdSvc } from '$cmd/domain/services'
-import { PREFS_ACTIONS, SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services/actions.service'
+import { I18N_ACTIONS, PREFS_ACTIONS, SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services/actions.service'
+import { LANGS } from '$i18n/domain/const'
 import { NON_TOGGLE_NAMES, PREFS_NAMES, TOGGLE_NAMES } from '$pref/domain/models'
 import { ACCESSIBILITY_KINDS, COLOR_SCHEMAS, ICON_THEMES } from '$pref/domain/models/user.model'
 import { Modal } from '$screen/domain/entities'
@@ -316,6 +317,22 @@ const EXIT_CMD = CmdSvc.create('exi[t]', {
 	fn: () => med.dispatch(SCREEN_ACTIONS.close),
 }).done()
 
+const LANGUAGE_CMD = CmdSvc.create('lan[guage]', {
+	desc: i18n => i18n.get('language-show', 'Show the current value of language.'),
+})
+	.sub(
+		SubCmdSvc.create('{name}', {
+			desc: i18n => i18n.get('language-set', 'Sets the current language to {name}.'),
+		})
+	)
+	.subFromArray(LANGS, lang =>
+		SubCmdSvc.create(`(${lang})`, {
+			desc: i18n => i18n.getTemplate('language-setSuggest', { head: 'Sets the current language ', tail: '.' }, lang),
+			fn: () => med.dispatch(I18N_ACTIONS.changeLang, { lang }),
+		})
+	)
+	.done()
+
 const HELP_CMD = CmdSvc.create('h[elp]', {
 	desc: i18n => i18n.get('cmdDesc-help-main', 'Open dialog and display the help file in read-only mode.'),
 	// TODO: fn() {},
@@ -326,7 +343,7 @@ const HELP_CMD = CmdSvc.create('h[elp]', {
 			// TODO: fn() {},
 		})
 	)
-	.subFromArray(['set', 'start', 'pause', 'write', 'resume', 'quit', 'wquit', 'xit', 'exit', 'help'], cmd =>
+	.subFromArray(['set', 'start', 'pause', 'write', 'resume', 'quit', 'wquit', 'xit', 'exit', 'help', 'language'], cmd =>
 		SubCmdSvc.create(`<:>(${cmd})`, {
 			desc: i18n =>
 				i18n.getTemplate(
@@ -349,6 +366,7 @@ export const cmdList = CmdListSvc.create(createHeader)
 	.cmd(WQUIT_CMD)
 	.cmd(XIT_CMD)
 	.cmd(EXIT_CMD)
+	.cmd(LANGUAGE_CMD)
 	.cmd(HELP_CMD)
 	.done()
 

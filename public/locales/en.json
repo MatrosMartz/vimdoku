@@ -159,5 +159,13 @@
 	"sync": {
 		"false": "Unsaved",
 		"true": "Saved"
+	},
+	"language": {
+		"set": "Sets the current language to {name}.",
+		"setSuggest": {
+			"head": "Sets the current language to ",
+			"tail": "."
+		},
+		"show": "Show the current value of language."
 	}
 }
