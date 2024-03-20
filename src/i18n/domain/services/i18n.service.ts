@@ -1,13 +1,12 @@
-import { inject } from '~/share/utils'
+import { inArray, inject } from '~/share/utils'
 
-import { IDLE_LANG, type Lang } from '../const'
-import { type I18nKeys, type I18nSchema } from '../entities'
+import { type Lang, LANGS } from '../const'
+import { type I18nKeys, type I18nSchema, IDLE_I18N } from '../entities'
 import { type II18n } from '../models'
 import type { I18nRepo } from '../repositories/i18n.repo'
 import { I18nObs } from './i18n-obs.service'
 
 export class I18nSvc implements II18n {
-	#actualLang: Lang = IDLE_LANG
 	readonly #obs = inject(I18nObs)
 	readonly #repo
 
@@ -15,19 +14,19 @@ export class I18nSvc implements II18n {
 		this.#repo = repo
 	}
 
-	get actualLang() {
-		return this.#actualLang
-	}
-
 	get data() {
 		return this.#obs.data
 	}
 
 	async changeLang(lang: Lang) {
-		this.#actualLang = lang
+		if (!inArray(LANGS, lang)) {
+			this.#obs.set(IDLE_I18N)
+			return
+		}
 		const resource = await this.#fetchResource(lang)
 
 		this.#obs.set({
+			lang,
 			get: (key, fallBack) => this.#getText(key, resource) ?? fallBack,
 			getTemplate: (key, fallback, value) => {
 				const head = this.#getText(`${key}-head`, resource) ?? fallback.head

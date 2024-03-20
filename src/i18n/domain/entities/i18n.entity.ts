@@ -1,5 +1,6 @@
 import type enSchema from '@/locales/en.json'
 
+import { IDLE_LANG, type Lang } from '../const'
 import type { SchemaKeys } from './schema.entity'
 
 export type I18nSchema = Omit<typeof enSchema, '$schema'>
@@ -10,6 +11,7 @@ export type I18nKeys = SchemaKeys<I18nSchema>
 export type I18nTemplateKeys = GetTemplateKey<I18nKeys>
 
 export interface I18n {
+	lang: Lang
 	/**
 	 * Get the respective text to that key.
 	 * @param key The text key.
@@ -21,6 +23,7 @@ export interface I18n {
 }
 
 export const IDLE_I18N: I18n = {
+	lang: IDLE_LANG,
 	get(key, fallBack) {
 		return fallBack
 	},

@@ -3,8 +3,6 @@ import type { I18n } from '$i18n/domain/entities'
 import type { Lang } from '../const'
 
 export interface II18n {
-	/** The current language. */
-	readonly actualLang: Lang
 	/** The current data. */
 	readonly data: I18n
 	/**

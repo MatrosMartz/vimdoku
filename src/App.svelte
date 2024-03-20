@@ -16,7 +16,7 @@
 	import '@fontsource-variable/jetbrains-mono'
 	import '@fontsource-variable/jetbrains-mono/wght-italic.css'
 
-	import { i18n } from '$i18n/infra/services'
+	import { i18nState } from '$i18n/infra/stores/svelte'
 	import { Accessibility, ColorSchema } from '$pref/domain/models'
 	import { prefsState } from '$pref/infra/stores/svelte'
 	import { Header, Modals, Screen, StatusBar } from '$screen/infra/components/svelte'
@@ -24,7 +24,7 @@
 	import { keydownHandler } from './keydown-handler'
 	import { toggleClass } from './toggle-class'
 
-	$: document.documentElement.lang = i18n.actualLang
+	$: document.documentElement.lang = $i18nState.lang
 	$: toggleClass(
 		$prefsState.colorSchema,
 		{ main: ColorSchema.DARK_MODE, default: ColorSchema.SYSTEM, media: '(prefers-color-scheme: dark)' },
