@@ -1,6 +1,7 @@
 import { type Pos } from '~/share/domain/entities'
 import type { OptionalKeys } from '~/share/types'
-import type { Lang, Prefs, ToggleNames } from '$pref/domain/models'
+import type { Lang } from '$i18n/domain/const'
+import type { Prefs, ToggleNames } from '$pref/domain/models'
 import { Modal, Page } from '$screen/domain/entities'
 import { Solution, type ValidNumbers } from '$sudoku/domain/entities'
 import { type ModeKind, type SudokuSetts } from '$sudoku/domain/models'
@@ -27,9 +28,6 @@ type SetPrefData = { prefs: Prefs; type: 'all' } | SetPrefByKey
 const setPref: ActionWithData<SetPrefData & DataAction> = async ({ i18n, prefs, screen }, data) => {
 	if (data.type === 'all') await prefs.setAll(data.prefs).save()
 	else await prefs.setByKey(data.key, data.value).save()
-
-	await screen.setLang(prefs.get('language'))
-	await i18n.changeLang(prefs.get('language'))
 }
 
 type ResetPrefData = { type: 'all' } | { key: keyof Prefs; type: 'by-key' }
@@ -37,9 +35,6 @@ type ResetPrefData = { type: 'all' } | { key: keyof Prefs; type: 'by-key' }
 const resetPref: ActionWithData<ResetPrefData> = async ({ i18n, prefs, screen }, data) => {
 	if (data.type === 'all') await prefs.resetAll().save()
 	else await prefs.resetByKey(data.key).save()
-
-	await screen.setLang(prefs.get('language'))
-	await i18n.changeLang(prefs.get('language'))
 }
 
 const invertPref: ActionWithData<{ pref: ToggleNames }> = async ({ prefs }, data) =>

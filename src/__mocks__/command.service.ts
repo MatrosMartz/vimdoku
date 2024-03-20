@@ -1,7 +1,7 @@
 import { noop } from '~/share/utils'
 import { CmdListSvc, CmdSvc, type CreateHeader, SubCmdSvc } from '$cmd/domain/services'
 import { NON_TOGGLE_NAMES, PREFS_NAMES, TOGGLE_NAMES } from '$pref/domain/models'
-import { ACCESSIBILITY_KINDS, COLOR_SCHEMAS, ICON_THEMES, LANGS } from '$pref/domain/models/user.model'
+import { ACCESSIBILITY_KINDS, COLOR_SCHEMAS, ICON_THEMES } from '$pref/domain/models/user.model'
 import { DIFFICULTIES_NAMES } from '$sudoku/domain/models'
 
 export const createHeader: CreateHeader<[string, string]> = ([cmdToken, subTokens]) => [
@@ -123,18 +123,6 @@ const SET_CMD = CmdSvc.create('se[t]', {
 	.subFromArray(NON_TOGGLE_NAMES, pref =>
 		SubCmdSvc.create(`(${pref})<:>{value}`, {
 			desc: descMock,
-		})
-	)
-	.subFromArray(LANGS, lang =>
-		SubCmdSvc.create(`(language)<=>(${lang})`, {
-			desc: descMock,
-			fn: noop,
-		})
-	)
-	.subFromArray(LANGS, lang =>
-		SubCmdSvc.create(`(language)<:>(${lang})`, {
-			desc: descMock,
-			fn: noop,
 		})
 	)
 	.subFromArray(COLOR_SCHEMAS, schema =>

@@ -1,5 +1,5 @@
 import { inject } from '~/share/utils'
-import type { Lang } from '$pref/domain/models'
+import type { Lang } from '$i18n/domain/const'
 
 import { IDLE_MODAL, IDLE_PAGE, Modal, Page } from '../entities'
 import { type IScreen, type VimScreen } from '../models'

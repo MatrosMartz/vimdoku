@@ -1,4 +1,4 @@
-import type { Lang } from '$pref/domain/models'
+import type { Lang } from '$i18n/domain/const'
 
 import { IDLE_MODAL, IDLE_PAGE, type Modal, type Page } from '../entities'
 

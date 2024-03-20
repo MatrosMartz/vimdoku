@@ -1,5 +1,5 @@
 import { _throw, capitalCase, inArray, InvalidStringPageError } from '~/share/utils'
-import { type Lang, LANGS, USER_IDLE_PREFS } from '$pref/domain/models'
+import { type Lang, LANGS } from '$i18n/domain/const'
 import { DIFFICULTIES_NAMES, DifficultyKind } from '$sudoku/domain/models'
 
 import { COMPOUND_PATHS, Path } from './path.entity'
@@ -180,7 +180,7 @@ export class PageWithLang {
 	}
 
 	static #getParts(str: string) {
-		if (str === '') return { lang: USER_IDLE_PREFS.language, path: Path.Home }
+		if (str === '') return { path: Path.Home }
 		const [, lang, path, rest] =
 			this.#firstPattern.exec(str) ?? this.#secondPattern.exec(str) ?? _throw(new InvalidStringPageError())
 

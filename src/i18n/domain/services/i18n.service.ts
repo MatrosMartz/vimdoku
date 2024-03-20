@@ -1,13 +1,19 @@
 import { inject } from '~/share/utils'
-import { IDLE_PREFS, type Lang } from '$pref/domain/models'
 
+import { IDLE_LANG, type Lang } from '../const'
 import { type I18nKeys, type I18nSchema } from '../entities'
 import { type II18n } from '../models'
+import type { I18nRepo } from '../repositories/i18n.repo'
 import { I18nObs } from './i18n-obs.service'
 
 export class I18nSvc implements II18n {
-	#actualLang: Lang = IDLE_PREFS.language
+	#actualLang: Lang = IDLE_LANG
 	readonly #obs = inject(I18nObs)
+	readonly #repo
+
+	constructor(repo: I18nRepo) {
+		this.#repo = repo
+	}
 
 	get actualLang() {
 		return this.#actualLang
@@ -30,6 +36,11 @@ export class I18nSvc implements II18n {
 				return head + value + tail
 			},
 		})
+	}
+
+	async load() {
+		const lang = await this.#repo.get()
+		if (lang != null) await this.changeLang(lang)
 	}
 
 	/**

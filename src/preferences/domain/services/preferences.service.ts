@@ -106,7 +106,6 @@ export class PrefsSvc implements IPrefs {
 			colorTheme: prefs.colorTheme,
 			contrast: prefs.contrast,
 			iconTheme: prefs.iconTheme,
-			language: prefs.language,
 			motionReduce: prefs.motionReduce,
 		}
 	}

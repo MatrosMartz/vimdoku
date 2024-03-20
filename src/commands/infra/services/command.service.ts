@@ -3,7 +3,7 @@ import { CmdTokenKind, SubTokenKind } from '$cmd/domain/entities'
 import { CmdListSvc, CmdSvc, type CreateHeader, SubCmdSvc } from '$cmd/domain/services'
 import { PREFS_ACTIONS, SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services/actions.service'
 import { NON_TOGGLE_NAMES, PREFS_NAMES, TOGGLE_NAMES } from '$pref/domain/models'
-import { ACCESSIBILITY_KINDS, COLOR_SCHEMAS, ICON_THEMES, LANGS } from '$pref/domain/models/user.model'
+import { ACCESSIBILITY_KINDS, COLOR_SCHEMAS, ICON_THEMES } from '$pref/domain/models/user.model'
 import { Modal } from '$screen/domain/entities'
 import { DIFFICULTIES_NAMES, DifficultyKind } from '$sudoku/domain/models'
 
@@ -166,24 +166,6 @@ const SET_CMD = CmdSvc.create('se[t]', {
 		SubCmdSvc.create(`(${pref})<:>{value}`, {
 			desc: i18n =>
 				i18n.getTemplate('cmdDesc-set-setNonTogglePref', { head: 'Assign to ', tail: ' the {value}.' }, pref),
-		})
-	)
-	.subFromArray(LANGS, lang =>
-		SubCmdSvc.create(`(language)<=>(${lang})`, {
-			desc: i18n =>
-				i18n
-					.getTemplate('cmdDesc-set-setNonTogglePref', { head: 'Assign to ', tail: ' the {value}.' }, 'language')
-					.replace('{value}', `"${lang}"`),
-			fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'language', value: lang }),
-		})
-	)
-	.subFromArray(LANGS, lang =>
-		SubCmdSvc.create(`(language)<:>(${lang})`, {
-			desc: i18n =>
-				i18n
-					.getTemplate('cmdDesc-set-setNonTogglePref', { head: 'Assign to ', tail: ' the {value}.' }, 'language')
-					.replace('{value}', `"${lang}"`),
-			fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'language', value: lang }),
 		})
 	)
 	.subFromArray(COLOR_SCHEMAS, schema =>

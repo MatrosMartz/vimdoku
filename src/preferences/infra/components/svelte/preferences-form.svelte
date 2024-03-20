@@ -128,7 +128,7 @@
 			settings={userFields.iconTheme}
 			bind:value={values.iconTheme}
 		/>
-		<OptionsInput
+		<!-- <OptionsInput
 			name="language"
 			i18n={{
 				en: 'English',
@@ -141,7 +141,7 @@
 			label={$i18nState.get('prefs-names-language', 'Language')}
 			settings={userFields.language}
 			bind:value={values.language}
-		/>
+		/> -->
 		<OptionsInput
 			name="motionReduce"
 			i18n={{

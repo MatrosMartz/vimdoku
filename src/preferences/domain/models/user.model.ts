@@ -1,13 +1,6 @@
 import type { FieldsToModel, FormGroup } from '~/share/domain/models'
 import { FormFields } from '~/share/domain/services'
 
-export enum Lang {
-	EN = 'en',
-	ES = 'es',
-}
-
-export const LANGS = Object.values(Lang)
-
 export enum Accessibility {
 	SYSTEM = 'system',
 	MORE = 'more',
@@ -38,7 +31,6 @@ export const userFields = {
 	colorTheme: { type: 'text', default: 'default' },
 	contrast: { type: 'options', opts: ACCESSIBILITY_KINDS, default: Accessibility.SYSTEM },
 	iconTheme: { type: 'options', opts: ICON_THEMES, default: IconTheme.Heroicons },
-	language: { type: 'options', opts: LANGS, default: Lang.EN },
 	motionReduce: { type: 'options', opts: ACCESSIBILITY_KINDS, default: Accessibility.SYSTEM },
 } as const satisfies FormGroup
 
