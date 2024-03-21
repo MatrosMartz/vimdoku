@@ -1,10 +1,6 @@
 export type SchemaKeys<T> = T extends object
 	? {
-			[K in keyof T]-?: K extends string
-				? T[K] extends string | string[]
-					? `${K}`
-					: `${K & string}-${SchemaKeys<T[K]>}`
-				: never
+			[K in keyof T]-?: K extends string ? (T[K] extends string ? `${K}` : `${K & string}-${SchemaKeys<T[K]>}`) : never
 		}[keyof T]
 	: never
 

@@ -14,10 +14,10 @@
 
 	$: tooltipProps = {
 		id: 'describe-pos',
-		text: `${$i18nState.get('statusBar-posDesc-head', 'Row')} ${$posState.y + 1}${$i18nState.get(
-			'statusBar-posDesc-body',
-			', Col'
-		)} ${$posState.x + 1}${$i18nState.get('statusBar-posDesc-tail', '.')}`,
+		text: $i18nState.get('statusBar-posDesc', 'Row {|row|}, Col {|col|}.', {
+			row: String($posState.y + 1),
+			col: String($posState.x + 1),
+		}),
 	}
 
 	const errorsUnsubscribe = errorsState.subscribe(() => {

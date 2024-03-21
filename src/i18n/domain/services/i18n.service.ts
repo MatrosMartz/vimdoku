@@ -27,13 +27,7 @@ export class I18nSvc implements II18n {
 
 		this.#obs.set({
 			lang,
-			get: (key, fallBack) => this.#getText(key, resource) ?? fallBack,
-			getTemplate: (key, fallback, value) => {
-				const head = this.#getText(`${key}-head`, resource) ?? fallback.head
-				const tail = this.#getText(`${key}-tail`, resource) ?? fallback.tail
-
-				return head + value + tail
-			},
+			get: (key, fallBack, keywords) => this.#replaceKeywords(this.#getText(key, resource) ?? fallBack, keywords),
 		})
 	}
 
@@ -70,5 +64,13 @@ export class I18nSvc implements II18n {
 		}
 
 		return result
+	}
+
+	#replaceKeywords(text: string, keywords?: Record<string, string>) {
+		if (keywords == null) return text
+
+		for (const [keyword, value] of Object.entries(keywords))
+			if (value != null || typeof value !== 'object') text = text.replaceAll(`{|${keyword}|}`, value)
+		return text
 	}
 }

@@ -1,9 +1,5 @@
+import type { VariablesFromStr } from '~/share/types'
 import { match } from '~/share/utils'
-
-export type VariablesFromStr<
-	S extends string,
-	InitialKeys = never,
-> = S extends `${string}{|${infer VarKey}|}${infer Next}` ? VariablesFromStr<Next, InitialKeys | VarKey> : InitialKeys
 
 export enum TokenGroupKind {
 	COMMAND = 'command',

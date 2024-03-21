@@ -118,7 +118,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	.addSubFn(
 		...PREFS_NAMES.map(pref =>
 			SubCmdSvc.buildFn(`(${pref})<?>`, {
-				desc: i18n => i18n.getTemplate('cmdDesc-set-showPref', { head: 'Show value of ', tail: '.' }, pref),
+				desc: i18n => i18n.get('cmdDesc-set-showPref', 'Show value of {|pref|}.', { pref }),
 				// fn: () => med.dispatch(SCREEN_ACTIONS.openDialog, { kind: DialogKind.ShowPref, opts: { pref } }),
 			})
 		)
@@ -126,7 +126,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	.addSubFn(
 		...PREFS_NAMES.map(pref =>
 			SubCmdSvc.buildFn(`(${pref})<&>`, {
-				desc: i18n => i18n.getTemplate('cmdDesc-set-resetPref', { head: 'Reset value of ', tail: '.' }, pref),
+				desc: i18n => i18n.get('cmdDesc-set-resetPref', 'Reset value of {|pref|}.', { pref }),
 				fn: () => med.dispatch(PREFS_ACTIONS.reset, { type: 'by-key', key: pref }),
 			})
 		)
@@ -134,7 +134,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	.addSubFn(
 		...TOGGLE_NAMES.map(pref =>
 			SubCmdSvc.buildFn(`(${pref})`, {
-				desc: i18n => i18n.getTemplate('cmdDesc-set-toggleOnPref', { head: 'Set, ', tail: ' switch it on.' }, pref),
+				desc: i18n => i18n.get('cmdDesc-set-toggleOnPref', 'Set, {|pref|} to switch it on.', { pref }),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: pref, value: true }),
 			})
 		)
@@ -142,7 +142,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	.addSubFn(
 		...NON_TOGGLE_NAMES.map(pref =>
 			SubCmdSvc.buildFn(`(${pref})`, {
-				desc: i18n => i18n.getTemplate('cmdDesc-set-showNonToggle', { head: 'Show value of ', tail: '.' }, pref),
+				desc: i18n => i18n.get('cmdDesc-set-showNonToggle', 'Show value of {|pref|}.', { pref }),
 				// fn: () => med.dispatch(SCREEN_ACTIONS.openModal, { kind: DialogKind.ShowPref, opts: { pref } }),
 			})
 		)
@@ -150,7 +150,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	.addSubFn(
 		...TOGGLE_NAMES.map(pref =>
 			SubCmdSvc.buildFn(`<no>(${pref})`, {
-				desc: i18n => i18n.getTemplate('cmdDesc-set-toggleOffPref', { head: 'Set, ', tail: ' switch it off.' }, pref),
+				desc: i18n => i18n.get('cmdDesc-set-toggleOffPref', 'Set, {|pref|} to switch off.', { pref }),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: pref, value: false }),
 			})
 		)
@@ -158,7 +158,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	.addSubFn(
 		...TOGGLE_NAMES.map(pref =>
 			SubCmdSvc.buildFn(`(${pref})<!>`, {
-				desc: i18n => i18n.getTemplate('cmdDesc-set-toggleInvPref', { head: 'Set, ', tail: ' invert value.' }, pref),
+				desc: i18n => i18n.get('cmdDesc-set-toggleInvPref', 'Invert value of {|pref|}.', { pref }),
 				fn: () => med.dispatch(PREFS_ACTIONS.invert, { pref }),
 			})
 		)
@@ -166,7 +166,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	.addSubFn(
 		...TOGGLE_NAMES.map(pref =>
 			SubCmdSvc.buildFn(`<inv>(${pref})`, {
-				desc: i18n => i18n.getTemplate('cmdDesc-set-toggleInvPref', { head: 'Set, ', tail: ' invert value.' }, pref),
+				desc: i18n => i18n.get('cmdDesc-set-toggleInvPref', 'Invert value of {|pref|}.', { pref }),
 				fn: () => med.dispatch(PREFS_ACTIONS.invert, { pref }),
 			})
 		)
@@ -174,16 +174,14 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	.addSubFn(
 		...NON_TOGGLE_NAMES.map(pref =>
 			SubCmdSvc.buildFn(`(${pref})<=>{value}`, {
-				desc: i18n =>
-					i18n.getTemplate('cmdDesc-set-setNonTogglePref', { head: 'Assign to ', tail: ' the {value}.' }, pref),
+				desc: i18n => i18n.get('cmdDesc-set-setNonTogglePref', 'Assign to {|pref|} the {value}.', { pref }),
 			})
 		)
 	)
 	.addSubFn(
 		...NON_TOGGLE_NAMES.map(pref =>
 			SubCmdSvc.buildFn(`(${pref})<:>{value}`, {
-				desc: i18n =>
-					i18n.getTemplate('cmdDesc-set-setNonTogglePref', { head: 'Assign to ', tail: ' the {value}.' }, pref),
+				desc: i18n => i18n.get('cmdDesc-set-setNonTogglePref', 'Assign to {|pref|} the {value}.', { pref }),
 			})
 		)
 	)
@@ -192,7 +190,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 			SubCmdSvc.buildFn(`(colorSchema)<=>(${schema})`, {
 				desc: i18n =>
 					i18n
-						.getTemplate('cmdDesc-set-setNonTogglePref', { head: 'Assign to ', tail: ' the {value}.' }, 'colorSchema')
+						.get('cmdDesc-set-setNonTogglePref', 'Assign to {|pref|} the {value}.', { pref: 'colorSchema' })
 						.replace('{value}', `"${schema}"`),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'colorSchema', value: schema }),
 			})
@@ -203,7 +201,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 			SubCmdSvc.buildFn(`(colorSchema)<:>(${schema})`, {
 				desc: i18n =>
 					i18n
-						.getTemplate('cmdDesc-set-setNonTogglePref', { head: 'Assign to ', tail: ' the {value}.' }, 'colorSchema')
+						.get('cmdDesc-set-setNonTogglePref', 'Assign to {|pref|} the {value}.', { pref: 'colorSchema' })
 						.replace('{value}', `"${schema}"`),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'colorSchema', value: schema }),
 			})
@@ -214,7 +212,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 			SubCmdSvc.buildFn(`(contrast)<=>(${accessibility})`, {
 				desc: i18n =>
 					i18n
-						.getTemplate('cmdDesc-set-setNonTogglePref', { head: 'Assign to ', tail: ' the {value}.' }, 'contrast')
+						.get('cmdDesc-set-setNonTogglePref', 'Assign to {|pref|} the {value}.', { pref: 'contrast' })
 						.replace('{value}', `"${accessibility}"`),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'contrast', value: accessibility }),
 			})
@@ -225,7 +223,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 			SubCmdSvc.buildFn(`(contrast)<:>(${accessibility})`, {
 				desc: i18n =>
 					i18n
-						.getTemplate('cmdDesc-set-setNonTogglePref', { head: 'Assign to ', tail: ' the {value}.' }, 'contrast')
+						.get('cmdDesc-set-setNonTogglePref', 'Assign to {|pref|} the {value}.', { pref: 'contrast' })
 						.replace('{value}', `"${accessibility}"`),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'contrast', value: accessibility }),
 			})
@@ -236,7 +234,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 			SubCmdSvc.buildFn(`(motionReduce)<=>(${accessibility})`, {
 				desc: i18n =>
 					i18n
-						.getTemplate('cmdDesc-set-setNonTogglePref', { head: 'Assign to ', tail: ' the {value}.' }, 'motionReduce')
+						.get('cmdDesc-set-setNonTogglePref', 'Assign to {|pref|} the {value}.', { pref: 'motionReduce' })
 						.replace('{value}', `"${accessibility}"`),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'motionReduce', value: accessibility }),
 			})
@@ -247,7 +245,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 			SubCmdSvc.buildFn(`(motionReduce)<:>(${accessibility})`, {
 				desc: i18n =>
 					i18n
-						.getTemplate('cmdDesc-set-setNonTogglePref', { head: 'Assign to ', tail: ' the {value}.' }, 'motionReduce')
+						.get('cmdDesc-set-setNonTogglePref', 'Assign to {|pref|} the {value}.', { pref: 'motionReduce' })
 						.replace('{value}', `"${accessibility}"`),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'motionReduce', value: accessibility }),
 			})
@@ -258,7 +256,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 			SubCmdSvc.buildFn(`(iconTheme)<=>(${theme})`, {
 				desc: i18n =>
 					i18n
-						.getTemplate('cmdDesc-set-setNonTogglePref', { head: 'Assign to ', tail: ' the {value}.' }, 'iconTheme')
+						.get('cmdDesc-set-setNonTogglePref', 'Assign to {|pref|} the {value}.', { pref: 'iconTheme' })
 						.replace('{value}', `"${theme}"`),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'iconTheme', value: theme }),
 			})
@@ -269,7 +267,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 			SubCmdSvc.buildFn(`(iconTheme)<:>(${theme})`, {
 				desc: i18n =>
 					i18n
-						.getTemplate('cmdDesc-set-setNonTogglePref', { head: 'Assign to ', tail: ' the {value}.' }, 'iconTheme')
+						.get('cmdDesc-set-setNonTogglePref', 'Assign to {|pref|} the {value}.', { pref: 'iconTheme' })
 						.replace('{value}', `"${theme}"`),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'iconTheme', value: theme }),
 			})
@@ -277,15 +275,13 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	)
 	.addSubFn(
 		SubCmdSvc.buildFn('(history)<=>{|value|}', {
-			desc: i18n =>
-				i18n.getTemplate('cmdDesc-set-setNonTogglePref', { head: 'Assign to ', tail: ' the {value}.' }, 'history'),
+			desc: i18n => i18n.get('cmdDesc-set-setNonTogglePref', 'Assign to {|pref|} the {value}.', { pref: 'history' }),
 			fn: ({ value }) => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'history', value }),
 		})
 	)
 	.addSubFn(
 		SubCmdSvc.buildFn('(history)<:>{|value|}', {
-			desc: i18n =>
-				i18n.getTemplate('cmdDesc-set-setNonTogglePref', { head: 'Assign to ', tail: ' the {value}.' }, 'history'),
+			desc: i18n => i18n.get('cmdDesc-set-setNonTogglePref', 'Assign to {|pref|} the {value}.', { pref: 'history' }),
 			fn: ({ value }) => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'history', value }),
 		})
 	)
@@ -293,7 +289,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 
 const START_CMD = CmdSvc.buildFn('st[art]', {
 	desc: i18n =>
-		i18n.getTemplate('cmdDesc-start-difficulty', { head: 'Start new game with ', tail: ' difficulty.' }, 'Easy'),
+		i18n.get('cmdDesc-start-difficulty', 'Start new game with the {|difficulty|} difficulty.', { difficulty: 'Easy' }),
 	fn: () => med.dispatch(SUDOKU_ACTIONS.start, { difficulty: DifficultyKind.Easy }),
 })
 	.addSubFn(
@@ -305,11 +301,7 @@ const START_CMD = CmdSvc.buildFn('st[art]', {
 		...DIFFICULTIES_NAMES.map(difficulty =>
 			SubCmdSvc.buildFn(`(${difficulty})`, {
 				desc: i18n =>
-					i18n.getTemplate(
-						'cmdDesc-start-difficulty',
-						{ head: 'Start new game with ', tail: ' difficulty.' },
-						difficulty
-					),
+					i18n.get('cmdDesc-start-difficulty', 'Start new game with the {|difficulty|} difficulty.', { difficulty }),
 				fn: () => med.dispatch(SUDOKU_ACTIONS.start, { difficulty: DifficultyKind[difficulty] }),
 			})
 		)
@@ -357,14 +349,14 @@ const LANGUAGE_CMD = CmdSvc.buildFn('lan[guage]', {
 	desc: i18n => i18n.get('language-show', 'Show the current value of language.'),
 })
 	.addSubFn(
-		SubCmdSvc.buildFn('{name}', {
-			desc: i18n => i18n.get('language-set', 'Sets the current language to {name}.'),
+		SubCmdSvc.buildFn('{lang}', {
+			desc: i18n => i18n.get('language-set', 'Sets the current language to {lang}.'),
 		})
 	)
 	.addSubFn(
 		...LANGS.map(lang =>
 			SubCmdSvc.buildFn(`(${lang})`, {
-				desc: i18n => i18n.getTemplate('language-setSuggest', { head: 'Sets the current language ', tail: '.' }, lang),
+				desc: i18n => i18n.get('language-setSuggest', 'Sets the current language to {|lang|}.', { lang }),
 				fn: () => med.dispatch(I18N_ACTIONS.changeLang, { lang }),
 			})
 		)
@@ -385,11 +377,7 @@ const HELP_CMD = CmdSvc.buildFn('h[elp]', {
 		...['set', 'start', 'pause', 'write', 'resume', 'quit', 'wquit', 'xit', 'exit', 'help', 'language'].map(cmd =>
 			SubCmdSvc.buildFn(`<:>(${cmd})`, {
 				desc: i18n =>
-					i18n.getTemplate(
-						'cmdDesc-help-withArg',
-						{ head: 'Open a window and display the help of ', tail: ' command.' },
-						cmd
-					),
+					i18n.get('cmdDesc-help-withArg', 'Open dialog and display the help of {|subject|}.', { subject: cmd }),
 				// TODO: fn() {},
 			})
 		)

@@ -71,10 +71,7 @@
 		"help": {
 			"main": "Abre un dialogo y muestra las instrucciones de la aplicación.",
 			"suggest": "Parecido a \":help\", con la adicción de brincar a la etiqueta {subject}",
-			"withArg": {
-				"head": "Abre un dialogo y muestra las instrucciones sobre ",
-				"tail": "."
-			}
+			"withArg": "Abre un dialogo y muestra las instrucciones sobre {|subject|}"
 		},
 		"pause": "Pausa la partida actual.",
 		"quit": "Cierra la ventana o dialog actual.",
@@ -84,52 +81,28 @@
 			"showSuggest": "Muestra el valor de la preferencia.",
 			"showAll": "Muestra todas las preferencias.",
 			"resetAll": "Restablece todas las preferencias",
-			"showPref": {
-				"head": "Muestra el valor de ",
-				"tail": "."
-			},
-			"resetPref": {
-				"head": "Restablece el valor de ",
-				"tail": "."
-			},
+			"showPref": "Muestra el valor de {|pref|}.",
+			"resetPref": "Restablece {|pref|} a su valor por defecto.",
 			"resetSuggest": "Restablece la preferencia a su valor por defecto.",
-			"toggleOnPref": {
-				"head": "Establece",
-				"tail": " a verdadero."
-			},
-			"showNonToggle": {
-				"head": "Muestra el valor de",
-				"tail": "."
-			},
-			"suggest-1": "Preferencia de interruptor: La establece a verdadero.",
+			"toggleOnPref": "Establecer valor, encender {|pref|}.",
+			"showNonToggle": "Muestra el valor de {|pref|}.",
+			"suggest-1": "Preferencia de interruptor: Establecer valor, encender",
 			"suggest-2": "Preferencia de texto o numero: Muestra su valor.",
-			"toggleOffPref": {
-				"head": "Establece ",
-				"tail": " a falso."
-			},
-			"toggleOffSuggest": "Preferencia de interruptor: La establece a falso.",
-			"toggleInvPref": {
-				"head": "Invierte el valor de",
-				"tail": "."
-			},
+			"toggleOffPref": "Establecer valor, apagar {|pref|}.",
+			"toggleOffSuggest": "Preferencia de interruptor: Establecer valor, apagar.",
+			"toggleInvPref": "Invierte el valor de {|pref|}",
 			"toggleInvSuggest": "Preferencia de interruptor: Invierte el valor.",
-			"setNonTogglePref": {
-				"head": "Establece {value} como el valor de ",
-				"tail": "."
-			},
+			"setNonTogglePref": "Establece {value} como el valor de {|pref|}.",
 			"setNonToggleSuggest": "Preferencia de texto o numero: Establece {value} como su valor.",
-			"showDiffer": "Muestra todas las preferencias que difieren con el valor por defecto."
+			"showDiffer": "Muestra todas las preferencias que difieren su valor por defecto."
 		},
 		"start": {
 			"subject": "Inicia una nueva partida con la dificultad seleccionada.",
-			"difficulty": {
-				"head": "Inicia una nueva partida en la dificultad: ",
-				"tail": "."
-			}
+			"difficulty": "Inicia una nueva partida en la dificultad: {|difficulty|}."
 		},
 		"write": "Guarda la partida actual.",
 		"writeAndQuit": "Guarda la partida actual y cierra la ventana o dialogo actual.",
-		"writeLike": "Como \":wq\", pero solo si se han echo cambios.."
+		"writeLike": "Como \":wq\", pero solo si se han echo cambios."
 	},
 	"form": {
 		"reset": "Restablece a los valores por defecto",
@@ -137,11 +110,7 @@
 	},
 	"statusBar": {
 		"modesDisabledReason": "El modo de inserción solo puede ser cambiado en la pantalla de juego.",
-		"posDesc": {
-			"head": "Fila",
-			"body": ", Columna",
-			"tail": "."
-		}
+		"posDesc": "Fila {|row|}, Columna {|col|}."
 	},
 	"help": {
 		"cmd": "commando",
@@ -159,11 +128,8 @@
 		"true": "Guardado"
 	},
 	"language": {
-		"set": "Establece el lenguaje actual como {name}.",
-		"setSuggest": {
-			"head": "Establece el lenguaje actual como ",
-			"tail": "."
-		},
+		"set": "Establece el lenguaje actual como {lang}.",
+		"setSuggest": "Establece el lenguaje actual como {|lang|}.",
 		"show": "Muestra el valor actual del lenguaje."
 	}
 }

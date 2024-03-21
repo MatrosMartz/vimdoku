@@ -143,11 +143,7 @@
 					"properties": {
 						"main": { "type": "string" },
 						"suggest": { "type": "string" },
-						"withArg": {
-							"type": "object",
-							"properties": { "head": { "type": "string" }, "tail": { "type": "string" } },
-							"required": ["head", "tail"]
-						}
+						"withArg": { "type": "string" }
 					},
 					"required": ["main", "suggest", "withArg"]
 				},
@@ -162,46 +158,18 @@
 						"showDiffer": { "type": "string" },
 						"showAll": { "type": "string" },
 						"resetAll": { "type": "string" },
-						"showPref": {
-							"type": "object",
-							"properties": { "head": { "type": "string" }, "tail": { "type": "string" } },
-							"required": ["head", "tail"]
-						},
-						"resetPref": {
-							"type": "object",
-							"properties": { "head": { "type": "string" }, "tail": { "type": "string" } },
-							"required": ["head", "tail"]
-						},
+						"showPref": { "type": "string" },
+						"resetPref": { "type": "string" },
 						"resetSuggest": { "type": "string" },
 						"suggest-1": { "type": "string" },
 						"suggest-2": { "type": "string" },
-						"toggleOnPref": {
-							"type": "object",
-							"properties": { "head": { "type": "string" }, "tail": { "type": "string" } },
-							"required": ["head", "tail"]
-						},
-						"showNonToggle": {
-							"type": "object",
-							"properties": { "head": { "type": "string" }, "tail": { "type": "string" } },
-							"required": ["head", "tail"]
-						},
-						"toggleOffPref": {
-							"type": "object",
-							"properties": { "head": { "type": "string" }, "tail": { "type": "string" } },
-							"required": ["head", "tail"]
-						},
+						"toggleOnPref": { "type": "string" },
+						"showNonToggle": { "type": "string" },
+						"toggleOffPref": { "type": "string" },
 						"toggleOffSuggest": { "type": "string" },
-						"toggleInvPref": {
-							"type": "object",
-							"properties": { "head": { "type": "string" }, "tail": { "type": "string" } },
-							"required": ["head", "tail"]
-						},
+						"toggleInvPref": { "type": "string" },
 						"toggleInvSuggest": { "type": "string" },
-						"setNonTogglePref": {
-							"type": "object",
-							"properties": { "head": { "type": "string" }, "tail": { "type": "string" } },
-							"required": ["head", "tail"]
-						},
+						"setNonTogglePref": { "type": "string" },
 						"setNonToggleSuggest": { "type": "string" }
 					},
 					"required": [
@@ -225,11 +193,7 @@
 					"type": "object",
 					"properties": {
 						"subject": { "type": "string" },
-						"difficulty": {
-							"type": "object",
-							"properties": { "head": { "type": "string" }, "tail": { "type": "string" } },
-							"required": ["head", "tail"]
-						}
+						"difficulty": { "type": "string" }
 					},
 					"required": ["subject", "difficulty"]
 				},
@@ -262,15 +226,7 @@
 			"type": "object",
 			"properties": {
 				"modesDisabledReason": { "type": "string" },
-				"posDesc": {
-					"type": "object",
-					"properties": {
-						"head": { "type": "string" },
-						"body": { "type": "string" },
-						"tail": { "type": "string" }
-					},
-					"required": ["head", "body", "tail"]
-				}
+				"posDesc": { "type": "string" }
 			},
 			"required": ["modesDisabledReason", "posDesc"]
 		},
@@ -306,14 +262,7 @@
 			"properties": {
 				"show": { "type": "string" },
 				"set": { "type": "string" },
-				"setSuggest": {
-					"type": "object",
-					"properties": {
-						"head": { "type": "string" },
-						"tail": { "type": "string" }
-					},
-					"required": ["head", "tail"]
-				}
+				"setSuggest": { "type": "string" }
 			},
 			"required": ["show", "set", "setSuggest"]
 		}

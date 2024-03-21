@@ -73,10 +73,7 @@
 		"help": {
 			"main": "Open dialog and display the help app.",
 			"suggest": "Like \":help\", additionally jump to the tag {subject}.",
-			"withArg": {
-				"head": "Open dialog and display the help of",
-				"tail": "."
-			}
+			"withArg": "Open dialog and display the help of {|subject|}."
 		},
 		"pause": "Pause the current game.",
 		"quit": "Close the current screen or dialog.",
@@ -86,48 +83,24 @@
 			"showSuggest": "Show value of {preference}.",
 			"showAll": "Show all preferences.",
 			"resetAll": "Reset all preferences.",
-			"showPref": {
-				"head": "Show value of ",
-				"tail": "."
-			},
-			"resetPref": {
-				"head": "Reset value of ",
-				"tail": "."
-			},
+			"showPref": "Show value of {|pref|}.",
+			"resetPref": "Reset value of {|pref|}.",
 			"resetSuggest": "Reset {preference} to it's default value.",
-			"toggleOnPref": {
-				"head": "Set, ",
-				"tail": "to switch it on."
-			},
-			"showNonToggle": {
-				"head": "Show value of ",
-				"tail": "."
-			},
+			"toggleOnPref": "Set, {|pref|} to switch it on.",
+			"showNonToggle": "Show value of {|pref|}.",
 			"suggest-1": "Toggle preference: Set, switch it on.",
 			"suggest-2": "String or Number preference: Shows it's value",
-			"toggleOffPref": {
-				"head": "Set, ",
-				"tail": "to switch off."
-			},
+			"toggleOffPref": "Set, {|pref|} to switch off.",
 			"toggleOffSuggest": "Toggle preference: Set, switch it off.",
-			"toggleInvPref": {
-				"head": "Invert value of",
-				"tail": "."
-			},
+			"toggleInvPref": "Invert value of {|pref|}.",
 			"toggleInvSuggest": "Toggle preference: Invert value.",
-			"setNonTogglePref": {
-				"head": "Assign to ",
-				"tail": " the {value}."
-			},
+			"setNonTogglePref": "Assign to {|pref|} the {value}.",
 			"setNonToggleSuggest": "String or Number preference: Assign to {preference} the {value}.",
 			"showDiffer": "Show all preferences that differ from their default value."
 		},
 		"start": {
 			"subject": "Start new game with the selected difficulty.",
-			"difficulty": {
-				"head": "Start new game with the",
-				"tail": "difficulty."
-			}
+			"difficulty": "Start new game with the {|difficulty|} difficulty."
 		},
 		"write": "Save the current game.",
 		"writeAndQuit": "Save the current game and close the current screen or dialog.",
@@ -139,11 +112,7 @@
 	},
 	"statusBar": {
 		"modesDisabledReason": "The insertion mode can only be changed on the game screen.",
-		"posDesc": {
-			"head": "Row",
-			"body": ", Col",
-			"tail": "."
-		}
+		"posDesc": "Row {|row|}, Col {|col|}."
 	},
 	"help": {
 		"cmd": "command",
@@ -161,11 +130,8 @@
 		"true": "Saved"
 	},
 	"language": {
-		"set": "Sets the current language to {name}.",
-		"setSuggest": {
-			"head": "Sets the current language to ",
-			"tail": "."
-		},
+		"set": "Sets the current language to {lang}.",
+		"setSuggest": "Sets the current language to {|lang|}.",
 		"show": "Show the current value of language."
 	}
 }
