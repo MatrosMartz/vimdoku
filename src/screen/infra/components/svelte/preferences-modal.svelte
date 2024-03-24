@@ -27,8 +27,8 @@
 	<div class="content">
 		<TabGroup {tabState}>
 			<TabList>
-				<Tab key="show" on:click={createTabHandler('show-all')}>{$i18nState.get('prefs-tabs-show', 'Show')}</Tab>
-				<Tab key="edit" on:click={createTabHandler('edit')}>{$i18nState.get('prefs-tabs-edit', 'Edit')}</Tab>
+				<Tab key="show" on:click={createTabHandler('show-all')}>{$i18nState.ns('share').prefs_tabs_show('Show')}</Tab>
+				<Tab key="edit" on:click={createTabHandler('edit')}>{$i18nState.ns('share').prefs_tabs_edit('Edit')}</Tab>
 				<div slot="close" class="close">
 					<DialogClose />
 				</div>

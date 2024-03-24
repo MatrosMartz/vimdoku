@@ -17,7 +17,9 @@
 
 	$: tooltipProps = {
 		id: 'disabled-mode-reason',
-		text: $i18nState.get('statusBar-modesDisabledReason', 'The insertion mode can only be changed on the game screen.'),
+		text: $i18nState
+			.ns('share')
+			.statusBar_modesDisabledReason('The insertion mode can only be changed on the game screen.'),
 	} satisfies TooltipProps
 
 	/**
@@ -69,7 +71,7 @@
 		class="status-icon mode"
 		on:click={toggleHandler}
 		use:tooltip={disabled ? tooltipProps : null}
-		>{$i18nState.get(`modes-${$modeState}`, $modeState.toUpperCase())}</button
+		>{$i18nState.ns('share')[`modes_${$modeState}`]($modeState.toUpperCase())}</button
 	>
 	<div class="mode-selector-container">
 		<form id="mode-selector-panel" role="region" aria-labelledby="mode-selector-header" method="get">
@@ -89,7 +91,7 @@
 						on:blur={closeHandler}
 						use:tooltip={{ id: `mode-${mode}-input-key-describe`, text: `<${MODE_KEYS[mode]}>` }}
 					/>
-					<span>{$i18nState.get(`modes-${mode}`, mode.toUpperCase())}</span>
+					<span>{$i18nState.ns('share')[`modes_${mode}`](mode.toUpperCase())}</span>
 				</label>
 			{/each}
 		</form>

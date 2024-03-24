@@ -1,7 +1,7 @@
 <script>
 	import { i18nState } from '$i18n/infra/stores/svelte'
 
-	$: typeText = $i18nState.get('titleScreen-cmd-type', 'Type')
+	$: typeText = $i18nState.ns('pages/home').cmd_type('Type')
 
 	const faviconURL = globalThis.location.origin + '/favicon.svg'
 </script>
@@ -11,11 +11,11 @@
 <h2>VIMDOKU - VIM suDOKU</h2>
 
 <div class="data">
-	<p>{$i18nState.get('titleScreen-version', 'Version')} 1.0</p>
+	<p>{$i18nState.ns('pages/home').version('Version')} 1.0</p>
 	<p>
-		{$i18nState.get('titleScreen-createBy', 'Created by')} <a href="https://github.com/matrosmartz">MatrosMartz.</a>
+		{$i18nState.ns('pages/home').createBy('Created by')} <a href="https://github.com/matrosmartz">MatrosMartz.</a>
 	</p>
-	<p>{$i18nState.get('titleScreen-desc', 'Vimdoku is sudoku game with VIM shortcuts.')}</p>
+	<p>{$i18nState.ns('pages/home').desc('Vimdoku is sudoku game with VIM shortcuts.')}</p>
 </div>
 <table class="commands">
 	<tr>
@@ -23,14 +23,14 @@
 		<td>
 			<p class="highlight"><span class="command">quit</span><span class="key">Enter</span></p>
 		</td>
-		<td>{$i18nState.get('titleScreen-cmd-quit', 'to exit.')}</td>
+		<td>{$i18nState.ns('pages/home').cmd_quit('to exit.')}</td>
 	</tr>
 	<tr>
 		<th>{typeText}</th>
 		<td>
 			<p class="highlight"><span class="command">help</span><span class="key">Enter</span></p>
 		</td>
-		<td>{$i18nState.get('titleScreen-cmd-help', 'to on-line help.')}</td>
+		<td>{$i18nState.ns('pages/home').cmd_help('to on-line help.')}</td>
 	</tr>
 	<tr>
 		<th>{typeText}</th>
@@ -40,7 +40,7 @@
 				<span class="command">start</span><span class="key">Enter</span>
 			</p>
 		</td>
-		<td>{$i18nState.get('titleScreen-cmd-startHelp', 'for start command help.')}</td>
+		<td>{$i18nState.ns('pages/home').cmd_startHelp('for start command help.')}</td>
 	</tr>
 	<tr>
 		<th>{typeText}</th>
@@ -49,7 +49,7 @@
 				<span class="command">start</span><span class="holder">difficulty</span><span class="key">Enter</span>
 			</p>
 		</td>
-		<td>{$i18nState.get('titleScreen-cmd-startGame', 'for start command help.')}</td>
+		<td>{$i18nState.ns('pages/home').cmd_startGame('for start command help.')}</td>
 	</tr>
 </table>
 

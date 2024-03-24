@@ -1,31 +1,28 @@
-import type enSchema from '@/locales/en.json'
-import type { VariablesFromStr } from '~/share/types'
+import type { Namespace, NamespaceTextGetter } from '~/locales'
 
 import { IDLE_LANG, type Lang } from '../const'
-import type { SchemaKeys } from './schema.entity'
-
-export type I18nSchema = Omit<typeof enSchema, '$schema'>
-
-type GetTemplateKey<str extends string> = str extends `${infer TK}-${'head' | 'tail'}` ? TK : never
-
-export type I18nKeys = SchemaKeys<I18nSchema>
-export type I18nTemplateKeys = GetTemplateKey<I18nKeys>
 
 export interface I18n {
 	lang: Lang
 	/**
-	 * Get the respective text to that key.
-	 * @param key The text key.
-	 * @param fallBack The alternative if the text does not exist or is not loaded already.
-	 * @param keywords Object with keywords to be inserted in the text.
-	 * @returns the text or fallback.
+	 * Gets object with .
+	 * @param namespace Key of namespace.
 	 */
-	get<K extends I18nKeys, F extends string>(key: K, fallBack: F, keywords?: Record<VariablesFromStr<F>, string>): string
+	ns<Ns extends keyof Namespace>(namespace: Ns): NamespaceTextGetter<Namespace[Ns]>
+}
+
+const IDLE_I18N_HANDLER = {
+	get() {
+		return (fallback: string, keywords?: Record<string, string>) => {
+			if (keywords != null)
+				for (const [keyword, value] of Object.entries(keywords)) fallback = fallback.replaceAll(`{|${keyword}|}`, value)
+
+			return fallback
+		}
+	},
 }
 
 export const IDLE_I18N: I18n = {
 	lang: IDLE_LANG,
-	get(_, fallBack) {
-		return fallBack
-	},
+	ns: () => new Proxy({}, IDLE_I18N_HANDLER) as never,
 }

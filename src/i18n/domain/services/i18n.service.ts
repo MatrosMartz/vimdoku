@@ -1,7 +1,8 @@
+import type { GameLocale, HomeLocale, ShareLocale } from '~/locales'
 import { inArray, inject } from '~/share/utils'
 
 import { type Lang, LANGS } from '../const'
-import { type I18nKeys, type I18nSchema, IDLE_I18N } from '../entities'
+import { IDLE_I18N } from '../entities'
 import { type II18n } from '../models'
 import type { I18nRepo } from '../repositories/i18n.repo'
 import { I18nObs } from './i18n-obs.service'
@@ -18,59 +19,57 @@ export class I18nSvc implements II18n {
 		return this.#obs.data
 	}
 
-	async changeLang(lang: Lang) {
+	async changeLang(lang: Lang): Promise<void> {
 		if (!inArray(LANGS, lang)) {
 			this.#obs.set(IDLE_I18N)
 			return
 		}
-		const resource = await this.#fetchResource(lang)
+
+		const namespaces = await this.#getNamespaces(lang)
 
 		this.#obs.set({
 			lang,
-			get: (key, fallBack, keywords) => this.#replaceKeywords(this.#getText(key, resource) ?? fallBack, keywords),
+			ns: namespace => {
+				const locale = namespaces[namespace]
+
+				if (locale == null) throw new Error('namespace is not valid.')
+
+				return new Proxy(
+					{},
+					{
+						get(_, prop) {
+							if (prop in locale)
+								return (fallback: string, keywords?: Record<string, string>) => {
+									let text = locale[prop as keyof typeof locale] as string
+									if (keywords != null)
+										for (const [keyword, value] of Object.entries(keywords))
+											text = text.replaceAll(`{|${keyword}|}`, value)
+									return text
+								}
+						},
+					}
+				) as never
+			},
 		})
 	}
 
-	async load() {
+	async load(): Promise<void> {
 		const lang = await this.#repo.get()
 		if (lang != null) await this.changeLang(lang)
 	}
 
-	/**
-	 * The fetch language resource.
-	 * @param lang The language.
-	 * @returns The resource.
-	 */
-	async #fetchResource(lang: Lang) {
-		return await fetch(globalThis.location.origin + `/locales/${lang}.json`).then<I18nSchema | null>(
+	async #fetch<O>(namespace: string, lang: Lang) {
+		return await fetch(globalThis.location.origin + `/locales/${namespace}/${lang}.json`).then<Record<keyof O, string>>(
 			async res => await res.json()
 		)
 	}
 
-	/**
-	 * Find text in the resource.
-	 * @param key The key of the text.
-	 * @param resource The resource in the find text.
-	 * @returns The text or null if was not exist in the resource.
-	 */
-	#getText<K extends I18nKeys>(key: K, resource: I18nSchema | null): string | null {
-		if (resource == null) return null
-
-		let result: any = resource
-
-		for (const k of key.split('-')) {
-			result = result[k]
-			if (result == null) return null
-		}
-
-		return result
-	}
-
-	#replaceKeywords(text: string, keywords?: Record<string, string>) {
-		if (keywords == null) return text
-
-		for (const [keyword, value] of Object.entries(keywords))
-			if (value != null || typeof value !== 'object') text = text.replaceAll(`{|${keyword}|}`, value)
-		return text
+	async #getNamespaces(lang: Lang) {
+		const [game, home, share] = await Promise.all([
+			this.#fetch<GameLocale>('pages/game', lang),
+			this.#fetch<HomeLocale>('pages/home', lang),
+			this.#fetch<ShareLocale>('share', lang),
+		])
+		return { 'pages/game': game, 'pages/home': home, share }
 	}
 }

@@ -25,14 +25,14 @@
 <form method="dialog" on:submit|preventDefault={submitHandler}>
 	<OptionsInput
 		name="difficulty-selector"
-		label={$i18nState.get('gameBtn-selectDifficulty', 'Select difficulty')}
+		label={$i18nState.ns('share').gameBtn_selectDifficulty('Select difficulty')}
 		settings={{ opts: DIFFICULTIES_NAMES, default: 'Easy' }}
 		bind:value
 	/>
 
 	<ButtonMenu direction="auto-reverse">
-		<Button on:click={backHandler}>{$i18nState.get('gameBtn-goBack', 'Go back')}</Button>
-		<Button type="submit">{$i18nState.get('gameBtn-start', 'Start new game')}</Button>
+		<Button on:click={backHandler}>{$i18nState.ns('share').gameBtn_goBack('Go back')}</Button>
+		<Button type="submit">{$i18nState.ns('share').gameBtn_start('Start new game')}</Button>
 	</ButtonMenu>
 </form>
 

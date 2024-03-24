@@ -11,7 +11,7 @@
 
 	$: tooltipProps = {
 		id: 'resume-disable-reason',
-		text: $i18nState.get('gameBtn-resume-disabledReason', 'no saved game.'),
+		text: $i18nState.ns('share').gameBtn_resume_disabledReason('no saved game.'),
 	} satisfies TooltipProps
 
 	/** Open select game dialog, new game btn click handler. */
@@ -26,8 +26,8 @@
 </script>
 
 <ButtonMenu direction="auto">
-	<Button on:click={newGameHandler}>{$i18nState.get('gameBtn-new-text', 'New game')}</Button>
+	<Button on:click={newGameHandler}>{$i18nState.ns('share').gameBtn_new_text('New game')}</Button>
 	<Button {disabled} {tooltipProps} on:click={resumeHandler}
-		>{$i18nState.get('gameBtn-resume-text', 'Resume game')}</Button
+		>{$i18nState.ns('share').gameBtn_resume_text('Resume game')}</Button
 	>
 </ButtonMenu>

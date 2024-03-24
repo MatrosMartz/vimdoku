@@ -25,10 +25,10 @@
 	 */
 	function getPrefText<E extends PrefsNamesEntries>(i18n: I18n, fieldEntries: E, prefs: Prefs): string
 	function getPrefText<E extends PrefsNamesEntries>(i18n: I18n, [key, field]: E, prefs: Prefs) {
-		if (field.type === 'toggle') return i18n.get(`prefs-toggle-${prefs[key] as boolean}`, String(prefs[key]))
-		if (key === 'colorSchema') return i18n.get(`prefs-schema-${prefs[key] as ColorSchema}`, prefs[key])
+		if (field.type === 'toggle') return i18n.ns('share')[`prefs_toggle_${prefs[key] as boolean}`](String(prefs[key]))
+		if (key === 'colorSchema') return i18n.ns('share')[`prefs_schema_${prefs[key] as ColorSchema}`](prefs[key])
 		if (inArray(ACCESSIBILITY_FIELDS, key))
-			return i18n.get(`prefs-accessibility-${prefs[key] as Accessibility}`, prefs[key])
+			return i18n.ns('share')[`prefs_accessibility_${prefs[key] as Accessibility}`](prefs[key])
 		return prefs[key]
 	}
 
@@ -46,12 +46,12 @@
 	{#each prefsGroupEntries as [group, fields] (group)}
 		<table class="preferences">
 			<thead>
-				<tr><th colspan="2">{$i18nState.get(`prefs-groups-${group}`, capitalCase(group))}</th> </tr>
+				<tr><th colspan="2">{$i18nState.ns('share')[`prefs_groups_${group}`](capitalCase(group))}</th> </tr>
 			</thead>
 			<tbody>
 				{#each fields as field (field[0])}
 					<tr class="field highlight" class:strike={showDiff && $prefsState[field[0]] === field[1].default}>
-						<th class="bold secondary">{$i18nState.get(`prefs-names-${field[0]}`, capitalCase(field[0]))}</th>
+						<th class="bold secondary">{$i18nState.ns('share')[`prefs_names_${field[0]}`](capitalCase(field[0]))}</th>
 						<td class="monospace value {field[1].type}">{getPrefText($i18nState, field, $prefsState)}</td>
 					</tr>
 				{/each}
@@ -62,9 +62,9 @@
 		<ToggleInput
 			name="show-all-pref"
 			checked={showDiff}
-			label="{$i18nState.get('prefs-showToggle', 'Show only that differ from default value')}:"
-			offMsg={$i18nState.get('prefs-toggle-false', 'off')}
-			onMsg={$i18nState.get('prefs-toggle-true', 'on')}
+			label="{$i18nState.ns('share').prefs_showToggle('Show only that differ from default value')}:"
+			offMsg={$i18nState.ns('share').prefs_toggle_false('off')}
+			onMsg={$i18nState.ns('share').prefs_toggle_true('on')}
 			settings={{ default: false }}
 			on:change={toggleHandler}
 		/>

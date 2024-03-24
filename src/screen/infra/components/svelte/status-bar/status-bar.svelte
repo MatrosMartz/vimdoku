@@ -14,7 +14,7 @@
 
 	$: tooltipProps = {
 		id: 'describe-pos',
-		text: $i18nState.get('statusBar-posDesc', 'Row {|row|}, Col {|col|}.', {
+		text: $i18nState.ns('share').statusBar_posDesc('Row {|row|}, Col {|col|}.', {
 			row: String($posState.y + 1),
 			col: String($posState.x + 1),
 		}),
@@ -36,7 +36,9 @@
 		<SelectMode />
 		<button class="status-icon sync">
 			<Icon id="sync" />
-			<span class="portrait-hidden">{$i18nState.get(`sync-${$savedState}`, $savedState ? 'Saved' : 'Unsaved')}</span>
+			<span class="portrait-hidden"
+				>{$i18nState.ns('share')[`sync_${$savedState}`]($savedState ? 'Saved' : 'Unsaved')}</span
+			>
 		</button>
 		<button class="status-icon error" class:shake={errorsShake}>
 			<Icon id="errors" />

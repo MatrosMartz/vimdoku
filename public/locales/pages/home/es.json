@@ -1,0 +1,11 @@
+{
+	"$schema": "./i18n-schema.json",
+	"cmd_help": "para las instrucciones en linea.",
+	"cmd_quit": "para salir.",
+	"cmd_startGame": "para iniciar la partida.",
+	"cmd_startHelp": "para las instrucciones del comando start.",
+	"cmd_type": "Inserte",
+	"createBy": "Creado por",
+	"desc": "Vimdoku es un juego de sudoku con atajos de VIM.",
+	"version": "Versión"
+}

@@ -1,0 +1,11 @@
+{
+	"$schema": "./i18n-schema.json",
+	"version": "Version",
+	"createBy": "Created by",
+	"desc": "Vimdoku is sudoku game with VIM shortcuts.",
+	"cmd_help": "to on-line help.",
+	"cmd_quit": "for exit.",
+	"cmd_type": "Type",
+	"cmd_startHelp": "for start command help.",
+	"cmd_startGame": "for start game."
+}
