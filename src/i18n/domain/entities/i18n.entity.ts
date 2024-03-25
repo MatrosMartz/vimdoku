@@ -6,9 +6,9 @@ export interface I18n {
 	lang: Lang
 	/**
 	 * Gets object with .
-	 * @param namespace Key of namespace.
+	 * @param localKey Key of namespace.
 	 */
-	ns<Ns extends keyof Namespace>(namespace: Ns): NamespaceTextGetter<Namespace[Ns]>
+	ns<Key extends keyof Namespace>(localKey: Key): NamespaceTextGetter<Namespace[Key]>
 }
 
 const IDLE_I18N_HANDLER = {

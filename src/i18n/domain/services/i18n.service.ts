@@ -25,14 +25,14 @@ export class I18nSvc implements II18n {
 			return
 		}
 
-		const namespaces = await this.#getNamespaces(lang)
+		const namespace = await this.#repo.getLocale(lang)
 
 		this.#obs.set({
 			lang,
-			ns: namespace => {
-				const locale = namespaces[namespace]
+			ns: localeKey => {
+				const locale = namespace[localeKey]
 
-				if (locale == null) throw new Error('namespace is not valid.')
+				if (locale == null) throw new Error(`Not exist "${localeKey}" in "${lang}"`)
 
 				return new Proxy(
 					{},
@@ -54,22 +54,7 @@ export class I18nSvc implements II18n {
 	}
 
 	async load(): Promise<void> {
-		const lang = await this.#repo.get()
+		const lang = await this.#repo.getLang()
 		if (lang != null) await this.changeLang(lang)
-	}
-
-	async #fetch<O>(namespace: string, lang: Lang) {
-		return await fetch(globalThis.location.origin + `/locales/${namespace}/${lang}.json`).then<Record<keyof O, string>>(
-			async res => await res.json()
-		)
-	}
-
-	async #getNamespaces(lang: Lang) {
-		const [game, home, share] = await Promise.all([
-			this.#fetch<GameLocale>('pages/game', lang),
-			this.#fetch<HomeLocale>('pages/home', lang),
-			this.#fetch<ShareLocale>('share', lang),
-		])
-		return { 'pages/game': game, 'pages/home': home, share }
 	}
 }
