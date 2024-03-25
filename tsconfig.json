@@ -25,7 +25,7 @@
 		"useDefineForClassFields": true,
 		"experimentalDecorators": true
 	},
-	"include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.js", "src/**/*.svelte", "locale-to-json-schema.cli.js"],
+	"include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.js", "src/**/*.svelte", "locale-to-json-schema.cli"],
 	"references": [{ "path": "./tsconfig.node.json" }],
-	"exclude": ["./locale-to-json-schema.cli.js"]
+	"exclude": ["locale-to-json-schema.cli"]
 }

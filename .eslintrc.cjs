@@ -31,15 +31,6 @@ module.exports = {
 				parser: '@typescript-eslint/parser',
 			},
 		},
-		{
-			files: ['./locale-to-json-schema.cli.js'],
-			rules: {
-				'jsdoc/no-types': ['off'],
-				parserOptions: {
-					project: './tsconfig.json',
-				},
-			},
-		},
 	],
 	rules: {
 		'@typescript-eslint/consistent-type-assertions': ['error', { assertionStyle: 'as' }],
