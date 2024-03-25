@@ -9,7 +9,7 @@ node_modules
 .eslintrc*
 eslint/*
 coverage
-locale-to-json-schema.cli
+/locale-to-json-schema.cli.js
 
 # Ignore files for PNPM, NPM and YARN
 pnpm-lock.yaml
