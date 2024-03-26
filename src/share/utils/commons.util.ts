@@ -118,7 +118,7 @@ export const keysBy: <O>(obj: O) => Array<keyof O> = Object.keys
  * @param search Element to be searched.
  * @returns If element exist in array
  */
-export function inArray<T>(arr: T[], search: any): search is T {
+export function inArray<T>(arr: readonly T[], search: any): search is T {
 	return arr.includes(search)
 }
 

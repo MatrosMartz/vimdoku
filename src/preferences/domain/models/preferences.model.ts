@@ -20,9 +20,7 @@ export type PrefsNamesEntries = (
 	| GetEntries<typeof vimFields>
 )[0]
 
-export const PrefFields = { ...sudokuFields, ...userFields, ...vimFields }
 export const IDLE_PREFS = { ...SUDOKU_IDLE_PREFS, ...USER_IDLE_PREFS, ...VIM_IDLE_PREFS } as const
-export const IDLE_PREFS_GROUPS = { sudoku: SUDOKU_IDLE_PREFS, user: USER_IDLE_PREFS, vim: VIM_IDLE_PREFS } as const
 
 export const prefsFormSchema = {
 	sudoku: sudokuFields,
@@ -71,12 +69,12 @@ export interface IPrefs {
 	toString(): string
 }
 
-const ALL_FIELDS = { ...sudokuFields, ...userFields, ...vimFields }
+export const ALL_PREFERENCES = { ...sudokuFields, ...userFields, ...vimFields }
 
 /** All preferences names. */
-export const PREFS_NAMES = keysBy(ALL_FIELDS)
+export const PREFS_NAMES = keysBy(ALL_PREFERENCES)
 
-type AllNames = keyof typeof ALL_FIELDS
+type AllNames = keyof typeof ALL_PREFERENCES
 export type ToggleNames = KeysByType<Prefs, boolean>
 export type NonToggleNames = Exclude<AllNames, ToggleNames>
 
@@ -99,7 +97,7 @@ function isTogglePref<FG extends FormGroup>(schema: FG, name: keyof FG): name is
 
 export const { TOGGLE_NAMES, NON_TOGGLE_NAMES } = PREFS_NAMES.reduce<Names>(
 	(acc, name) => {
-		if (isTogglePref(ALL_FIELDS, name)) acc.TOGGLE_NAMES.push(name)
+		if (isTogglePref(ALL_PREFERENCES, name)) acc.TOGGLE_NAMES.push(name)
 		else acc.NON_TOGGLE_NAMES.push(name)
 		return acc
 	},

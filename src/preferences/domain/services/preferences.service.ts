@@ -1,6 +1,7 @@
-import { entriesBy, inject, InvalidPreferencesError, sameStructure } from '~/share/utils'
+import { FormFields } from '~/share/domain/services'
+import { entriesBy, inject, InvalidPreferencesError } from '~/share/utils'
 
-import { IDLE_PREFS, type IPrefs, type Prefs } from '../models'
+import { ALL_PREFERENCES, IDLE_PREFS, type IPrefs, type Prefs } from '../models'
 import { SUDOKU_IDLE_PREFS, type SudokuPrefs } from '../models/sudoku.model'
 import { USER_IDLE_PREFS, type UserPrefs } from '../models/user.model'
 import { VIM_IDLE_PREFS, type VimPrefs } from '../models/vim.model'
@@ -54,7 +55,7 @@ export class PrefsSvc implements IPrefs {
 	 * @returns True if it complies with the structure, False if it doesn't.
 	 */
 	static check(preferences: Prefs) {
-		return sameStructure(preferences, IDLE_PREFS)
+		return FormFields.satisfiesGroup(ALL_PREFERENCES, preferences)
 	}
 
 	/**
