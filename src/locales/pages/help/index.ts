@@ -1,1 +1,1 @@
-export * from './main.locale'
+export * from './locale'

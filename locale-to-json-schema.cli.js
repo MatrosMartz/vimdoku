@@ -35,6 +35,12 @@ async function findLocales() {
 					name,
 					schemaDir: path.join(path.relative(LOCALE_DIR, currDir), name, 'i18n-schema.json'),
 				})
+			} else if (itemStats.isFile() && item === 'locale.ts') {
+				locales.push({
+					localeDir: itemPath,
+					name: '',
+					schemaDir: path.join(path.relative(LOCALE_DIR, currDir), 'i18n-schema.json'),
+				})
 			}
 		}
 	}
@@ -169,10 +175,27 @@ const importTokens = (await Promise.all(locales.map(writeSchema))).sort(
 	({ relativeDir: dirA }, { relativeDir: dirB }) => (dirA > dirB ? 0 : -1)
 )
 
+/**
+ * @type {{pagesTokens:{localeDir: string;name: string;schemaDir: string;} ,noPagesTokens:{localeDir: string;name: string;schemaDir: string;}}}
+ */
+const { pagesTokens, noPagesTokens } = importTokens.reduce(
+	(acc, curr) => {
+		if (curr.relativeDir.startsWith('pages')) acc.pagesTokens.push(curr)
+		else acc.noPagesTokens.push(curr)
+
+		return acc
+	},
+	{ pagesTokens: [], noPagesTokens: [] }
+)
+
 const importLocalesStr =
-	importTokens
+	'import type { ' +
+	pagesTokens.map(({ interfaceName }) => interfaceName).join(', ') +
+	" } from './pages'\n" +
+	noPagesTokens
 		.map(({ interfaceName, relativeDir }) => `import type { ${interfaceName} } from './${relativeDir}'`)
-		.join('\n') + "\nimport type { LocaleText, LocaleValueWithKeywords } from './types'"
+		.join('\n') +
+	"\nimport type { LocaleText, LocaleValueWithKeywords } from './types'"
 
 const namespaceInterfaceStr =
 	'\n\nexport interface Namespace {\n' +
