@@ -1,6 +1,6 @@
 import type { LocaleValue } from '~/locales/types'
 
-export interface MainHelpLocale extends MoveAround, CloseThisPage, GetSpecificHelp, SearchForHelp {
+export interface HelpLocale extends MoveAround, CloseThisPage, GetSpecificHelp, SearchForHelp {
 	about: LocaleValue
 	title: LocaleValue
 }

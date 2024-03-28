@@ -11,14 +11,22 @@ export interface I18n {
 	ns<Key extends keyof Namespace>(localKey: Key): NamespaceTextGetter<Namespace[Key]>
 }
 
-const IDLE_I18N_HANDLER = {
-	get() {
-		return (fallback: string, keywords?: Record<string, string>) => {
-			if (keywords != null)
-				for (const [keyword, value] of Object.entries(keywords)) fallback = fallback.replaceAll(`{|${keyword}|}`, value)
+/**
+ * Idle i18n translate function.
+ * @param fallback The alternative text.
+ * @param keywords The keywords replace in the text.
+ * @returns Fallback with keywords replaced.
+ */
+export function IDLE_I18N_TRANSLATE_FN(fallback: string, keywords?: Record<string, string>) {
+	if (keywords != null)
+		for (const [keyword, value] of Object.entries(keywords)) fallback = fallback.replaceAll(`{|${keyword}|}`, value)
 
-			return fallback
-		}
+	return fallback
+}
+
+export const IDLE_I18N_HANDLER = {
+	get() {
+		return IDLE_I18N_TRANSLATE_FN
 	},
 }
 

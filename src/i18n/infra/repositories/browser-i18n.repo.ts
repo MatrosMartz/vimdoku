@@ -1,6 +1,4 @@
-import type { GameLocale, HomeLocale, ShareLocale } from '~/locales'
-import type { MainHelpLocale } from '~/locales/pages/help/main.locale'
-import type { ShareHelpLocale } from '~/locales/pages/help/share.locale'
+import type { Namespace, PagesKeys, ShareLocale } from '~/locales'
 import { inArray } from '~/share/utils'
 import { type Lang, LANGS } from '$i18n/domain/const'
 import type { I18nRepo } from '$i18n/domain/repositories/i18n.repo'
@@ -27,15 +25,12 @@ export const browserI18nRepo: I18nRepo = {
 
 		return null
 	},
-	async getLocale(lang) {
-		const [game, helpMain, helpShare, home, share] = await Promise.all([
-			internalFetch<GameLocale>('pages/game', lang),
-			internalFetch<MainHelpLocale>('pages/help/main', lang),
-			internalFetch<ShareHelpLocale>('pages/help/share', lang),
-			internalFetch<HomeLocale>('pages/home', lang),
+	async getLocale<Page extends PagesKeys>(lang: Lang, page: Page) {
+		const [LocalePage, share] = await Promise.all([
+			internalFetch<Namespace[Page]>(page, lang),
 			internalFetch<ShareLocale>('share', lang),
 		])
 
-		return { 'pages/game': game, 'pages/help/main': helpMain, 'pages/help/share': helpShare, 'pages/home': home, share }
+		return { [page]: LocalePage, share } as never
 	},
 }

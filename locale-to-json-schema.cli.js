@@ -205,7 +205,11 @@ const namespaceInterfaceStr =
 	'\n}'
 
 const namespaceTsContentEnd = `
+
 export type Locales = Namespace[keyof Namespace]
+export type PagesKeys = {
+	[K in keyof Namespace]: K extends \`pages/\${string}\` ? K : never
+}[keyof Namespace]
 
 
 export type NamespaceTextGetter<Locale extends Locales> = {

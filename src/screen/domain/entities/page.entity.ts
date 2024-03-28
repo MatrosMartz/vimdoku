@@ -1,3 +1,4 @@
+import type { PagesKeys } from '~/locales'
 import { _throw, capitalCase, inArray, InvalidStringPageError } from '~/share/utils'
 import { type Lang, LANGS } from '$i18n/domain/const'
 import { DIFFICULTIES_NAMES, DifficultyKind } from '$sudoku/domain/models'
@@ -21,24 +22,28 @@ export abstract class Page {
 		return new HomePage()
 	}
 
-	static isGame(route: Page): route is GamePage {
-		return route.path === Path.Game
+	static getPageKey(page: Page): PagesKeys {
+		return Page.isHelp(page) ? `pages/${page.route}` : Page.isGame(page) ? `pages/${page.path}` : 'pages/home'
 	}
 
-	static isHelp(route: Page): route is HelpPage {
-		return route.path === Path.Help
+	static isGame(page: Page): page is GamePage {
+		return page.path === Path.Game
 	}
 
-	static isHome(route: Page): route is HomePage {
-		return route.path === Path.Home
+	static isHelp(page: Page): page is HelpPage {
+		return page.path === Path.Help
 	}
 
-	static isNotFound(route: Page): route is NotFoundPage {
-		return route.path === Path.NotFound
+	static isHome(page: Page): page is HomePage {
+		return page.path === Path.Home
 	}
 
-	static notFound(route: string) {
-		return new NotFoundPage(route)
+	static isNotFound(page: Page): page is NotFoundPage {
+		return page.path === Path.NotFound
+	}
+
+	static notFound(page: string) {
+		return new NotFoundPage(page)
 	}
 
 	toJSON() {

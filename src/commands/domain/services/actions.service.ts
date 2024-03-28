@@ -10,8 +10,7 @@ import type { ActionUnData, ActionWithData, DataAction } from '../models'
 
 // i18n Actions.
 const changeLang: ActionWithData<{ lang: Lang }> = async ({ i18n, screen }, { lang }) => {
-	await screen.setLang(lang)
-	await i18n.changeLang(lang)
+	await Promise.all([screen.setLang(lang), i18n.updateFor({ lang })])
 }
 
 export const I18N_ACTIONS = { changeLang }
@@ -43,7 +42,7 @@ const invertPref: ActionWithData<{ pref: ToggleNames }> = async ({ prefs }, data
 export const PREFS_ACTIONS = { set: setPref, reset: resetPref, invert: invertPref }
 
 // Screen Actions.
-const closeScreen: ActionUnData = async ({ screen, sudoku }) => {
+const closeScreen: ActionUnData = async ({ i18n, screen, sudoku }) => {
 	const isGameRoute = Page.isGame(screen.page)
 	const isNoneDialog = Modal.isNone(screen.modal)
 	if (isGameRoute && isNoneDialog && !sudoku.isASaved) {
@@ -52,6 +51,7 @@ const closeScreen: ActionUnData = async ({ screen, sudoku }) => {
 	}
 
 	await screen.close()
+	await i18n.updateFor(screen.data)
 
 	if (isGameRoute && !isNoneDialog) sudoku.continue()
 	else await sudoku.load()
@@ -59,13 +59,13 @@ const closeScreen: ActionUnData = async ({ screen, sudoku }) => {
 
 const openModal: ActionWithData<{ modal: Modal }> = async ({ screen }, data) => screen.setModal(data.modal)
 
-const goTo: ActionWithData<{ page: Page }> = async ({ screen, sudoku }, data) => {
+const goTo: ActionWithData<{ page: Page }> = async ({ i18n, screen, sudoku }, data) => {
 	if (!Page.isGame(screen.page) && Page.isGame(data.page) && !sudoku.isASaved) {
 		screen.setModal(Modal.createWarn('unsave'))
 		return
 	}
 
-	await screen.gotTo(data.page)
+	await Promise.all([screen.gotTo(data.page), i18n.updateFor(data)])
 }
 
 export const SCREEN_ACTIONS = { close: closeScreen, openModal, goTo }

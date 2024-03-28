@@ -1,7 +1,7 @@
 <script>
 	import { i18nState } from '$i18n/infra/stores/svelte'
 
-	$: locale = $i18nState.ns('pages/help/main')
+	$: locale = $i18nState.ns('pages/help')
 </script>
 
 <!-- eslint-disable svelte/no-at-html-tags -->

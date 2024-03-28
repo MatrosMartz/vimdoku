@@ -131,3 +131,13 @@ export function inArray<T>(arr: readonly T[], search: any): search is T {
 export function p<T, R>(val: T, fn: (val: T) => R) {
 	return fn(val)
 }
+
+/**
+ * Maps the value only if not null.
+ * @param val Value that maybe nullable.
+ * @param fn Function for map value if it is not null.
+ * @returns Null value or mapped if it was not.
+ */
+export function option<T extends NonNullable<unknown>, R>(val: T | null | undefined, fn: (val: T) => R) {
+	return val != null ? fn(val) : val
+}
