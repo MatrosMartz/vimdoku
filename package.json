@@ -55,6 +55,8 @@
 	},
 	"dependencies": {
 		"@fontsource-variable/jetbrains-mono": "^5.0.19",
+		"@fontsource-variable/nunito": "^5.0.18",
+		"@fontsource-variable/red-hat-mono": "^5.0.18",
 		"@fontsource/poppins": "^5.0.8"
 	}
 }

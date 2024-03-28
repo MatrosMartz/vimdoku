@@ -8,7 +8,7 @@
 	--focus-border: 105 82 119;
 	--primary-color: 32 23 34;
 	--secondary-color: 39 25 3;
-	--editor-background: 238 230 253;
+	--editor-background: 237 228 245;
 	--error-color: 139 4 20;
 	--value-color: 97 59 19;
 	--optional-color: 101 77 110;
@@ -37,7 +37,19 @@
 	--blink-background: 227 223 233;
 	--icon-size: 48px;
 
-	font-family: Poppins, sans-serif;
+	font-family:
+		'Nunito Variable',
+		system-ui,
+		-apple-system,
+		BlinkMacSystemFont,
+		'Segoe UI',
+		Roboto,
+		Oxygen,
+		Ubuntu,
+		Cantarell,
+		'Open Sans',
+		'Helvetica Neue',
+		sans-serif;
 	font-weight: 400;
 	line-height: 1.5;
 	color-scheme: light dark;
@@ -78,7 +90,7 @@
 	--input-shadow: 3 3 5;
 	--hover-shadow: 9 0 20 / 75%;
 	--focus-brightness: brightness(120%);
-	--blink-background: 20 9 28;
+	--blink-background: 17 10 28;
 }
 
 * {
@@ -144,8 +156,12 @@ select {
 a {
 	position: relative;
 	z-index: 1;
+	padding: 0 0.1rem;
 	overflow: hidden;
 	color: rgb(var(--anchor-color));
+	border: 1px solid transparent;
+	border-radius: 4px;
+	transition: border-color 500ms;
 }
 
 a:visited {
@@ -156,21 +172,9 @@ a:hover {
 	filter: brightness(105%) saturate(125%);
 }
 
-a::before {
-	position: absolute;
-	inset: -2px -6px;
-	z-index: -1;
-	width: calc(100% + 12px);
-	height: calc(100% + 4px);
-	content: '';
-	border: 1px solid rgb(var(--focus-border));
-	border-radius: 4px;
-	transition: transform 200ms;
-	transform: scaleY(0);
-}
-
-a:focus::before {
-	transform: scaleY(100%);
+a:focus {
+	font-style: italic;
+	border-color: rgb(var(--anchor-color) / 50%);
 }
 
 .text-or-number {
@@ -201,6 +205,16 @@ h3 {
 
 :where(h1, h2, h3):not(.highlight, .not-colorize) {
 	color: rgb(var(--secondary-color));
+}
+
+.highlight a {
+	color: inherit;
+	text-decoration-color: rgb(var(--anchor-color));
+}
+
+.highlight a:visited {
+	color: inherit;
+	text-decoration-color: rgb(var(--visited-color));
 }
 
 .highlight .command {
@@ -268,7 +282,7 @@ h3 {
 .highlight .text::after {
 	font-weight: 600;
 	color: rgb(var(--key-color));
-	content: '"';
+	content: "'";
 }
 
 .highlight .number {
@@ -296,7 +310,8 @@ h3 {
 
 .monospace,
 input {
-	font-family: 'JetBrains Mono Variable', sans-serif;
+	font-family: 'Red Hat Mono Variable', 'Courier New', Courier, monospace;
+	font-weight: 450;
 }
 
 .secondary {
@@ -394,6 +409,10 @@ input {
 	justify-content: center;
 }
 
+.center-self {
+	place-self: center center;
+}
+
 .justify-end {
 	justify-content: end;
 }
@@ -432,4 +451,64 @@ input {
 	:root {
 		--icon-size: 44px;
 	}
+}
+
+.help-sect {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+
+.help-sect > p {
+	padding-left: 0.5rem;
+}
+
+.table-container {
+	overflow-x: auto;
+	box-shadow: 0 4px 16px rgb(var(--hover-shadow));
+}
+
+.help-table {
+	width: max-content;
+	min-width: 100%;
+	overflow: hidden;
+	border-collapse: collapse;
+	border-radius: 8px 8px 0 0;
+}
+
+.help-table-head {
+	position: sticky;
+	background-color: rgb(var(--dialog-header));
+	border: 2px solid rgb(var(--dialog-header));
+}
+
+.help-table-head th {
+	align-items: start;
+	height: 2rem;
+}
+
+.help-table-body {
+	padding-inline: 1ch;
+	border: 2px solid rgb(var(--dialog-header));
+}
+
+.help-table-body td {
+	padding: 0.5rem 2ch;
+}
+
+.help-table-body tr td:first-child {
+	max-width: 24ch;
+}
+
+.help-table-body tr:nth-child(2n - 1) {
+	background-color: rgb(var(--card-head-background));
+}
+
+.help-table-body tr:nth-child(2n) {
+	background-color: rgb(var(--blink-background));
+}
+
+.text-center {
+	align-items: center;
+	text-align: center;
 }

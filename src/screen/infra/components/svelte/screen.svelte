@@ -3,6 +3,7 @@
 	import { screenState } from '$screen/infra/stores/svelte'
 	import { SudokuGame } from '$sudoku/infra/components/svelte'
 
+	import HelpPage from './help-page.svelte'
 	import NotFoundPage from './not-found-page.svelte'
 	import { StartScreen } from './start-screen'
 </script>
@@ -12,6 +13,8 @@
 		<StartScreen />
 	{:else if Page.isGame($screenState.page)}
 		<SudokuGame />
+	{:else if Page.isHelp($screenState.page)}
+		<HelpPage subPath={$screenState.page.subPath} />
 	{:else if Page.isNotFound($screenState.page)}
 		<NotFoundPage path={$screenState.page.route} />
 	{/if}

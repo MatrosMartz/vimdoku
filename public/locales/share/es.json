@@ -35,6 +35,7 @@
 	"form_save": "Guarda Todo",
 	"gameBtn_goBack": "Regresar",
 	"gameBtn_new_text": "Nuevo juego",
+	"help_title": "Para Vimdoku versión {|version|}. Ultimo cambio: {|lastChange|}.",
 	"gameBtn_resume_disabledReason": "No hay partidas guardadas.",
 	"gameBtn_resume_text": "Continuar la partida",
 	"gameBtn_selectDifficulty": "Seleccionar dificultad",

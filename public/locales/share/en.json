@@ -39,6 +39,7 @@
 	"gameBtn_resume_text": "Resume game",
 	"gameBtn_selectDifficulty": "Select difficulty",
 	"gameBtn_start": "Start new game",
+	"help_title": "For Vimdoku version {|version|}. last change: {|lastChange|}.",
 	"modes_insert": "INSERT",
 	"modes_normal": "NORMAL",
 	"modes_notes": "NOTES",

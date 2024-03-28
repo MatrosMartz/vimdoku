@@ -1,10 +1,12 @@
 import type { GameLocale } from './pages/game.locale.ts'
+import type { MainHelpLocale } from './pages/help/main.locale.ts'
 import type { HomeLocale } from './pages/home.locale.ts'
 import type { ShareLocale } from './share.locale.ts'
 import type { LocaleText, LocaleValueWithKeywords } from './types'
 
 export interface Namespace {
 	'pages/game': GameLocale
+	'pages/help/main': MainHelpLocale
 	'pages/home': HomeLocale
 	share: ShareLocale
 }

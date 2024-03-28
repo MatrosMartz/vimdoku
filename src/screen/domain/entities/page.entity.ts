@@ -2,7 +2,7 @@ import { _throw, capitalCase, inArray, InvalidStringPageError } from '~/share/ut
 import { type Lang, LANGS } from '$i18n/domain/const'
 import { DIFFICULTIES_NAMES, DifficultyKind } from '$sudoku/domain/models'
 
-import { COMPOUND_PATHS, Path } from './path.entity'
+import { COMPOUND_PATHS, HELP_SUBPATHS, HelpSubPath, Path } from './path.entity'
 
 export abstract class Page {
 	abstract readonly path: Path
@@ -13,8 +13,8 @@ export abstract class Page {
 		return new GamePage(difficulty)
 	}
 
-	static createHelp(index: string) {
-		return new HelpPage(index)
+	static createHelp(subPath: HelpSubPath) {
+		return new HelpPage(subPath)
 	}
 
 	static createHome() {
@@ -97,14 +97,10 @@ class GamePage extends Page {
 }
 
 class HelpPage extends Page {
-	readonly #index
-	constructor(index: string) {
+	readonly #subPath
+	constructor(subPath: HelpSubPath) {
 		super()
-		this.#index = index
-	}
-
-	get index() {
-		return this.#index
+		this.#subPath = subPath
 	}
 
 	get path() {
@@ -112,7 +108,12 @@ class HelpPage extends Page {
 	}
 
 	get route() {
-		return `${this.path}/${this.index}` as const
+		if (this.#subPath === HelpSubPath.Main) return `${this.path}` as const
+		return `${this.path}/${this.subPath}` as `${Path.Help}/${Exclude<HelpSubPath, HelpSubPath.Main>}`
+	}
+
+	get subPath() {
+		return this.#subPath
 	}
 }
 
@@ -165,7 +166,8 @@ export class PageWithLang {
 			if (path === Path.Home) {
 				if (rest != null && rest.length !== 0) throw new InvalidStringPageError()
 				return new PageWithLang({ lang, page: Page.createHome() })
-			} else if (path === Path.Help) return new PageWithLang({ lang, page: Page.createHelp(rest ?? '') })
+			} else if (path === Path.Help && (inArray(HELP_SUBPATHS, rest) || rest == null))
+				return new PageWithLang({ lang, page: Page.createHelp(rest ?? HelpSubPath.Main) })
 			else if (path === Path.Game) {
 				const difficulty = rest == null || rest.length === 0 ? 'Basic' : capitalCase(rest)
 				if (!inArray(DIFFICULTIES_NAMES, difficulty)) throw new InvalidStringPageError()

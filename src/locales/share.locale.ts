@@ -1,6 +1,8 @@
 import type { LocaleValue } from './types'
 
-export interface ShareLocale extends CmdDesc, Form, GameBtn, Modes, Prefs, StatusBar, Sync {}
+export interface ShareLocale extends CmdDesc, Form, GameBtn, Modes, Prefs, StatusBar, Sync {
+	help_title: LocaleValue<['version', 'lastChange']>
+}
 
 interface CmdDesc extends CmdDescHelp, CmdDescLanguage, CmdDescResume, CmdDescSet, CmdDescStart, CmdDescWrite {
 	cmdDesc_pause: LocaleValue
