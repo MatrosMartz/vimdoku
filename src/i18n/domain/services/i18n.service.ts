@@ -22,9 +22,9 @@ export class I18nSvc implements II18n {
 		return this.#obs.data
 	}
 
-	async load(): Promise<void> {
+	async load(page: Page): Promise<void> {
 		const lang = await this.#repo.getLang()
-		if (lang != null) await this.updateFor({ lang })
+		if (lang != null) await this.updateFor({ lang, page })
 	}
 
 	async updateFor(screen: RequireOne<{ lang: Lang; page: Page }>) {

@@ -7,7 +7,7 @@ import type { Lang } from '../const'
 export interface II18n {
 	/** The current data. */
 	readonly data: I18n
-	load(): Promise<void>
+	load(page: Page): Promise<void>
 	/**
 	 * Changes locales asynchronously.
 	 * @param screen The new language and/or page.

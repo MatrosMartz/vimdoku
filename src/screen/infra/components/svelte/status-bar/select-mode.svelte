@@ -12,7 +12,7 @@
 
 	$: open = Modal.isModes($screenState.modal)
 
-	$: if (disabled) med.dispatch(SCREEN_ACTIONS.close)
+	$: if (disabled && open) med.dispatch(SCREEN_ACTIONS.close)
 	$: if (open) setTimeout(() => document.getElementById(`mode-${modeState.data}`)?.focus(), 500)
 
 	$: tooltipProps = {
@@ -26,8 +26,10 @@
 	 * Open or close Modes accordion, click handler.
 	 */
 	function toggleHandler() {
-		if (disabled || open) med.dispatch(SCREEN_ACTIONS.close)
-		else med.dispatch(SCREEN_ACTIONS.openModal, { modal: Modal.createModes() })
+		if (!disabled) {
+			if (open) med.dispatch(SCREEN_ACTIONS.close)
+			else med.dispatch(SCREEN_ACTIONS.openModal, { modal: Modal.createModes() })
+		}
 	}
 
 	/**

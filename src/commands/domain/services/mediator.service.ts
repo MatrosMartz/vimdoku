@@ -37,8 +37,8 @@ export class MedSvc implements IMed {
 
 	async load() {
 		if (this.#hasLoaded) return
-		await Promise.all([this.#prefs.load(), this.#sudoku.load(), this.#screen.load(), this.#i18n.load()])
-		await this.#i18n.updateFor(this.#screen)
+		await Promise.all([this.#prefs.load(), this.#sudoku.load(), this.#screen.load()])
+		await this.#i18n.load(this.#screen.page)
 		if (Page.isGame(this.#screen.page)) {
 			if (this.#sudoku.isASaved) {
 				await this.#sudoku.resume(this.#prefs.get('timer'))
