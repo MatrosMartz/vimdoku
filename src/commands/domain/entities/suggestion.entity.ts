@@ -1,6 +1,6 @@
-import type { I18n } from '$i18n/domain/entities'
+import type { NamespaceTextGetter, ShareLocale } from '~/locales'
 
-export type DescFn = (i18n: I18n) => string
+export type DescFn = (locale: NamespaceTextGetter<ShareLocale>) => string
 
 export type Desc = [DescFn, ...DescFn[]]
 

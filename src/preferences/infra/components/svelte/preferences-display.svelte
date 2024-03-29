@@ -1,9 +1,9 @@
 <script lang="ts">
+	import type { NamespaceTextGetter, ShareLocale } from '~/locales'
 	import { ToggleInput } from '~/share/infra/components/svelte/forms/inputs'
 	import { capitalCase, inArray } from '~/share/utils'
 	import { SCREEN_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
-	import type { I18n } from '$i18n/domain/entities'
 	import { i18nState } from '$i18n/infra/stores/svelte'
 	import { type Prefs, prefsGroupEntries, type PrefsNamesEntries } from '$pref/domain/models'
 	import { type Accessibility, ACCESSIBILITY_FIELDS, type ColorSchema } from '$pref/domain/models/user.model'
@@ -16,19 +16,24 @@
 	$: if (Modal.isPref($screenState.modal) && !Modal.isPref($screenState.modal, 'edit'))
 		showDiff = Modal.isPref($screenState.modal, 'show-differ')
 
+	$: locale = $i18nState.ns('share')
+
 	/**
 	 * Gets the translated value of the preference.
-	 * @param i18n the object of internationalization.
+	 * @param locale the object of internationalization.
 	 * @param fieldEntries the entries in the preference scheme.
 	 * @param prefs The current preferences.
 	 * @returns The translated value of the preference.
 	 */
-	function getPrefText<E extends PrefsNamesEntries>(i18n: I18n, fieldEntries: E, prefs: Prefs): string
-	function getPrefText<E extends PrefsNamesEntries>(i18n: I18n, [key, field]: E, prefs: Prefs) {
-		if (field.type === 'toggle') return i18n.ns('share')[`prefs_toggle_${prefs[key] as boolean}`](String(prefs[key]))
-		if (key === 'colorSchema') return i18n.ns('share')[`prefs_schema_${prefs[key] as ColorSchema}`](prefs[key])
+	function getPrefText<E extends PrefsNamesEntries>(
+		locale: NamespaceTextGetter<ShareLocale>,
+		[key, field]: E,
+		prefs: Prefs
+	) {
+		if (field.type === 'toggle') return locale[`prefs_toggle_${prefs[key] as boolean}`](String(prefs[key]))
+		if (key === 'colorSchema') return locale[`prefs_schema_${prefs[key] as ColorSchema}`](prefs[key])
 		if (inArray(ACCESSIBILITY_FIELDS, key))
-			return i18n.ns('share')[`prefs_accessibility_${prefs[key] as Accessibility}`](prefs[key])
+			return locale[`prefs_accessibility_${prefs[key] as Accessibility}`](prefs[key])
 		return prefs[key]
 	}
 
@@ -46,13 +51,13 @@
 	{#each prefsGroupEntries as [group, fields] (group)}
 		<table class="preferences">
 			<thead>
-				<tr><th colspan="2">{$i18nState.ns('share')[`prefs_groups_${group}`](capitalCase(group))}</th> </tr>
+				<tr><th colspan="2">{locale[`prefs_groups_${group}`](capitalCase(group))}</th> </tr>
 			</thead>
 			<tbody>
 				{#each fields as field (field[0])}
 					<tr class="field highlight" class:strike={showDiff && $prefsState[field[0]] === field[1].default}>
-						<th class="bold secondary">{$i18nState.ns('share')[`prefs_names_${field[0]}`](capitalCase(field[0]))}</th>
-						<td class="monospace value {field[1].type}">{getPrefText($i18nState, field, $prefsState)}</td>
+						<th class="bold secondary">{locale[`prefs_names_${field[0]}`](capitalCase(field[0]))}</th>
+						<td class="monospace value {field[1].type}">{getPrefText(locale, field, $prefsState)}</td>
 					</tr>
 				{/each}
 			</tbody>

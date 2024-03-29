@@ -1,11 +1,11 @@
-import type { Namespace, PagesKeys } from '~/locales'
+import type { Namespace, NamespaceTextGetter, PagesKeys } from '~/locales'
 
 import type { Lang } from '../const'
 
 export interface I18nRepo {
 	getLang(): Promise<Lang | null>
-	getLocale<Page extends PagesKeys>(
+	getNamespaces(
 		lang: Lang,
-		page: Page
-	): Promise<{ [Ns in Page | Exclude<keyof Namespace, PagesKeys>]: Record<keyof Namespace[Ns], string> }>
+		page: PagesKeys
+	): Promise<<K extends keyof Namespace>(localeKey: K) => NamespaceTextGetter<Namespace[K]>>
 }

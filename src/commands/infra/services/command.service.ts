@@ -55,74 +55,70 @@ export const createHeader: CreateHeader<HTMLHeadingElement> = ([cmdToken, subTok
 }
 
 const SET_CMD = CmdSvc.buildFn('se[t]', {
-	desc: i18n => i18n.ns('share').cmdDesc_set_showAll('Show all preferences that differ from their default value.'),
+	desc: locale => locale.cmdDesc_set_showAll('Show all preferences that differ from their default value.'),
 	fn: () => med.dispatch(SCREEN_ACTIONS.openModal, { modal: Modal.createPref('show-differ') }),
 })
 	.addSubFn(
 		SubCmdSvc.buildFn('{preference}', {
 			desc: [
-				i18n => i18n.ns('share').cmdDesc_set_suggest1('Toggle preference: Set, switch it on preference.'),
-				i18n => i18n.ns('share').cmdDesc_set_suggest2('String or Number preference: Show value of preference'),
+				locale => locale.cmdDesc_set_suggest1('Toggle preference: Set, switch it on preference.'),
+				locale => locale.cmdDesc_set_suggest2('String or Number preference: Show value of preference'),
 			],
 		})
 	)
 	.addSubFn(
 		SubCmdSvc.buildFn('{preference}<?>', {
-			desc: i18n => i18n.ns('share').cmdDesc_set_showSuggest('Show value of {preference}.'),
+			desc: locale => locale.cmdDesc_set_showSuggest('Show value of {preference}.'),
 		})
 	)
 	.addSubFn(
 		SubCmdSvc.buildFn('{preference}<&>', {
-			desc: i18n => i18n.ns('share').cmdDesc_set_resetSuggest("Reset option to it's default value."),
+			desc: locale => locale.cmdDesc_set_resetSuggest("Reset option to it's default value."),
 		})
 	)
 	.addSubFn(
 		SubCmdSvc.buildFn('<no>{preference}', {
-			desc: i18n => i18n.ns('share').cmdDesc_set_toggleInvSuggest('Toggle preference: Set, switch it off.'),
+			desc: locale => locale.cmdDesc_set_toggleInvSuggest('Toggle preference: Set, switch it off.'),
 		})
 	)
 	.addSubFn(
 		SubCmdSvc.buildFn('{preference}<!>', {
-			desc: i18n => i18n.ns('share').cmdDesc_set_toggleInvSuggest('Toggle preference: Set, Invert value.'),
+			desc: locale => locale.cmdDesc_set_toggleInvSuggest('Toggle preference: Set, Invert value.'),
 		})
 	)
 	.addSubFn(
 		SubCmdSvc.buildFn('<inv>{preference}', {
-			desc: i18n => i18n.ns('share').cmdDesc_set_toggleInvSuggest('Toggle preference: Set, Invert value.'),
+			desc: locale => locale.cmdDesc_set_toggleInvSuggest('Toggle preference: Set, Invert value.'),
 		})
 	)
 	.addSubFn(
 		SubCmdSvc.buildFn('{preference}<=>{value}', {
-			desc: i18n =>
-				i18n
-					.ns('share')
-					.cmdDesc_set_setNonToggleSuggest('String or Number preference: Assign to {preference} the {value}.'),
+			desc: locale =>
+				locale.cmdDesc_set_setNonToggleSuggest('String or Number preference: Assign to {preference} the {value}.'),
 		})
 	)
 	.addSubFn(
 		SubCmdSvc.buildFn('{preference}<:>{value}', {
-			desc: i18n =>
-				i18n
-					.ns('share')
-					.cmdDesc_set_setNonToggleSuggest('String or Number preference: Assign to {preference} the {value}.'),
+			desc: locale =>
+				locale.cmdDesc_set_setNonToggleSuggest('String or Number preference: Assign to {preference} the {value}.'),
 		})
 	)
 	.addSubFn(
 		SubCmdSvc.buildFn('<all>', {
-			desc: i18n => i18n.ns('share').cmdDesc_set_showAll('Show all preferences.'),
+			desc: locale => locale.cmdDesc_set_showAll('Show all preferences.'),
 			fn: () => med.dispatch(SCREEN_ACTIONS.openModal, { modal: Modal.createPref('show-all') }),
 		})
 	)
 	.addSubFn(
 		SubCmdSvc.buildFn('<all><&>', {
-			desc: i18n => i18n.ns('share').cmdDesc_set_resetAll('Reset all preferences.'),
+			desc: locale => locale.cmdDesc_set_resetAll('Reset all preferences.'),
 			fn: () => med.dispatch(PREFS_ACTIONS.reset, { type: 'all' }),
 		})
 	)
 	.addSubFn(
 		...PREFS_NAMES.map(pref =>
 			SubCmdSvc.buildFn(`(${pref})<?>`, {
-				desc: i18n => i18n.ns('share').cmdDesc_set_showPref('Show value of {|pref|}.', { pref }),
+				desc: locale => locale.cmdDesc_set_showPref('Show value of {|pref|}.', { pref }),
 				// fn: () => med.dispatch(SCREEN_ACTIONS.openDialog, { kind: DialogKind.ShowPref, opts: { pref } }),
 			})
 		)
@@ -130,7 +126,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	.addSubFn(
 		...PREFS_NAMES.map(pref =>
 			SubCmdSvc.buildFn(`(${pref})<&>`, {
-				desc: i18n => i18n.ns('share').cmdDesc_set_resetPref('Reset value of {|pref|}.', { pref }),
+				desc: locale => locale.cmdDesc_set_resetPref('Reset value of {|pref|}.', { pref }),
 				fn: () => med.dispatch(PREFS_ACTIONS.reset, { type: 'by-key', key: pref }),
 			})
 		)
@@ -138,7 +134,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	.addSubFn(
 		...TOGGLE_NAMES.map(pref =>
 			SubCmdSvc.buildFn(`(${pref})`, {
-				desc: i18n => i18n.ns('share').cmdDesc_set_toggleOnPref('Set, {|pref|} to switch it on.', { pref }),
+				desc: locale => locale.cmdDesc_set_toggleOnPref('Set, {|pref|} to switch it on.', { pref }),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: pref, value: true }),
 			})
 		)
@@ -146,7 +142,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	.addSubFn(
 		...NON_TOGGLE_NAMES.map(pref =>
 			SubCmdSvc.buildFn(`(${pref})`, {
-				desc: i18n => i18n.ns('share').cmdDesc_set_showPref('Show value of {|pref|}.', { pref }),
+				desc: locale => locale.cmdDesc_set_showPref('Show value of {|pref|}.', { pref }),
 				// fn: () => med.dispatch(SCREEN_ACTIONS.openModal, { kind: DialogKind.ShowPref, opts: { pref } }),
 			})
 		)
@@ -154,7 +150,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	.addSubFn(
 		...TOGGLE_NAMES.map(pref =>
 			SubCmdSvc.buildFn(`<no>(${pref})`, {
-				desc: i18n => i18n.ns('share').cmdDesc_set_toggleOffPref('Set, {|pref|} to switch off.', { pref }),
+				desc: locale => locale.cmdDesc_set_toggleOffPref('Set, {|pref|} to switch off.', { pref }),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: pref, value: false }),
 			})
 		)
@@ -162,7 +158,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	.addSubFn(
 		...TOGGLE_NAMES.map(pref =>
 			SubCmdSvc.buildFn(`(${pref})<!>`, {
-				desc: i18n => i18n.ns('share').cmdDesc_set_toggleInvPref('Invert value of {|pref|}.', { pref }),
+				desc: locale => locale.cmdDesc_set_toggleInvPref('Invert value of {|pref|}.', { pref }),
 				fn: () => med.dispatch(PREFS_ACTIONS.invert, { pref }),
 			})
 		)
@@ -170,7 +166,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	.addSubFn(
 		...TOGGLE_NAMES.map(pref =>
 			SubCmdSvc.buildFn(`<inv>(${pref})`, {
-				desc: i18n => i18n.ns('share').cmdDesc_set_toggleInvPref('Invert value of {|pref|}.', { pref }),
+				desc: locale => locale.cmdDesc_set_toggleInvPref('Invert value of {|pref|}.', { pref }),
 				fn: () => med.dispatch(PREFS_ACTIONS.invert, { pref }),
 			})
 		)
@@ -178,23 +174,22 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	.addSubFn(
 		...NON_TOGGLE_NAMES.map(pref =>
 			SubCmdSvc.buildFn(`(${pref})<=>{value}`, {
-				desc: i18n => i18n.ns('share').cmdDesc_set_setNonTogglePref('Assign to {|pref|} the {value}.', { pref }),
+				desc: locale => locale.cmdDesc_set_setNonTogglePref('Assign to {|pref|} the {value}.', { pref }),
 			})
 		)
 	)
 	.addSubFn(
 		...NON_TOGGLE_NAMES.map(pref =>
 			SubCmdSvc.buildFn(`(${pref})<:>{value}`, {
-				desc: i18n => i18n.ns('share').cmdDesc_set_setNonTogglePref('Assign to {|pref|} the {value}.', { pref }),
+				desc: locale => locale.cmdDesc_set_setNonTogglePref('Assign to {|pref|} the {value}.', { pref }),
 			})
 		)
 	)
 	.addSubFn(
 		...COLOR_SCHEMAS.map(schema =>
 			SubCmdSvc.buildFn(`(colorSchema)<=>(${schema})`, {
-				desc: i18n =>
-					i18n
-						.ns('share')
+				desc: locale =>
+					locale
 						.cmdDesc_set_setNonTogglePref('Assign to {|pref|} the {value}.', { pref: 'colorSchema' })
 						.replace('{value}', `"${schema}"`),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'colorSchema', value: schema }),
@@ -204,9 +199,8 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	.addSubFn(
 		...COLOR_SCHEMAS.map(schema =>
 			SubCmdSvc.buildFn(`(colorSchema)<:>(${schema})`, {
-				desc: i18n =>
-					i18n
-						.ns('share')
+				desc: locale =>
+					locale
 						.cmdDesc_set_setNonTogglePref('Assign to {|pref|} the {value}.', { pref: 'colorSchema' })
 						.replace('{value}', `"${schema}"`),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'colorSchema', value: schema }),
@@ -216,9 +210,8 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	.addSubFn(
 		...ACCESSIBILITY_KINDS.map(accessibility =>
 			SubCmdSvc.buildFn(`(contrast)<=>(${accessibility})`, {
-				desc: i18n =>
-					i18n
-						.ns('share')
+				desc: locale =>
+					locale
 						.cmdDesc_set_setNonTogglePref('Assign to {|pref|} the {value}.', { pref: 'contrast' })
 						.replace('{value}', `"${accessibility}"`),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'contrast', value: accessibility }),
@@ -228,9 +221,8 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	.addSubFn(
 		...ACCESSIBILITY_KINDS.map(accessibility =>
 			SubCmdSvc.buildFn(`(contrast)<:>(${accessibility})`, {
-				desc: i18n =>
-					i18n
-						.ns('share')
+				desc: locale =>
+					locale
 						.cmdDesc_set_setNonTogglePref('Assign to {|pref|} the {value}.', { pref: 'contrast' })
 						.replace('{value}', `"${accessibility}"`),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'contrast', value: accessibility }),
@@ -240,9 +232,8 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	.addSubFn(
 		...ACCESSIBILITY_KINDS.map(accessibility =>
 			SubCmdSvc.buildFn(`(motionReduce)<=>(${accessibility})`, {
-				desc: i18n =>
-					i18n
-						.ns('share')
+				desc: locale =>
+					locale
 						.cmdDesc_set_setNonTogglePref('Assign to {|pref|} the {value}.', { pref: 'motionReduce' })
 						.replace('{value}', `"${accessibility}"`),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'motionReduce', value: accessibility }),
@@ -252,9 +243,8 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	.addSubFn(
 		...ACCESSIBILITY_KINDS.map(accessibility =>
 			SubCmdSvc.buildFn(`(motionReduce)<:>(${accessibility})`, {
-				desc: i18n =>
-					i18n
-						.ns('share')
+				desc: locale =>
+					locale
 						.cmdDesc_set_setNonTogglePref('Assign to {|pref|} the {value}.', { pref: 'motionReduce' })
 						.replace('{value}', `"${accessibility}"`),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'motionReduce', value: accessibility }),
@@ -264,9 +254,8 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	.addSubFn(
 		...ICON_THEMES.map(theme =>
 			SubCmdSvc.buildFn(`(iconTheme)<=>(${theme})`, {
-				desc: i18n =>
-					i18n
-						.ns('share')
+				desc: locale =>
+					locale
 						.cmdDesc_set_setNonTogglePref('Assign to {|pref|} the {value}.', { pref: 'iconTheme' })
 						.replace('{value}', `"${theme}"`),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'iconTheme', value: theme }),
@@ -276,9 +265,8 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	.addSubFn(
 		...ICON_THEMES.map(theme =>
 			SubCmdSvc.buildFn(`(iconTheme)<:>(${theme})`, {
-				desc: i18n =>
-					i18n
-						.ns('share')
+				desc: locale =>
+					locale
 						.cmdDesc_set_setNonTogglePref('Assign to {|pref|} the {value}.', { pref: 'iconTheme' })
 						.replace('{value}', `"${theme}"`),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'iconTheme', value: theme }),
@@ -287,94 +275,88 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	)
 	.addSubFn(
 		SubCmdSvc.buildFn('(history)<=>{|value|}', {
-			desc: i18n =>
-				i18n.ns('share').cmdDesc_set_setNonTogglePref('Assign to {|pref|} the {value}.', { pref: 'history' }),
+			desc: locale => locale.cmdDesc_set_setNonTogglePref('Assign to {|pref|} the {value}.', { pref: 'history' }),
 			fn: ({ value }) => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'history', value }),
 		})
 	)
 	.addSubFn(
 		SubCmdSvc.buildFn('(history)<:>{|value|}', {
-			desc: i18n =>
-				i18n.ns('share').cmdDesc_set_setNonTogglePref('Assign to {|pref|} the {value}.', { pref: 'history' }),
+			desc: locale => locale.cmdDesc_set_setNonTogglePref('Assign to {|pref|} the {value}.', { pref: 'history' }),
 			fn: ({ value }) => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'history', value }),
 		})
 	)
 	.done()
 
 const START_CMD = CmdSvc.buildFn('st[art]', {
-	desc: i18n =>
-		i18n
-			.ns('share')
-			.cmdDesc_start_difficulty('Start new game with the {|difficulty|} difficulty.', { difficulty: 'Easy' }),
+	desc: locale =>
+		locale.cmdDesc_start_difficulty('Start new game with the {|difficulty|} difficulty.', { difficulty: 'Easy' }),
 	fn: () => med.dispatch(SUDOKU_ACTIONS.start, { difficulty: DifficultyKind.Easy }),
 })
 	.addSubFn(
 		SubCmdSvc.buildFn('{difficulty}', {
-			desc: i18n => i18n.ns('share').cmdDesc_start_subject('Start new game with the selected difficulty.'),
+			desc: locale => locale.cmdDesc_start_subject('Start new game with the selected difficulty.'),
 		})
 	)
 	.addSubFn(
 		...DIFFICULTIES_NAMES.map(difficulty =>
 			SubCmdSvc.buildFn(`(${difficulty})`, {
-				desc: i18n =>
-					i18n
-						.ns('share')
-						.cmdDesc_start_difficulty('Start new game with the {|difficulty|} difficulty.', { difficulty }),
+				desc: locale =>
+					locale.cmdDesc_start_difficulty('Start new game with the {|difficulty|} difficulty.', { difficulty }),
 				fn: () => med.dispatch(SUDOKU_ACTIONS.start, { difficulty: DifficultyKind[difficulty] }),
 			})
 		)
 	)
 	.done()
 const PAUSE_CMD = CmdSvc.buildFn('pa[use]', {
-	desc: i18n => i18n.ns('share').cmdDesc_pause('Pause current game.'),
+	desc: locale => locale.cmdDesc_pause('Pause current game.'),
 	fn: () => med.dispatch(SCREEN_ACTIONS.openModal, { modal: Modal.createPause() }),
 }).done()
 
 const WRITE_CMD = CmdSvc.buildFn('w[rite]', {
-	desc: i18n => i18n.ns('share').cmdDesc_write('Save current game.'),
+	desc: locale => locale.cmdDesc_write('Save current game.'),
 	fn: () => med.dispatch(SUDOKU_ACTIONS.save),
 }).done()
 
 const RESUME_CMD = CmdSvc.buildFn('re[sume]', {
 	desc: [
-		i18n => i18n.ns('share').cmdDesc_resume1('Resume the current game.'),
-		i18n => i18n.ns('share').cmdDesc_resume2('Resume the saved game only if no game active.'),
+		locale => locale.cmdDesc_resume1('Resume the current game.'),
+		locale => locale.cmdDesc_resume2('Resume the saved game only if no game active.'),
 	],
 	fn: () => med.dispatch(SUDOKU_ACTIONS.resume),
 }).done()
 
 const QUIT_CMD = CmdSvc.buildFn('q[uit]', {
-	desc: i18n => i18n.ns('share').cmdDesc_quit('Close the current windows.'),
+	desc: locale => locale.cmdDesc_quit('Close the current windows.'),
 	fn: () => med.dispatch(SCREEN_ACTIONS.close),
 }).done()
 
 const WQUIT_CMD = CmdSvc.buildFn('wq[uit]', {
-	desc: i18n => i18n.ns('share').cmdDesc_write('Save the current game and close the windows.'),
+	desc: locale => locale.cmdDesc_write('Save the current game and close the windows.'),
 	fn: () => med.dispatch(SUDOKU_ACTIONS.save).dispatch(SCREEN_ACTIONS.close),
 }).done()
 
 const XIT_CMD = CmdSvc.buildFn('x[it]', {
-	desc: i18n => i18n.ns('share').cmdDesc_writeLike('Like ":wq", but save only when changes have been made.'),
+	desc: locale => locale.cmdDesc_writeLike('Like ":wq", but save only when changes have been made.'),
 	fn: () => med.dispatch(SCREEN_ACTIONS.close),
 }).done()
 
 const EXIT_CMD = CmdSvc.buildFn('exi[t]', {
-	desc: i18n => i18n.ns('share').cmdDesc_writeLike('Like ":wq", but save only when changes have been made.'),
+	desc: locale => locale.cmdDesc_writeLike('Like ":wq", but save only when changes have been made.'),
 	fn: () => med.dispatch(SCREEN_ACTIONS.close),
 }).done()
 
 const LANGUAGE_CMD = CmdSvc.buildFn('lan[guage]', {
-	desc: i18n => i18n.ns('share').cmdDesc_language_show('Show the current value of language.'),
+	desc: locale => locale.cmdDesc_language_show('Show the current value of language.'),
 })
 	.addSubFn(
 		SubCmdSvc.buildFn('{lang}', {
-			desc: i18n => i18n.ns('share').cmdDesc_language_set('Sets the current language to {lang}.'),
+			desc: locale => locale.cmdDesc_language_set('Sets the current language to {lang}.'),
 		})
 	)
 	.addSubFn(
 		...LANGS.map(lang =>
 			SubCmdSvc.buildFn(`(${lang})`, {
-				desc: i18n => i18n.ns('share').cmdDesc_language_setSuggest('Sets the current language to {|lang|}.', { lang }),
+				desc: locale => locale.cmdDesc_language_setSuggest('Sets the current language to {|lang|}.', { lang }),
 				fn: () => med.dispatch(I18N_ACTIONS.changeLang, { lang }),
 			})
 		)
@@ -382,20 +364,20 @@ const LANGUAGE_CMD = CmdSvc.buildFn('lan[guage]', {
 	.done()
 
 const HELP_CMD = CmdSvc.buildFn('h[elp]', {
-	desc: i18n => i18n.ns('share').cmdDesc_help_main('Open dialog and display the help file in read-only mode.'),
+	desc: locale => locale.cmdDesc_help_main('Open dialog and display the help file in read-only mode.'),
 	// TODO: fn() {},
 })
 	.addSubFn(
 		SubCmdSvc.buildFn('{subject}', {
-			desc: i18n => i18n.ns('share').cmdDesc_help_suggest('Like ":help", additionally jump to the tag {subject}.'),
+			desc: locale => locale.cmdDesc_help_suggest('Like ":help", additionally jump to the tag {subject}.'),
 			// TODO: fn() {},
 		})
 	)
 	.addSubFn(
 		...['set', 'start', 'pause', 'write', 'resume', 'quit', 'wquit', 'xit', 'exit', 'help', 'language'].map(cmd =>
 			SubCmdSvc.buildFn(`<:>(${cmd})`, {
-				desc: i18n =>
-					i18n.ns('share').cmdDesc_help_withArg('Open dialog and display the help of {|subject|}.', { subject: cmd }),
+				desc: locale =>
+					locale.cmdDesc_help_withArg('Open dialog and display the help of {|subject|}.', { subject: cmd }),
 				// TODO: fn() {},
 			})
 		)

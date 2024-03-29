@@ -1,4 +1,4 @@
-import type { Namespace, NamespaceTextGetter } from '~/locales'
+import type { Locales, Namespace, NamespaceTextGetter } from '~/locales'
 
 import { IDLE_LANG, type Lang } from '../const'
 
@@ -30,7 +30,9 @@ export const IDLE_I18N_HANDLER = {
 	},
 }
 
+export const IDLE_I18N_PROXY = new Proxy<NamespaceTextGetter<Locales>>({}, IDLE_I18N_HANDLER)
+
 export const IDLE_I18N: I18n = {
 	lang: IDLE_LANG,
-	ns: () => new Proxy({}, IDLE_I18N_HANDLER) as never,
+	ns: () => IDLE_I18N_PROXY as never,
 }

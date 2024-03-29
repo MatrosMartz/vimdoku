@@ -11,6 +11,8 @@
 
 	let btn: HTMLButtonElement
 
+	$: locale = i18nState.data.ns('share')
+
 	/** Complete search with the suggestion value, click handler. */
 	function clickHandler() {
 		if ($input == null) return
@@ -28,7 +30,7 @@
 <li>
 	<button bind:this={btn} tabindex="0" on:click={clickHandler}>
 		{#each suggestion.desc as desc}
-			<p>{desc(i18nState.data)}</p>
+			<p>{desc(locale)}</p>
 		{/each}
 	</button>
 </li>
