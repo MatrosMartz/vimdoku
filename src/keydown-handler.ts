@@ -83,6 +83,7 @@ function isGameScreen(screen: VimScreen) {
  */
 export function keydownHandler(ev: KeyboardEvent) {
 	const t = ev.target
+	const main = document.getElementsByTagName('main')[0]
 	if (ev.key === ':' && !Modal.isCmd(screenState.data.modal)) {
 		ev.preventDefault()
 		med.dispatch(SCREEN_ACTIONS.openModal, { modal: Modal.createCmd() })
@@ -92,9 +93,10 @@ export function keydownHandler(ev: KeyboardEvent) {
 		if (!(t instanceof HTMLElement && t.classList.contains('combobox') && t.ariaExpanded === 'true'))
 			med.dispatch(SCREEN_ACTIONS.close)
 	}
-	if (ev.key === ' ' && Modal.isNone(screenState.data.modal)) {
+	if (ev.key === ' ' && Modal.isNone(screenState.data.modal) && t instanceof HTMLElement && main.contains(t)) {
 		med.dispatch(SCREEN_ACTIONS.openModal, { modal: Modal.createPause() })
 	}
 
-	if (isGameScreen(screenState.data)) sudoku(ev)
+	console.log(t)
+	if (isGameScreen(screenState.data) && t instanceof HTMLElement && main.contains(t)) sudoku(ev)
 }

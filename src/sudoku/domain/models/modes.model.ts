@@ -12,4 +12,6 @@ export const MODE_KEYS: Record<ModeKind, string> = {
 	[ModeKind.X]: 'Esc',
 }
 
+export const MODES = Object.values(ModeKind)
+
 export const IDLE_MODE = ModeKind.X

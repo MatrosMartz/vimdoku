@@ -5,31 +5,114 @@
 	import { i18nState } from '$i18n/infra/stores/svelte'
 	import { Modal, Page } from '$screen/domain/entities'
 	import { screenState } from '$screen/infra/stores/svelte'
-	import { MODE_KEYS, ModeKind } from '$sudoku/domain/models'
+	import { MODE_KEYS, type ModeKind, MODES } from '$sudoku/domain/models'
 	import { modeState } from '$sudoku/infra/stores/svelte'
 
+	let listbox: HTMLUListElement
+	let index = Math.max(MODES.indexOf($modeState), 0)
+
 	$: disabled = !Page.isGame($screenState.page)
-
-	$: open = Modal.isModes($screenState.modal)
-
-	$: if (disabled && open) med.dispatch(SCREEN_ACTIONS.close)
-	$: if (open) setTimeout(() => document.getElementById(`mode-${modeState.data}`)?.focus(), 500)
-
+	$: expanded = Modal.isModes($screenState.modal)
+	$: locale = $i18nState.ns('share')
 	$: tooltipProps = {
-		id: 'disabled-mode-reason',
-		text: $i18nState
-			.ns('share')
-			.statusBar_modesDisabledReason('The insertion mode can only be changed on the game screen.'),
+		id: 'disabled-mode-selector-reason',
+		text: locale.statusBar_modesDisabledReason('The insertion mode can only be changed on the game screen.'),
 	} satisfies TooltipProps
 
+	/** Generic open Listbox. */
+	function openListbox() {
+		med.dispatch(SCREEN_ACTIONS.openModal, { modal: Modal.createModes() })
+	}
+
+	/** Generic close Listbox. */
+	function closeListbox() {
+		med.dispatch(SCREEN_ACTIONS.close)
+	}
+
+	/** Set new value. */
+	function setValue() {
+		med.dispatch(SUDOKU_ACTIONS.changeMode, { mode: MODES[index] })
+	}
+
+	/** Close Listbox and set the selected value for the new value. */
+	function closeAndSet() {
+		setValue()
+		closeListbox()
+	}
+
+	/** Generic go to first option. */
+	function goToFirst() {
+		index = 0
+	}
+
+	/** Generic go to last option. */
+	function goToLast() {
+		index = MODES.length - 1
+	}
+
+	const CLOSED_CODE_MAP: Record<string, () => void> = {
+		ArrowUp: openListbox,
+		ArrowDown: openListbox,
+		Home() {
+			openListbox()
+			goToFirst()
+		},
+		End() {
+			openListbox()
+			goToLast()
+		},
+		Enter: setValue,
+		Tab: setValue,
+	}
+
+	const EXPANDED_CODE_MAP: Record<string, () => void> = {
+		ArrowUp() {
+			index = Math.max(index - 1, 0)
+		},
+		ArrowDown() {
+			index = Math.min(index + 1, MODES.length - 1)
+		},
+		Home: goToFirst,
+		End: goToLast,
+		' ': setValue,
+		PageUp() {
+			index = Math.max(index - 10, 0)
+		},
+		PageDown() {
+			index = Math.min(index + 10, MODES.length - 1)
+		},
+	}
+
 	/**
-	 * Open or close Modes accordion, click handler.
+	 * Blur or focus out combobox handler.
+	 * @param ev Focus event.
 	 */
-	function toggleHandler() {
-		if (!disabled) {
-			if (open) med.dispatch(SCREEN_ACTIONS.close)
-			else med.dispatch(SCREEN_ACTIONS.openModal, { modal: Modal.createModes() })
-		}
+	function blurHandler({ relatedTarget }: FocusEvent) {
+		const isListOption = relatedTarget instanceof HTMLElement && listbox.contains(relatedTarget)
+
+		if (isListOption) return
+
+		expanded = false
+	}
+
+	/**
+	 * Combobox keydown handler.
+	 * @param ev Keyboard event.
+	 */
+	function keydownHandler(ev: KeyboardEvent) {
+		if (ev.key.startsWith('Arrow')) ev.preventDefault()
+		setTimeout(() => {
+			if (expanded) {
+				if (ev.key !== ' ' && ev.key.length === 1) {
+					index = Math.max(
+						0,
+						MODES.findIndex(modes => modes.startsWith(ev.key))
+					)
+				} else if (ev.altKey) {
+					if (ev.key === 'ArrowUp' || ev.key === 'ArrowDown') closeAndSet()
+				} else EXPANDED_CODE_MAP[ev.key]?.()
+			} else CLOSED_CODE_MAP[ev.key]?.()
+		}, 0)
 	}
 
 	/**
@@ -39,64 +122,60 @@
 	function modeHandler(ev: { currentTarget: HTMLInputElement }): void
 	function modeHandler({ currentTarget }: { currentTarget: HTMLInputElement }) {
 		const mode = currentTarget.value as ModeKind
+		index = Math.max(MODES.indexOf(mode), 0)
 
 		med.dispatch(SUDOKU_ACTIONS.changeMode, { mode })
 	}
-
-	/**
-	 * Close if blur input, blur handler.
-	 * @param ev The focus event.
-	 */
-	function closeHandler(ev: FocusEvent): void
-	function closeHandler({ relatedTarget }: FocusEvent) {
-		const relatedIsModeSelector = relatedTarget instanceof HTMLElement && relatedTarget.id === 'mode-selector-header'
-		const relatedIsModeInput = relatedTarget instanceof HTMLInputElement && relatedTarget.name === 'mode'
-		if (!(relatedIsModeInput || relatedIsModeSelector)) med.dispatch(SCREEN_ACTIONS.close)
-	}
-
-	/**
-	 * Return focus of the game, Keyup handler.
-	 * @param ev The Keyboard event.
-	 */
-	function keyupHandler(ev: KeyboardEvent) {
-		if (ev.key === 'Enter') med.dispatch(SCREEN_ACTIONS.close)
-	}
 </script>
 
-<div class="mode-accordion" class:open>
+<div class="mode-accordion" class:expanded>
 	<button
-		id="mode-selector-header"
-		aria-expanded={open}
-		aria-label="Select mode"
-		aria-controls="mode-selector-panel"
+		id="mode-selector-combobox"
+		role="combobox"
+		aria-expanded={expanded}
+		aria-haspopup="listbox"
+		aria-controls="lisbox-mode"
+		aria-activedescendant="opt-mode-{$modeState}"
 		aria-disabled={disabled}
+		type="button"
+		tabindex="0"
 		class="status-icon mode"
-		on:click={toggleHandler}
+		on:click={() => {
+			if (!disabled) {
+				if (expanded) closeListbox()
+				else openListbox()
+			}
+		}}
+		on:blur={blurHandler}
+		on:keydown={keydownHandler}
 		use:tooltip={disabled ? tooltipProps : null}
-		>{$i18nState.ns('share')[`modes_${$modeState}`]($modeState.toUpperCase())}</button
 	>
+		{locale[`modes_${$modeState}`]($modeState.toLowerCase())}
+	</button>
 	<div class="mode-selector-container">
-		<form id="mode-selector-panel" role="region" aria-labelledby="mode-selector-header" method="get">
-			{#each Object.values(ModeKind) as mode (mode)}
-				<label for="mode-{mode}">
-					<input
-						id="mode-{mode}"
-						name="mode"
-						aria-disabled={!open}
-						type="radio"
-						disabled={!open}
-						tabindex={open ? 0 : -1}
-						value={mode}
-						checked={mode === $modeState}
-						on:change={modeHandler}
-						on:keyup={keyupHandler}
-						on:blur={closeHandler}
-						use:tooltip={{ id: `mode-${mode}-input-key-describe`, text: `<${MODE_KEYS[mode]}>` }}
-					/>
-					<span>{$i18nState.ns('share')[`modes_${mode}`](mode.toUpperCase())}</span>
-				</label>
+		<ul bind:this={listbox} id="listbox-mode" role="listbox" tabindex="-1" class="listbox">
+			{#each MODES as mode, i (mode)}
+				<li class="listbox-item" class:current={i === index}>
+					<label for="opt-mode-{mode}" class="listbox-label">
+						<input
+							id="opt-mode-{mode}"
+							name="opt-mode"
+							role="option"
+							aria-selected={mode === $modeState}
+							type="radio"
+							disabled={!expanded}
+							tabindex="-1"
+							value={mode}
+							class="listbox-option"
+							on:change={modeHandler}
+							on:click={() => (expanded = false)}
+							use:tooltip={{ id: `mode-${mode}-input-key-describe`, text: `<${MODE_KEYS[mode]}>` }}
+						/>
+						<span>{locale[`modes_${mode}`](mode.toUpperCase())}</span>
+					</label>
+				</li>
 			{/each}
-		</form>
+		</ul>
 	</div>
 </div>
 
@@ -112,29 +191,28 @@
 		clip-path: polygon(0 50%, 100% 50%, 100% -500%, 0 -500%);
 	}
 
-	#mode-selector-panel {
+	#listbox-mode {
 		position: relative;
 		bottom: 0;
 		z-index: 0;
 		display: grid;
 		background-color: rgb(var(--status-bar-background));
-		border: 1px solid rgb(var(--tooltip-border));
 		border-bottom: none;
 		border-radius: 8px 8px 0 0;
 		transition: transform 750ms;
 		transform: translateY(100%);
 	}
 
-	.mode-accordion.open #mode-selector-panel {
+	.mode-accordion.expanded #listbox-mode {
 		transform: translateY(-100%);
 	}
 
-	input {
+	.listbox-option {
 		position: absolute;
 		appearance: none;
 	}
 
-	label {
+	.listbox-label {
 		position: relative;
 		display: grid;
 		gap: 0.5rem;
@@ -145,17 +223,29 @@
 		opacity: 0.6;
 	}
 
-	label:has(input:hover) {
+	.listbox-label:has(.listbox-option:hover) {
 		filter: var(--focus-brightness);
 		backdrop-filter: var(--focus-brightness);
 	}
 
-	label:has(input:focus) {
+	.listbox-label:has(.listbox-option:focus) {
 		text-decoration: underline;
 		opacity: 1;
 	}
 
-	label span {
+	.listbox-item {
+		border: 2px solid transparent;
+	}
+
+	.listbox-item:first-child {
+		border-radius: 8px 8px 0 0;
+	}
+
+	.listbox-item.current {
+		border-color: rgb(var(--focus-border));
+	}
+
+	.listbox-label span {
 		grid-column: 1 / 2;
 		width: 100%;
 		text-align: center;
@@ -170,7 +260,7 @@
 		transition: border-top-left-radius 500ms;
 	}
 
-	.open .mode {
+	.expanded .mode {
 		border-top-left-radius: 0;
 	}
 
