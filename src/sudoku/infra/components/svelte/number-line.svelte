@@ -40,18 +40,24 @@
 		gap: 4px;
 		color: rgb(var(--key-color));
 		background-color: rgb(var(--editor-background));
+		border: 2px solid transparent;
+		transition: border-color 500ms;
 	}
 
 	.horizontal {
+		left: -2px;
 		flex-direction: row;
 		padding-inline: 4px;
+		border-bottom: none;
 		border-radius: 8px 8px 0 0;
 		transform: translateY(-100%);
 	}
 
 	.vertical {
+		top: -2px;
 		flex-direction: column;
 		padding-block: 4px;
+		border-right: none;
 		border-radius: 8px 0 0 8px;
 		transform: translateX(-100%);
 	}

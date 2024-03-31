@@ -59,6 +59,7 @@ function pressNum(value: ValidNumbers) {
  * @param ev The keyboard event.
  */
 function sudoku(ev: KeyboardEvent) {
+	ev.preventDefault()
 	movePosition(ev.key)
 	changeMode(ev.key)
 
@@ -93,10 +94,12 @@ export function keydownHandler(ev: KeyboardEvent) {
 		if (!(t instanceof HTMLElement && t.classList.contains('combobox') && t.ariaExpanded === 'true'))
 			med.dispatch(SCREEN_ACTIONS.close)
 	}
-	if (ev.key === ' ' && Modal.isNone(screenState.data.modal) && t instanceof HTMLElement && main.contains(t)) {
-		med.dispatch(SCREEN_ACTIONS.openModal, { modal: Modal.createPause() })
-	}
 
-	console.log(t)
-	if (isGameScreen(screenState.data) && t instanceof HTMLElement && main.contains(t)) sudoku(ev)
+	if (t instanceof HTMLElement && main.contains(t)) {
+		if (ev.key === ' ' && Modal.isNone(screenState.data.modal)) {
+			med.dispatch(SCREEN_ACTIONS.openModal, { modal: Modal.createPause() })
+		}
+
+		if (isGameScreen(screenState.data)) sudoku(ev)
+	}
 }

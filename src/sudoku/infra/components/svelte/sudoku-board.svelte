@@ -39,10 +39,26 @@
 		padding: 4px;
 		margin: min(calc(var(--cell-size) * 0.6), 5vw) 0 0 min(var(--cell-size), 8vw);
 		background-color: rgb(var(--editor-background));
+		filter: opacity(90%);
+		border: 2px solid transparent;
 		border-radius: 8px;
+		transition:
+			border-color 500ms,
+			filter 20ms;
+	}
+
+	.board:has(*:focus) {
+		filter: opacity(100%);
+		border-color: rgb(var(--focus-border));
+	}
+
+	.board:has(*:focus) :global(.number-line) {
+		border-color: rgb(var(--focus-border));
 	}
 
 	.board.numbers {
+		border-top: none;
+		border-left: none;
 		border-radius: 0 0 8px;
 	}
 
