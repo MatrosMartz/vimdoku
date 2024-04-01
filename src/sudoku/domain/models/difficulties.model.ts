@@ -1,4 +1,4 @@
-import { keysBy } from '~/share/utils'
+import { Group } from '~/share/domain/entities'
 
 export enum DifficultyKind {
 	Beginner = '1.92',
@@ -10,4 +10,4 @@ export enum DifficultyKind {
 	Expert = '1.2',
 }
 
-export const DIFFICULTIES_NAMES = keysBy(DifficultyKind)
+export const DIFFICULTIES_NAMES = Group.fromKeys(DifficultyKind)

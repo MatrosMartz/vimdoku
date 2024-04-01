@@ -1,5 +1,4 @@
 import type { Namespace, NamespaceTextGetter, PagesKeys, ShareLocale } from '~/locales'
-import { inArray } from '~/share/utils'
 import { type Lang, LANGS } from '$i18n/domain/const'
 import { IDLE_I18N_PROXY, IDLE_I18N_TRANSLATE_FN } from '$i18n/domain/entities'
 import type { I18nRepo } from '$i18n/domain/repositories/i18n.repo'
@@ -21,7 +20,7 @@ export const browserI18nRepo: I18nRepo = {
 		for (const l of globalThis.navigator.languages) {
 			const lang = l.slice(0, 2)
 
-			if (inArray(LANGS, lang)) return lang
+			if (LANGS.contains(lang)) return lang
 		}
 
 		return null

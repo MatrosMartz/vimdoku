@@ -1,4 +1,4 @@
-import { entriesBy, inArray, keysBy } from '~/share/utils'
+import { entriesBy, keysBy } from '~/share/utils'
 
 import type { Field, FormGroup } from '../models'
 
@@ -15,7 +15,7 @@ export const FormFields = {
 	},
 	satisfiesField(field: Field, value: unknown) {
 		if (field.type === 'number') return typeof value === 'number' && FormFields.numberInRange(value, field)
-		if (field.type === 'options') return inArray(field.opts, value)
+		if (field.type === 'options') return field.opts.contains(value)
 		if (field.type === 'text') return typeof value === 'string' && (field.regex?.test(value) ?? true)
 		if (field.type === 'toggle') return typeof value === 'boolean'
 		throw new Error(`Not valid Field: "${JSON.stringify(field)}"`)

@@ -1,6 +1,6 @@
 import type { PagesKeys } from '~/locales'
 import type { RequireOne } from '~/share/types'
-import { inArray, inject, option } from '~/share/utils'
+import { inject, option } from '~/share/utils'
 import { Page } from '$screen/domain/entities'
 
 import { type Lang, LANGS } from '../const'
@@ -31,7 +31,7 @@ export class I18nSvc implements II18n {
 		const lang = screen.lang ?? this.#obs.data.lang
 		this.#page = option(screen.page, Page.getPageKey)
 
-		if (!inArray(LANGS, lang)) {
+		if (!LANGS.contains(lang)) {
 			this.#obs.set(IDLE_I18N)
 			return
 		}

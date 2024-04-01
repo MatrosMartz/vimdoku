@@ -1,3 +1,4 @@
+import { Group } from '~/share/domain/entities'
 import type { FieldsToModel, FormGroup } from '~/share/domain/models'
 import { FormFields } from '~/share/domain/services'
 
@@ -7,7 +8,7 @@ export enum Accessibility {
 	LESS = 'less',
 }
 
-export const ACCESSIBILITY_KINDS = Object.values(Accessibility)
+export const ACCESSIBILITY_KINDS = Group.fromValues(Accessibility)
 
 export enum ColorSchema {
 	SYSTEM = 'system',
@@ -15,7 +16,7 @@ export enum ColorSchema {
 	LIGHT_MODE = 'light',
 }
 
-export const COLOR_SCHEMAS = Object.values(ColorSchema)
+export const COLOR_SCHEMAS = Group.fromValues(ColorSchema)
 
 export enum IconTheme {
 	Heroicons = 'heroicons',
@@ -24,7 +25,7 @@ export enum IconTheme {
 	Tabler = 'tabler',
 }
 
-export const ICON_THEMES = Object.values(IconTheme)
+export const ICON_THEMES = Group.fromValues(IconTheme)
 
 export const userFields = {
 	colorSchema: { type: 'options', opts: COLOR_SCHEMAS, default: ColorSchema.SYSTEM },

@@ -1,3 +1,5 @@
+import { Group } from '~/share/domain/entities'
+
 export enum Path {
 	Game = 'game',
 	Help = 'help',
@@ -7,14 +9,14 @@ export enum Path {
 
 export const IDLE_PATH = Path.Home
 
-export const SIMPLE_PATHS = [Path.Home, Path.NotFound]
+export const SIMPLE_PATHS = new Group([Path.Home, Path.NotFound] as const)
 
-export const PATHS = Object.values(Path)
+export const PATHS = Group.fromValues(Path)
 
-export const COMPOUND_PATHS = PATHS.filter(path => !SIMPLE_PATHS.includes(path))
+export const COMPOUND_PATHS = PATHS.difference(SIMPLE_PATHS)
 
 export enum HelpSubPath {
 	Main = '',
 }
 
-export const HELP_SUBPATHS = Object.values(HelpSubPath)
+export const HELP_SUBPATHS = Group.fromValues(HelpSubPath)

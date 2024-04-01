@@ -31,7 +31,7 @@
 
 	/** Set new value. */
 	function setValue() {
-		med.dispatch(SUDOKU_ACTIONS.changeMode, { mode: MODES[index] })
+		med.dispatch(SUDOKU_ACTIONS.changeMode, { mode: MODES.at(index)! })
 	}
 
 	/** Close Listbox and set the selected value for the new value. */
@@ -154,7 +154,7 @@
 	</button>
 	<div class="mode-selector-container">
 		<ul bind:this={listbox} id="listbox-mode" role="listbox" tabindex="-1" class="listbox">
-			{#each MODES as mode, i (mode)}
+			{#each MODES.unwrap() as mode, i (mode)}
 				<li class="listbox-item" class:current={i === index}>
 					<label for="opt-mode-{mode}" class="listbox-label">
 						<input

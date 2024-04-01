@@ -1,3 +1,5 @@
+import { Group } from '~/share/domain/entities'
+
 export enum ModeKind {
 	N = 'notes',
 	I = 'insert',
@@ -12,6 +14,6 @@ export const MODE_KEYS: Record<ModeKind, string> = {
 	[ModeKind.X]: 'Esc',
 }
 
-export const MODES = Object.values(ModeKind)
+export const MODES = Group.fromValues(ModeKind)
 
 export const IDLE_MODE = ModeKind.X

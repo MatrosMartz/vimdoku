@@ -1,6 +1,8 @@
+import type { Group } from '../entities/group.entity'
+
 export interface OptionField<T = string> {
 	default: T
-	opts: readonly T[]
+	opts: Group<T>
 	type: 'options'
 }
 

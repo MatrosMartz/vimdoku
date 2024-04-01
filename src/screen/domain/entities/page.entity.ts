@@ -1,5 +1,5 @@
 import type { PagesKeys } from '~/locales'
-import { _throw, capitalCase, inArray, InvalidStringPageError } from '~/share/utils'
+import { _throw, capitalCase, InvalidStringPageError } from '~/share/utils'
 import { type Lang, LANGS } from '$i18n/domain/const'
 import { DIFFICULTIES_NAMES, DifficultyKind } from '$sudoku/domain/models'
 
@@ -147,7 +147,7 @@ export class PageWithLang {
 		'i'
 	)
 
-	static readonly #secondPattern = new RegExp(`^(${LANGS.join('|')})\\/(${COMPOUND_PATHS.join('|')})(?:\\/(.*))?$`)
+	static readonly #secondPattern = new RegExp(`^(${LANGS.join('|')})\\/(${COMPOUND_PATHS.join('|')})(?:\\/(.*))?$`, 'i')
 
 	readonly #lang
 	readonly #page
@@ -167,15 +167,16 @@ export class PageWithLang {
 	static fromString(str: string) {
 		try {
 			const { lang, path, rest } = this.#getParts(str)
+			console.log({ lang, path, rest })
 
 			if (path === Path.Home) {
 				if (rest != null && rest.length !== 0) throw new InvalidStringPageError()
 				return new PageWithLang({ lang, page: Page.createHome() })
-			} else if (path === Path.Help && (inArray(HELP_SUBPATHS, rest) || rest == null))
+			} else if (path === Path.Help && (HELP_SUBPATHS.contains(rest) || rest == null))
 				return new PageWithLang({ lang, page: Page.createHelp(rest ?? HelpSubPath.Main) })
 			else if (path === Path.Game) {
 				const difficulty = rest == null || rest.length === 0 ? 'Basic' : capitalCase(rest)
-				if (!inArray(DIFFICULTIES_NAMES, difficulty)) throw new InvalidStringPageError()
+				if (!DIFFICULTIES_NAMES.contains(difficulty)) throw new InvalidStringPageError()
 				return new PageWithLang({ lang, page: Page.createGame(DifficultyKind[difficulty]) })
 			}
 
@@ -191,9 +192,9 @@ export class PageWithLang {
 		const [, lang, path, rest] =
 			this.#firstPattern.exec(str) ?? this.#secondPattern.exec(str) ?? _throw(new InvalidStringPageError())
 
-		if (lang != null && !inArray(LANGS, lang)) throw new InvalidStringPageError()
+		if (lang != null && !LANGS.contains(lang)) throw new InvalidStringPageError()
 		if (path === '' || path == null) return { lang, path: Path.Home, rest }
-		if (!inArray(COMPOUND_PATHS, path)) throw new InvalidStringPageError()
+		if (!COMPOUND_PATHS.contains(path)) throw new InvalidStringPageError()
 
 		return { lang: lang as Lang | undefined, path, rest }
 	}

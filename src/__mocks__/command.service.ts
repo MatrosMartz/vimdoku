@@ -79,7 +79,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 				desc: descMock,
 				fn: noop,
 			})
-		)
+		).unwrap()
 	)
 	.addSubFn(
 		...PREFS_NAMES.map(pref =>
@@ -87,7 +87,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 				desc: descMock,
 				fn: noop,
 			})
-		)
+		).unwrap()
 	)
 	.addSubFn(
 		...TOGGLE_NAMES.map(pref =>
@@ -95,7 +95,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 				desc: descMock,
 				fn: noop,
 			})
-		)
+		).unwrap()
 	)
 	.addSubFn(
 		...NON_TOGGLE_NAMES.map(pref =>
@@ -103,7 +103,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 				desc: descMock,
 				fn: noop,
 			})
-		)
+		).unwrap()
 	)
 	.addSubFn(
 		...TOGGLE_NAMES.map(pref =>
@@ -111,7 +111,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 				desc: descMock,
 				fn: noop,
 			})
-		)
+		).unwrap()
 	)
 	.addSubFn(
 		...TOGGLE_NAMES.map(pref =>
@@ -119,7 +119,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 				desc: descMock,
 				fn: noop,
 			})
-		)
+		).unwrap()
 	)
 	.addSubFn(
 		...TOGGLE_NAMES.map(pref =>
@@ -127,21 +127,21 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 				desc: descMock,
 				fn: noop,
 			})
-		)
+		).unwrap()
 	)
 	.addSubFn(
 		...NON_TOGGLE_NAMES.map(pref =>
 			SubCmdSvc.buildFn(`(${pref})<=>{value}`, {
 				desc: descMock,
 			})
-		)
+		).unwrap()
 	)
 	.addSubFn(
 		...NON_TOGGLE_NAMES.map(pref =>
 			SubCmdSvc.buildFn(`(${pref})<:>{value}`, {
 				desc: descMock,
 			})
-		)
+		).unwrap()
 	)
 	.addSubFn(
 		...COLOR_SCHEMAS.map(schema =>
@@ -149,7 +149,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 				desc: descMock,
 				fn: noop,
 			})
-		)
+		).unwrap()
 	)
 	.addSubFn(
 		...COLOR_SCHEMAS.map(schema =>
@@ -157,7 +157,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 				desc: descMock,
 				fn: noop,
 			})
-		)
+		).unwrap()
 	)
 	.addSubFn(
 		...ACCESSIBILITY_KINDS.map(accessibility =>
@@ -165,7 +165,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 				desc: descMock,
 				fn: noop,
 			})
-		)
+		).unwrap()
 	)
 	.addSubFn(
 		...ACCESSIBILITY_KINDS.map(accessibility =>
@@ -173,7 +173,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 				desc: descMock,
 				fn: noop,
 			})
-		)
+		).unwrap()
 	)
 	.addSubFn(
 		...ACCESSIBILITY_KINDS.map(accessibility =>
@@ -181,7 +181,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 				desc: descMock,
 				fn: noop,
 			})
-		)
+		).unwrap()
 	)
 	.addSubFn(
 		...ACCESSIBILITY_KINDS.map(accessibility =>
@@ -189,7 +189,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 				desc: descMock,
 				fn: noop,
 			})
-		)
+		).unwrap()
 	)
 	.addSubFn(
 		...ICON_THEMES.map(theme =>
@@ -197,7 +197,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 				desc: descMock,
 				fn: noop,
 			})
-		)
+		).unwrap()
 	)
 	.addSubFn(
 		...ICON_THEMES.map(theme =>
@@ -205,7 +205,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 				desc: descMock,
 				fn: noop,
 			})
-		)
+		).unwrap()
 	)
 	.addSubFn(
 		SubCmdSvc.buildFn('(history)<=>{|value|}', {
@@ -236,7 +236,7 @@ const START_CMD = CmdSvc.buildFn('st[art]', {
 				desc: descMock,
 				fn: noop,
 			})
-		)
+		).unwrap()
 	)
 	.done()
 const PAUSE_CMD = CmdSvc.buildFn('pa[use]', {

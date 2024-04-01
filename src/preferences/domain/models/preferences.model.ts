@@ -1,6 +1,7 @@
-import type { FormGroup, FormSchema } from '~/share/domain/models'
+import { Group } from '~/share/domain/entities'
+import type { FormSchema } from '~/share/domain/models'
 import type { GetEntries, KeysByType } from '~/share/types'
-import { entriesBy, keysBy } from '~/share/utils'
+import { entriesBy } from '~/share/utils'
 
 import { SUDOKU_IDLE_PREFS, sudokuFields, type SudokuPrefs } from './sudoku.model'
 import { USER_IDLE_PREFS, userFields, type UserPrefs } from './user.model'
@@ -72,34 +73,14 @@ export interface IPrefs {
 export const ALL_PREFERENCES = { ...sudokuFields, ...userFields, ...vimFields }
 
 /** All preferences names. */
-export const PREFS_NAMES = keysBy(ALL_PREFERENCES)
+export const PREFS_NAMES = Group.fromKeys(ALL_PREFERENCES)
 
 type AllNames = keyof typeof ALL_PREFERENCES
+
 export type ToggleNames = KeysByType<Prefs, boolean>
 export type NonToggleNames = Exclude<AllNames, ToggleNames>
 
-interface Names {
-	/** The names of preferences type text, number or option. */
-	NON_TOGGLE_NAMES: NonToggleNames[]
-	/** The names of preferences type toggle. */
-	TOGGLE_NAMES: ToggleNames[]
-}
-
-/**
- * Checks if the preferences is of type 'toggle'.
- * @param schema The preference schema.
- * @param name The preference.
- * @returns The result of the check.
- */
-function isTogglePref<FG extends FormGroup>(schema: FG, name: keyof FG): name is ToggleNames {
-	return schema[name].type === 'toggle'
-}
-
-export const { TOGGLE_NAMES, NON_TOGGLE_NAMES } = PREFS_NAMES.reduce<Names>(
-	(acc, name) => {
-		if (isTogglePref(ALL_PREFERENCES, name)) acc.TOGGLE_NAMES.push(name)
-		else acc.NON_TOGGLE_NAMES.push(name)
-		return acc
-	},
-	{ TOGGLE_NAMES: [], NON_TOGGLE_NAMES: [] }
-)
+export const { NON_TOGGLE_NAMES, TOGGLE_NAMES } = PREFS_NAMES.groupBy<{
+	NON_TOGGLE_NAMES: NonToggleNames
+	TOGGLE_NAMES: ToggleNames
+}>(name => (ALL_PREFERENCES[name].type === 'toggle' ? 'NON_TOGGLE_NAMES' : 'TOGGLE_NAMES'))

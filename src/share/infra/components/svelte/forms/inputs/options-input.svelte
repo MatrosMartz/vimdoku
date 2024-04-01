@@ -34,7 +34,7 @@
 
 	/** Set new value. */
 	function setValue() {
-		value = settings.opts[index]
+		value = settings.opts.at(index)!
 	}
 
 	/** Close Listbox and set the selected value for the new value. */
@@ -155,7 +155,7 @@
 		tabindex="-1"
 		class="listbox"
 	>
-		{#each settings.opts as opt, i (opt)}
+		{#each settings.opts.unwrap() as opt, i (opt)}
 			<li class="listbox-item" class:current={i === index}>
 				<input
 					id="opt-{name}-{opt}"
