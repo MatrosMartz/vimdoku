@@ -34,3 +34,7 @@ export type GetEntries<T> = Array<
 export type Values<T> = T[keyof T]
 
 export type OptionalKeys<T, K extends keyof T> = { [P in Exclude<keyof T, K>]: T[P] } & { [P in K]?: T[P] }
+
+export type InvertKeyValues<T extends Record<string | number | symbol, string | number | symbol>> = {
+	[K in keyof T as T[K]]: K
+}

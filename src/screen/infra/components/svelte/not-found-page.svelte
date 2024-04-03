@@ -2,13 +2,13 @@
 	import { Button, ButtonMenu, Icon } from '~/share/infra/components/svelte'
 	import { SCREEN_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
-	import { Page } from '$screen/domain/entities'
+	import { Route } from '$screen/domain/entities'
 
 	export let path: string
 
 	/** Go to home, click handler.  */
 	function homeHandler() {
-		med.dispatch(SCREEN_ACTIONS.goTo, { page: Page.createHome() })
+		med.dispatch(SCREEN_ACTIONS.goTo, { route: Route.createHome() })
 	}
 </script>
 

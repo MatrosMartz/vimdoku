@@ -3,15 +3,15 @@
 	import { SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
 	import { i18nState } from '$i18n/infra/stores/svelte'
-	import { Modal, Page } from '$screen/domain/entities'
+	import { Modal, Route } from '$screen/domain/entities'
 	import { screenState } from '$screen/infra/stores/svelte'
-	import { MODE_KEYS, type ModeKind, MODES } from '$sudoku/domain/models'
+	import { MODE_KEYS, type ModeKind, MODES } from '$sudoku/domain/const'
 	import { modeState } from '$sudoku/infra/stores/svelte'
 
 	let listbox: HTMLUListElement
 	let index = Math.max(MODES.indexOf($modeState), 0)
 
-	$: disabled = !Page.isGame($screenState.page)
+	$: disabled = !Route.isGame($screenState.route)
 	$: expanded = Modal.isModes($screenState.modal)
 	$: locale = $i18nState.ns('share')
 	$: tooltipProps = {

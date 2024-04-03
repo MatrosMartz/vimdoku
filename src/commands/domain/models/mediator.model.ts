@@ -30,4 +30,5 @@ export interface IMed {
 	 * @returns A promise that resolves when loading is complete.
 	 */
 	load(): Promise<void>
+	unload(): Promise<void>
 }

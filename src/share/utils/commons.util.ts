@@ -1,4 +1,4 @@
-import type { Entries, EntriesToObj, GetEntries } from '../types'
+import type { Entries, EntriesToObj, GetEntries, InvertKeyValues } from '../types'
 
 /** The no operation function. */
 export function noop() {}
@@ -140,4 +140,15 @@ export function p<T, R>(val: T, fn: (val: T) => R) {
  */
 export function option<T extends NonNullable<unknown>, R>(val: T | null | undefined, fn: (val: T) => R) {
 	return val != null ? fn(val) : val
+}
+
+/**
+ * Convert values into keys and keys into values.
+ * @param obj Original object.
+ * @returns Invert key value object.
+ */
+export function invertKeyValues<Obj extends Record<string | number | symbol, string | number | symbol>>(
+	obj: Obj
+): InvertKeyValues<Obj> {
+	return Object.fromEntries(Object.entries(obj).map(([key, value]) => [value, key])) as never
 }

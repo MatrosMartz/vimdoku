@@ -1,8 +1,9 @@
 import { HistoryObservable, Observable } from '~/share/domain/entities'
 import { singleton } from '~/share/utils'
 
+import { IDLE_MODE, type ModeKind } from '../const'
 import type { Cell, Grid, MoveMap } from '../entities'
-import { IDLE_MODE, IDLE_TIMER, type ModeKind } from '../models'
+import { IDLE_TIMER } from '../models'
 
 @singleton
 export class ModeObs extends Observable<ModeKind> {

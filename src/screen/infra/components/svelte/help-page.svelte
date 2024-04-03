@@ -1,14 +1,14 @@
 <script lang="ts">
 	import * as HelpPages from '~/help/infra/components/svelte/pages'
 	import { TitleHelp } from '~/help/infra/components/svelte/share'
-	import { HelpSubPath } from '$screen/domain/entities'
+	import { HelpSubRoute } from '$screen/domain/entities'
 
-	export let subPath: HelpSubPath
+	export let subPath: HelpSubRoute
 </script>
 
 <section class="help-container">
 	<TitleHelp />
-	{#if subPath === HelpSubPath.Main}
+	{#if subPath === HelpSubRoute.Main}
 		<HelpPages.Main />
 	{:else}
 		<h5>help subPath:{subPath}</h5>

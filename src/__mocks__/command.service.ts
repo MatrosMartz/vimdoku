@@ -2,7 +2,7 @@ import { noop } from '~/share/utils'
 import { CmdListSvc, CmdSvc, type CreateHeader, SubCmdSvc } from '$cmd/domain/services'
 import { NON_TOGGLE_NAMES, PREFS_NAMES, TOGGLE_NAMES } from '$pref/domain/models'
 import { ACCESSIBILITY_KINDS, COLOR_SCHEMAS, ICON_THEMES } from '$pref/domain/models/user.model'
-import { DIFFICULTIES_NAMES } from '$sudoku/domain/models'
+import { DIFFICULTIES_NAMES } from '$sudoku/domain/const'
 
 export const createHeader: CreateHeader<[string, string]> = ([cmdToken, subTokens]) => [
 	cmdToken.tokens.join(''),

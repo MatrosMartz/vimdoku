@@ -1,7 +1,7 @@
 import { inject } from '~/share/utils'
 import type { Lang } from '$i18n/domain/const'
 
-import { IDLE_MODAL, IDLE_PAGE, Modal, Page } from '../entities'
+import { IDLE_MODAL, IDLE_ROUTE, Modal, Route } from '../entities'
 import { type IScreen, type VimScreen } from '../models'
 import type { PageRepo } from '../repositories'
 import { ScreenObs } from './vim-screen-obs.service'
@@ -13,8 +13,9 @@ interface ScreenOpts {
 /** Represent a VIM-like Screen Service for Sudoku game. */
 export class ScreenSvc implements IScreen {
 	#lang?: Lang
+	#unsubscribe?: () => void
 	readonly #obs = inject(ScreenObs)
-	#prev: null | Page = null
+	#prev: null | Route = null
 	readonly #repo
 
 	constructor({ repo }: ScreenOpts) {
@@ -33,52 +34,61 @@ export class ScreenSvc implements IScreen {
 		return this.#obs.data.modal
 	}
 
-	get page() {
-		return this.#obs.data.page
+	get route() {
+		return this.#obs.data.route
 	}
 
 	async close() {
 		await this.#repo.update(screen => {
 			const { modal } = this.#obs.data
-			if (Modal.isWin(modal)) return screen.withPage(IDLE_PAGE)
-			if (Modal.isNone(modal) && this.#prev != null) return screen.withPage(this.#prev)
+			if (Modal.isWin(modal)) return screen.with({ route: IDLE_ROUTE })
+			if (Modal.isNone(modal) && this.#prev != null) return screen.with({ route: this.#prev })
 			return screen
 		})
 
-		this.#obs.update(({ modal, page }) => {
-			if (Modal.isWin(modal)) return { page: IDLE_PAGE, modal: IDLE_MODAL }
-			else if (!Modal.isNone(modal)) return { page, modal: IDLE_MODAL }
-			else if (this.#prev != null) return { page: this.#prev, modal: IDLE_MODAL }
+		this.#obs.update(({ modal, route }) => {
+			if (Modal.isWin(modal)) return { route: IDLE_ROUTE, modal: IDLE_MODAL }
+			else if (!Modal.isNone(modal)) return { route, modal: IDLE_MODAL }
+			else if (this.#prev != null) return { route: this.#prev, modal: IDLE_MODAL }
 
-			return { modal, page }
+			return { modal, route }
 		})
 	}
 
-	async gotTo(page: Page) {
+	async gotTo(route: Route) {
 		this.#obs.update(screen => {
-			this.#prev = Page.isHome(page) ? null : screen.page
+			this.#prev = Route.isHome(route) ? null : screen.route
 
-			return { page, modal: IDLE_MODAL }
+			return { route, modal: IDLE_MODAL }
 		})
 
-		await this.#repo.update(full => full.withPage(page))
+		await this.#repo.update(full => full.with({ route }))
 	}
 
 	async load() {
-		const { page, lang } = await this.#repo.get()
+		const { route, lang } = await this.#repo.get()
 		this.#lang = lang
-		this.#obs.set({ modal: IDLE_MODAL, page })
+		this.#obs.set({ modal: IDLE_MODAL, route })
+
+		this.#unsubscribe = this.#repo.subscribe(({ lang, route }) => {
+			this.#lang = lang
+			this.#obs.set({ modal: IDLE_MODAL, route })
+		})
 	}
 
 	async setLang(lang: Lang) {
 		this.#lang = lang
-		await this.#repo.update(full => full.withLang(lang))
+		await this.#repo.update(full => full.with({ lang }))
 	}
 
 	setModal(modal: Modal) {
-		this.#obs.update(({ page }) => {
-			if ((Modal.isPause(modal) || Modal.isWin(modal)) && Page.isGame(page)) return { modal, page }
-			return { modal, page }
+		this.#obs.update(({ route }) => {
+			if ((Modal.isPause(modal) || Modal.isWin(modal)) && Route.isGame(route)) return { modal, route }
+			return { modal, route }
 		})
+	}
+
+	async unload() {
+		this.#unsubscribe?.()
 	}
 }

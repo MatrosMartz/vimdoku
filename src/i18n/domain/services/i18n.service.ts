@@ -1,7 +1,7 @@
 import type { PagesKeys } from '~/locales'
 import type { RequireOne } from '~/share/types'
 import { inject, option } from '~/share/utils'
-import { Page } from '$screen/domain/entities'
+import { Route } from '$screen/domain/entities'
 
 import { type Lang, LANGS } from '../const'
 import { IDLE_I18N } from '../entities'
@@ -22,14 +22,13 @@ export class I18nSvc implements II18n {
 		return this.#obs.data
 	}
 
-	async load(page: Page): Promise<void> {
+	async load(route: Route): Promise<void> {
 		const lang = await this.#repo.getLang()
-		if (lang != null) await this.updateFor({ lang, page })
+		if (lang != null) await this.updateFor({ lang, route })
 	}
 
-	async updateFor(screen: RequireOne<{ lang: Lang; page: Page }>) {
-		const lang = screen.lang ?? this.#obs.data.lang
-		this.#page = option(screen.page, Page.getPageKey)
+	async updateFor({ lang = this.#obs.data.lang, route }: RequireOne<{ lang: Lang; route: Route }>) {
+		this.#page = option(route, Route.getPageKey)
 
 		if (!LANGS.contains(lang)) {
 			this.#obs.set(IDLE_I18N)

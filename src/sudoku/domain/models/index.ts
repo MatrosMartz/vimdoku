@@ -1,7 +1,5 @@
 export * from './board.model'
-export * from './difficulties.model'
 export * from './game.model'
-export * from './modes.model'
 export * from './sudoku.model'
 export * from './sudoku-settings.model'
 export * from './timer.model'

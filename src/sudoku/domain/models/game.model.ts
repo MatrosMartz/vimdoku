@@ -1,8 +1,8 @@
 import type { Pos } from '~/share/domain/entities'
 
+import type { ModeKind } from '../const'
 import type { ValidNumbers } from '../entities'
-import type { BoardJSON } from '.'
-import type { ModeKind } from './modes.model'
+import type { BoardJSON } from './board.model'
 
 export interface IGame {
 	readonly errors: number

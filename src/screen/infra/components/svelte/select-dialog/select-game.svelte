@@ -3,9 +3,9 @@
 	import { SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
 	import { i18nState } from '$i18n/infra/stores/svelte'
-	import { DIFFICULTIES_NAMES, DifficultyKind } from '$sudoku/domain/models'
+	import { DIFFICULTIES_NAMES, DifficultyKind } from '$sudoku/domain/const'
 
-	let value: keyof typeof DifficultyKind = 'Beginner'
+	let value: keyof typeof DifficultyKind = 'beginner'
 
 	/**
 	 * Go back screen, click handler.

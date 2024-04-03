@@ -1,10 +1,10 @@
 import { SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services'
 import { med } from '$cmd/infra/services'
-import { Modal, Page } from '$screen/domain/entities'
+import { Modal, Route } from '$screen/domain/entities'
 import { type VimScreen } from '$screen/domain/models'
 import { screenState } from '$screen/infra/stores/svelte'
+import { ModeKind } from '$sudoku/domain/const'
 import type { ValidNumbers } from '$sudoku/domain/entities'
-import { ModeKind } from '$sudoku/domain/models'
 import { modeState } from '$sudoku/infra/stores/svelte'
 
 let moves = 0
@@ -75,7 +75,7 @@ function sudoku(ev: KeyboardEvent) {
  * @returns True if screen is Game without some dialog, false if not.
  */
 function isGameScreen(screen: VimScreen) {
-	return Page.isGame(screen.page) && Modal.isNone(screen.modal)
+	return Route.isGame(screen.route) && Modal.isNone(screen.modal)
 }
 
 /**

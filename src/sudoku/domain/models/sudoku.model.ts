@@ -1,8 +1,7 @@
 import type { Pos } from '~/share/domain/entities'
 
+import type { DifficultyKind, ModeKind } from '../const'
 import type { ValidNumbers } from '../entities'
-import type { DifficultyKind } from './difficulties.model'
-import type { ModeKind } from './modes.model'
 import type { SudokuSetts } from './sudoku-settings.model'
 
 export interface ISudoku {

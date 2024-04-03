@@ -2,9 +2,10 @@ import { type Pos } from '~/share/domain/entities'
 import type { OptionalKeys } from '~/share/types'
 import type { Lang } from '$i18n/domain/const'
 import type { Prefs, ToggleNames } from '$pref/domain/models'
-import { Modal, Page } from '$screen/domain/entities'
+import { Modal, Route } from '$screen/domain/entities'
+import { GET_DIFFICULTY_NAME, type ModeKind } from '$sudoku/domain/const'
 import { Solution, type ValidNumbers } from '$sudoku/domain/entities'
-import { type ModeKind, type SudokuSetts } from '$sudoku/domain/models'
+import { type SudokuSetts } from '$sudoku/domain/models'
 
 import type { ActionUnData, ActionWithData, DataAction } from '../models'
 
@@ -43,7 +44,7 @@ export const PREFS_ACTIONS = { set: setPref, reset: resetPref, invert: invertPre
 
 // Screen Actions.
 const closeScreen: ActionUnData = async ({ i18n, screen, sudoku }) => {
-	const isGameRoute = Page.isGame(screen.page)
+	const isGameRoute = Route.isGame(screen.route)
 	const isNoneDialog = Modal.isNone(screen.modal)
 	if (isGameRoute && isNoneDialog && !sudoku.isASaved) {
 		screen.setModal(Modal.createWarn('unsave'))
@@ -51,7 +52,7 @@ const closeScreen: ActionUnData = async ({ i18n, screen, sudoku }) => {
 	}
 
 	await screen.close()
-	await i18n.updateFor(screen.data)
+	await i18n.updateFor({ route: screen.data.route })
 
 	if (isGameRoute && !isNoneDialog) sudoku.continue()
 	else await sudoku.load()
@@ -59,13 +60,13 @@ const closeScreen: ActionUnData = async ({ i18n, screen, sudoku }) => {
 
 const openModal: ActionWithData<{ modal: Modal }> = async ({ screen }, data) => screen.setModal(data.modal)
 
-const goTo: ActionWithData<{ page: Page }> = async ({ i18n, screen, sudoku }, data) => {
-	if (!Page.isGame(screen.page) && Page.isGame(data.page) && !sudoku.isASaved) {
+const goTo: ActionWithData<{ route: Route }> = async ({ i18n, screen, sudoku }, { route }) => {
+	if (!Route.isGame(screen.route) && Route.isGame(route) && !sudoku.isASaved) {
 		screen.setModal(Modal.createWarn('unsave'))
 		return
 	}
 
-	await Promise.all([screen.gotTo(data.page), i18n.updateFor(data)])
+	await Promise.all([screen.gotTo(route), i18n.updateFor({ route })])
 }
 
 export const SCREEN_ACTIONS = { close: closeScreen, openModal, goTo }
@@ -118,9 +119,9 @@ const undoGame: ActionUnData = async ({ sudoku }) => {
 const sudokuEnd: ActionUnData = async ({ sudoku }) => await sudoku.end()
 
 const sudokuResume: ActionUnData = async ({ prefs, screen, sudoku }) => {
-	if (sudoku.isASaved && !Page.isGame(screen.page)) {
+	if (sudoku.isASaved && !Route.isGame(screen.route)) {
 		await sudoku.resume(prefs.get('timer'))
-		await screen.gotTo(Page.createGame(sudoku.difficulty!))
+		await screen.gotTo(Route.createGame(GET_DIFFICULTY_NAME[sudoku.difficulty!]))
 	} else sudoku.continue()
 }
 
@@ -131,7 +132,7 @@ const sudokuStart: ActionWithData<OptionalKeys<SudokuSetts, 'solution'> & DataAc
 	{ difficulty, solution = Solution.create() }
 ) => {
 	await sudoku.start({ difficulty, solution }, prefs.data.timer)
-	await screen.gotTo(Page.createGame(difficulty))
+	await screen.gotTo(Route.createGame(GET_DIFFICULTY_NAME[difficulty]))
 }
 
 export const SUDOKU_ACTIONS = {

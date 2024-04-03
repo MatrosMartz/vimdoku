@@ -1,4 +1,5 @@
-import { Page } from '$screen/domain/entities'
+import { Route } from '$screen/domain/entities'
+import { DifficultyKind, GET_DIFFICULTY_NAME } from '$sudoku/domain/const'
 import { Solution } from '$sudoku/domain/entities'
 
 import type { Action, DataAction, IMed, State } from '../models'
@@ -38,19 +39,24 @@ export class MedSvc implements IMed {
 	async load() {
 		if (this.#hasLoaded) return
 		await Promise.all([this.#prefs.load(), this.#sudoku.load(), this.#screen.load()])
-		await this.#i18n.load(this.#screen.page)
-		if (Page.isGame(this.#screen.page)) {
+		await this.#i18n.load(this.#screen.route)
+		if (Route.isGame(this.#screen.route)) {
 			if (this.#sudoku.isASaved) {
 				await this.#sudoku.resume(this.#prefs.get('timer'))
-				await this.#screen.gotTo(Page.createGame(this.#sudoku.difficulty!))
+				await this.#screen.gotTo(Route.createGame(GET_DIFFICULTY_NAME[this.#sudoku.difficulty!]))
 			} else {
 				await this.#sudoku.start(
-					{ difficulty: this.#screen.page.difficulty, solution: Solution.create() },
+					{ difficulty: DifficultyKind[this.#screen.route.subRoute], solution: Solution.create() },
 					this.#prefs.get('timer')
 				)
 			}
 		}
+		this.#sudoku.difficulty!
 
 		this.#hasLoaded = true
+	}
+
+	async unload() {
+		await Promise.all([this.#screen.unload()])
 	}
 }

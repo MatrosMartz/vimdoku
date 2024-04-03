@@ -6,7 +6,7 @@ import { LANGS } from '$i18n/domain/const'
 import { NON_TOGGLE_NAMES, PREFS_NAMES, TOGGLE_NAMES } from '$pref/domain/models'
 import { ACCESSIBILITY_KINDS, COLOR_SCHEMAS, ICON_THEMES } from '$pref/domain/models/user.model'
 import { Modal } from '$screen/domain/entities'
-import { DIFFICULTIES_NAMES, DifficultyKind } from '$sudoku/domain/models'
+import { DIFFICULTIES_NAMES, DifficultyKind } from '$sudoku/domain/const'
 
 import { med } from './mediator.service'
 
@@ -290,7 +290,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 const START_CMD = CmdSvc.buildFn('st[art]', {
 	desc: locale =>
 		locale.cmdDesc_start_difficulty('Start new game with the {|difficulty|} difficulty.', { difficulty: 'Easy' }),
-	fn: () => med.dispatch(SUDOKU_ACTIONS.start, { difficulty: DifficultyKind.Easy }),
+	fn: () => med.dispatch(SUDOKU_ACTIONS.start, { difficulty: DifficultyKind.easy }),
 })
 	.addSubFn(
 		SubCmdSvc.buildFn('{difficulty}', {

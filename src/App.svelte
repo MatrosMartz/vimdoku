@@ -4,6 +4,7 @@
 	import '@fontsource-variable/red-hat-mono/wght.css'
 	import '@fontsource-variable/red-hat-mono/wght-italic.css'
 
+	import { med } from '$cmd/infra/services'
 	import { i18nState } from '$i18n/infra/stores/svelte'
 	import { Accessibility, ColorSchema } from '$pref/domain/models'
 	import { prefsState } from '$pref/infra/stores/svelte'
@@ -23,6 +24,10 @@
 		{ main: Accessibility.LESS, default: Accessibility.SYSTEM, media: '(prefers-reduced-motion)' },
 		'motion-reduce'
 	)
+
+	window.addEventListener('beforeunload', () => {
+		void med.unload()
+	})
 </script>
 
 <Header />

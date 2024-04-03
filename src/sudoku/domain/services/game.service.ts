@@ -2,8 +2,9 @@ import type { Pos, PosData } from '~/share/domain/entities'
 import type { IPos } from '~/share/domain/models'
 import { match } from '~/share/utils'
 
+import { ModeKind } from '../const'
 import type { ValidNumbers } from '../entities'
-import { type IBoard, type IGame, ModeKind } from '../models'
+import { type IBoard, type IGame } from '../models'
 
 interface GameOpts {
 	board: IBoard
