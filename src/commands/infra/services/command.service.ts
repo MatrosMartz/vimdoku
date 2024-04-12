@@ -3,7 +3,7 @@ import { CmdTokenKind, SubTokenKind } from '$cmd/domain/entities'
 import { CmdListSvc, CmdSvc, type CreateHeader, SubCmdSvc } from '$cmd/domain/services'
 import { I18N_ACTIONS, PREFS_ACTIONS, SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services/actions.service'
 import { LANGS } from '$i18n/domain/const'
-import { NON_TOGGLE_NAMES, PREFS_NAMES, TOGGLE_NAMES } from '$pref/domain/models'
+import { NON_TOGGLE_NAMES, PREFS_KEYS, TOGGLE_NAMES } from '$pref/domain/models'
 import { ACCESSIBILITY_KINDS, COLOR_SCHEMAS, ICON_THEMES } from '$pref/domain/models/user.model'
 import { Modal } from '$screen/domain/entities'
 import { DIFFICULTIES_NAMES, DifficultyKind } from '$sudoku/domain/const'
@@ -116,7 +116,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 		})
 	)
 	.addSubFn(
-		...PREFS_NAMES.map(pref =>
+		...PREFS_KEYS.map(pref =>
 			SubCmdSvc.buildFn(`(${pref})<?>`, {
 				desc: locale => locale.cmdDesc_set_showPref('Show value of {|pref|}.', { pref }),
 				// fn: () => med.dispatch(SCREEN_ACTIONS.openDialog, { kind: DialogKind.ShowPref, opts: { pref } }),
@@ -124,7 +124,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 		).unwrap()
 	)
 	.addSubFn(
-		...PREFS_NAMES.map(pref =>
+		...PREFS_KEYS.map(pref =>
 			SubCmdSvc.buildFn(`(${pref})<&>`, {
 				desc: locale => locale.cmdDesc_set_resetPref('Reset value of {|pref|}.', { pref }),
 				fn: () => med.dispatch(PREFS_ACTIONS.reset, { type: 'by-key', key: pref }),

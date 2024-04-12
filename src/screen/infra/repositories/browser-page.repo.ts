@@ -1,30 +1,19 @@
-import { Page, Route } from '$screen/domain/entities'
+import { Page, RouteBase } from '$screen/domain/entities'
 import type { PageRepo } from '$screen/domain/repositories'
 
-/**
- * Gets the current path of the page.
- * @returns path in string format.
- */
-function getPath() {
-	return globalThis.location.pathname.replace(/^\/|\/$/g, '')
-}
-
 export const browserPageRepo: PageRepo = {
-	async get() {
-		return Page.fromString(getPath())
-	},
-	async set(page) {
-		const fullPath = `${page.lang != null ? `/${page.lang}` : ''}${!Route.isHome(page.route) ? `/${page.route.path}` : ''}`
+	get: async () => Page.fromString(globalThis.location.pathname.replace(/^\/|\/$/g, '')),
+	async save(page: Page) {
+		const fullPath = `${page.lang != null ? `/${page.lang}` : ''}${!RouteBase.isHome(page.route) ? `/${page.route.path}` : ''}`
 		window.history.pushState(page, fullPath, globalThis.location.origin + fullPath)
 	},
-	async update(fn) {
-		await this.set(fn(await this.get()))
-	},
-	subscribe(sub) {
-		const fn = (ev: PopStateEvent) => sub(ev.state)
+	subscribe(sub: (page: Page) => void | Promise<void>) {
+		const fn = (ev: PopStateEvent) => {
+			void sub(ev.state)
+		}
 
 		window.addEventListener('popstate', fn)
 
-		return () => window.removeEventListener('popstate', fn)
+		return async () => window.removeEventListener('popstate', fn)
 	},
 }

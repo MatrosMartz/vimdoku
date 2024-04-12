@@ -1,6 +1,6 @@
 import { noop } from '~/share/utils'
 import { CmdListSvc, CmdSvc, type CreateHeader, SubCmdSvc } from '$cmd/domain/services'
-import { NON_TOGGLE_NAMES, PREFS_NAMES, TOGGLE_NAMES } from '$pref/domain/models'
+import { NON_TOGGLE_NAMES, PREFS_KEYS, TOGGLE_NAMES } from '$pref/domain/models'
 import { ACCESSIBILITY_KINDS, COLOR_SCHEMAS, ICON_THEMES } from '$pref/domain/models/user.model'
 import { DIFFICULTIES_NAMES } from '$sudoku/domain/const'
 
@@ -74,7 +74,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 		})
 	)
 	.addSubFn(
-		...PREFS_NAMES.map(pref =>
+		...PREFS_KEYS.map(pref =>
 			SubCmdSvc.buildFn(`(${pref})<?>`, {
 				desc: descMock,
 				fn: noop,
@@ -82,7 +82,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 		).unwrap()
 	)
 	.addSubFn(
-		...PREFS_NAMES.map(pref =>
+		...PREFS_KEYS.map(pref =>
 			SubCmdSvc.buildFn(`(${pref})<&>`, {
 				desc: descMock,
 				fn: noop,

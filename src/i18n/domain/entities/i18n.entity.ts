@@ -1,14 +1,14 @@
-import type { Locales, Namespace, NamespaceTextGetter } from '~/locales'
+import type { LocaleType, Namespace, TextGetter } from '~/locales'
 
-import { IDLE_LANG, type Lang } from '../const'
+import { type Lang } from '../const'
 
 export interface I18n {
-	lang: Lang
+	lang?: Lang | null
 	/**
 	 * Gets object with .
 	 * @param localKey Key of namespace.
 	 */
-	ns<Key extends keyof Namespace>(localKey: Key): NamespaceTextGetter<Namespace[Key]>
+	ns<Key extends keyof Namespace>(localKey: Key): TextGetter<Namespace[Key] & LocaleType>
 }
 
 /**
@@ -30,9 +30,9 @@ export const IDLE_I18N_HANDLER = {
 	},
 }
 
-export const IDLE_I18N_PROXY = new Proxy<NamespaceTextGetter<Locales>>({}, IDLE_I18N_HANDLER)
+export const IDLE_I18N_PROXY = new Proxy<TextGetter<LocaleType>>({}, IDLE_I18N_HANDLER)
 
 export const IDLE_I18N: I18n = {
-	lang: IDLE_LANG,
+	lang: null,
 	ns: () => IDLE_I18N_PROXY as never,
 }

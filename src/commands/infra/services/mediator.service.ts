@@ -1,7 +1,12 @@
 import { MedSvc } from '$cmd/domain/services'
-import { i18n } from '$i18n/infra/services'
-import { prefs } from '$pref/infra/services'
-import { vimScreen } from '$screen/infra/services'
-import { sudoku } from '$sudoku/infra/services'
+import { browserI18nRepo } from '$i18n/infra/repositories'
+import { browserPrefsRepo } from '$pref/infra/repositories'
+import { browserPageRepo } from '$screen/infra/repositories'
+import { browserSudokuRepo } from '$sudoku/infra/repositories'
 
-export const med = new MedSvc({ sudoku, i18n, prefs, screen: vimScreen })
+export const med = new MedSvc({
+	i18n: browserI18nRepo,
+	page: browserPageRepo,
+	prefs: browserPrefsRepo,
+	sudoku: browserSudokuRepo,
+})

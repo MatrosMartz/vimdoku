@@ -30,17 +30,8 @@ export const prefsFormSchema = {
 } as const satisfies FormSchema
 
 export interface IPrefs {
-	/** Get the current data of preferences. */
+	/** Get the current Data of preferences. */
 	readonly data: Prefs
-	/** Get the current value of the Sudoku preferences. */
-	readonly sudoku: SudokuPrefs
-	/** Get the current value of the User preferences. */
-	readonly user: UserPrefs
-	/** Get the current value of the VIM preferences. */
-	readonly vim: VimPrefs
-	get<P extends keyof Prefs>(preference: P): Prefs[P]
-	/** Load from the repo. */
-	load(): Promise<void>
 	/** Reset to default values all preferences. */
 	resetAll(): this
 	/**
@@ -57,30 +48,27 @@ export interface IPrefs {
 	 * @throws {InvalidPreferencesError} If preferences is invalid.
 	 * @returns The updated Service.
 	 */
-	setAll(preferences: Prefs): this
+	setAll(data: Prefs): this
 	/**
 	 * Set specific preference.
 	 * @param key The key preference to the establish.
 	 * @param value New value for the specific preference.
-	 * @throws {InvalidPreferencesError} If value or key is invalid.
 	 * @returns The updated Service.
 	 */
 	setByKey<K extends keyof Prefs>(key: K, value: Prefs[K]): this
-	toJSON(): Prefs
-	toString(): string
 }
 
-export const ALL_PREFERENCES = { ...sudokuFields, ...userFields, ...vimFields }
+export const PREFS_FIELDS = { ...sudokuFields, ...userFields, ...vimFields }
 
 /** All preferences names. */
-export const PREFS_NAMES = Group.fromKeys(ALL_PREFERENCES)
+export const PREFS_KEYS = Group.fromKeys(PREFS_FIELDS)
 
-type AllNames = keyof typeof ALL_PREFERENCES
+type AllNames = keyof typeof PREFS_FIELDS
 
 export type ToggleNames = KeysByType<Prefs, boolean>
 export type NonToggleNames = Exclude<AllNames, ToggleNames>
 
-export const { NON_TOGGLE_NAMES, TOGGLE_NAMES } = PREFS_NAMES.groupBy<{
+export const { NON_TOGGLE_NAMES, TOGGLE_NAMES } = PREFS_KEYS.groupBy<{
 	NON_TOGGLE_NAMES: NonToggleNames
 	TOGGLE_NAMES: ToggleNames
-}>(name => (ALL_PREFERENCES[name].type === 'toggle' ? 'NON_TOGGLE_NAMES' : 'TOGGLE_NAMES'))
+}>(name => (PREFS_FIELDS[name].type === 'toggle' ? 'NON_TOGGLE_NAMES' : 'TOGGLE_NAMES'))

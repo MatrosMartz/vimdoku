@@ -1,1 +1,1 @@
-export * from './browser-game.repo'
+export * from './browser-sudoku.repo'

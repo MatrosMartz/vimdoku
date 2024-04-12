@@ -1,8 +1,9 @@
-import type { Page } from '../entities'
+import type { Page } from '$screen/domain/entities'
+
+type Unsubscribe = () => Promise<void>
 
 export interface PageRepo {
 	get(): Promise<Page>
-	set(page: Page): Promise<void>
-	subscribe(sub: (page: Page) => void): () => void
-	update(fn: (fullRoute: Page) => Page): Promise<void>
+	save(page: Page): Promise<void>
+	subscribe(sub: (page: Page) => void | Promise<void>): Unsubscribe
 }

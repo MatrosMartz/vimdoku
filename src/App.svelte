@@ -4,6 +4,8 @@
 	import '@fontsource-variable/red-hat-mono/wght.css'
 	import '@fontsource-variable/red-hat-mono/wght-italic.css'
 
+	import { onDestroy, onMount } from 'svelte'
+
 	import { med } from '$cmd/infra/services'
 	import { i18nState } from '$i18n/infra/stores/svelte'
 	import { Accessibility, ColorSchema } from '$pref/domain/models'
@@ -25,9 +27,9 @@
 		'motion-reduce'
 	)
 
-	window.addEventListener('beforeunload', () => {
-		void med.unload()
-	})
+	onMount(async () => await med.load())
+
+	onDestroy(async () => await med.unload())
 </script>
 
 <Header />

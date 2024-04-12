@@ -4,10 +4,10 @@ import type { IScreen } from '$screen/domain/models'
 import type { ISudoku } from '$sudoku/domain/models'
 
 export interface State {
-	i18n: II18n
-	prefs: IPrefs
-	screen: IScreen
-	sudoku: ISudoku
+	readonly i18n: II18n
+	readonly prefs: IPrefs
+	readonly screen: IScreen
+	readonly sudoku: ISudoku
 }
 
 export type DataAction = Record<string, unknown>

@@ -2,7 +2,7 @@ import { type Pos } from '~/share/domain/entities'
 import type { OptionalKeys } from '~/share/types'
 import type { Lang } from '$i18n/domain/const'
 import type { Prefs, ToggleNames } from '$pref/domain/models'
-import { Modal, Route } from '$screen/domain/entities'
+import { Modal, RouteBase } from '$screen/domain/entities'
 import { GET_DIFFICULTY_NAME, type ModeKind } from '$sudoku/domain/const'
 import { Solution, type ValidNumbers } from '$sudoku/domain/entities'
 import { type SudokuSetts } from '$sudoku/domain/models'
@@ -11,7 +11,7 @@ import type { ActionUnData, ActionWithData, DataAction } from '../models'
 
 // i18n Actions.
 const changeLang: ActionWithData<{ lang: Lang }> = async ({ i18n, screen }, { lang }) => {
-	await Promise.all([screen.setLang(lang), i18n.updateFor({ lang })])
+	await Promise.all([screen.setLang(lang).save(), i18n.setLang(lang).save()])
 }
 
 export const I18N_ACTIONS = { changeLang }
@@ -38,35 +38,37 @@ const resetPref: ActionWithData<ResetPrefData> = async ({ i18n, prefs, screen },
 }
 
 const invertPref: ActionWithData<{ pref: ToggleNames }> = async ({ prefs }, data) =>
-	await prefs.setByKey(data.pref, !prefs.get(data.pref)).save()
+	await prefs.setByKey(data.pref, !prefs.data[data.pref]).save()
 
 export const PREFS_ACTIONS = { set: setPref, reset: resetPref, invert: invertPref }
 
 // Screen Actions.
 const closeScreen: ActionUnData = async ({ i18n, screen, sudoku }) => {
-	const isGameRoute = Route.isGame(screen.route)
-	const isNoneDialog = Modal.isNone(screen.modal)
+	const isGameRoute = RouteBase.isGame(screen.data.route)
+	const isNoneDialog = Modal.isNone(screen.data.modal)
 	if (isGameRoute && isNoneDialog && !sudoku.isASaved) {
 		screen.setModal(Modal.createWarn('unsave'))
 		return
 	}
 
-	await screen.close()
-	await i18n.updateFor({ route: screen.data.route })
+	await screen.close().save()
+	await i18n.setRoute(screen.data.route).save()
 
 	if (isGameRoute && !isNoneDialog) sudoku.continue()
-	else await sudoku.load()
+	else await sudoku.end()
 }
 
-const openModal: ActionWithData<{ modal: Modal }> = async ({ screen }, data) => screen.setModal(data.modal)
+const openModal: ActionWithData<{ modal: Modal }> = async ({ screen }, data) => {
+	screen.setModal(data.modal)
+}
 
-const goTo: ActionWithData<{ route: Route }> = async ({ i18n, screen, sudoku }, { route }) => {
-	if (!Route.isGame(screen.route) && Route.isGame(route) && !sudoku.isASaved) {
+const goTo: ActionWithData<{ route: RouteBase }> = async ({ i18n, screen, sudoku }, { route }) => {
+	if (!RouteBase.isGame(screen.data.route) && RouteBase.isGame(route) && !sudoku.isASaved) {
 		screen.setModal(Modal.createWarn('unsave'))
 		return
 	}
 
-	await Promise.all([screen.gotTo(route), i18n.updateFor({ route })])
+	await Promise.all([screen.setRoute(route).save(), i18n.setRoute(route).save()])
 }
 
 export const SCREEN_ACTIONS = { close: closeScreen, openModal, goTo }
@@ -119,9 +121,9 @@ const undoGame: ActionUnData = async ({ sudoku }) => {
 const sudokuEnd: ActionUnData = async ({ sudoku }) => await sudoku.end()
 
 const sudokuResume: ActionUnData = async ({ prefs, screen, sudoku }) => {
-	if (sudoku.isASaved && !Route.isGame(screen.route)) {
-		await sudoku.resume(prefs.get('timer'))
-		await screen.gotTo(Route.createGame(GET_DIFFICULTY_NAME[sudoku.difficulty!]))
+	if (sudoku.isASaved && !RouteBase.isGame(screen.data.route)) {
+		sudoku.resume(prefs.data.timer)
+		await screen.setRoute(RouteBase.createGame(GET_DIFFICULTY_NAME[sudoku.setts!.difficulty])).save()
 	} else sudoku.continue()
 }
 
@@ -131,8 +133,10 @@ const sudokuStart: ActionWithData<OptionalKeys<SudokuSetts, 'solution'> & DataAc
 	{ prefs, screen, sudoku },
 	{ difficulty, solution = Solution.create() }
 ) => {
-	await sudoku.start({ difficulty, solution }, prefs.data.timer)
-	await screen.gotTo(Route.createGame(GET_DIFFICULTY_NAME[difficulty]))
+	await Promise.all([
+		sudoku.start({ difficulty, solution }, prefs.data.timer).save(),
+		screen.setRoute(RouteBase.createGame(GET_DIFFICULTY_NAME[difficulty])).save(),
+	])
 }
 
 export const SUDOKU_ACTIONS = {

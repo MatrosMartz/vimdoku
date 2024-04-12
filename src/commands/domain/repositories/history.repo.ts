@@ -1,5 +1,6 @@
 export interface HistoryRepo {
-	get(): Promise<string[]>
+	clear(): Promise<void>
+	get(): Promise<string[] | null>
 	has(): Promise<boolean>
 	save(data: string[]): Promise<void>
 }

@@ -1,11 +1,12 @@
 import type { Pos } from '~/share/domain/entities'
 
-import type { DifficultyKind, ModeKind } from '../const'
+import type { ModeKind } from '../const'
 import type { ValidNumbers } from '../entities'
-import type { SudokuSetts } from './sudoku-settings.model'
+import type { BoardJSON } from '.'
+import type { SudokuInfo, SudokuSetts, SudokuSettsJSON } from './sudoku-settings.model'
 
 export interface ISudoku {
-	readonly difficulty?: DifficultyKind
+	readonly setts?: SudokuSettsJSON
 	readonly hasWin: boolean
 	readonly isASaved: boolean
 	/**
@@ -29,8 +30,6 @@ export interface ISudoku {
 	 * @returns The new Non-started game.
 	 */
 	end(): Promise<void>
-	/** Load from the repo. */
-	load(): Promise<void>
 	/**
 	 * Move the current position down by a specified number of times.
 	 * @param dir The direction of move.
@@ -55,14 +54,15 @@ export interface ISudoku {
 	 */
 	redo(): this
 	/** Resumes a previously started Sudoku game. */
-	resume(withTimer: boolean): Promise<void>
+	resume(withTimer: boolean): this
 	/** Save the current game state. */
 	save(): Promise<void>
+	setData(data: { board?: BoardJSON | null; info?: SudokuInfo | null; setts?: SudokuSettsJSON | null }): this
 	/**
 	 * Starts a new Sudoku game.
 	 * @param opts Optional game options, including difficulty and solution.
 	 */
-	start(opts: SudokuSetts, withTimer: boolean): Promise<void>
+	start(opts: SudokuSetts, withTimer: boolean): this
 	/**
 	 * Undo the previous action.
 	 * @returns The updated game.

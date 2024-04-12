@@ -1,32 +1,18 @@
-const create: unique symbol = Symbol('injection')
-
 export type Class<T extends object> = new (...args: any[]) => T
 
-export interface Decorated<T extends object> extends Class<T> {
-	[create](): T
-}
+const injectMap = new Map<Class<object>, { type: 'singleton' | 'injectable'; create(): object }>()
 
 export type Decorator = <const C extends Class<object>>(Target: C) => C
 
-export const injectable = <const C extends Class<object>>(Target: C): C => {
-	return class Injectable extends Target {
-		static [create]() {
-			return new Injectable()
-		}
-	}
+export const injectable: Decorator = Target => {
+	injectMap.set(Target, { type: 'injectable', create: () => new Target() })
+	return Target
 }
 
 export const singleton: Decorator = Target => {
-	return class Singleton extends Target {
-		// eslint-disable-next-line @typescript-eslint/prefer-readonly
-		static #instance: Singleton
-
-		static [create]() {
-			Singleton.#instance ??= new Singleton()
-
-			return Singleton.#instance
-		}
-	}
+	const instance = new Target()
+	injectMap.set(Target, { type: 'singleton', create: () => instance })
+	return Target
 }
 
 /**
@@ -34,6 +20,20 @@ export const singleton: Decorator = Target => {
  * @param C The class.
  * @returns The class instance that is injected.
  */
-export function inject<const I extends object>(C: Class<I> | Decorated<I>) {
-	return create in C ? C[create]() : new C()
+export function inject<const I extends object>(C: Class<I>) {
+	if (injectMap.has(C)) return injectMap.get(C)!.create() as I
+	return new C()
+}
+
+/**
+ * Replace injection with mock singleton.
+ * @param C Class was mocked.
+ * @param create Create the mock instance.
+ * @returns The mock singleton.
+ */
+export function mockSingleton<const I extends object>(C: Class<I>, create: () => I) {
+	const instance = create()
+	if (injectMap.has(C) && injectMap.get(C)?.type === 'singleton')
+		injectMap.set(C, { ...injectMap.get(C)!, create: () => instance })
+	return instance
 }

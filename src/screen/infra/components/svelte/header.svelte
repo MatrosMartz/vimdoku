@@ -2,7 +2,7 @@
 	import { Icon } from '~/share/infra/components/svelte'
 	import { SCREEN_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
-	import { Modal, Route } from '$screen/domain/entities'
+	import { Modal, RouteBase } from '$screen/domain/entities'
 	import { screenState } from '$screen/infra/stores/svelte'
 
 	/**
@@ -14,7 +14,7 @@
 		return () => med.dispatch(SCREEN_ACTIONS.openModal, { modal })
 	}
 
-	$: inGame = Route.isGame($screenState.route)
+	$: inGame = RouteBase.isGame($screenState.route)
 </script>
 
 <header class="status-bar vimdoku-header monospace">

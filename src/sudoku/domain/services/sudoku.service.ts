@@ -2,36 +2,30 @@ import { IDLE_POS, type Pos, type PosData } from '~/share/domain/entities'
 import { PosSvc } from '~/share/domain/services'
 import { inject } from '~/share/utils'
 
-import { type DifficultyKind, ModeKind } from '../const'
+import { ModeKind } from '../const'
 import { type ValidNumbers } from '../entities'
-import type { IGame, ISudoku, SudokuSetts } from '../models'
-import type { SudokuRepo } from '../repositories'
+import type { BoardJSON, IGame, ISudoku, SudokuInfo, SudokuSetts, SudokuSettsJSON } from '../models'
+import type { SudokuRepos } from '../repositories'
 import { BoardSvc } from './board.service'
 import { GameSvc } from './game.service'
 import { ModeObs, SavedObs } from './sudoku-obs.service'
 import { TimerSvc } from './timer.service'
 
-interface SudokuOpts {
-	repo: SudokuRepo
-}
-
 export class SudokuSvc implements ISudoku {
-	#difficulty?: DifficultyKind
 	#game?: IGame | null = null
+	readonly #clear
+	#data: { board?: BoardJSON; info?: SudokuInfo; setts?: SudokuSettsJSON } = {}
 	readonly #modeObs = inject(ModeObs)
 	readonly #pos
-	readonly #repo
+	readonly #save
 	readonly #savedObs = inject(SavedObs)
 	readonly #timer
 
-	constructor({ repo }: SudokuOpts) {
+	constructor(save: (data: SudokuRepos.Data) => Promise<void>, clear: () => Promise<void>) {
 		this.#pos = new PosSvc()
-		this.#repo = repo
+		this.#save = save
+		this.#clear = clear
 		this.#timer = new TimerSvc()
-	}
-
-	get difficulty() {
-		return this.#difficulty
 	}
 
 	get hasWin() {
@@ -40,6 +34,14 @@ export class SudokuSvc implements ISudoku {
 
 	get isASaved() {
 		return this.#savedObs.data
+	}
+
+	get setts() {
+		return this.#data.setts
+	}
+
+	static create(repo: SudokuRepos.All) {
+		return new SudokuSvc(repo.save, repo.clear)
 	}
 
 	changeMode(mode: ModeKind) {
@@ -60,18 +62,12 @@ export class SudokuSvc implements ISudoku {
 	}
 
 	async end() {
-		await this.#repo.delete()
+		this.#data = {}
+		await this.#clear()
 		this.#game = null
 		this.#timer.pause().reset()
-		this.#savedObs.set(false)
-	}
-
-	async load() {
-		this.#savedObs.set(await this.#repo.hasData())
-		this.#game = null
-		this.#timer.pause().reset()
-		this.#modeObs.set(ModeKind.X)
 		this.#pos.set(IDLE_POS)
+		this.#savedObs.set(false)
 	}
 
 	move(dir: 'Down' | 'Left' | 'Right' | 'Up', times: number) {
@@ -95,26 +91,27 @@ export class SudokuSvc implements ISudoku {
 		return this
 	}
 
-	async resume(withTimer: boolean) {
-		if (this.#game != null || !(await this.#repo.hasData())) return
+	resume(withTimer: boolean) {
+		const { board, info, setts } = this.#data
 
-		const boardData = await this.#repo.getBoard()
-		const settsData = await this.#repo.getSetts()
-		const infoData = await this.#repo.getInfo()
+		if (this.#game != null || board == null || info == null || setts == null) return this
 
-		this.#difficulty = settsData.difficulty
+		this.#data.setts = setts
 
 		this.#game = GameSvc.create(
-			{ board: BoardSvc.fromJSON(boardData, settsData.solution, infoData.errors), pos: this.#pos },
+			{ board: BoardSvc.fromJSON(board, setts.solution, info.errors), pos: this.#pos },
 			ModeKind.X
 		)
-		if (withTimer) this.#timer.set(infoData.timer).start()
+		if (withTimer) this.#timer.set(info.timer).start()
+		this.#modeObs.set(ModeKind.X)
+		this.#pos.set(IDLE_POS)
+		return this
 	}
 
 	async save() {
 		if (this.#game == null) return
 
-		await this.#repo.save({
+		await this.#save({
 			board: this.#game.toJSON(),
 			info: { errors: this.#game.errors, timer: this.#timer.data },
 		})
@@ -122,19 +119,25 @@ export class SudokuSvc implements ISudoku {
 		this.#savedObs.set(true)
 	}
 
-	async start(setts: SudokuSetts, withTimer: boolean) {
+	setData(data: { board?: BoardJSON; info?: SudokuInfo; setts?: SudokuSettsJSON }) {
+		this.#data = { ...data }
+		this.#savedObs.set(data.board != null && data.info != null && data.setts != null)
+		return this
+	}
+
+	start(setts: SudokuSetts, withTimer: boolean) {
 		const board = BoardSvc.create(setts, 0)
 
-		this.#difficulty = setts.difficulty
-
-		await this.#repo.create({
-			board: board.toJSON(),
-			info: { errors: 0, timer: 0 },
-			setts: { difficulty: setts.difficulty, solution: setts.solution.toJSON() },
-		})
+		this.#data.setts = {
+			difficulty: setts.difficulty,
+			solution: setts.solution.toJSON(),
+		}
 
 		if (withTimer) this.#timer.reset().start()
 		this.#game = GameSvc.create({ board, pos: this.#pos }, ModeKind.X)
+		this.#modeObs.set(ModeKind.X)
+		this.#pos.set(IDLE_POS)
+		return this
 	}
 
 	undo() {

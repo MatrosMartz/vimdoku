@@ -1,8 +1,8 @@
 import type { Prefs } from '../models'
 
 export interface PrefsRepo {
-	delete(): Promise<void>
+	clear(): Promise<void>
+	get(): Promise<Prefs | null>
 	has(): Promise<boolean>
-	load(): Promise<Prefs>
 	save(preferences: Prefs): Promise<void>
 }

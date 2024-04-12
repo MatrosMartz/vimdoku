@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { NamespaceTextGetter, ShareLocale } from '~/locales'
+	import type { TextGetter, ShareLocale } from '~/locales'
 	import { ToggleInput } from '~/share/infra/components/svelte/forms/inputs'
 	import { capitalCase, inArray } from '~/share/utils'
 	import { SCREEN_ACTIONS } from '$cmd/domain/services'
@@ -25,11 +25,7 @@
 	 * @param prefs The current preferences.
 	 * @returns The translated value of the preference.
 	 */
-	function getPrefText<E extends PrefsNamesEntries>(
-		locale: NamespaceTextGetter<ShareLocale>,
-		[key, field]: E,
-		prefs: Prefs
-	) {
+	function getPrefText<E extends PrefsNamesEntries>(locale: TextGetter<ShareLocale>, [key, field]: E, prefs: Prefs) {
 		if (field.type === 'toggle') return locale[`prefs_toggle_${prefs[key] as boolean}`](String(prefs[key]))
 		if (key === 'colorSchema') return locale[`prefs_schema_${prefs[key] as ColorSchema}`](prefs[key])
 		if (inArray(ACCESSIBILITY_FIELDS, key))

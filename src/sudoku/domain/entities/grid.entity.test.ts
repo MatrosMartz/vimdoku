@@ -40,9 +40,9 @@ describe.concurrent('Grid Service', () => {
 	test('Should create the subgrids "foo" and "bar".', () => {
 		const initialGrid = Grid.create(pos => ({ foo: pos.x, bar: pos.y }))
 
-		const { bar, foo } = initialGrid.createSubgrids(cell => cell)
+		const { bar, foo } = initialGrid.subgrids.unwrapped(cell => cell)
 
-		expect(foo.data).toEqual([
+		expect(foo).toEqual([
 			[0, 1, 2, 3, 4, 5, 6, 7, 8],
 			[0, 1, 2, 3, 4, 5, 6, 7, 8],
 			[0, 1, 2, 3, 4, 5, 6, 7, 8],
@@ -54,7 +54,7 @@ describe.concurrent('Grid Service', () => {
 			[0, 1, 2, 3, 4, 5, 6, 7, 8],
 		])
 
-		expect(bar.data).toEqual([
+		expect(bar).toEqual([
 			[0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[1, 1, 1, 1, 1, 1, 1, 1, 1],
 			[2, 2, 2, 2, 2, 2, 2, 2, 2],

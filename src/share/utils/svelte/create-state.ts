@@ -12,13 +12,11 @@ interface CustomReadable<T> extends Readable<T> {
  * @returns A custom store.
  */
 export function createState<T>(obs: Observable<T>): CustomReadable<T> {
-	const { subscribe } = readable(obs.data, observer => {
-		obs.add(observer)
-		return () => obs.remove(observer)
-	})
-
 	return {
-		subscribe,
+		subscribe(observer) {
+			obs.add(observer)
+			return () => obs.remove(observer)
+		},
 		get data() {
 			return obs.data
 		},

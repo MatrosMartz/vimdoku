@@ -393,6 +393,64 @@ class GridSome<T> {
 	}
 }
 
+interface GridSubgrids<T> {
+	/**
+	 * Group and transform subgrids using the provided function.
+	 * @param fn The transformation function to apply to subgrids.
+	 * @returns An object containing subgrids with the transformed values.
+	 */
+	<U extends Record<string, unknown>>(fn: (cell: T, pos: Pos) => U): { [K in keyof U]: Grid<U[K]> }
+	/**
+	 * Group and transform subgrids using the provided function without wrapping.
+	 * @param fn The transformation function to apply to subgrids.
+	 * @returns An object containing subgrids with the transformed values.
+	 */
+	unwrapped<U extends Record<string, unknown>>(fn: (cell: T, pos: Pos) => U): { [K in keyof U]: GridData<U[K]> }
+}
+
+/**
+ * Create subgrids method for grid class.
+ * @param data Grid data.
+ * @param mutateCell Helper function to mutate a cell without re-creating the grid.
+ * @returns New subgrids method.
+ */
+function createGridSubgrids<T>(
+	data: GridData<T>,
+	mutateCell: (grid: Grid<unknown>, pos: Pos, newValue: unknown) => void
+) {
+	const gridSubgrids: GridSubgrids<T> = <U extends Record<string, unknown>>(fn: (cell: T, pos: Pos) => U) => {
+		const subGrids = {} as {
+			[K in keyof U]: Grid<U[K]>
+		}
+
+		for (const pos of Pos.iterateMatrix(9)) {
+			const result = fn(data[pos.y][pos.x], pos)
+			for (const key of keysBy(result)) {
+				if (!(key in subGrids)) subGrids[key] = new Grid(Pos.createMatrix(9, () => null as U[keyof U]))
+				mutateCell(subGrids[key], pos, result[key])
+			}
+		}
+		return subGrids
+	}
+
+	gridSubgrids.unwrapped = <U extends Record<string, unknown>>(fn: (cell: T, pos: Pos) => U) => {
+		const subGridsData = {} as {
+			[K in keyof U]: GridData<U[K]>
+		}
+
+		for (const pos of Pos.iterateMatrix(9)) {
+			const result = fn(data[pos.y][pos.x], pos)
+			for (const key of keysBy(result)) {
+				if (!(key in subGridsData)) subGridsData[key] = Pos.createMatrix(9, () => null as U[keyof U])
+				subGridsData[key][pos.y][pos.x] = result[key]
+			}
+		}
+		return subGridsData
+	}
+
+	return gridSubgrids
+}
+
 export class Grid<T> {
 	/** Get the `GridEvery` */
 	readonly every: GridEvery<T>
@@ -400,6 +458,8 @@ export class Grid<T> {
 	readonly join: GridJoiner<T>
 	/** Get the `GridSome` */
 	readonly some: GridSome<T>
+	/** Create new subgrids derived for this. */
+	readonly subgrids
 	readonly #data
 
 	/**
@@ -411,6 +471,7 @@ export class Grid<T> {
 		this.every = new GridEvery(this.#data)
 		this.join = new GridJoiner(this.#data)
 		this.some = new GridSome(this.#data)
+		this.subgrids = createGridSubgrids(this.#data, Grid.#mutateCell)
 	}
 
 	get data() {
@@ -424,6 +485,10 @@ export class Grid<T> {
 	 */
 	static create<T>(fn: (pos: Pos) => T) {
 		return new Grid(Pos.createMatrix(9, fn))
+	}
+
+	static #mutateCell(grid: Grid<unknown>, pos: Pos, newValue: unknown) {
+		grid.#data[pos.y][pos.x] = newValue
 	}
 
 	/**
@@ -465,28 +530,6 @@ export class Grid<T> {
 	}
 
 	/**
-	 * Group and transform subgrids using the provided function.
-	 * @param fn The transformation function to apply to subgrids.
-	 * @returns An object containing subgrids with the transformed values.
-	 */
-	createSubgrids<U extends Record<string, unknown>>(fn: (cell: T, pos: Pos) => U) {
-		const newGrid = {} as {
-			[K in keyof U]: Grid<U[K]>
-		}
-
-		for (const pos of Pos.iterateMatrix(9)) {
-			const result = fn(this.cellBy(pos), pos)
-
-			for (const key of keysBy(result)) {
-				if (!(key in newGrid)) newGrid[key] = new Grid(Pos.createMatrix(9, () => null as U[keyof U]))
-				newGrid[key].#mutateCell(pos, result[key])
-			}
-		}
-
-		return newGrid
-	}
-
-	/**
 	 * Map the values of cells in the entire grid using a provided mapping function.
 	 * @param fn The mapping function.
 	 * @returns A new grid with the mapped values in the entire grid.
@@ -506,15 +549,5 @@ export class Grid<T> {
 
 	#internalMap<I, U>(data: GridData<I>, fn: (cell: I, pos: Pos) => U) {
 		return data.map((row, y) => row.map((cell, x) => fn(cell, new Pos({ y, x })))) as GridData<U>
-	}
-
-	/**
-	 * Change the content of the specific cell.
-	 * @param pos Position of cell to be mutate.
-	 * @param newCell The new Cell content.
-	 */
-	#mutateCell(pos: Pos, newCell: T): void
-	#mutateCell({ y, x }: Pos, newCell: T) {
-		this.#data[y][x] = newCell
 	}
 }

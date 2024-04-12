@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Route } from '$screen/domain/entities'
+	import { RouteBase } from '$screen/domain/entities'
 	import { screenState } from '$screen/infra/stores/svelte'
 	import { SudokuGame } from '$sudoku/infra/components/svelte'
 
@@ -9,13 +9,13 @@
 </script>
 
 <main>
-	{#if Route.isHome($screenState.route)}
+	{#if RouteBase.isHome($screenState.route)}
 		<StartScreen />
-	{:else if Route.isGame($screenState.route)}
+	{:else if RouteBase.isGame($screenState.route)}
 		<SudokuGame />
-	{:else if Route.isHelp($screenState.route)}
+	{:else if RouteBase.isHelp($screenState.route)}
 		<HelpPage subPath={$screenState.route.subRoute} />
-	{:else if Route.isNotFound($screenState.route)}
+	{:else if RouteBase.isNotFound($screenState.route)}
 		<NotFoundPage path={$screenState.route.path} />
 	{/if}
 </main>

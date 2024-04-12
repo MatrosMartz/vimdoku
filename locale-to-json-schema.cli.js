@@ -206,17 +206,23 @@ const namespaceInterfaceStr =
 
 const namespaceTsContentEnd = `
 
-export type Locales = Namespace[keyof Namespace]
+export type LocaleType = Record<string, LocaleValueBase | LocaleValueWithKeywords<string[]>>
+
+export type LocaleStr<Locale extends LocaleType> = {
+	[K in keyof Locale]: Locale[K] extends LocaleValueWithKeywords<infer Kw> ? LocaleText<Kw> : string
+}
+
 export type PagesKeys = {
 	[K in keyof Namespace]: K extends \`pages/\${string}\` ? K : never
 }[keyof Namespace]
 
-
-export type NamespaceTextGetter<Locale extends Locales> = {
+export type TextGetter<Locale extends Locales> = {
 	[Key in keyof Locale]: Locale[Key] extends LocaleValueWithKeywords<infer Kw>
 		? (fallback: LocaleText<Kw>, keywords: Record<Kw[number], string>) => string
 		: (fallback: string) => string
 }
+
+export type NsFn = <K extends keyof Namespace>(localeKey: K) => TextGetter<Namespace[K] & LocaleType>
 `
 
 const namespaceTsContent = importLocalesStr + namespaceInterfaceStr + namespaceTsContentEnd

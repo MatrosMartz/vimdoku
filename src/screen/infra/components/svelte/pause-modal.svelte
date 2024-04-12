@@ -2,7 +2,7 @@
 	import { Button, ButtonMenu, Dialog, Icon } from '~/share/infra/components/svelte'
 	import { SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
-	import { Modal, Route } from '$screen/domain/entities'
+	import { Modal, RouteBase } from '$screen/domain/entities'
 	import { screenState } from '$screen/infra/stores/svelte'
 
 	/**
@@ -23,7 +23,7 @@
 	 * Return to home, click handler.
 	 */
 	function homeHandler() {
-		med.dispatch(SCREEN_ACTIONS.goTo, { route: Route.createHome() })
+		med.dispatch(SCREEN_ACTIONS.goTo, { route: RouteBase.createHome() })
 	}
 
 	/**

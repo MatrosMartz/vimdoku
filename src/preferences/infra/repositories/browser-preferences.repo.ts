@@ -1,30 +1,12 @@
-import { createBrowserStorage } from '~/share/infra/repositories'
-import { _throw, RepoItemNotFoundError } from '~/share/utils'
+import { BrowserStorage } from '~/share/infra/repositories'
 import type { Prefs } from '$pref/domain/models'
 import type { PrefsRepo } from '$pref/domain/repositories'
 
-export class BrowserPrefsRepo implements PrefsRepo {
-	readonly #storage
+const prefsStorage = BrowserStorage.basic<Prefs>('preferences')
 
-	constructor(name = 'preferences') {
-		this.#storage = createBrowserStorage(name)
-	}
-
-	async delete() {
-		this.#storage.del()
-	}
-
-	async has() {
-		return this.#storage.get() != null
-	}
-
-	async load() {
-		const data = this.#storage.get()
-
-		return data != null ? (JSON.parse(data) as Prefs) : _throw(new RepoItemNotFoundError('preferences'))
-	}
-
-	async save(preferences: Prefs) {
-		this.#storage.set(JSON.stringify(preferences))
-	}
+export const browserPrefsRepo: PrefsRepo = {
+	clear: async () => prefsStorage.del(),
+	get: async () => prefsStorage.get(),
+	has: async () => prefsStorage.get() != null,
+	save: async (preferences: Prefs) => prefsStorage.set(preferences),
 }
