@@ -21,7 +21,7 @@ let textGetter: TextGetter<LocaleExample>
 
 describe.concurrent('TextGetterProxy.create with locale', () => {
 	beforeEach(() => {
-		textGetter = new TextGetterProxy(LOCALE_EXAMPLE).proxy
+		textGetter = TextGetterProxy.create(LOCALE_EXAMPLE)
 	})
 
 	test('Should return the same value as locale', () => {
@@ -37,7 +37,7 @@ describe.concurrent('TextGetterProxy.create with locale', () => {
 
 describe.concurrent('TextGetterProxy.create with empty locale', () => {
 	beforeEach(() => {
-		textGetter = new TextGetterProxy<LocaleExample>({} as never).proxy
+		textGetter = TextGetterProxy.create<LocaleExample>({} as never)
 	})
 
 	test('Should return the fallback value', () => {

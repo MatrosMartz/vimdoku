@@ -7,7 +7,7 @@ import { TextGetterProxy } from './browser-text-getter-proxy'
 
 export const browserI18nRepo: I18nRepo = {
 	async findNamespace(lang: Lang, pageKey: PagesKeys) {
-		const [{ proxy: pageLocale }, { proxy: shareLocale }] = await Promise.all([
+		const [pageLocale, shareLocale] = await Promise.all([
 			TextGetterProxy.fromLocale(pageKey, lang),
 			TextGetterProxy.fromLocale('share', lang),
 		])
