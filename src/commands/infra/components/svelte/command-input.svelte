@@ -2,8 +2,8 @@
 	import { DialogClose } from '~/share/infra/components/svelte'
 	import { SCREEN_ACTIONS } from '$cmd/domain/services'
 	import { exec, med } from '$cmd/infra/services'
-	import { Modal } from '$screen/domain/entities'
-	import { screenState } from '$screen/infra/stores/svelte'
+	import { Modal } from '$page/domain/entities'
+	import { pageState } from '$page/infra/stores/svelte'
 
 	import { input } from './input.store'
 
@@ -11,7 +11,7 @@
 
 	/** Handles the submission of the form. */
 	function submitHandler() {
-		med.dispatch(SCREEN_ACTIONS.close)
+		med.dispatch(SCREEN_ACTIONS.back)
 		if ($input != null) exec.run($input.value)
 	}
 
@@ -23,7 +23,7 @@
 		exec.searchAutocomplete(currentTarget.value)
 	}
 
-	$: if (Modal.isCmd($screenState.modal)) form.reset()
+	$: if (Modal.Cmd.is($pageState.modal)) form.reset()
 </script>
 
 <form bind:this={form} class="command-search" method="dialog" on:submit|preventDefault={submitHandler}>

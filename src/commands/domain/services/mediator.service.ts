@@ -1,12 +1,12 @@
 import { IDLE_LANG } from '$i18n/domain/const'
 import type { I18nRepo } from '$i18n/domain/repositories'
 import { I18nSvc } from '$i18n/domain/services'
+import { Route } from '$page/domain/entities'
+import type { PageRepo } from '$page/domain/repositories'
+import { PageSvc } from '$page/domain/services'
 import { IDLE_PREFS } from '$pref/domain/models'
 import type { PrefsRepo } from '$pref/domain/repositories'
 import { PrefsSvc } from '$pref/domain/services'
-import { RouteBase } from '$screen/domain/entities'
-import type { PageRepo } from '$screen/domain/repositories'
-import { ScreenSvc } from '$screen/domain/services'
 import { DifficultyKind, GET_DIFFICULTY_NAME } from '$sudoku/domain/const'
 import { Solution } from '$sudoku/domain/entities'
 import type { SudokuRepos } from '$sudoku/domain/repositories'
@@ -35,8 +35,8 @@ export class MedSvc implements IMed {
 	constructor(repos: Repos) {
 		this.#state = {
 			i18n: I18nSvc.create(repos.i18n),
+			page: PageSvc.create(repos.page),
 			prefs: PrefsSvc.create(repos.prefs),
-			screen: ScreenSvc.create(repos.page),
 			sudoku: SudokuSvc.create(repos.sudoku),
 		}
 		this.#repos = repos
@@ -63,13 +63,17 @@ export class MedSvc implements IMed {
 			this.#repos.sudoku.get(),
 		])
 
-		await this.#state.i18n.setDefaultLanguage(acceptLang ?? IDLE_LANG).set(page.unwrap())
+		await this.#state.i18n
+			.setDefaultLanguage(acceptLang ?? IDLE_LANG)
+			.setLang(page.lang)
+			.setRoute(page.route)
+			.save()
 		this.#state.sudoku.setData({ board, info, setts })
 
-		if (RouteBase.isGame(page.route)) {
+		if (Route.Game.is(page.route)) {
 			if (board != null && info != null && setts != null) {
 				this.#state.sudoku.resume(prefs?.timer ?? IDLE_PREFS.timer)
-				this.#state.screen.setRoute(RouteBase.createGame(GET_DIFFICULTY_NAME[setts.difficulty]))
+				this.#state.page.setRoute(new Route.Game(GET_DIFFICULTY_NAME[setts.difficulty]))
 			} else {
 				await this.#state.sudoku
 					.start(
@@ -80,9 +84,9 @@ export class MedSvc implements IMed {
 			}
 		}
 		this.#internalUnload = this.#repos.page.subscribe(async ({ lang, route }) => {
-			if (!this.#state.screen.data.route.equals(route)) this.#state.screen.setRoute(route)
-			if (this.#state.screen.lang !== lang) this.#state.screen.setLang(lang)
-			if (this.#state.i18n.data.lang !== lang) await this.#state.i18n.set({ lang: lang ?? acceptLang! })
+			if (!route.equals(this.#state.page.data.route)) this.#state.page.setRoute(route)
+			if (this.#state.page.data.lang !== lang) this.#state.page.setLang(lang)
+			if (this.#state.i18n.data.lang !== lang) await this.#state.i18n.setLang(lang ?? acceptLang!).save()
 		})
 	}
 

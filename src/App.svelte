@@ -7,15 +7,16 @@
 	import { onDestroy, onMount } from 'svelte'
 
 	import { med } from '$cmd/infra/services'
+	import { IDLE_LANG } from '$i18n/domain/const'
 	import { i18nState } from '$i18n/infra/stores/svelte'
 	import { Accessibility, ColorSchema } from '$pref/domain/models'
 	import { prefsState } from '$pref/infra/stores/svelte'
-	import { Header, Modals, Screen, StatusBar } from '$screen/infra/components/svelte'
+	import { Header, Modals, Screen, StatusBar } from '$page/infra/components/svelte'
 
 	import { keydownHandler } from './keydown-handler'
 	import { toggleClass } from './toggle-class'
 
-	$: document.documentElement.lang = $i18nState.lang
+	$: document.documentElement.lang = $i18nState.lang ?? IDLE_LANG
 	$: toggleClass(
 		$prefsState.colorSchema,
 		{ main: ColorSchema.DARK_MODE, default: ColorSchema.SYSTEM, media: '(prefers-color-scheme: dark)' },

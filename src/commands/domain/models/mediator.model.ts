@@ -1,12 +1,12 @@
 import type { II18n } from '$i18n/domain/models'
+import type { IPage } from '$page/domain/models'
 import type { IPrefs } from '$pref/domain/models'
-import type { IScreen } from '$screen/domain/models'
 import type { ISudoku } from '$sudoku/domain/models'
 
 export interface State {
 	readonly i18n: II18n
+	readonly page: IPage
 	readonly prefs: IPrefs
-	readonly screen: IScreen
 	readonly sudoku: ISudoku
 }
 

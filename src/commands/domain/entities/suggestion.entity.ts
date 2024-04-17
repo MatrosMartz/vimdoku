@@ -1,6 +1,6 @@
-import type { ShareLocale, TextGetter } from '~/locales'
+import type { LocaleType, ShareLocale, TextGetter } from '~/locales'
 
-export type DescFn = (locale: TextGetter<ShareLocale>) => string
+export type DescFn = (locale: TextGetter<ShareLocale & LocaleType>) => string
 
 export type Desc = [DescFn, ...DescFn[]]
 

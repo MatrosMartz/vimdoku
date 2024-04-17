@@ -1,14 +1,14 @@
 import type { Difference } from '~/share/types'
 
-export class Group<T> {
+export class Group<const T> {
 	readonly at
 	readonly contains
 	readonly findIndex
 	readonly join
 	readonly #arr
 
-	constructor(arr: T[]) {
-		this.#arr = arr
+	constructor(arr: readonly T[]) {
+		this.#arr = [...arr]
 		this.at = Array.prototype.at.bind(this.#arr)
 		this.contains = Array.prototype.includes.bind(this.#arr) as (val: unknown) => val is T
 		this.findIndex = Array.prototype.findIndex.bind(this.#arr)
@@ -83,6 +83,10 @@ export class Group<T> {
 
 	map<U>(fn: (item: T) => U) {
 		return new Group(this.#arr.map(fn))
+	}
+
+	random() {
+		return this.#arr[Math.floor(Math.random() * this.#arr.length)]
 	}
 
 	unwrap() {

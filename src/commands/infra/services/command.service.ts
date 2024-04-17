@@ -3,9 +3,9 @@ import { CmdTokenKind, SubTokenKind } from '$cmd/domain/entities'
 import { CmdListSvc, CmdSvc, type CreateHeader, SubCmdSvc } from '$cmd/domain/services'
 import { I18N_ACTIONS, PREFS_ACTIONS, SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services/actions.service'
 import { LANGS } from '$i18n/domain/const'
+import { Modal } from '$page/domain/entities'
 import { NON_TOGGLE_NAMES, PREFS_KEYS, TOGGLE_NAMES } from '$pref/domain/models'
 import { ACCESSIBILITY_KINDS, COLOR_SCHEMAS, ICON_THEMES } from '$pref/domain/models/user.model'
-import { Modal } from '$screen/domain/entities'
 import { DIFFICULTIES_NAMES, DifficultyKind } from '$sudoku/domain/const'
 
 import { med } from './mediator.service'
@@ -56,7 +56,7 @@ export const createHeader: CreateHeader<HTMLHeadingElement> = ([cmdToken, subTok
 
 const SET_CMD = CmdSvc.buildFn('se[t]', {
 	desc: locale => locale.cmdDesc_set_showAll('Show all preferences that differ from their default value.'),
-	fn: () => med.dispatch(SCREEN_ACTIONS.openModal, { modal: Modal.createPref('show-differ') }),
+	fn: () => med.dispatch(SCREEN_ACTIONS.openModal, { modal: new Modal.Pref(Modal.PrefType.showDiffer) }),
 })
 	.addSubFn(
 		SubCmdSvc.buildFn('{preference}', {
@@ -106,7 +106,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	.addSubFn(
 		SubCmdSvc.buildFn('<all>', {
 			desc: locale => locale.cmdDesc_set_showAll('Show all preferences.'),
-			fn: () => med.dispatch(SCREEN_ACTIONS.openModal, { modal: Modal.createPref('show-all') }),
+			fn: () => med.dispatch(SCREEN_ACTIONS.openModal, { modal: new Modal.Pref(Modal.PrefType.showAll) }),
 		})
 	)
 	.addSubFn(
@@ -309,7 +309,7 @@ const START_CMD = CmdSvc.buildFn('st[art]', {
 	.done()
 const PAUSE_CMD = CmdSvc.buildFn('pa[use]', {
 	desc: locale => locale.cmdDesc_pause('Pause current game.'),
-	fn: () => med.dispatch(SCREEN_ACTIONS.openModal, { modal: Modal.createPause() }),
+	fn: () => med.dispatch(SCREEN_ACTIONS.openModal, { modal: new Modal.Pause() }),
 }).done()
 
 const WRITE_CMD = CmdSvc.buildFn('w[rite]', {
@@ -327,22 +327,22 @@ const RESUME_CMD = CmdSvc.buildFn('re[sume]', {
 
 const QUIT_CMD = CmdSvc.buildFn('q[uit]', {
 	desc: locale => locale.cmdDesc_quit('Close the current windows.'),
-	fn: () => med.dispatch(SCREEN_ACTIONS.close),
+	fn: () => med.dispatch(SCREEN_ACTIONS.back),
 }).done()
 
 const WQUIT_CMD = CmdSvc.buildFn('wq[uit]', {
 	desc: locale => locale.cmdDesc_write('Save the current game and close the windows.'),
-	fn: () => med.dispatch(SUDOKU_ACTIONS.save).dispatch(SCREEN_ACTIONS.close),
+	fn: () => med.dispatch(SUDOKU_ACTIONS.save).dispatch(SCREEN_ACTIONS.back),
 }).done()
 
 const XIT_CMD = CmdSvc.buildFn('x[it]', {
 	desc: locale => locale.cmdDesc_writeLike('Like ":wq", but save only when changes have been made.'),
-	fn: () => med.dispatch(SCREEN_ACTIONS.close),
+	fn: () => med.dispatch(SCREEN_ACTIONS.back),
 }).done()
 
 const EXIT_CMD = CmdSvc.buildFn('exi[t]', {
 	desc: locale => locale.cmdDesc_writeLike('Like ":wq", but save only when changes have been made.'),
-	fn: () => med.dispatch(SCREEN_ACTIONS.close),
+	fn: () => med.dispatch(SCREEN_ACTIONS.back),
 }).done()
 
 const LANGUAGE_CMD = CmdSvc.buildFn('lan[guage]', {

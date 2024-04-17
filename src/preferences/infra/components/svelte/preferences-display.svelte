@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { TextGetter, ShareLocale } from '~/locales'
+	import type { LocaleType, ShareLocale, TextGetter } from '~/locales'
 	import { ToggleInput } from '~/share/infra/components/svelte/forms/inputs'
 	import { capitalCase, inArray } from '~/share/utils'
 	import { SCREEN_ACTIONS } from '$cmd/domain/services'
@@ -8,13 +8,13 @@
 	import { type Prefs, prefsGroupEntries, type PrefsNamesEntries } from '$pref/domain/models'
 	import { type Accessibility, ACCESSIBILITY_FIELDS, type ColorSchema } from '$pref/domain/models/user.model'
 	import { prefsState } from '$pref/infra/stores/svelte'
-	import { Modal } from '$screen/domain/entities'
-	import { screenState } from '$screen/infra/stores/svelte'
+	import { Modal } from '$page/domain/entities'
+	import { pageState } from '$page/infra/stores/svelte'
 
 	let showDiff: boolean = false
 
-	$: if (Modal.isPref($screenState.modal) && !Modal.isPref($screenState.modal, 'edit'))
-		showDiff = Modal.isPref($screenState.modal, 'show-differ')
+	$: if (Modal.Pref.is($pageState.modal) && !Modal.Pref.is($pageState.modal, Modal.PrefType.edit))
+		showDiff = Modal.Pref.is($pageState.modal, Modal.PrefType.showDiffer)
 
 	$: locale = $i18nState.ns('share')
 
@@ -25,7 +25,11 @@
 	 * @param prefs The current preferences.
 	 * @returns The translated value of the preference.
 	 */
-	function getPrefText<E extends PrefsNamesEntries>(locale: TextGetter<ShareLocale>, [key, field]: E, prefs: Prefs) {
+	function getPrefText<E extends PrefsNamesEntries>(
+		locale: TextGetter<ShareLocale & LocaleType>,
+		[key, field]: E,
+		prefs: Prefs
+	) {
 		if (field.type === 'toggle') return locale[`prefs_toggle_${prefs[key] as boolean}`](String(prefs[key]))
 		if (key === 'colorSchema') return locale[`prefs_schema_${prefs[key] as ColorSchema}`](prefs[key])
 		if (inArray(ACCESSIBILITY_FIELDS, key))
@@ -39,7 +43,9 @@
 	 */
 	function toggleHandler({ currentTarget: t }: Event) {
 		if (t instanceof HTMLInputElement)
-			med.dispatch(SCREEN_ACTIONS.openModal, { modal: Modal.createPref(t.checked ? 'show-differ' : 'show-all') })
+			med.dispatch(SCREEN_ACTIONS.openModal, {
+				modal: new Modal.Pref(t.checked ? Modal.PrefType.showDiffer : Modal.PrefType.showAll),
+			})
 	}
 </script>
 

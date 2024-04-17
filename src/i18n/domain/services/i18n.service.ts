@@ -1,6 +1,6 @@
 import type { NsFn, PagesKeys } from '~/locales'
 import { inject } from '~/share/utils'
-import { RouteBase } from '$screen/domain/entities'
+import { Route } from '$page/domain/entities'
 
 import { type Lang, LANGS } from '../const'
 import { type I18n, IDLE_I18N } from '../entities'
@@ -50,9 +50,9 @@ export class I18nSvc implements II18n {
 		return this
 	}
 
-	setRoute(route: RouteBase): this {
-		if (!RouteBase.isRoute(route)) throw new Error(`route is invalid: "${JSON.stringify(route)}"`)
-		this.#page = RouteBase.getPageKey(route)
+	setRoute(route: Route.Route): this {
+		if (!Route.is(route)) throw new Error(`route is invalid: "${JSON.stringify(route)}"`)
+		this.#page = Route.getPageKey(route)
 
 		return this
 	}

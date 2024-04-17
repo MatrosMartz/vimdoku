@@ -1,9 +1,14 @@
 <script lang="ts">
+	import { IDLE_LANG } from '$i18n/domain/const'
 	import { i18nState } from '$i18n/infra/stores/svelte'
 
 	const date = new Date('26 March 2024')
 
-	$: timeFormatted = new Intl.DateTimeFormat($i18nState.lang, { day: '2-digit', year: 'numeric', month: 'short' })
+	$: timeFormatted = new Intl.DateTimeFormat($i18nState.lang ?? IDLE_LANG, {
+		day: '2-digit',
+		year: 'numeric',
+		month: 'short',
+	})
 
 	$: dateFormatted = timeFormatted.format(date)
 </script>

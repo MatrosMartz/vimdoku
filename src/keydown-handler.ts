@@ -1,8 +1,7 @@
 import { SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services'
 import { med } from '$cmd/infra/services'
-import { Modal, RouteBase } from '$screen/domain/entities'
-import { type VimScreen } from '$screen/domain/models'
-import { screenState } from '$screen/infra/stores/svelte'
+import { Modal, type Page, Route } from '$page/domain/entities'
+import { pageState } from '$page/infra/stores/svelte'
 import { ModeKind } from '$sudoku/domain/const'
 import type { ValidNumbers } from '$sudoku/domain/entities'
 import { modeState } from '$sudoku/infra/stores/svelte'
@@ -70,12 +69,12 @@ function sudoku(ev: KeyboardEvent) {
 }
 
 /**
- * Get if the screen is Game without some dialog.
- * @param screen The screen.
- * @returns True if screen is Game without some dialog, false if not.
+ * Get if the page is Game without some dialog.
+ * @param page The page.
+ * @returns True if page is Game without some dialog, false if not.
  */
-function isGameScreen(screen: VimScreen) {
-	return RouteBase.isGame(screen.route) && Modal.isNone(screen.modal)
+function isGamePage(page: Page.Page) {
+	return Route.Game.is(page.route) && Modal.None.is(page.modal)
 }
 
 /**
@@ -85,21 +84,21 @@ function isGameScreen(screen: VimScreen) {
 export function keydownHandler(ev: KeyboardEvent) {
 	const t = ev.target
 	const main = document.getElementsByTagName('main')[0]
-	if (ev.key === ':' && !Modal.isCmd(screenState.data.modal)) {
+	if (ev.key === ':' && !Modal.Cmd.is(pageState.data.modal)) {
 		ev.preventDefault()
-		med.dispatch(SCREEN_ACTIONS.openModal, { modal: Modal.createCmd() })
+		med.dispatch(SCREEN_ACTIONS.openModal, { modal: new Modal.Cmd() })
 	}
 	if (ev.key === 'Escape') {
-		if (Modal.isNone(screenState.data.modal)) ev.preventDefault()
+		if (Modal.None.is(pageState.data.modal)) ev.preventDefault()
 		if (!(t instanceof HTMLElement && t.classList.contains('combobox') && t.ariaExpanded === 'true'))
-			med.dispatch(SCREEN_ACTIONS.close)
+			med.dispatch(SCREEN_ACTIONS.back)
 	}
 
 	if (t instanceof HTMLElement && main.contains(t)) {
-		if (ev.key === ' ' && Modal.isNone(screenState.data.modal)) {
-			med.dispatch(SCREEN_ACTIONS.openModal, { modal: Modal.createPause() })
+		if (ev.key === ' ' && Modal.None.is(pageState.data.modal)) {
+			med.dispatch(SCREEN_ACTIONS.openModal, { modal: new Modal.Pause() })
 		}
 
-		if (isGameScreen(screenState.data)) sudoku(ev)
+		if (isGamePage(pageState.data)) sudoku(ev)
 	}
 }

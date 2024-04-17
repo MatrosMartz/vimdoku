@@ -44,6 +44,26 @@ export function runAsync(fn: () => Promise<void>) {
 	void fn()
 }
 
+export interface PromiseResolvers<T> {
+	promise: Promise<T>
+	reject(reason?: any): void
+	resolve(value: T | PromiseLike<T>): void
+}
+
+/**
+ * Return object containing Promise and functions for resolve or reject it.
+ * @returns The promise resolvers.
+ */
+export function promiseResolvers<T = void>() {
+	const resolvers: PromiseResolvers<T> = {} as never
+	resolvers.promise = new Promise<T>((resolve, reject) => {
+		resolvers.resolve = resolve
+		resolvers.reject = reject
+	})
+
+	return resolvers
+}
+
 /**
  * Transforms an asynchronous function into a synchronous function.
  * @param fn The asynchronous function.

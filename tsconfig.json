@@ -13,8 +13,8 @@
 		"module": "ESNext",
 		"paths": {
 			"$cmd/*": ["./src/commands/*"],
-			"$screen/*": ["./src/screen/*"],
 			"$sudoku/*": ["./src/sudoku/*"],
+			"$page/*": ["./src/page/*"],
 			"$pref/*": ["./src/preferences/*"],
 			"$i18n/*": ["./src/i18n/*"],
 			"@/*": ["./public/*"],
