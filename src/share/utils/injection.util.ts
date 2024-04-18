@@ -1,15 +1,13 @@
-export type Class<T extends object> = new (...args: any[]) => T
+import type { Class, ClassDecorator } from '../types'
 
 const injectMap = new Map<Class<object>, { type: 'singleton' | 'injectable'; create(): object }>()
 
-export type Decorator = <const C extends Class<object>>(Target: C) => C
-
-export const injectable: Decorator = Target => {
+export const injectable: ClassDecorator = Target => {
 	injectMap.set(Target, { type: 'injectable', create: () => new Target() })
 	return Target
 }
 
-export const singleton: Decorator = Target => {
+export const singleton: ClassDecorator = Target => {
 	const instance = new Target()
 	injectMap.set(Target, { type: 'singleton', create: () => instance })
 	return Target
