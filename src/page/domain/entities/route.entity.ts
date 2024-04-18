@@ -25,10 +25,14 @@ export enum HelpSub {
 
 export const HELP_SUB = Group.fromValues(HelpSub)
 
-abstract class Base {
+export abstract class Base {
 	abstract readonly kind: Kind
 
 	abstract readonly path: string
+
+	constructor() {
+		if (![Home, Game, Help, NotFound].includes(new.target as never)) throw new Error('Can not extends Base.')
+	}
 
 	toJSON() {
 		return { kind: this.kind, path: this.path }

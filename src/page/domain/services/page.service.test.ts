@@ -66,7 +66,7 @@ describe.concurrent('pageSvc', () => {
 
 		expect(saveMock).toBeCalledTimes(1)
 		expect(saveMock).toBeCalledWith(
-			expect.objectContaining({ lang: undefined, modal: Modal.IDLE, route: expect.any(Route.Help) })
+			expect.objectContaining({ lang: undefined, modal: Modal.IDLE, route: expect.any(Route.Base) })
 		)
 	})
 
