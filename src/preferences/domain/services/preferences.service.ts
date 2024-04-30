@@ -1,7 +1,7 @@
 import { FormFields } from '~/share/domain/services'
 import { inject, InvalidPreferencesError } from '~/share/utils'
 
-import { IDLE_PREFS, type IPrefs, type Prefs, PREFS_FIELDS, PREFS_KEYS } from '../models'
+import { IDLE_PREFS, type IPrefs, type Prefs, PREFS_FIELDS } from '../models'
 import type { PrefsRepo } from '../repositories'
 import { PrefsObs } from './preferences-obs.service'
 
@@ -27,7 +27,7 @@ export class PrefsSvc implements IPrefs {
 	}
 
 	resetByKey<K extends keyof Prefs>(key: K) {
-		if (!PREFS_KEYS.contains(key)) throw new InvalidPreferencesError('Invalid preference key')
+		if (!PREFS_FIELDS.containsKey(key)) throw new InvalidPreferencesError('Invalid preference key')
 
 		this.#obs.update(prefs => ({ ...prefs, [key]: IDLE_PREFS[key] }))
 		return this
@@ -43,8 +43,8 @@ export class PrefsSvc implements IPrefs {
 	}
 
 	setByKey<K extends keyof Prefs>(key: K, value: Prefs[K]) {
-		if (!PREFS_KEYS.contains(key)) throw new InvalidPreferencesError('Invalid preference key')
-		if (!FormFields.satisfiesField(PREFS_FIELDS[key], value))
+		if (!PREFS_FIELDS.containsKey(key)) throw new InvalidPreferencesError('Invalid preference key')
+		if (!FormFields.satisfiesField(PREFS_FIELDS.valueByKey(key), value))
 			throw new InvalidPreferencesError(`"${key}" preference cannot be ${String(value)}`)
 		this.#obs.update(prefs => ({ ...prefs, [key]: value }))
 		return this

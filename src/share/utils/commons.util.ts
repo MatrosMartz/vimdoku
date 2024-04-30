@@ -1,4 +1,4 @@
-import type { Entries, EntriesToObj, GetEntries, InvertKeyValues } from '../types'
+import type { Entries, EntriesToObj, InvertKeyValues, ObjToEntries } from '../types'
 
 /** The no operation function. */
 export function noop() {}
@@ -121,7 +121,7 @@ export function clamp(min: number, max: number, value: number) {
  * @param obj Object contains properties and methods.
  * @returns The entries.
  */
-export const entriesBy: <O extends Record<string, unknown>>(obj: O) => GetEntries<O> = Object.entries
+export const entriesBy: <O extends Record<string, unknown>>(obj: O) => ObjToEntries<O> = Object.entries
 
 export const entriesToObj: <E extends Entries>(entries: E) => EntriesToObj<E> = Object.fromEntries
 

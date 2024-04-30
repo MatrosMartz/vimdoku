@@ -121,10 +121,10 @@
 		<OptionsInput
 			name="iconTheme"
 			icons={{
-				heroicons: { type: 'logo', id: 'heroicons' },
-				iconoir: { type: 'logo', id: 'iconoir' },
-				lucide: { type: 'logo', id: 'lucide' },
-				tabler: { type: 'logo', id: 'tabler' },
+				Heroicons: { type: 'logo', id: 'Heroicons' },
+				Iconoir: { type: 'logo', id: 'Iconoir' },
+				Lucide: { type: 'logo', id: 'Lucide' },
+				Tabler: { type: 'logo', id: 'Tabler' },
 			}}
 			label={locale.prefs_names_iconTheme('Icon Theme')}
 			settings={userFields.iconTheme}

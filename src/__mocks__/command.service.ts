@@ -1,8 +1,8 @@
 import { noop } from '~/share/utils'
 import { CmdListSvc, CmdSvc, type CreateHeader, SubCmdSvc } from '$cmd/domain/services'
-import { NON_TOGGLE_NAMES, PREFS_KEYS, TOGGLE_NAMES } from '$pref/domain/models'
-import { ACCESSIBILITY_KINDS, COLOR_SCHEMAS, ICON_THEMES } from '$pref/domain/models/user.model'
-import { DIFFICULTIES_NAMES } from '$sudoku/domain/const'
+import { PREFS_FIELDS } from '$pref/domain/models'
+import { ACCESSIBILITIES, COLOR_SCHEMAS, ICON_THEMES } from '$pref/domain/models/user.model'
+import { Difficulty } from '$sudoku/domain/const'
 
 export const createHeader: CreateHeader<[string, string]> = ([cmdToken, subTokens]) => [
 	cmdToken.tokens.join(''),
@@ -74,138 +74,138 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 		})
 	)
 	.addSubFn(
-		...PREFS_KEYS.map(pref =>
+		...PREFS_FIELDS.transform(([pref]) =>
 			SubCmdSvc.buildFn(`(${pref})<?>`, {
 				desc: descMock,
 				fn: noop,
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...PREFS_KEYS.map(pref =>
+		...PREFS_FIELDS.transform(([pref]) =>
 			SubCmdSvc.buildFn(`(${pref})<&>`, {
 				desc: descMock,
 				fn: noop,
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...TOGGLE_NAMES.map(pref =>
+		...PREFS_FIELDS.subs.TOGGLE.transform(([pref]) =>
 			SubCmdSvc.buildFn(`(${pref})`, {
 				desc: descMock,
 				fn: noop,
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...NON_TOGGLE_NAMES.map(pref =>
+		...PREFS_FIELDS.subs.NON_TOGGLE.transform(([pref]) =>
 			SubCmdSvc.buildFn(`(${pref})`, {
 				desc: descMock,
 				fn: noop,
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...TOGGLE_NAMES.map(pref =>
+		...PREFS_FIELDS.subs.TOGGLE.transform(([pref]) =>
 			SubCmdSvc.buildFn(`<no>(${pref})`, {
 				desc: descMock,
 				fn: noop,
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...TOGGLE_NAMES.map(pref =>
+		...PREFS_FIELDS.subs.TOGGLE.transform(([pref]) =>
 			SubCmdSvc.buildFn(`(${pref})<!>`, {
 				desc: descMock,
 				fn: noop,
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...TOGGLE_NAMES.map(pref =>
+		...PREFS_FIELDS.subs.TOGGLE.transform(([pref]) =>
 			SubCmdSvc.buildFn(`<inv>(${pref})`, {
 				desc: descMock,
 				fn: noop,
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...NON_TOGGLE_NAMES.map(pref =>
+		...PREFS_FIELDS.subs.NON_TOGGLE.transform(([pref]) =>
 			SubCmdSvc.buildFn(`(${pref})<=>{value}`, {
 				desc: descMock,
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...NON_TOGGLE_NAMES.map(pref =>
+		...PREFS_FIELDS.subs.NON_TOGGLE.transform(([pref]) =>
 			SubCmdSvc.buildFn(`(${pref})<:>{value}`, {
 				desc: descMock,
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...COLOR_SCHEMAS.map(schema =>
+		...COLOR_SCHEMAS.transform(([, schema]) =>
 			SubCmdSvc.buildFn(`(colorSchema)<=>(${schema})`, {
 				desc: descMock,
 				fn: noop,
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...COLOR_SCHEMAS.map(schema =>
+		...COLOR_SCHEMAS.transform(([, schema]) =>
 			SubCmdSvc.buildFn(`(colorSchema)<:>(${schema})`, {
 				desc: descMock,
 				fn: noop,
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...ACCESSIBILITY_KINDS.map(accessibility =>
+		...ACCESSIBILITIES.transform(([, accessibility]) =>
 			SubCmdSvc.buildFn(`(contrast)<=>(${accessibility})`, {
 				desc: descMock,
 				fn: noop,
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...ACCESSIBILITY_KINDS.map(accessibility =>
+		...ACCESSIBILITIES.transform(([, accessibility]) =>
 			SubCmdSvc.buildFn(`(contrast)<:>(${accessibility})`, {
 				desc: descMock,
 				fn: noop,
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...ACCESSIBILITY_KINDS.map(accessibility =>
+		...ACCESSIBILITIES.transform(([, accessibility]) =>
 			SubCmdSvc.buildFn(`(motionReduce)<=>(${accessibility})`, {
 				desc: descMock,
 				fn: noop,
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...ACCESSIBILITY_KINDS.map(accessibility =>
+		...ACCESSIBILITIES.transform(([, accessibility]) =>
 			SubCmdSvc.buildFn(`(motionReduce)<:>(${accessibility})`, {
 				desc: descMock,
 				fn: noop,
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...ICON_THEMES.map(theme =>
+		...ICON_THEMES.transform(([, theme]) =>
 			SubCmdSvc.buildFn(`(iconTheme)<=>(${theme})`, {
 				desc: descMock,
 				fn: noop,
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...ICON_THEMES.map(theme =>
+		...ICON_THEMES.transform(([, theme]) =>
 			SubCmdSvc.buildFn(`(iconTheme)<:>(${theme})`, {
 				desc: descMock,
 				fn: noop,
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
 		SubCmdSvc.buildFn('(history)<=>{|value|}', {
@@ -231,12 +231,12 @@ const START_CMD = CmdSvc.buildFn('st[art]', {
 		})
 	)
 	.addSubFn(
-		...DIFFICULTIES_NAMES.map(difficulty =>
+		...Difficulty.KINDS.transform(([difficulty]) =>
 			SubCmdSvc.buildFn(`(${difficulty})`, {
 				desc: descMock,
 				fn: noop,
 			})
-		).unwrap()
+		)
 	)
 	.done()
 const PAUSE_CMD = CmdSvc.buildFn('pa[use]', {

@@ -1,6 +1,7 @@
 import type { PagesKeys } from '~/locales'
-import { Group } from '~/share/domain/entities'
-import { type DifficultyKind } from '$sudoku/domain/const'
+import { Collection } from '~/share/domain/entities'
+import { Case } from '~/share/utils'
+import type { Difficulty } from '$sudoku/domain/const'
 
 export enum Kind {
 	Game = 'game',
@@ -9,21 +10,16 @@ export enum Kind {
 	NotFound = 'not-found',
 }
 
-export const NAMES = Group.fromKeys(Kind)
-
-export const KINDS = (() => {
-	const ALL = Group.fromValues(Kind)
-	const SIMPLE = new Group([Kind.Home, Kind.NotFound])
-	const COMPOUND = ALL.difference(SIMPLE)
-
-	return { ALL, SIMPLE, COMPOUND }
-})()
+export const KINDS = Collection.create()
+	.addEntries(Collection.entriesByObj(Kind))
+	.createConditionalSubCollections('SIMPLE', 'COMPOUND', Case.array([Case.equalTo('Home', 'NotFound'), Case.Any]))
+	.done()
 
 export enum HelpSub {
 	Main = '',
 }
 
-export const HELP_SUB = Group.fromValues(HelpSub)
+export const HELP_SUB = Collection.create().addEntries(Collection.entriesByObj(HelpSub)).done()
 
 export abstract class Base {
 	abstract readonly kind: Kind
@@ -63,7 +59,7 @@ export class Home extends Base {
 	}
 }
 
-export type GameSub = keyof typeof DifficultyKind
+export type GameSub = keyof typeof Difficulty.Kind
 
 export class Game<SubRoute extends GameSub> extends Base {
 	readonly #subRoute

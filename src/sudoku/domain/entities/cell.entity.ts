@@ -1,23 +1,26 @@
-import { Entity } from '~/share/domain/entities'
-import { match } from '~/share/utils'
+import { Collection, Entity } from '~/share/domain/entities'
+import { Case } from '~/share/utils'
 
 import { Notes, type NotesData, type ValidNumbers } from './notes.entity'
 
-export enum CellKind {
+export enum Kind {
 	Correct = 'correct',
 	Empty = 'empty',
 	Incorrect = 'incorrect',
 	Initial = 'initial',
 	Unverified = 'unverified',
-	WhitNotes = 'notes',
+	Annotated = 'notes',
 }
 
-export type InsertKinds = CellKind.Correct | CellKind.Incorrect | CellKind.Unverified
+export const KINDS = Collection.create()
+	.addEntries(Collection.entriesByObj(Kind))
+	.createSubCollection('INSERT', Case.array([Case.equalTo('Correct', 'Incorrect', 'Unverified'), Case.Any]))
+	.done()
 
-export const INSERT_KINDS: InsertKinds[] = [CellKind.Correct, CellKind.Incorrect, CellKind.Unverified]
+export const EMPTY_VALUE = 0
 
-export interface CellJSON {
-	kind: CellKind
+export interface JSON {
+	kind: Kind
 	notes: number
 	value: number
 }
@@ -34,9 +37,9 @@ export interface MoveItem {
 
 export type MoveMap = Map<`${number}-${number}`, MoveItem>
 
-export interface CellData {
+export interface Data {
 	/** Get the current kind of cell. */
-	readonly kind: CellKind
+	readonly kind: Kind
 	/** Get the current data of cell notes. */
 	notes: NotesData
 	readonly solution: ValidNumbers
@@ -44,93 +47,55 @@ export interface CellData {
 	value: number
 }
 
-export interface CellFromJSONOpts {
-	cellLike: CellJSON
+export interface FromJSONOpts {
+	cellLike: JSON
 	solution: ValidNumbers
 }
 
-export interface CellCreateOpts {
+export interface CreateOpts {
 	isInitial: boolean
 	solution: ValidNumbers
 }
 
-interface CellOpts {
+interface Opts {
 	notes: Notes
 	readonly solution: ValidNumbers
 	value: number
 }
 
-/** Simulated key for protected field. */
-const notesK = Symbol('cell-notes')
-/** Simulated key for protected field. */
-const solutionK = Symbol('cell-solution')
-/** Simulated key for protected field. */
-const valueK = Symbol('cell-value')
-
 /** Represent a Sudoku Cell. */
-export abstract class Cell extends Entity implements CellData {
-	protected [notesK]: Notes
-	protected [solutionK]: ValidNumbers
-	protected [valueK]: number
+abstract class Base extends Entity implements Data {
+	protected _notes: Notes
+	protected _solution: ValidNumbers
+	protected _value: number
 	abstract readonly isCorrect: boolean
-	abstract readonly kind: CellKind
+	abstract readonly kind: Kind
 
 	/**
 	 * Creates an instance of CellState class.
 	 * @param data Kind, notes, solution, pos and value for cell.
 	 */
-	constructor(data: CellOpts) {
+	constructor(data: Opts) {
 		super()
-		this[notesK] = data.notes
-		this[solutionK] = data.solution
-		this[valueK] = data.value
+		this._notes = data.notes
+		this._solution = data.solution
+		this._value = data.value
 	}
 
 	get notes() {
-		return this[notesK].data
+		return this._notes.data
 	}
 
 	get notesNumber() {
-		return this[notesK].toNumber()
+		return this._notes.toNumber()
 	}
 
 	get solution() {
-		return this[solutionK]
+		return this._solution
 	}
 
 	get value() {
-		return this[valueK]
-	}
-
-	/**
-	 * Create an instance of CellSvc with options.
-	 * @param opts Options for create cell (optional).
-	 */
-	static create(opts: CellCreateOpts): Cell
-	static create({ isInitial, solution }: CellCreateOpts) {
-		const baseData: Omit<CellOpts, 'value'> = { notes: Notes.create(), solution }
-
-		return isInitial
-			? new InitialCell({ ...baseData, value: solution })
-			: new EmptyCell({ ...baseData, value: EMPTY_CELL_VALUE })
-	}
-
-	/**
-	 * Create an instance of BoardSvc from a JSON string
-	 * @param cellLike JSON representation of cell.
-	 * @param solution Value for  solution of cell.
-	 */
-	static fromJSON(opts: CellFromJSONOpts): Cell
-	static fromJSON({ cellLike: { kind, notes, value }, solution }: CellFromJSONOpts) {
-		const data: CellOpts = { solution, value, notes: Notes.fromNumber(notes) }
-		return match(kind)
-			.case([CellKind.Correct], () => new CorrectCell(data))
-			.case([CellKind.Empty], () => new EmptyCell(data))
-			.case([CellKind.Incorrect], () => new IncorrectCell(data))
-			.case([CellKind.Initial], () => new InitialCell(data))
-			.case([CellKind.Unverified], () => new UnverifiedCell(data))
-			.case([CellKind.WhitNotes], () => new NotesCellSvc(data))
-			.done()
+		return this._value
 	}
 
 	/**
@@ -168,7 +133,7 @@ export abstract class Cell extends Entity implements CellData {
 		return this
 	}
 
-	toJSON(): CellJSON {
+	toJSON(): JSON {
 		return { kind: this.kind, notes: this.notesNumber, value: this.value }
 	}
 
@@ -204,68 +169,68 @@ export abstract class Cell extends Entity implements CellData {
 	}
 }
 
-class InitialCell extends Cell {
+export class Initial extends Base {
 	readonly isCorrect = true
 
 	get kind() {
-		return CellKind.Initial
+		return Kind.Initial
 	}
 }
 
-abstract class WritableCell extends Cell {
-	addNote(num: ValidNumbers) {
-		if (this[notesK].has(num)) return this
+abstract class Writable extends Base {
+	addNote(num: ValidNumbers): Cell {
+		if (this._notes.has(num)) return this
 
-		return new NotesCellSvc({ notes: this[notesK].add(num), solution: this[solutionK], value: EMPTY_CELL_VALUE })
+		return new Annotated({ notes: this._notes.add(num), solution: this._solution, value: EMPTY_VALUE })
 	}
 
 	changeByMove(sudokuMove: MoveData): Cell {
 		const notes = new Notes(sudokuMove.notes)
 
-		const data: CellOpts = { notes, solution: this.solution, value: sudokuMove.value }
-		if (!notes.isEmpty) return new NotesCellSvc(data)
-		if (sudokuMove.value > EMPTY_CELL_VALUE) return new UnverifiedCell(data)
-		return new EmptyCell(data)
+		const data: Opts = { notes, solution: this.solution, value: sudokuMove.value }
+		if (!notes.isEmpty) return new Annotated(data)
+		if (sudokuMove.value > EMPTY_VALUE) return new Unverified(data)
+		return new Empty(data)
 	}
 
 	clear() {
-		return new EmptyCell({ notes: this[notesK].clear(), solution: this[solutionK], value: EMPTY_CELL_VALUE })
+		return new Empty({ notes: this._notes.clear(), solution: this._solution, value: EMPTY_VALUE })
 	}
 
 	toggleNote(num: ValidNumbers): Cell {
 		return this.addNote(num)
 	}
 
-	writeValue(num: ValidNumbers) {
-		if (this[valueK] === num) return this
+	writeValue(num: ValidNumbers): Cell {
+		if (this._value === num) return this
 
-		return new UnverifiedCell({ notes: this[notesK].clear(), solution: this[solutionK], value: num })
+		return new Unverified({ notes: this._notes.clear(), solution: this._solution, value: num })
 	}
 }
 
-class UnverifiedCell extends WritableCell {
+export class Unverified extends Writable {
 	get isCorrect() {
 		return this.value === this.solution
 	}
 
 	get kind() {
-		return CellKind.Unverified
+		return Kind.Unverified
 	}
 
 	verify(effect: (isIncorrect: boolean) => void) {
 		effect(!this.isCorrect)
 
 		return this.isCorrect
-			? new CorrectCell({ notes: this[notesK], solution: this[solutionK], value: this[valueK] })
-			: new IncorrectCell({ notes: this[notesK], solution: this[solutionK], value: this[valueK] })
+			? new Correct({ notes: this._notes, solution: this._solution, value: this._value })
+			: new Incorrect({ notes: this._notes, solution: this._solution, value: this._value })
 	}
 }
 
-class EmptyCell extends WritableCell {
+export class Empty extends Writable {
 	readonly isCorrect = false
 
 	get kind() {
-		return CellKind.Empty
+		return Kind.Empty
 	}
 
 	clear() {
@@ -273,46 +238,77 @@ class EmptyCell extends WritableCell {
 	}
 }
 
-class CorrectCell extends WritableCell {
+export class Correct extends Writable {
 	readonly isCorrect = true
 
 	get kind() {
-		return CellKind.Correct
+		return Kind.Correct
 	}
 }
 
-class IncorrectCell extends WritableCell {
+export class Incorrect extends Writable {
 	readonly isCorrect = false
 
 	get kind() {
-		return CellKind.Incorrect
+		return Kind.Incorrect
 	}
 }
 
-class NotesCellSvc extends WritableCell {
+class Annotated extends Writable {
 	readonly isCorrect = false
 
 	get kind() {
-		return CellKind.WhitNotes
+		return Kind.Annotated
 	}
 
-	removeNote(num: ValidNumbers) {
-		if (!this[notesK].has(num)) return this
+	removeNote(num: ValidNumbers): Cell {
+		if (!this._notes.has(num)) return this
 
-		const notes = this[notesK].remove(num)
+		const notes = this._notes.remove(num)
 
 		return notes.isEmpty
-			? new EmptyCell({ notes, solution: this[solutionK], value: this[valueK] })
-			: new NotesCellSvc({ notes, solution: this[solutionK], value: this[valueK] })
+			? new Empty({ notes, solution: this._solution, value: this._value })
+			: new Annotated({ notes, solution: this._solution, value: this._value })
 	}
 
-	toggleNote(num: ValidNumbers) {
-		const notes = this[notesK].toggle(num)
+	toggleNote(num: ValidNumbers): Cell {
+		const notes = this._notes.toggle(num)
 
 		return notes.isEmpty
-			? new EmptyCell({ notes, solution: this[solutionK], value: this[valueK] })
-			: new NotesCellSvc({ notes, solution: this[solutionK], value: this[valueK] })
+			? new Empty({ notes, solution: this._solution, value: this._value })
+			: new Annotated({ notes, solution: this._solution, value: this._value })
 	}
 }
 
-export const EMPTY_CELL_VALUE = 0
+export type Cell = Correct | Empty | Incorrect | Initial | Unverified | Annotated | Base
+
+/**
+ * Create an instance of CellSvc with options.
+ * @param opts Options for create cell (optional).
+ * @returns New Cell
+ */
+export function create(opts: CreateOpts): Cell
+// eslint-disable-next-line jsdoc/require-jsdoc
+export function create({ isInitial, solution }: CreateOpts) {
+	const baseData: Omit<Opts, 'value'> = { notes: Notes.create(), solution }
+
+	return isInitial ? new Initial({ ...baseData, value: solution }) : new Empty({ ...baseData, value: EMPTY_VALUE })
+}
+
+/**
+ * Create an instance of BoardSvc from a JSON string
+ * @param opts JSON representation and solution for cell.
+ * @returns new Cell
+ */
+export function fromJSON(opts: FromJSONOpts): Cell
+// eslint-disable-next-line jsdoc/require-jsdoc
+export function fromJSON({ cellLike: { kind, notes, value }, solution }: FromJSONOpts) {
+	const data: Opts = { solution, value, notes: Notes.fromNumber(notes) }
+	if (kind === Kind.Correct) return new Correct(data)
+	if (kind === Kind.Empty) return new Empty(data)
+	if (kind === Kind.Incorrect) return new Incorrect(data)
+	if (kind === Kind.Initial) return new Initial(data)
+	if (kind === Kind.Unverified) return new Unverified(data)
+	if (kind === Kind.Annotated) return new Annotated(data)
+	throw new Error('kind is invalid')
+}

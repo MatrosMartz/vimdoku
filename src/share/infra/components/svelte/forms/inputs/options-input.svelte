@@ -4,7 +4,7 @@
 	import type { OptionField } from '~/share/domain/models'
 	import { capitalCase } from '~/share/utils'
 
-	import { Icon } from '../..'
+	import Icon from '../../icon.svelte'
 
 	interface IconsProps {
 		type?: 'icon' | 'flag' | 'logo'
@@ -14,13 +14,16 @@
 	export let name: string
 	export let label = capitalCase(name)
 	export let settings: Omit<OptionField<T>, 'type'>
+	export let getLabelsBy: 'key' | 'value' = 'value'
 	export let value = settings.default
 	export let icons: Record<T, IconsProps> | null = null
-	export let i18n: Record<T, string> | null = null
+	export let i18n: Record<string, string> | null = null
 
-	let index = Math.max(settings.opts.indexOf(value), 0)
+	let index = Math.max(settings.opts.indexByValue(value), 0)
 	let expanded = false
 	let listbox: HTMLUListElement
+
+	$: i18nTag = getLabelsBy === 'value' ? value : settings.opts.keyByValue(value)
 
 	/** Generic open Listbox. */
 	function openListbox() {
@@ -34,7 +37,7 @@
 
 	/** Set new value. */
 	function setValue() {
-		value = settings.opts.at(index)!
+		value = settings.opts.entryByIndex(index)![1]
 	}
 
 	/** Close Listbox and set the selected value for the new value. */
@@ -50,7 +53,7 @@
 
 	/** Generic go to last option. */
 	function goToLast() {
-		index = settings.opts.length - 1
+		index = settings.opts.size - 1
 	}
 
 	const CLOSED_CODE_MAP: Record<string, () => void> = {
@@ -73,7 +76,7 @@
 			index = Math.max(index - 1, 0)
 		},
 		ArrowDown() {
-			index = Math.min(index + 1, settings.opts.length - 1)
+			index = Math.min(index + 1, settings.opts.size - 1)
 		},
 		Home: goToFirst,
 		End: goToLast,
@@ -83,7 +86,7 @@
 			index = Math.max(index - 10, 0)
 		},
 		PageDown() {
-			index = Math.min(index + 10, settings.opts.length - 1)
+			index = Math.min(index + 10, settings.opts.size - 1)
 		},
 	}
 
@@ -111,7 +114,7 @@
 				if (ev.key !== ' ' && ev.key.length === 1) {
 					index = Math.max(
 						0,
-						settings.opts.findIndex(o => o.startsWith(ev.key))
+						settings.opts.findIndex(([, o]) => o.startsWith(ev.key))
 					)
 				} else if (ev.altKey) {
 					if (ev.key === 'ArrowUp' || ev.key === 'ArrowDown') closeAndSet()
@@ -144,7 +147,7 @@
 			on:blur={blurHandler}
 			on:keydown={keydownHandler}
 		>
-			<span class="combo-value">{i18n?.[value] ?? capitalCase(value)}</span><Icon id="chevron-down" />
+			<span class="combo-value">{i18n?.[i18nTag] ?? capitalCase(i18nTag)}</span><Icon id="chevron-down" />
 		</button>
 	</label>
 	<ul
@@ -155,7 +158,8 @@
 		tabindex="-1"
 		class="listbox"
 	>
-		{#each settings.opts.unwrap() as opt, i (opt)}
+		{#each settings.opts.entries() as [key, opt], i (opt)}
+			{@const i18nOpt = getLabelsBy === 'value' ? opt : key}
 			<li class="listbox-item" class:current={i === index}>
 				<input
 					id="opt-{name}-{opt}"
@@ -170,7 +174,7 @@
 					on:click={() => (expanded = false)}
 				/>
 				<label for="opt-{name}-{opt}" class="listbox-label">
-					<span>{i18n?.[opt] ?? capitalCase(opt)}</span>
+					<span>{i18n?.[i18nOpt] ?? capitalCase(i18nOpt)}</span>
 					{#if icons != null}
 						<span class="icon">
 							<Icon {...icons[opt]} />

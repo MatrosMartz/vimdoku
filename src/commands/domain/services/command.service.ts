@@ -20,7 +20,7 @@ class CmdBuilder {
 	}
 
 	addSubFn(...subCmdFn: SubCmdFn[]) {
-		this.#subCmdFnList = this.#subCmdFnList.concat(...subCmdFn)
+		this.#subCmdFnList = [...this.#subCmdFnList, ...subCmdFn]
 		return this
 	}
 
@@ -58,7 +58,7 @@ class CmdListBuilder<H> {
 	}
 
 	addCmdFn(...cmdFn: CmdFn[]) {
-		this.#cmdFnList = this.#cmdFnList.concat(...cmdFn.map(fn => new CmdSvc(fn(this.#createHeader))))
+		this.#cmdFnList = [...this.#cmdFnList, ...cmdFn.map(fn => new CmdSvc(fn(this.#createHeader)))]
 		return this
 	}
 

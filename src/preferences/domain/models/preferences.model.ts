@@ -1,25 +1,12 @@
-import { Group } from '~/share/domain/entities'
+import { Collection } from '~/share/domain/entities'
 import type { FormSchema } from '~/share/domain/models'
-import type { GetEntries, KeysByType } from '~/share/types'
-import { entriesBy } from '~/share/utils'
+import { Case } from '~/share/utils'
 
 import { SUDOKU_IDLE_PREFS, sudokuFields, type SudokuPrefs } from './sudoku.model'
 import { USER_IDLE_PREFS, userFields, type UserPrefs } from './user.model'
 import { VIM_IDLE_PREFS, vimFields, type VimPrefs } from './vim.model'
 
 export type Prefs = SudokuPrefs & UserPrefs & VimPrefs
-
-export const prefsGroupEntries = [
-	['sudoku', entriesBy(sudokuFields)],
-	['user', entriesBy(userFields)],
-	['vim', entriesBy(vimFields)],
-] as const
-
-export type PrefsNamesEntries = (
-	| GetEntries<typeof sudokuFields>
-	| GetEntries<typeof userFields>
-	| GetEntries<typeof vimFields>
-)[0]
 
 export const IDLE_PREFS = { ...SUDOKU_IDLE_PREFS, ...USER_IDLE_PREFS, ...VIM_IDLE_PREFS } as const
 
@@ -58,17 +45,48 @@ export interface IPrefs {
 	setByKey<K extends keyof Prefs>(key: K, value: Prefs[K]): this
 }
 
-export const PREFS_FIELDS = { ...sudokuFields, ...userFields, ...vimFields }
+export const toggleFieldCase = new Case((field): field is { type: 'toggle' } => {
+	if (!(typeof field === 'object') || field == null) return false
+	return Reflect.get(field, 'type') === 'toggle'
+})
 
-/** All preferences names. */
-export const PREFS_KEYS = Group.fromKeys(PREFS_FIELDS)
+/* eslint-disable @typescript-eslint/no-redeclare, import/export */
+export const PREFS_FIELDS = Collection.create()
+	.addSubCollection('SUDOKU', Collection.entriesByObj(sudokuFields))
+	.addSubCollection('USER', Collection.entriesByObj(userFields))
+	.addSubCollection('VIM', Collection.entriesByObj(vimFields))
+	.createConditionalSubCollections('TOGGLE', 'NON_TOGGLE', Case.array([Case.Any, toggleFieldCase]))
+	.done()
+export declare module PREFS_FIELDS {
+	type Entry = typeof PREFS_FIELDS extends Collection.Composite<infer Entry, any> ? Entry : never
+	type Key = Entry[0]
+	type Value = Entry[1]
 
-type AllNames = keyof typeof PREFS_FIELDS
-
-export type ToggleNames = KeysByType<Prefs, boolean>
-export type NonToggleNames = Exclude<AllNames, ToggleNames>
-
-export const { NON_TOGGLE_NAMES, TOGGLE_NAMES } = PREFS_KEYS.groupBy<{
-	NON_TOGGLE_NAMES: NonToggleNames
-	TOGGLE_NAMES: ToggleNames
-}>(name => (PREFS_FIELDS[name].type === 'toggle' ? 'NON_TOGGLE_NAMES' : 'TOGGLE_NAMES'))
+	module subs {
+		module SUDOKU {
+			type Entry = typeof PREFS_FIELDS.subs.SUDOKU extends Collection.Sub<infer Entry> ? Entry : never
+			type Key = Entry[0]
+			type Value = Entry[1]
+		}
+		module USER {
+			type Entry = typeof PREFS_FIELDS.subs.USER extends Collection.Sub<infer Entry> ? Entry : never
+			type Key = Entry[0]
+			type Value = Entry[1]
+		}
+		module VIM {
+			type Entry = typeof PREFS_FIELDS.subs.VIM extends Collection.Sub<infer Entry> ? Entry : never
+			type Key = Entry[0]
+			type Value = Entry[1]
+		}
+		module TOGGLE {
+			type Entry = typeof PREFS_FIELDS.subs.TOGGLE extends Collection.Sub<infer Entry> ? Entry : never
+			type Key = Entry[0]
+			type Value = Entry[1]
+		}
+		module NON_TOGGLE {
+			type Entry = typeof PREFS_FIELDS.subs.NON_TOGGLE extends Collection.Sub<infer Entry> ? Entry : never
+			type Key = Entry[0]
+			type Value = Entry[1]
+		}
+	}
+}

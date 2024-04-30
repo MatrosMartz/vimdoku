@@ -40,12 +40,12 @@ export class I18nSvc implements II18n {
 
 	setDefaultLanguage(lang: Lang) {
 		this.#defaultLang = lang
-		if (lang != null && !LANGS.contains(lang)) throw new Error(`language is invalid: "${JSON.stringify(lang)}"`)
+		if (lang != null && !LANGS.containsValue(lang)) throw new Error(`language is invalid: "${JSON.stringify(lang)}"`)
 		return this
 	}
 
 	setLang(lang: Lang) {
-		if (lang != null && !LANGS.contains(lang)) throw new Error(`language is invalid: "${JSON.stringify(lang)}"`)
+		if (lang != null && !LANGS.containsValue(lang)) throw new Error(`language is invalid: "${JSON.stringify(lang)}"`)
 		this.#lang = lang
 		return this
 	}

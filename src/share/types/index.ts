@@ -1,4 +1,5 @@
 export * from './commons.types'
+export * from './entries.types'
 export * from './object'
 export * from './range'
 export * from './tuple'

@@ -20,7 +20,7 @@ export const browserI18nRepo: I18nRepo = {
 		for (const l of globalThis.navigator.languages) {
 			const lang = l.slice(0, 2)
 
-			if (LANGS.contains(lang)) return lang
+			if (LANGS.containsValue(lang)) return lang
 		}
 
 		return null

@@ -1,6 +1,6 @@
 import type { Pos, PosData } from '~/share/domain/entities'
 import type { IPos } from '~/share/domain/models'
-import { match } from '~/share/utils'
+import { BuildMatcher, Case } from '~/share/utils'
 
 import { ModeKind } from '../const'
 import type { ValidNumbers } from '../entities'
@@ -17,6 +17,13 @@ const board = Symbol('game-board')
 const pos = Symbol('game-pos')
 
 export abstract class GameSvc implements IGame {
+	static readonly #create = new BuildMatcher<[GameOpts, ModeKind], GameSvc>()
+		.addCase([Case.Any, Case.equalTo(ModeKind.N)], data => new AnnotationGameSvc(data))
+		.addCase([Case.Any, Case.equalTo(ModeKind.I)], data => new InsertGameSvc(data))
+		.addCase([Case.Any, Case.equalTo(ModeKind.V)], data => new VisualGameSvc(data))
+		.addCase([Case.Any, Case.equalTo(ModeKind.X)], data => new NormalGameSvc(data))
+		.done()
+
 	protected readonly [board]: IBoard
 	protected readonly [pos]: IPos
 
@@ -39,13 +46,8 @@ export abstract class GameSvc implements IGame {
 	 * @param mode The value to set.
 	 * @returns A new state.
 	 */
-	static create(data: GameOpts, mode: ModeKind) {
-		return match(mode)
-			.case([ModeKind.N], () => new AnnotationGameSvc(data))
-			.case([ModeKind.I], () => new InsertGameSvc(data))
-			.case([ModeKind.V], () => new VisualGameSvc(data))
-			.case([ModeKind.X], () => new NormalGameSvc(data))
-			.done()
+	static create(data: GameOpts, mode: ModeKind): GameSvc {
+		return GameSvc.#create(data, mode)
 	}
 
 	changeMode(mode: ModeKind) {

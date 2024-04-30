@@ -1,7 +1,6 @@
-import { Group } from '~/share/domain/entities'
-import { invertKeyValues } from '~/share/utils'
+import { Collection } from '~/share/domain/entities'
 
-export enum DifficultyKind {
+export enum Kind {
 	beginner = '1.92',
 	basic = '1.87',
 	easy = '1.75',
@@ -11,6 +10,10 @@ export enum DifficultyKind {
 	expert = '1.2',
 }
 
-export const DIFFICULTIES_NAMES = Group.fromKeys(DifficultyKind)
-
-export const GET_DIFFICULTY_NAME = invertKeyValues(DifficultyKind)
+/* eslint-disable @typescript-eslint/no-redeclare, import/export */
+export const KINDS = Collection.create().addEntries(Collection.entriesByObj(Kind)).done()
+export declare module KINDS {
+	type Entry = typeof KINDS extends Collection.Composite<infer Entry, any> ? Entry : never
+	type Key = Entry[0]
+	type Value = Entry[1]
+}

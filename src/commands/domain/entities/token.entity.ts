@@ -1,5 +1,5 @@
 import type { VariablesFromStr } from '~/share/types'
-import { match } from '~/share/utils'
+import { BuildMatcher, Case } from '~/share/utils'
 
 export enum TokenGroupKind {
 	COMMAND = 'command',
@@ -95,12 +95,10 @@ export class CmdTokenGroup {
 	 */
 	getExecRgx() {
 		this.#execRgx ??= this.#tokens
-			.map(({ kind, value }) =>
-				match(kind)
-					.case(CmdTokenKind.REQUIRED, () => value.toLowerCase())
-					.case(CmdTokenKind.OPTIONAL, () => `(?:${value.toLowerCase()})?`)
-					.done()
-			)
+			.map(({ kind, value }) => {
+				if (kind === CmdTokenKind.REQUIRED) return value.toLowerCase()
+				return `(?:${value.toLowerCase()})?`
+			})
 			.join('')
 
 		return this.#execRgx
@@ -112,12 +110,10 @@ export class CmdTokenGroup {
 	 */
 	getWeightRgx() {
 		this.#weightRgx ??= this.#tokens
-			.map(({ kind, value }) =>
-				match(kind)
-					.case(CmdTokenKind.REQUIRED, () => value.toLowerCase())
-					.case(CmdTokenKind.OPTIONAL, () => optionally(value.toLowerCase()))
-					.done()
-			)
+			.map(({ kind, value }) => {
+				if (kind === CmdTokenKind.REQUIRED) return value.toLowerCase()
+				return optionally(value.toLowerCase())
+			})
 			.join('')
 
 		return '(' + this.#weightRgx + ')?'
@@ -143,6 +139,18 @@ export type TokenList = [
 export class SubTokenGroup<S extends string = string> {
 	#execRgx?: string
 	#weightPattern?: string
+
+	static readonly #createSubToken = new BuildMatcher<readonly [string], SubToken>()
+		.addCase([Case.fromRegex(/^\{\|[^{}|]+\|\}$/i)], t => ({ kind: SubTokenKind.VARIABLE, value: t.slice(2, -2) }))
+		.addCase([Case.fromRegex(/^{[^{}]+}$/i)], t => ({ kind: SubTokenKind.HOLDER, value: t.slice(1, -1) }))
+		.addCase([Case.fromRegex(/^<[^<>]+>$/i)], t => ({ kind: SubTokenKind.SYMBOL, value: t.slice(1, -1) }))
+		.addCase([Case.fromRegex(/^\([^()]+\)$$/i)], t => ({ kind: SubTokenKind.VALUE, value: t.slice(1, -1) }))
+		.addCase([Case.fromRegex(/[<>(){}]/i)], () => {
+			throw new Error('tokenListLike are invalid')
+		})
+		.default(t => ({ kind: SubTokenKind.NORMAL, value: t }))
+		.done()
+
 	readonly #cmdTokenGroup
 	readonly #defaultVariables
 	readonly #tokens
@@ -178,22 +186,7 @@ export class SubTokenGroup<S extends string = string> {
 	 * @returns A new SubTokenGroup instance.
 	 */
 	static fromString<const S extends string>(str: S, cmdTokenGroup: CmdTokenGroup) {
-		const tokens =
-			str.length > 0
-				? str.split(/(?<=[>)}])|(?=[<({])/).map(t =>
-						match
-							.rgx(t)
-							.case('^\\{\\|[^{}|]+\\|\\}$', (): SubToken => ({ kind: SubTokenKind.VARIABLE, value: t.slice(2, -2) }))
-							.case('^{[^{}]+}$', (): SubToken => ({ kind: SubTokenKind.HOLDER, value: t.slice(1, -1) }))
-							.case('^<[^<>]+>$', (): SubToken => ({ kind: SubTokenKind.SYMBOL, value: t.slice(1, -1) }))
-							.case('^\\([^()]+\\)$', (): SubToken => ({ kind: SubTokenKind.VALUE, value: t.slice(1, -1) }))
-							.case('[<>(){}]', (): SubToken => {
-								throw new Error('tokenListLike are invalid')
-							})
-							.default<SubToken>(() => ({ kind: SubTokenKind.NORMAL, value: t }))
-							.done()
-					)
-				: []
+		const tokens = str.length > 0 ? str.split(/(?<=[>)}])|(?=[<({])/).map(SubTokenGroup.#createSubToken) : []
 
 		const defaultProps = Object.fromEntries(
 			tokens.filter(p => p.kind === SubTokenKind.VARIABLE).map(({ value }) => [value, ''])
@@ -246,13 +239,11 @@ export class SubTokenGroup<S extends string = string> {
 		return (
 			'\\s+' +
 			this.#tokens
-				.map(({ kind, value }) =>
-					match(kind)
-						.case(SubTokenKind.VARIABLE, () => `(?<${value.toLowerCase()}>\\w+)`)
-						.case(SubTokenKind.SYMBOL, () => value.toLowerCase().replace(/[?!:=\\^<>&*+]/g, m => '\\' + m))
-						.default(() => value.toLowerCase())
-						.done()
-				)
+				.map(({ kind, value }) => {
+					if (kind === SubTokenKind.VARIABLE) return `(?<${value.toLowerCase()}>\\w+)`
+					if (kind === SubTokenKind.SYMBOL) return value.toLowerCase().replace(/[?!:=\\^<>&*+]/g, m => '\\' + m)
+					return value.toLowerCase()
+				})
 				.join('')
 		)
 	}
@@ -265,19 +256,15 @@ export class SubTokenGroup<S extends string = string> {
 		if (this.#tokens.length <= 0) return ''
 
 		const a = this.#tokens
-			.map(({ kind, value }) =>
-				match(kind)
-					.case([SubTokenKind.HOLDER, SubTokenKind.VARIABLE], () => '([^\\w?!:=\\\\^<>&*+])?')
-					.case(SubTokenKind.SYMBOL, () => {
-						const newValue = value.toLowerCase().replace(/[?!:=\\^<>&*+]/g, m => '\\' + m)
-						return `(${newValue[0]}${optionally(newValue.slice(1))})?`
-					})
-					.default(() => {
-						const newValue = value.toLowerCase()
-						return `(${newValue[0]}${optionally(newValue.slice(1))})?`
-					})
-					.done()
-			)
+			.map(({ kind, value }) => {
+				if ([SubTokenKind.HOLDER, SubTokenKind.VARIABLE].includes(kind)) return '([^\\w?!:=\\\\^<>&*+])?'
+				if (kind === SubTokenKind.SYMBOL) {
+					const newValue = value.toLowerCase().replace(/[?!:=\\^<>&*+]/g, m => '\\' + m)
+					return `(${newValue[0]}${optionally(newValue.slice(1))})?`
+				}
+				const newValue = value.toLowerCase()
+				return `(${newValue[0]}${optionally(newValue.slice(1))})?`
+			})
 			.join('')
 
 		return '(\\s)?' + a

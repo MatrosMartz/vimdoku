@@ -1,4 +1,5 @@
-import { Group } from '~/share/domain/entities'
+import { Collection } from '~/share/domain/entities'
+import { Case } from '~/share/utils'
 
 export enum Kind {
 	Cmd = 'command',
@@ -11,14 +12,10 @@ export enum Kind {
 	Win = 'Win',
 }
 
-export const NAMES = Group.fromKeys(Kind)
-
-export const KINDS = (() => {
-	const ALL = Group.fromValues(Kind)
-	const COMPOUND = new Group([Kind.Pref, Kind.Warn])
-	const SIMPLE = ALL.difference(COMPOUND)
-	return { ALL, COMPOUND, SIMPLE }
-})()
+export const KINDS = Collection.create()
+	.addEntries(Collection.entriesByObj(Kind))
+	.createConditionalSubCollections('COMPOUND', 'SIMPLE', Case.array([Case.equalTo('Pref', 'Warn'), Case.Any]))
+	.done()
 
 abstract class Base {
 	abstract readonly kind: Kind
@@ -74,10 +71,10 @@ export enum PrefType {
 	edit = 'edit',
 }
 
-export const PREF_TYPE = {
-	ALL: Group.fromValues(PrefType),
-	SHOW: new Group([PrefType.showAll, PrefType.showDiffer]),
-}
+export const PREF_TYPE = Collection.create()
+	.addEntries(Collection.entriesByObj(PrefType))
+	.createSubCollection('SHOW', Case.array([Case.startWith('show'), Case.Any]))
+	.done()
 
 export class Pref<Type extends PrefType> extends Base {
 	readonly #type
@@ -121,7 +118,7 @@ export enum WarnType {
 	unsave = 'unsave',
 }
 
-export const WARN_TYPE = Group.fromValues(WarnType)
+export const WARN_TYPE = Collection.create().addEntries(Collection.entriesByObj(WarnType)).done()
 
 export class Warn<Type extends WarnType> extends Base {
 	readonly #type

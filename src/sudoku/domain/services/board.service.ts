@@ -1,7 +1,7 @@
 import { type Pos } from '~/share/domain/entities'
 import { inject, InvalidBoardError } from '~/share/utils'
 
-import { Cell, CellKind, Grid, type MoveMap, type SolutionJSON, type ValidNumbers } from '../entities'
+import { Cell, Grid, type SolutionJSON, type ValidNumbers } from '../entities'
 import { type Board, type BoardJSON, type IBoard, type SudokuSetts } from '../models'
 import { BoardObs, ErrorsObs, MovesObs } from './sudoku-obs.service'
 
@@ -17,7 +17,7 @@ export class BoardSvc implements IBoard {
 	 * @param grid Initial Sudoku board.
 	 * @param errors The initials errors.
 	 */
-	constructor(grid: Grid<Cell>, errors: number) {
+	constructor(grid: Grid<Cell.Cell>, errors: number) {
 		this.#obs.set(grid)
 		this.#correctCells = this.#obs.data!.count(({ isCorrect }) => isCorrect)
 		this.#errorsObs.set(errors)
@@ -43,7 +43,7 @@ export class BoardSvc implements IBoard {
 	static create(settings: SudokuSetts, errors: number): BoardSvc
 	static create({ difficulty, solution }: SudokuSetts, errors: number) {
 		const diffNum = Number(difficulty)
-		const grid = Grid.create<Cell>(pos => {
+		const grid = Grid.create<Cell.Cell>(pos => {
 			const isInitial = Boolean(Math.floor(Math.random() * diffNum))
 			return Cell.create({ isInitial, solution: solution.grid.cellBy(pos) })
 		})
@@ -62,7 +62,7 @@ export class BoardSvc implements IBoard {
 	static fromJSON(boardLike: BoardJSON, solution: SolutionJSON, errors: number) {
 		try {
 			if (Array.isArray(boardLike)) {
-				const data = new Grid(boardLike).mapAll<Cell>((json, { y, x }) =>
+				const data = new Grid(boardLike).mapAll<Cell.Cell>((json, { y, x }) =>
 					Cell.fromJSON({ cellLike: json, solution: solution[y][x] })
 				)
 				return new BoardSvc(data, errors)
@@ -91,7 +91,7 @@ export class BoardSvc implements IBoard {
 	}
 
 	clear(cellPos: Pos) {
-		const moveMap: MoveMap = new Map()
+		const moveMap: Cell.MoveMap = new Map()
 
 		this.#obs.update(grid =>
 			grid!
@@ -108,7 +108,7 @@ export class BoardSvc implements IBoard {
 	}
 
 	noteDeletion(cellPos: Pos, num: ValidNumbers) {
-		const moveMap: MoveMap = new Map()
+		const moveMap: Cell.MoveMap = new Map()
 
 		this.#obs.update(board =>
 			board!
@@ -147,7 +147,7 @@ export class BoardSvc implements IBoard {
 	}
 
 	toggleNotes(cellPos: Pos, num: ValidNumbers) {
-		const moveMap: MoveMap = new Map()
+		const moveMap: Cell.MoveMap = new Map()
 
 		this.#obs.update(board =>
 			board!
@@ -195,7 +195,7 @@ export class BoardSvc implements IBoard {
 	}
 
 	write(cellPos: Pos, num: ValidNumbers) {
-		const moveMap: MoveMap = new Map()
+		const moveMap: Cell.MoveMap = new Map()
 
 		this.#obs.update(board =>
 			board!
@@ -212,7 +212,7 @@ export class BoardSvc implements IBoard {
 		return this
 	}
 
-	#createMoveMapEntries({ next, prev }: { next: Cell; prev: Cell }, pos: Pos) {
+	#createMoveMapEntries({ next, prev }: { next: Cell.Cell; prev: Cell.Cell }, pos: Pos) {
 		return [
 			`${pos.y}-${pos.x}`,
 			{ next: { notes: next.notes, pos, value: next.value }, prev: { notes: prev.notes, pos, value: prev.value } },
@@ -220,7 +220,7 @@ export class BoardSvc implements IBoard {
 	}
 
 	#notIsInitial(pos: Pos) {
-		return this.#obs.data!.cellBy(pos).kind !== CellKind.Initial
+		return this.#obs.data!.cellBy(pos).kind !== Cell.Kind.Initial
 	}
 
 	readonly #verify = (isIncorrect: boolean) => {

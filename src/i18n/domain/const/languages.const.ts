@@ -1,9 +1,9 @@
-import { Group } from '~/share/domain/entities'
+import { Collection } from '~/share/domain/entities'
 
 export enum Lang {
 	EN = 'en',
 	ES = 'es',
 }
 
-export const LANGS = Group.fromValues(Lang)
+export const LANGS = Collection.create().addEntries(Collection.entriesByObj(Lang)).done()
 export const IDLE_LANG = Lang.EN

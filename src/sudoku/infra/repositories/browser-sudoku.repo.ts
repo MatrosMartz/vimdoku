@@ -1,11 +1,11 @@
 import { Pos } from '~/share/domain/entities'
 import { BrowserStorage } from '~/share/infra/repositories'
 import { option } from '~/share/utils'
-import { type CellJSON, Grid, type GridData } from '$sudoku/domain/entities'
+import { type Cell, Grid, type GridData } from '$sudoku/domain/entities'
 import type { BoardJSON, SudokuInfo, SudokuSettsJSON } from '$sudoku/domain/models'
 import type { SudokuRepos } from '$sudoku/domain/repositories'
 
-type CellJSONStore = Omit<CellJSON, 'notes'>
+type CellJSONStore = Omit<Cell.JSON, 'notes'>
 const [boardStorage, notesStorage, infoStorage, settsStorage] = [
 	BrowserStorage.basic<GridData<CellJSONStore>>('board'),
 	BrowserStorage.basic<GridData<number>>('notes'),
@@ -23,7 +23,7 @@ export const browserSudokuBoardRepo: SudokuRepos.Board = {
 
 		if (board == null || notes == null) return null
 
-		return Pos.createMatrix(9, ({ y, x }): CellJSON => ({ ...board[y][x], notes: notes[y][x] }))
+		return Pos.createMatrix(9, ({ y, x }): Cell.JSON => ({ ...board[y][x], notes: notes[y][x] }))
 	},
 	has: async () => (boardStorage.get() ?? notesStorage.get()) != null,
 	async save(board: BoardJSON) {

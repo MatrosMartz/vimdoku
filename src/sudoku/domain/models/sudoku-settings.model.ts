@@ -1,15 +1,15 @@
-import type { DifficultyKind } from '../const'
+import type { Difficulty } from '../const'
 import type { Solution, SolutionJSON } from '../entities'
 
 export interface SudokuSetts {
 	/** Number of initials cells */
-	difficulty: DifficultyKind
+	difficulty: Difficulty.Kind
 	/** Sudoku solution */
 	solution: Solution
 }
 
 export interface SudokuSettsJSON {
-	difficulty: DifficultyKind
+	difficulty: Difficulty.Kind
 	solution: SolutionJSON
 }
 

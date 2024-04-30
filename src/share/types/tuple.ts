@@ -1,8 +1,8 @@
-type IsInteger<N extends number> = `${N}` extends `${number}.${number}` ? false : true
+export type IsInteger<N extends number> = `${N}` extends `${number}.${number}` ? false : true
 
-type IsUnsigned<N extends number> = `${N}` extends `-${number}` ? false : true
+export type IsUnsigned<N extends number> = `${N}` extends `-${number}` ? false : true
 
-type IsNumberType<N extends number> = number extends N ? true : false
+export type IsNumberType<N extends number> = number extends N ? true : false
 
 /* export type Tuple<T, N extends number, L extends T[] = []> = IsNumberType<N> extends true
 	? T[]
@@ -41,5 +41,3 @@ export type ReadonlyTuple<T, N extends number> =
 			: IsUnsigned<N> extends false
 				? never
 				: readonly T[] & { length: N }
-
-export type Entry<K = unknown, V = unknown> = [K, V]

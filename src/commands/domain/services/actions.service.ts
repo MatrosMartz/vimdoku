@@ -2,8 +2,8 @@ import { type Pos } from '~/share/domain/entities'
 import type { OptionalKeys } from '~/share/types'
 import type { Lang } from '$i18n/domain/const'
 import { Modal, Route } from '$page/domain/entities'
-import type { Prefs, ToggleNames } from '$pref/domain/models'
-import { GET_DIFFICULTY_NAME, type ModeKind } from '$sudoku/domain/const'
+import type { Prefs, PREFS_FIELDS } from '$pref/domain/models'
+import { Difficulty, type ModeKind } from '$sudoku/domain/const'
 import { Solution, type ValidNumbers } from '$sudoku/domain/entities'
 import { type SudokuSetts } from '$sudoku/domain/models'
 
@@ -37,7 +37,7 @@ const resetPref: ActionWithData<ResetPrefData> = async ({ i18n, prefs, page: scr
 	else await prefs.resetByKey(data.key).save()
 }
 
-const invertPref: ActionWithData<{ pref: ToggleNames }> = async ({ prefs }, data) =>
+const invertPref: ActionWithData<{ pref: PREFS_FIELDS.subs.TOGGLE.Key }> = async ({ prefs }, data) =>
 	await prefs.setByKey(data.pref, !prefs.data[data.pref]).save()
 
 export const PREFS_ACTIONS = { set: setPref, reset: resetPref, invert: invertPref }
@@ -123,7 +123,7 @@ const sudokuEnd: ActionUnData = async ({ sudoku }) => await sudoku.end()
 const sudokuResume: ActionUnData = async ({ prefs, page: screen, sudoku }) => {
 	if (sudoku.isASaved && !Route.Game.is(screen.data.route)) {
 		sudoku.resume(prefs.data.timer)
-		await screen.setRoute(new Route.Game(GET_DIFFICULTY_NAME[sudoku.setts!.difficulty])).save()
+		await screen.setRoute(new Route.Game(Difficulty.KINDS.keyByValue(sudoku.setts!.difficulty))).save()
 	} else sudoku.continue()
 }
 
@@ -135,7 +135,7 @@ const sudokuStart: ActionWithData<OptionalKeys<SudokuSetts, 'solution'> & DataAc
 ) => {
 	await Promise.all([
 		sudoku.start({ difficulty, solution }, prefs.data.timer).save(),
-		screen.setRoute(new Route.Game(GET_DIFFICULTY_NAME[difficulty])).save(),
+		screen.setRoute(new Route.Game(Difficulty.KINDS.keyByValue(difficulty))).save(),
 	])
 }
 

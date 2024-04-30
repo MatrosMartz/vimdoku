@@ -3,9 +3,9 @@
 	import { SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
 	import { i18nState } from '$i18n/infra/stores/svelte'
-	import { DIFFICULTIES_NAMES, DifficultyKind } from '$sudoku/domain/const'
+	import { Difficulty } from '$sudoku/domain/const'
 
-	let value: keyof typeof DifficultyKind = 'beginner'
+	let value = Difficulty.Kind.easy
 
 	/**
 	 * Go back screen, click handler.
@@ -18,15 +18,16 @@
 	 * Start new game, submit handler.
 	 */
 	function submitHandler() {
-		med.dispatch(SUDOKU_ACTIONS.start, { difficulty: DifficultyKind[value] })
+		med.dispatch(SUDOKU_ACTIONS.start, { difficulty: value })
 	}
 </script>
 
 <form method="dialog" on:submit|preventDefault={submitHandler}>
 	<OptionsInput
 		name="difficulty-selector"
+		getLabelsBy="key"
 		label={$i18nState.ns('share').gameBtn_selectDifficulty('Select difficulty')}
-		settings={{ opts: DIFFICULTIES_NAMES, default: 'Easy' }}
+		settings={{ opts: Difficulty.KINDS, default: Difficulty.Kind.easy }}
 		bind:value
 	/>
 

@@ -1,11 +1,11 @@
 import type { Pos } from '~/share/domain/entities'
 import type { Tuple } from '~/share/types'
 
-import type { Cell, CellJSON, ValidNumbers } from '../entities'
+import type { Cell, ValidNumbers } from '../entities'
 
-export type Board = Tuple<Tuple<Cell, 9>, 9>
+export type Board = Tuple<Tuple<Cell.Cell, 9>, 9>
 
-export type BoardJSON = Tuple<Tuple<CellJSON, 9>, 9>
+export type BoardJSON = Tuple<Tuple<Cell.JSON, 9>, 9>
 
 export interface IBoard {
 	/** Get the current cells of board. */

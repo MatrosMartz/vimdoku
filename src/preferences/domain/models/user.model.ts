@@ -1,4 +1,4 @@
-import { Group } from '~/share/domain/entities'
+import { Collection } from '~/share/domain/entities'
 import type { FieldsToModel, FormGroup } from '~/share/domain/models'
 import { FormFields } from '~/share/domain/services'
 
@@ -8,7 +8,7 @@ export enum Accessibility {
 	LESS = 'less',
 }
 
-export const ACCESSIBILITY_KINDS = Group.fromValues(Accessibility)
+export const ACCESSIBILITIES = Collection.create().addEntries(Collection.entriesByObj(Accessibility)).done()
 
 export enum ColorSchema {
 	SYSTEM = 'system',
@@ -16,23 +16,23 @@ export enum ColorSchema {
 	LIGHT_MODE = 'light',
 }
 
-export const COLOR_SCHEMAS = Group.fromValues(ColorSchema)
+export const COLOR_SCHEMAS = Collection.create().addEntries(Collection.entriesByObj(ColorSchema)).done()
 
 export enum IconTheme {
-	Heroicons = 'heroicons',
-	Lucide = 'lucide',
-	Iconoir = 'iconoir',
-	Tabler = 'tabler',
+	Heroicons = 'Heroicons',
+	Lucide = 'Lucide',
+	Iconoir = 'Iconoir',
+	Tabler = 'Tabler',
 }
 
-export const ICON_THEMES = Group.fromValues(IconTheme)
+export const ICON_THEMES = Collection.create().addEntries(Collection.entriesByObj(IconTheme)).done()
 
 export const userFields = {
 	colorSchema: { type: 'options', opts: COLOR_SCHEMAS, default: ColorSchema.SYSTEM },
 	colorTheme: { type: 'text', default: 'default' },
-	contrast: { type: 'options', opts: ACCESSIBILITY_KINDS, default: Accessibility.SYSTEM },
+	contrast: { type: 'options', opts: ACCESSIBILITIES, default: Accessibility.SYSTEM },
 	iconTheme: { type: 'options', opts: ICON_THEMES, default: IconTheme.Heroicons },
-	motionReduce: { type: 'options', opts: ACCESSIBILITY_KINDS, default: Accessibility.SYSTEM },
+	motionReduce: { type: 'options', opts: ACCESSIBILITIES, default: Accessibility.SYSTEM },
 } as const satisfies FormGroup
 
 export type UserPrefs = FieldsToModel<typeof userFields>
@@ -41,6 +41,6 @@ export type AccessibilityFields = {
 	[K in keyof UserPrefs]: UserPrefs[K] extends Accessibility ? K : never
 }[keyof UserPrefs]
 
-export const ACCESSIBILITY_FIELDS: AccessibilityFields[] = ['contrast', 'motionReduce']
+export const ACCESSIBILITY_PREFS_NAMES: AccessibilityFields[] = ['contrast', 'motionReduce']
 
 export const USER_IDLE_PREFS = FormFields.getDefaultValues(userFields)

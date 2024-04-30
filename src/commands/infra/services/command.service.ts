@@ -1,12 +1,12 @@
-import { match } from '~/share/utils'
-import { CmdTokenKind, SubTokenKind } from '$cmd/domain/entities'
+import { BuildMatcher, Case } from '~/share/utils'
+import { CmdTokenKind, type SubToken, SubTokenKind } from '$cmd/domain/entities'
 import { CmdListSvc, CmdSvc, type CreateHeader, SubCmdSvc } from '$cmd/domain/services'
 import { I18N_ACTIONS, PREFS_ACTIONS, SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services/actions.service'
 import { LANGS } from '$i18n/domain/const'
 import { Modal } from '$page/domain/entities'
-import { NON_TOGGLE_NAMES, PREFS_KEYS, TOGGLE_NAMES } from '$pref/domain/models'
-import { ACCESSIBILITY_KINDS, COLOR_SCHEMAS, ICON_THEMES } from '$pref/domain/models/user.model'
-import { DIFFICULTIES_NAMES, DifficultyKind } from '$sudoku/domain/const'
+import { PREFS_FIELDS } from '$pref/domain/models'
+import { ACCESSIBILITIES, COLOR_SCHEMAS, ICON_THEMES } from '$pref/domain/models/user.model'
+import { Difficulty } from '$sudoku/domain/const'
 
 import { med } from './mediator.service'
 
@@ -24,31 +24,31 @@ function createSpan(className: string, text?: string) {
 	return span
 }
 
+const subKindCase = <K extends SubTokenKind>(...kinds: K[]) =>
+	new Case((val): val is { kind: K } => {
+		if (typeof val !== 'object' || val == null) return false
+		return kinds.includes(Reflect.get(val, 'kind'))
+	})
+
+const createSubTokenElement = new BuildMatcher<[SubToken], HTMLSpanElement | Text>()
+	.addCase([subKindCase(SubTokenKind.HOLDER, SubTokenKind.VARIABLE)], ({ value }) => createSpan('holder', value))
+	.addCase([subKindCase(SubTokenKind.SYMBOL, SubTokenKind.VALUE)], ({ kind, value }) => createSpan(kind, value))
+	.default(({ value }) => document.createTextNode(value))
+	.done()
+
 export const createHeader: CreateHeader<HTMLHeadingElement> = ([cmdToken, subTokens]) => {
 	const heading = document.createElement('h3')
 	heading.classList.add('monospace', 'highlight')
 
 	const cmdSpan = createSpan('command')
 	for (const { kind, value } of cmdToken.tokens) {
-		cmdSpan.appendChild(
-			match(kind)
-				.case(CmdTokenKind.OPTIONAL, () => createSpan('optional', value))
-				.case(CmdTokenKind.REQUIRED, () => document.createTextNode(value))
-				.done()
-		)
+		const child = kind === CmdTokenKind.OPTIONAL ? createSpan('optional', value) : document.createTextNode(value)
+		cmdSpan.appendChild(child)
 	}
 
 	const fragment = document.createDocumentFragment()
-	for (const { kind, value } of subTokens.tokens) {
-		fragment.appendChild(
-			match(kind)
-				.case([SubTokenKind.HOLDER, SubTokenKind.VARIABLE], () => createSpan('holder', value))
-				.case(SubTokenKind.SYMBOL, () => createSpan('symbol', value))
-				.case(SubTokenKind.VALUE, () => createSpan('value', value))
-				.default(() => document.createTextNode(value))
-				.done()
-		)
-	}
+	for (const tokens of subTokens.tokens) fragment.appendChild(createSubTokenElement(tokens))
+
 	heading.append(cmdSpan, ' ', fragment)
 
 	return heading
@@ -116,77 +116,77 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 		})
 	)
 	.addSubFn(
-		...PREFS_KEYS.map(pref =>
+		...PREFS_FIELDS.transform(([pref]) =>
 			SubCmdSvc.buildFn(`(${pref})<?>`, {
 				desc: locale => locale.cmdDesc_set_showPref('Show value of {|pref|}.', { pref }),
 				// fn: () => med.dispatch(SCREEN_ACTIONS.openDialog, { kind: DialogKind.ShowPref, opts: { pref } }),
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...PREFS_KEYS.map(pref =>
+		...PREFS_FIELDS.transform(([pref]) =>
 			SubCmdSvc.buildFn(`(${pref})<&>`, {
 				desc: locale => locale.cmdDesc_set_resetPref('Reset value of {|pref|}.', { pref }),
 				fn: () => med.dispatch(PREFS_ACTIONS.reset, { type: 'by-key', key: pref }),
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...TOGGLE_NAMES.map(pref =>
+		...PREFS_FIELDS.subs.TOGGLE.transform(([pref]) =>
 			SubCmdSvc.buildFn(`(${pref})`, {
 				desc: locale => locale.cmdDesc_set_toggleOnPref('Set, {|pref|} to switch it on.', { pref }),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: pref, value: true }),
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...NON_TOGGLE_NAMES.map(pref =>
+		...PREFS_FIELDS.subs.NON_TOGGLE.transform(([pref]) =>
 			SubCmdSvc.buildFn(`(${pref})`, {
 				desc: locale => locale.cmdDesc_set_showPref('Show value of {|pref|}.', { pref }),
 				// fn: () => med.dispatch(SCREEN_ACTIONS.openModal, { kind: DialogKind.ShowPref, opts: { pref } }),
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...TOGGLE_NAMES.map(pref =>
+		...PREFS_FIELDS.subs.TOGGLE.transform(([pref]) =>
 			SubCmdSvc.buildFn(`<no>(${pref})`, {
 				desc: locale => locale.cmdDesc_set_toggleOffPref('Set, {|pref|} to switch off.', { pref }),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: pref, value: false }),
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...TOGGLE_NAMES.map(pref =>
+		...PREFS_FIELDS.subs.TOGGLE.transform(([pref]) =>
 			SubCmdSvc.buildFn(`(${pref})<!>`, {
 				desc: locale => locale.cmdDesc_set_toggleInvPref('Invert value of {|pref|}.', { pref }),
 				fn: () => med.dispatch(PREFS_ACTIONS.invert, { pref }),
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...TOGGLE_NAMES.map(pref =>
+		...PREFS_FIELDS.subs.TOGGLE.transform(([pref]) =>
 			SubCmdSvc.buildFn(`<inv>(${pref})`, {
 				desc: locale => locale.cmdDesc_set_toggleInvPref('Invert value of {|pref|}.', { pref }),
 				fn: () => med.dispatch(PREFS_ACTIONS.invert, { pref }),
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...NON_TOGGLE_NAMES.map(pref =>
+		...PREFS_FIELDS.subs.NON_TOGGLE.transform(([pref]) =>
 			SubCmdSvc.buildFn(`(${pref})<=>{value}`, {
 				desc: locale => locale.cmdDesc_set_setNonTogglePref('Assign to {|pref|} the {value}.', { pref }),
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...NON_TOGGLE_NAMES.map(pref =>
+		...PREFS_FIELDS.subs.NON_TOGGLE.transform(([pref]) =>
 			SubCmdSvc.buildFn(`(${pref})<:>{value}`, {
 				desc: locale => locale.cmdDesc_set_setNonTogglePref('Assign to {|pref|} the {value}.', { pref }),
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...COLOR_SCHEMAS.map(schema =>
+		...COLOR_SCHEMAS.transform(([schema]) =>
 			SubCmdSvc.buildFn(`(colorSchema)<=>(${schema})`, {
 				desc: locale =>
 					locale
@@ -194,10 +194,10 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 						.replace('{value}', `"${schema}"`),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'colorSchema', value: schema }),
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...COLOR_SCHEMAS.map(schema =>
+		...COLOR_SCHEMAS.transform(([schema]) =>
 			SubCmdSvc.buildFn(`(colorSchema)<:>(${schema})`, {
 				desc: locale =>
 					locale
@@ -205,10 +205,10 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 						.replace('{value}', `"${schema}"`),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'colorSchema', value: schema }),
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...ACCESSIBILITY_KINDS.map(accessibility =>
+		...ACCESSIBILITIES.transform(([accessibility]) =>
 			SubCmdSvc.buildFn(`(contrast)<=>(${accessibility})`, {
 				desc: locale =>
 					locale
@@ -216,10 +216,10 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 						.replace('{value}', `"${accessibility}"`),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'contrast', value: accessibility }),
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...ACCESSIBILITY_KINDS.map(accessibility =>
+		...ACCESSIBILITIES.transform(([accessibility]) =>
 			SubCmdSvc.buildFn(`(contrast)<:>(${accessibility})`, {
 				desc: locale =>
 					locale
@@ -227,10 +227,10 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 						.replace('{value}', `"${accessibility}"`),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'contrast', value: accessibility }),
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...ACCESSIBILITY_KINDS.map(accessibility =>
+		...ACCESSIBILITIES.transform(([accessibility]) =>
 			SubCmdSvc.buildFn(`(motionReduce)<=>(${accessibility})`, {
 				desc: locale =>
 					locale
@@ -238,10 +238,10 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 						.replace('{value}', `"${accessibility}"`),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'motionReduce', value: accessibility }),
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...ACCESSIBILITY_KINDS.map(accessibility =>
+		...ACCESSIBILITIES.transform(([accessibility]) =>
 			SubCmdSvc.buildFn(`(motionReduce)<:>(${accessibility})`, {
 				desc: locale =>
 					locale
@@ -249,10 +249,10 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 						.replace('{value}', `"${accessibility}"`),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'motionReduce', value: accessibility }),
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...ICON_THEMES.map(theme =>
+		...ICON_THEMES.transform(([theme]) =>
 			SubCmdSvc.buildFn(`(iconTheme)<=>(${theme})`, {
 				desc: locale =>
 					locale
@@ -260,10 +260,10 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 						.replace('{value}', `"${theme}"`),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'iconTheme', value: theme }),
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
-		...ICON_THEMES.map(theme =>
+		...ICON_THEMES.transform(([theme]) =>
 			SubCmdSvc.buildFn(`(iconTheme)<:>(${theme})`, {
 				desc: locale =>
 					locale
@@ -271,7 +271,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 						.replace('{value}', `"${theme}"`),
 				fn: () => med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: 'iconTheme', value: theme }),
 			})
-		).unwrap()
+		)
 	)
 	.addSubFn(
 		SubCmdSvc.buildFn('(history)<=>{|value|}', {
@@ -290,7 +290,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 const START_CMD = CmdSvc.buildFn('st[art]', {
 	desc: locale =>
 		locale.cmdDesc_start_difficulty('Start new game with the {|difficulty|} difficulty.', { difficulty: 'Easy' }),
-	fn: () => med.dispatch(SUDOKU_ACTIONS.start, { difficulty: DifficultyKind.easy }),
+	fn: () => med.dispatch(SUDOKU_ACTIONS.start, { difficulty: Difficulty.Kind.easy }),
 })
 	.addSubFn(
 		SubCmdSvc.buildFn('{difficulty}', {
@@ -298,13 +298,13 @@ const START_CMD = CmdSvc.buildFn('st[art]', {
 		})
 	)
 	.addSubFn(
-		...DIFFICULTIES_NAMES.map(difficulty =>
-			SubCmdSvc.buildFn(`(${difficulty})`, {
+		...Difficulty.KINDS.transform(([name, kind]) =>
+			SubCmdSvc.buildFn(`(${name})`, {
 				desc: locale =>
-					locale.cmdDesc_start_difficulty('Start new game with the {|difficulty|} difficulty.', { difficulty }),
-				fn: () => med.dispatch(SUDOKU_ACTIONS.start, { difficulty: DifficultyKind[difficulty] }),
+					locale.cmdDesc_start_difficulty('Start new game with the {|difficulty|} difficulty.', { difficulty: name }),
+				fn: () => med.dispatch(SUDOKU_ACTIONS.start, { difficulty: kind }),
 			})
-		).unwrap()
+		)
 	)
 	.done()
 const PAUSE_CMD = CmdSvc.buildFn('pa[use]', {
@@ -354,12 +354,12 @@ const LANGUAGE_CMD = CmdSvc.buildFn('lan[guage]', {
 		})
 	)
 	.addSubFn(
-		...LANGS.map(lang =>
+		...LANGS.transform(([, lang]) =>
 			SubCmdSvc.buildFn(`(${lang})`, {
 				desc: locale => locale.cmdDesc_language_setSuggest('Sets the current language to {|lang|}.', { lang }),
 				fn: () => med.dispatch(I18N_ACTIONS.changeLang, { lang }),
 			})
-		).unwrap()
+		)
 	)
 	.done()
 

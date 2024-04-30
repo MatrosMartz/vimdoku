@@ -5,7 +5,7 @@
 	import { med } from '$cmd/infra/services'
 	import type { Cell } from '$sudoku/domain/entities'
 
-	export let data: Cell
+	export let data: Cell.Cell
 	export let pos: Pos
 
 	let btn: HTMLElement

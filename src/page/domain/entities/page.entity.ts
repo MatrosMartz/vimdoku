@@ -1,7 +1,7 @@
 import type { RequireOne } from '~/share/types'
 import { _throw, capitalCase, InvalidStringPageError } from '~/share/utils'
 import { type Lang, LANGS } from '$i18n/domain/const'
-import { DIFFICULTIES_NAMES } from '$sudoku/domain/const'
+import { Difficulty } from '$sudoku/domain/const'
 
 import * as Modal from './modal.entity'
 import * as Route from './route.entity'
@@ -50,11 +50,14 @@ export class Page {
 }
 
 const firstPattern = new RegExp(
-	`^(?:(?:(${LANGS.join('|')}))|(?:(${Route.KINDS.COMPOUND.join('|')})(?:\\/(.*))?))$`,
+	`^(?:(?:(${LANGS.joinValues('|')}))|(?:(${Route.KINDS.subs.COMPOUND.joinValues('|')})(?:\\/(.*))?))$`,
 	'i'
 )
 
-const secondPattern = new RegExp(`^(${LANGS.join('|')})\\/(${Route.KINDS.COMPOUND.join('|')})(?:\\/(.*))?$`, 'i')
+const secondPattern = new RegExp(
+	`^(${LANGS.joinValues('|')})\\/(${Route.KINDS.subs.COMPOUND.joinValues('|')})(?:\\/(.*))?$`,
+	'i'
+)
 
 /**
  * internal function to split a string url-like into language, path and remainder.
@@ -66,9 +69,9 @@ function getParts(str: string) {
 	const [, lang, path, remainder] =
 		firstPattern.exec(str) ?? secondPattern.exec(str) ?? _throw(new InvalidStringPageError())
 
-	if (lang != null && !LANGS.contains(lang)) throw new InvalidStringPageError()
+	if (lang != null && !LANGS.containsValue(lang)) throw new InvalidStringPageError()
 	if (path === '' || path == null) return { lang, path: Route.Kind.Home, remainder }
-	if (!Route.KINDS.COMPOUND.contains(path)) throw new InvalidStringPageError()
+	if (!Route.KINDS.subs.COMPOUND.containsValue(path)) throw new InvalidStringPageError()
 
 	return { lang: lang as Lang | undefined, path, remainder }
 }
@@ -86,11 +89,11 @@ export function fromString(str: string) {
 		if (path === Route.Kind.Home) {
 			if (remainder != null && remainder.length !== 0) throw new InvalidStringPageError()
 			return new Page(modal, new Route.Home(), lang)
-		} else if (path === Route.Kind.Help && (Route.HELP_SUB.contains(remainder) || remainder == null))
+		} else if (path === Route.Kind.Help && (Route.HELP_SUB.containsValue(remainder) || remainder == null))
 			return new Page(modal, new Route.Help(remainder ?? Route.HelpSub.Main), lang)
 		else if (path === Route.Kind.Game) {
 			const difficulty = remainder == null || remainder.length === 0 ? 'Basic' : capitalCase(remainder)
-			if (!DIFFICULTIES_NAMES.contains(difficulty)) throw new InvalidStringPageError()
+			if (!Difficulty.KINDS.containsKey(difficulty)) throw new InvalidStringPageError()
 			return new Page(modal, new Route.Game(difficulty), lang)
 		}
 

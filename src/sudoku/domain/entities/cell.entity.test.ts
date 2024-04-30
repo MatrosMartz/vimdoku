@@ -4,10 +4,10 @@ import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { noop } from '~/share/utils'
 
-import { Cell, type CellCreateOpts, CellKind, EMPTY_CELL_VALUE } from './cell.entity'
+import * as Cell from './cell.entity'
 import { EMPTY_NOTES } from './notes.entity'
 
-export const DEFAULT_OPTS: CellCreateOpts = { isInitial: false, solution: 8 }
+export const DEFAULT_OPTS: Cell.CreateOpts = { isInitial: false, solution: 8 }
 
 beforeAll(() => {
 	const crypto = { randomUUID }
@@ -16,7 +16,7 @@ beforeAll(() => {
 	return () => vi.unstubAllGlobals()
 })
 
-let cell: Cell
+let cell: Cell.Cell
 
 describe.concurrent('Initial Cell', () => {
 	beforeEach(() => {
@@ -24,7 +24,7 @@ describe.concurrent('Initial Cell', () => {
 	})
 
 	test('Should create an initial cell.', () => {
-		expect(cell.kind).toBe(CellKind.Initial)
+		expect(cell.kind).toBe(Cell.Kind.Initial)
 		expect(cell.value).toBe(DEFAULT_OPTS.solution)
 		expect(cell.notes).toEqual(EMPTY_NOTES)
 	})
@@ -33,7 +33,7 @@ describe.concurrent('Initial Cell', () => {
 		const cellAfterAddNote = cell.addNote(5)
 
 		expect(cell.id).toBe(cellAfterAddNote.id)
-		expect(cell.kind).not.toBe(CellKind.WhitNotes)
+		expect(cell.kind).not.toBe(Cell.Kind.Annotated)
 		expect(cell.notes).toEqual(EMPTY_NOTES)
 	})
 
@@ -41,7 +41,7 @@ describe.concurrent('Initial Cell', () => {
 		const cellAfterToggleNote = cell.toggleNote(5)
 
 		expect(cell.id).toBe(cellAfterToggleNote.id)
-		expect(cell.kind).not.toBe(CellKind.WhitNotes)
+		expect(cell.kind).not.toBe(Cell.Kind.Annotated)
 		expect(cell.notes).toEqual(EMPTY_NOTES)
 	})
 
@@ -49,7 +49,7 @@ describe.concurrent('Initial Cell', () => {
 		const cellAfterRemoveNote = cell.removeNote(5)
 
 		expect(cell.id).toBe(cellAfterRemoveNote.id)
-		expect(cell.kind).not.toBe(CellKind.WhitNotes)
+		expect(cell.kind).not.toBe(Cell.Kind.Annotated)
 		expect(cell.notes).toEqual(EMPTY_NOTES)
 	})
 
@@ -57,7 +57,7 @@ describe.concurrent('Initial Cell', () => {
 		const cellAfterChangeValue = cell.writeValue(5)
 
 		expect(cell.id).toBe(cellAfterChangeValue.id)
-		expect(cell.kind).not.toBe(CellKind.Unverified)
+		expect(cell.kind).not.toBe(Cell.Kind.Unverified)
 		expect(cell.value).toEqual(DEFAULT_OPTS.solution)
 	})
 
@@ -66,7 +66,7 @@ describe.concurrent('Initial Cell', () => {
 		const cellAfterClear = cell.clear()
 
 		expect(cell.id).toBe(cellAfterClear.id)
-		expect(cell.kind).not.toBe(CellKind.Empty)
+		expect(cell.kind).not.toBe(Cell.Kind.Empty)
 		expect(cell.value).toEqual(DEFAULT_OPTS.solution)
 	})
 
@@ -74,8 +74,8 @@ describe.concurrent('Initial Cell', () => {
 		const cellAfterVerify = cell.verify(noop)
 
 		expect(cellAfterVerify.id).toBe(cell.id)
-		expect(cellAfterVerify.kind).not.toBe(CellKind.Correct)
-		expect(cellAfterVerify.kind).not.toBe(CellKind.Incorrect)
+		expect(cellAfterVerify.kind).not.toBe(Cell.Kind.Correct)
+		expect(cellAfterVerify.kind).not.toBe(Cell.Kind.Incorrect)
 	})
 })
 
@@ -85,24 +85,24 @@ describe.concurrent('Empty Cell', () => {
 	})
 
 	test('Should create an empty cell.', () => {
-		expect(cell.kind).toBe(CellKind.Empty)
-		expect(cell.value).toBe(EMPTY_CELL_VALUE)
+		expect(cell.kind).toBe(Cell.Kind.Empty)
+		expect(cell.value).toBe(Cell.EMPTY_VALUE)
 	})
 
 	test('Should return a new cell with the added note.', () => {
 		const cellAfterAddNote = cell.addNote(5)
 
 		expect(cell.id).not.toBe(cellAfterAddNote.id)
-		expect(cellAfterAddNote.kind).toBe(CellKind.WhitNotes)
+		expect(cellAfterAddNote.kind).toBe(Cell.Kind.Annotated)
 		expect(cellAfterAddNote.notes).toContain(5)
-		expect(cellAfterAddNote.value).toBe(EMPTY_CELL_VALUE)
+		expect(cellAfterAddNote.value).toBe(Cell.EMPTY_VALUE)
 	})
 
 	test('Should not be removed notes.', () => {
 		const cellAfterRemoveNote = cell.removeNote(5)
 
 		expect(cell.id).toBe(cellAfterRemoveNote.id)
-		expect(cell.kind).not.toBe(CellKind.WhitNotes)
+		expect(cell.kind).not.toBe(Cell.Kind.Annotated)
 		expect(cell.notes).toEqual(EMPTY_NOTES)
 	})
 
@@ -110,16 +110,16 @@ describe.concurrent('Empty Cell', () => {
 		const cellAfterToggleNote = cell.toggleNote(5)
 
 		expect(cell.id).not.toBe(cellAfterToggleNote.id)
-		expect(cellAfterToggleNote.kind).toBe(CellKind.WhitNotes)
+		expect(cellAfterToggleNote.kind).toBe(Cell.Kind.Annotated)
 		expect(cellAfterToggleNote.notes).toContain(5)
-		expect(cellAfterToggleNote.value).toBe(EMPTY_CELL_VALUE)
+		expect(cellAfterToggleNote.value).toBe(Cell.EMPTY_VALUE)
 	})
 
 	test('Should return a new cell with the changed value.', () => {
 		const cellAfterChangeValue = cell.writeValue(5)
 
 		expect(cell.id).not.toBe(cellAfterChangeValue.id)
-		expect(cellAfterChangeValue.kind).toBe(CellKind.Unverified)
+		expect(cellAfterChangeValue.kind).toBe(Cell.Kind.Unverified)
 		expect(cellAfterChangeValue.notes).toEqual(EMPTY_NOTES)
 		expect(cellAfterChangeValue.value).toBe(5)
 	})
@@ -128,17 +128,17 @@ describe.concurrent('Empty Cell', () => {
 		const cellAfterClear = cell.clear()
 
 		expect(cell.id).toBe(cellAfterClear.id)
-		expect(cellAfterClear.kind).toBe(CellKind.Empty)
+		expect(cellAfterClear.kind).toBe(Cell.Kind.Empty)
 		expect(cellAfterClear.notes).toEqual(EMPTY_NOTES)
-		expect(cellAfterClear.value).toBe(EMPTY_CELL_VALUE)
+		expect(cellAfterClear.value).toBe(Cell.EMPTY_VALUE)
 	})
 
 	test('Should not be verified.', () => {
 		const cellAfterVerify = cell.verify(noop)
 
 		expect(cellAfterVerify.id).toBe(cell.id)
-		expect(cellAfterVerify.kind).not.toBe(CellKind.Correct)
-		expect(cellAfterVerify.kind).not.toBe(CellKind.Incorrect)
+		expect(cellAfterVerify.kind).not.toBe(Cell.Kind.Correct)
+		expect(cellAfterVerify.kind).not.toBe(Cell.Kind.Incorrect)
 	})
 })
 
@@ -150,7 +150,7 @@ describe.concurrent('Notes Cell', () => {
 	})
 
 	test('Should create an unverified cell.', () => {
-		expect(cell.kind).toBe(CellKind.WhitNotes)
+		expect(cell.kind).toBe(Cell.Kind.Annotated)
 		expect(cell.notes).toContain(5)
 	})
 
@@ -158,52 +158,52 @@ describe.concurrent('Notes Cell', () => {
 		const cellAfterAddNote = cell.addNote(8)
 
 		expect(cell.id).not.toBe(cellAfterAddNote.id)
-		expect(cellAfterAddNote.kind).toBe(CellKind.WhitNotes)
+		expect(cellAfterAddNote.kind).toBe(Cell.Kind.Annotated)
 		expect(cellAfterAddNote.notes).toEqual(expect.arrayContaining([5, 8]))
-		expect(cellAfterAddNote.value).toBe(EMPTY_CELL_VALUE)
+		expect(cellAfterAddNote.value).toBe(Cell.EMPTY_VALUE)
 	})
 
 	test('Should return a new cell with the removed note.', () => {
 		const cellAfterRemoveNote = cell.removeNote(5)
 
 		expect(cell.id).not.toBe(cellAfterRemoveNote.id)
-		expect(cellAfterRemoveNote.kind).toBe(CellKind.WhitNotes)
+		expect(cellAfterRemoveNote.kind).toBe(Cell.Kind.Annotated)
 		expect(cellAfterRemoveNote.notes).not.toContain(5)
-		expect(cellAfterRemoveNote.value).toBe(EMPTY_CELL_VALUE)
+		expect(cellAfterRemoveNote.value).toBe(Cell.EMPTY_VALUE)
 	})
 
 	test('Should return a new cell with the added note after toggling the note that did not exist.', () => {
 		const cellAfterToggleNote = cell.toggleNote(8)
 
 		expect(cell.id).not.toBe(cellAfterToggleNote.id)
-		expect(cellAfterToggleNote.kind).toBe(CellKind.WhitNotes)
+		expect(cellAfterToggleNote.kind).toBe(Cell.Kind.Annotated)
 		expect(cellAfterToggleNote.notes).toContain(8)
-		expect(cellAfterToggleNote.value).toBe(EMPTY_CELL_VALUE)
+		expect(cellAfterToggleNote.value).toBe(Cell.EMPTY_VALUE)
 	})
 
 	test('Should return a new cell with the removed note after toggling the note that did exist.', () => {
 		const cellAfterToggleNote = cell.toggleNote(5)
 
 		expect(cell.id).not.toBe(cellAfterToggleNote.id)
-		expect(cellAfterToggleNote.kind).toBe(CellKind.WhitNotes)
+		expect(cellAfterToggleNote.kind).toBe(Cell.Kind.Annotated)
 		expect(cellAfterToggleNote.notes).not.toContain(5)
-		expect(cellAfterToggleNote.value).toBe(EMPTY_CELL_VALUE)
+		expect(cellAfterToggleNote.value).toBe(Cell.EMPTY_VALUE)
 	})
 
 	test('Should return an empty cell after toggling the only notes it had.', () => {
 		const cellAfterToggleNote = cell.toggleNote(5).toggleNote(2)
 
 		expect(cell.id).not.toBe(cellAfterToggleNote.id)
-		expect(cellAfterToggleNote.kind).toBe(CellKind.Empty)
+		expect(cellAfterToggleNote.kind).toBe(Cell.Kind.Empty)
 		expect(cellAfterToggleNote.notes).toEqual(EMPTY_NOTES)
-		expect(cellAfterToggleNote.value).toBe(EMPTY_CELL_VALUE)
+		expect(cellAfterToggleNote.value).toBe(Cell.EMPTY_VALUE)
 	})
 
 	test('Should return a new cell with the changed value.', () => {
 		const cellAfterChangeValue = cell.writeValue(8)
 
 		expect(cell.id).not.toBe(cellAfterChangeValue.id)
-		expect(cellAfterChangeValue.kind).toBe(CellKind.Unverified)
+		expect(cellAfterChangeValue.kind).toBe(Cell.Kind.Unverified)
 		expect(cellAfterChangeValue.notes).toEqual(EMPTY_NOTES)
 		expect(cellAfterChangeValue.value).toBe(8)
 	})
@@ -212,26 +212,26 @@ describe.concurrent('Notes Cell', () => {
 		const cellAfterClear = cell.addNote(5)
 
 		expect(cell.id).toBe(cellAfterClear.id)
-		expect(cellAfterClear.kind).toBe(CellKind.WhitNotes)
+		expect(cellAfterClear.kind).toBe(Cell.Kind.Annotated)
 		expect(cellAfterClear.notes).toContain(5)
-		expect(cellAfterClear.value).toBe(EMPTY_CELL_VALUE)
+		expect(cellAfterClear.value).toBe(Cell.EMPTY_VALUE)
 	})
 
 	test('Should return a new clean cell.', () => {
 		const cellAfterChangeValue = cell.clear()
 
 		expect(cell.id).not.toBe(cellAfterChangeValue.id)
-		expect(cellAfterChangeValue.kind).toBe(CellKind.Empty)
+		expect(cellAfterChangeValue.kind).toBe(Cell.Kind.Empty)
 		expect(cellAfterChangeValue.notes).toEqual(EMPTY_NOTES)
-		expect(cellAfterChangeValue.value).toBe(EMPTY_CELL_VALUE)
+		expect(cellAfterChangeValue.value).toBe(Cell.EMPTY_VALUE)
 	})
 
 	test('Should not be verified.', () => {
 		const cellAfterVerify = cell.verify(noop)
 
 		expect(cellAfterVerify.id).toBe(cell.id)
-		expect(cellAfterVerify.kind).not.toBe(CellKind.Correct)
-		expect(cellAfterVerify.kind).not.toBe(CellKind.Incorrect)
+		expect(cellAfterVerify.kind).not.toBe(Cell.Kind.Correct)
+		expect(cellAfterVerify.kind).not.toBe(Cell.Kind.Incorrect)
 	})
 })
 
@@ -241,7 +241,7 @@ describe.concurrent('Unverified Cell', () => {
 	})
 
 	test('Should create an unverified cell.', () => {
-		expect(cell.kind).toBe(CellKind.Unverified)
+		expect(cell.kind).toBe(Cell.Kind.Unverified)
 		expect(cell.value).toBe(5)
 	})
 
@@ -249,16 +249,16 @@ describe.concurrent('Unverified Cell', () => {
 		const cellAfterAddNote = cell.addNote(5)
 
 		expect(cell.id).not.toBe(cellAfterAddNote.id)
-		expect(cellAfterAddNote.kind).toBe(CellKind.WhitNotes)
+		expect(cellAfterAddNote.kind).toBe(Cell.Kind.Annotated)
 		expect(cellAfterAddNote.notes).toContain(5)
-		expect(cellAfterAddNote.value).toBe(EMPTY_CELL_VALUE)
+		expect(cellAfterAddNote.value).toBe(Cell.EMPTY_VALUE)
 	})
 
 	test('Should not be removed notes.', () => {
 		const cellAfterRemoveNote = cell.removeNote(5)
 
 		expect(cell.id).toBe(cellAfterRemoveNote.id)
-		expect(cell.kind).not.toBe(CellKind.WhitNotes)
+		expect(cell.kind).not.toBe(Cell.Kind.Annotated)
 		expect(cell.notes).toEqual(EMPTY_NOTES)
 	})
 
@@ -266,16 +266,16 @@ describe.concurrent('Unverified Cell', () => {
 		const cellAfterToggleNote = cell.toggleNote(5)
 
 		expect(cell.id).not.toBe(cellAfterToggleNote.id)
-		expect(cellAfterToggleNote.kind).toBe(CellKind.WhitNotes)
+		expect(cellAfterToggleNote.kind).toBe(Cell.Kind.Annotated)
 		expect(cellAfterToggleNote.notes).toContain(5)
-		expect(cellAfterToggleNote.value).toBe(EMPTY_CELL_VALUE)
+		expect(cellAfterToggleNote.value).toBe(Cell.EMPTY_VALUE)
 	})
 
 	test('Should return a new cell with the changed value.', () => {
 		const cellAfterChangeValue = cell.writeValue(8)
 
 		expect(cell.id).not.toBe(cellAfterChangeValue.id)
-		expect(cellAfterChangeValue.kind).toBe(CellKind.Unverified)
+		expect(cellAfterChangeValue.kind).toBe(Cell.Kind.Unverified)
 		expect(cellAfterChangeValue.notes).toEqual(EMPTY_NOTES)
 		expect(cellAfterChangeValue.value).toBe(8)
 	})
@@ -284,7 +284,7 @@ describe.concurrent('Unverified Cell', () => {
 		const cellAfterClear = cell.writeValue(5)
 
 		expect(cell.id).toBe(cellAfterClear.id)
-		expect(cellAfterClear.kind).toBe(CellKind.Unverified)
+		expect(cellAfterClear.kind).toBe(Cell.Kind.Unverified)
 		expect(cellAfterClear.notes).toEqual(EMPTY_NOTES)
 		expect(cellAfterClear.value).toBe(5)
 	})
@@ -293,24 +293,24 @@ describe.concurrent('Unverified Cell', () => {
 		const cellAfterChangeValue = cell.clear()
 
 		expect(cell.id).not.toBe(cellAfterChangeValue.id)
-		expect(cellAfterChangeValue.kind).toBe(CellKind.Empty)
+		expect(cellAfterChangeValue.kind).toBe(Cell.Kind.Empty)
 		expect(cellAfterChangeValue.notes).toEqual(EMPTY_NOTES)
-		expect(cellAfterChangeValue.value).toBe(EMPTY_CELL_VALUE)
+		expect(cellAfterChangeValue.value).toBe(Cell.EMPTY_VALUE)
 	})
 
 	test('Should return an incorrect cell.', () => {
 		const cellAfterVerify = cell.verify(noop)
 
 		expect(cellAfterVerify.id).not.toBe(cell.id)
-		expect(cellAfterVerify.kind).not.toBe(CellKind.Correct)
-		expect(cellAfterVerify.kind).toBe(CellKind.Incorrect)
+		expect(cellAfterVerify.kind).not.toBe(Cell.Kind.Correct)
+		expect(cellAfterVerify.kind).toBe(Cell.Kind.Incorrect)
 	})
 
 	test('Should return an correct cell.', () => {
 		const cellAfterVerify = cell.writeValue(DEFAULT_OPTS.solution).verify(noop)
 
 		expect(cellAfterVerify.id).not.toBe(cell.id)
-		expect(cellAfterVerify.kind).toBe(CellKind.Correct)
-		expect(cellAfterVerify.kind).not.toBe(CellKind.Incorrect)
+		expect(cellAfterVerify.kind).toBe(Cell.Kind.Correct)
+		expect(cellAfterVerify.kind).not.toBe(Cell.Kind.Incorrect)
 	})
 })

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, type Mock, test, vi } from 'vitest'
 
-import { mockSingleton } from '~/share/utils'
+import { mockSingleton, p } from '~/share/utils'
 import { LANGS } from '$i18n/domain/const'
 
 import { Modal, Page, Route } from '../entities'
@@ -14,18 +14,18 @@ interface PageTestCxt {
 }
 
 const randomModal = () => {
-	const name = Modal.NAMES.difference(['None'] as const).random()
+	const name = p(Modal.KINDS.randomKey(), k => (k === 'None' ? 'Pref' : k))
 
-	if (name === 'Pref') return new Modal[name](Modal.PREF_TYPE.ALL.random())
-	if (name === 'Warn') return new Modal[name](Modal.WARN_TYPE.random())
+	if (name === 'Pref') return new Modal[name](Modal.PREF_TYPE.randomValue())
+	if (name === 'Warn') return new Modal[name](Modal.WARN_TYPE.randomValue())
 	return new Modal[name]()
 }
 
 const randomRoute = () => {
-	const name = Route.NAMES.difference(['Home'] as const).random()
+	const name = p(Route.KINDS.randomKey(), k => (k === 'Home' ? 'Game' : k))
 
 	if (name === 'Game') return new Route[name]('basic')
-	if (name === 'Help') return new Route[name](Route.HELP_SUB.random())
+	if (name === 'Help') return new Route[name](Route.HELP_SUB.randomValue())
 	return new Route[name]('foo')
 }
 
@@ -50,7 +50,7 @@ beforeEach<PageTestCxt>(ctx => {
 
 describe.concurrent('pageSvc', () => {
 	test<PageTestCxt>('Should call the saveMock if set to any language.', async ({ pageSvc, saveMock }) => {
-		await pageSvc.setLang(LANGS.random()).save()
+		await pageSvc.setLang(LANGS.randomValue()).save()
 
 		expect(saveMock).toHaveBeenCalledTimes(1)
 		expect(saveMock).toBeCalledWith(

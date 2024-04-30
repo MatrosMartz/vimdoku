@@ -1,2 +1,2 @@
-export * from './difficulties.const'
+export * as Difficulty from './difficulties.const'
 export * from './modes.const'

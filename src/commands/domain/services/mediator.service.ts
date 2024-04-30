@@ -7,7 +7,7 @@ import { PageSvc } from '$page/domain/services'
 import { IDLE_PREFS } from '$pref/domain/models'
 import type { PrefsRepo } from '$pref/domain/repositories'
 import { PrefsSvc } from '$pref/domain/services'
-import { DifficultyKind, GET_DIFFICULTY_NAME } from '$sudoku/domain/const'
+import { Difficulty } from '$sudoku/domain/const'
 import { Solution } from '$sudoku/domain/entities'
 import type { SudokuRepos } from '$sudoku/domain/repositories'
 import { SudokuSvc } from '$sudoku/domain/services'
@@ -73,11 +73,11 @@ export class MedSvc implements IMed {
 		if (Route.Game.is(page.route)) {
 			if (board != null && info != null && setts != null) {
 				this.#state.sudoku.resume(prefs?.timer ?? IDLE_PREFS.timer)
-				this.#state.page.setRoute(new Route.Game(GET_DIFFICULTY_NAME[setts.difficulty]))
+				this.#state.page.setRoute(new Route.Game(Difficulty.KINDS.keyByValue(setts.difficulty)))
 			} else {
 				await this.#state.sudoku
 					.start(
-						{ difficulty: DifficultyKind[page.route.subRoute], solution: Solution.create() },
+						{ difficulty: Difficulty.KINDS.valueByKey(page.route.subRoute), solution: Solution.create() },
 						prefs?.timer ?? IDLE_PREFS.timer
 					)
 					.save()

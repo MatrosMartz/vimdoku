@@ -2,7 +2,7 @@ import { HistoryObservable, Observable } from '~/share/domain/entities'
 import { singleton } from '~/share/utils'
 
 import { IDLE_MODE, type ModeKind } from '../const'
-import type { Cell, Grid, MoveMap } from '../entities'
+import type { Cell, Grid } from '../entities'
 import { IDLE_TIMER } from '../models'
 
 @singleton
@@ -34,14 +34,14 @@ export class SavedObs extends Observable<boolean> {
 }
 
 @singleton
-export class BoardObs extends Observable<Grid<Cell> | null> {
+export class BoardObs extends Observable<Grid<Cell.Cell> | null> {
 	constructor() {
 		super(null)
 	}
 }
 
 @singleton
-export class MovesObs extends HistoryObservable<MoveMap> {
+export class MovesObs extends HistoryObservable<Cell.MoveMap> {
 	constructor() {
 		super(new Map(), 30, [])
 	}

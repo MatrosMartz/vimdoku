@@ -1,8 +1,8 @@
-import type { Group } from '../entities/group.entity'
+import type { Collection } from '../entities'
 
-export interface OptionField<T = string> {
+export interface OptionField<T extends string = string> {
 	default: T
-	opts: Group<T>
+	opts: Collection.Composite<readonly [string, T], NonNullable<unknown>>
 	type: 'options'
 }
 

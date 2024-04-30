@@ -71,7 +71,7 @@ describe('TextGetterProxy.getLocale ', () => {
 		expect(fetch).toBeCalledWith(globalThis.location.origin + '/locales/foo/en.json')
 	})
 
-	test('', async () => {
-		await expect(TextGetterProxy.fromLocale('foo', Lang.EN)).resolves.toMatchObject({ proxy: expect.any(Object) })
+	test('Should fetch locale and create text getter.', async () => {
+		await expect(TextGetterProxy.fromLocale('foo', Lang.EN)).resolves.toMatchObject(expect.any(Object))
 	})
 })

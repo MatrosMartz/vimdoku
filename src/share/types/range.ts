@@ -1,3 +1,5 @@
+import type { IsInteger, IsUnsigned } from './tuple'
+
 type RangeTo<N extends number, L extends number[] = []> =
 	IsInteger<N> extends false
 		? never

@@ -22,6 +22,7 @@ function create<Locale extends LocaleType>(locale: LocaleStr<Locale>) {
 	type LocaleTextGetter = TextGetter<Locale>
 	const proxyHandler: ProxyHandler<LocaleTextGetter> = {
 		get(_, prop: string) {
+			if (prop === 'then' || prop === 'catch') return
 			const text = Reflect.get(locale, prop)
 
 			if (text == null) return IDLE_I18N_TRANSLATE_FN
@@ -42,8 +43,8 @@ function create<Locale extends LocaleType>(locale: LocaleStr<Locale>) {
  * @returns The text getter.
  */
 async function fromLocale<Locale extends LocaleType>(localeKey: string, lang: Lang) {
-	const locale = await TextGetterProxy.getLocale<Locale>(localeKey, lang)
-	return await new Promise<TextGetter<Locale>>(resolve => resolve(TextGetterProxy.create(locale)))
+	const locale = await getLocale<Locale>(localeKey, lang)
+	return create(locale)
 }
 
 /**
