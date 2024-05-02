@@ -141,11 +141,14 @@ export class SubTokenGroup<S extends string = string> {
 	#weightPattern?: string
 
 	static readonly #createSubToken = new BuildMatcher<readonly [string], SubToken>()
-		.addCase([Case.fromRegex(/^\{\|[^{}|]+\|\}$/i)], t => ({ kind: SubTokenKind.VARIABLE, value: t.slice(2, -2) }))
-		.addCase([Case.fromRegex(/^{[^{}]+}$/i)], t => ({ kind: SubTokenKind.HOLDER, value: t.slice(1, -1) }))
-		.addCase([Case.fromRegex(/^<[^<>]+>$/i)], t => ({ kind: SubTokenKind.SYMBOL, value: t.slice(1, -1) }))
-		.addCase([Case.fromRegex(/^\([^()]+\)$$/i)], t => ({ kind: SubTokenKind.VALUE, value: t.slice(1, -1) }))
-		.addCase([Case.fromRegex(/[<>(){}]/i)], () => {
+		.addCase(Case.array([Case.fromRegex(/^\{\|[^{}|]+\|\}$/i)]), t => ({
+			kind: SubTokenKind.VARIABLE,
+			value: t.slice(2, -2),
+		}))
+		.addCase(Case.array([Case.fromRegex(/^{[^{}]+}$/i)]), t => ({ kind: SubTokenKind.HOLDER, value: t.slice(1, -1) }))
+		.addCase(Case.array([Case.fromRegex(/^<[^<>]+>$/i)]), t => ({ kind: SubTokenKind.SYMBOL, value: t.slice(1, -1) }))
+		.addCase(Case.array([Case.fromRegex(/^\([^()]+\)$$/i)]), t => ({ kind: SubTokenKind.VALUE, value: t.slice(1, -1) }))
+		.addCase(Case.array([Case.fromRegex(/[<>(){}]/i)]), () => {
 			throw new Error('tokenListLike are invalid')
 		})
 		.default(t => ({ kind: SubTokenKind.NORMAL, value: t }))

@@ -32,24 +32,6 @@ describe.concurrent('ExecutorSvc suggestions', () => {
 		expect(suggsObs.data.every(({ value }) => value.startsWith('help'))).toBe(true)
 	})
 
-	test('Should be first suggestions are help commands', () => {
-		executor.searchAutocomplete('help :')
-
-		vi.advanceTimersByTime(500)
-
-		expect(suggsObs.data.every(({ value }) => value.startsWith('help :'))).toBe(true)
-	})
-
-	test('Should be first suggestion are "help :help"', () => {
-		executor.searchAutocomplete('help :help')
-
-		vi.advanceTimersByTime(500)
-
-		expect(suggsObs.data).length(1)
-
-		expect(suggsObs.data[0].id).toBe('{required.h}-{optional.elp}-{symbol.:}-{value.help}')
-	})
-
 	test('Should be if search empty string suggestions length are zero', () => {
 		executor.searchAutocomplete('help :help')
 

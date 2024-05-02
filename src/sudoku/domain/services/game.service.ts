@@ -18,10 +18,10 @@ const pos = Symbol('game-pos')
 
 export abstract class GameSvc implements IGame {
 	static readonly #create = new BuildMatcher<[GameOpts, ModeKind], GameSvc>()
-		.addCase([Case.Any, Case.equalTo(ModeKind.N)], data => new AnnotationGameSvc(data))
-		.addCase([Case.Any, Case.equalTo(ModeKind.I)], data => new InsertGameSvc(data))
-		.addCase([Case.Any, Case.equalTo(ModeKind.V)], data => new VisualGameSvc(data))
-		.addCase([Case.Any, Case.equalTo(ModeKind.X)], data => new NormalGameSvc(data))
+		.addCase(Case.array([Case.Any, Case.equalTo(ModeKind.N)]), data => new AnnotationGameSvc(data))
+		.addCase(Case.array([Case.Any, Case.equalTo(ModeKind.I)]), data => new InsertGameSvc(data))
+		.addCase(Case.array([Case.Any, Case.equalTo(ModeKind.V)]), data => new VisualGameSvc(data))
+		.addCase(Case.array([Case.Any, Case.equalTo(ModeKind.X)]), data => new NormalGameSvc(data))
 		.done()
 
 	protected readonly [board]: IBoard

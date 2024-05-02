@@ -7,6 +7,7 @@ export class Case<T> {
 	static readonly Any = new Case((val): val is unknown => true)
 	static readonly Array = new Case((val): val is readonly unknown[] => Array.isArray(val))
 	static readonly Map = new Case((val): val is ReadonlyMap<unknown, unknown> => val instanceof Map)
+	static readonly Numeric = Case.typeOf('number').union(Case.typeOf('bigint'))
 	static readonly PropertyKey = Case.typeOf('string').union(Case.typeOf('symbol'), Case.typeOf('number'))
 
 	static readonly Set = new Case((val): val is ReadonlySet<unknown> => val instanceof Set)
@@ -50,6 +51,13 @@ export class Case<T> {
 		})
 	}
 
+	static range({ max, min }: { max: number | bigint; min: number | bigint }) {
+		return new Case((val): val is number | bigint => {
+			if (!Case.Numeric.assert(val)) return false
+			return min <= val && val <= max
+		})
+	}
+
 	static startWith<Search extends string>(searchString: Search) {
 		return new Case((val): val is `${Search}${string}` => {
 			if (typeof val !== 'string') return false
@@ -75,22 +83,23 @@ export class Case<T> {
 export type MatchFunc<T extends readonly any[], R> = (...value: T) => R
 export type MatchCase<T extends readonly any[], R> = [CaseAssert<T>, MatchFunc<T, R>]
 
-export type MergeArgs<T extends readonly any[], C extends ReadonlyArray<Case<unknown>>> = {
-	[K in keyof T]: K extends keyof C
-		? C[K] extends Case<infer U>
-			? Extract<T[K], U> extends never
-				? T[K] & U
-				: Extract<T[K], U>
-			: never
+export type MergeArgs<T extends readonly any[], C extends Case<readonly unknown[]>> =
+	C extends Case<infer U>
+		? {
+				[K in keyof T]: K extends keyof U
+					? Extract<T[K], U[K]> extends never
+						? T[K] & U[K]
+						: Extract<T[K], U[K]>
+					: never
+			}
 		: never
-}
 
 export class BuildMatcher<T extends readonly any[], R> {
 	#defaultFn: (...val: T) => R = noop as never
 	readonly #list: Array<MatchCase<T, R>> = []
 
-	addCase<const C extends ReadonlyArray<Case<unknown>>>(casesArr: C, fn: MatchFunc<MergeArgs<T, C>, R>) {
-		this.#list.push([Case.array(casesArr).assert, fn] as never)
+	addCase<const C extends Case<readonly unknown[]>>(casesArr: C, fn: MatchFunc<MergeArgs<T, C>, R>) {
+		this.#list.push([casesArr.assert, fn] as never)
 		return this
 	}
 

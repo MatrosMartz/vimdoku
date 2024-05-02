@@ -15,13 +15,13 @@
 	 * @returns The translated value of the preference.
 	 */
 	const getPrefText = new BuildMatcher<[key: PREFS_FIELDS.Key, locale: Locale, prefs: Prefs], string>()
-		.addCase([new Case(PREFS_FIELDS.subs.TOGGLE.containsKey), Case.Any, Case.Any], (key, locale, prefs) =>
+		.addCase(Case.array([new Case(PREFS_FIELDS.subs.TOGGLE.containsKey), Case.Any, Case.Any]), (key, locale, prefs) =>
 			locale[`prefs_toggle_${prefs[key]}`](String(prefs[key]))
 		)
-		.addCase([Case.equalTo('colorSchema'), Case.Any, Case.Any], (key, locale, prefs) =>
+		.addCase(Case.array([Case.equalTo('colorSchema'), Case.Any, Case.Any]), (key, locale, prefs) =>
 			locale[`prefs_schema_${prefs[key]}`](prefs[key])
 		)
-		.addCase([Case.equalTo(...ACCESSIBILITY_PREFS_NAMES), Case.Any, Case.Any], (key, locale, prefs) =>
+		.addCase(Case.array([Case.equalTo(...ACCESSIBILITY_PREFS_NAMES), Case.Any, Case.Any]), (key, locale, prefs) =>
 			locale[`prefs_accessibility_${prefs[key]}`](prefs[key])
 		)
 		.default((key, locale, prefs) => String(prefs[key]))
