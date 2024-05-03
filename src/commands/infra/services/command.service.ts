@@ -3,7 +3,7 @@ import { CmdTokenKind, type SubToken, SubTokenKind } from '$cmd/domain/entities'
 import { CmdListSvc, CmdSvc, type CreateHeader, SubCmdSvc } from '$cmd/domain/services'
 import { I18N_ACTIONS, PREFS_ACTIONS, SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services/actions.service'
 import { LANGS } from '$i18n/domain/const'
-import { Modal } from '$page/domain/entities'
+import { Modal, Route } from '$page/domain/entities'
 import { PREFS_FIELDS, vimFields } from '$pref/domain/models'
 import { ACCESSIBILITIES, COLOR_SCHEMAS, ICON_THEMES } from '$pref/domain/models/user.model'
 import { Difficulty } from '$sudoku/domain/const'
@@ -93,74 +93,56 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 					med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: preference, value: true })
 				// if (PREFS_FIELDS.subs.NON_TOGGLE.containsKey(preference)) med.dispatch(SCREEN_ACTIONS.openModal, { modal: ... })
 			},
-		})
-	)
-	.addSubFn(
+		}),
 		SubCmdSvc.buildFn('{|preference|}<?>', {
 			desc: locale => locale.cmdDesc_set_showSuggest('Show value of {preference}.'),
 			// fn({ preference }) {
 			// 	if (!PREFS_FIELDS.containsKey(preference)) return
 			// 	med.dispatch(SCREEN_ACTIONS.openModal, { modal: ... })
 			// },
-		})
-	)
-	.addSubFn(
+		}),
 		SubCmdSvc.buildFn('{|preference|}<&>', {
 			desc: locale => locale.cmdDesc_set_resetSuggest("Reset option to it's default value."),
 			fn({ preference }) {
 				if (!PREFS_FIELDS.containsKey(preference)) return
 				med.dispatch(PREFS_ACTIONS.reset, { type: 'by-key', key: preference })
 			},
-		})
-	)
-	.addSubFn(
+		}),
 		SubCmdSvc.buildFn('<no>{|preference|}', {
 			desc: locale => locale.cmdDesc_set_toggleInvSuggest('Toggle preference: Set, switch it off.'),
 			fn({ preference }) {
 				if (!PREFS_FIELDS.subs.TOGGLE.containsKey(preference)) return
 				med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: preference, value: false })
 			},
-		})
-	)
-	.addSubFn(
+		}),
 		SubCmdSvc.buildFn('{|preference|}<!>', {
 			desc: locale => locale.cmdDesc_set_toggleInvSuggest('Toggle preference: Set, Invert value.'),
 			fn({ preference }) {
 				if (!PREFS_FIELDS.subs.TOGGLE.containsKey(preference)) return
 				med.dispatch(PREFS_ACTIONS.invert, { pref: preference })
 			},
-		})
-	)
-	.addSubFn(
+		}),
 		SubCmdSvc.buildFn('<inv>{|preference|}', {
 			desc: locale => locale.cmdDesc_set_toggleInvSuggest('Toggle preference: Set, Invert value.'),
 			fn({ preference }) {
 				if (!PREFS_FIELDS.subs.TOGGLE.containsKey(preference)) return
 				med.dispatch(PREFS_ACTIONS.invert, { pref: preference })
 			},
-		})
-	)
-	.addSubFn(
+		}),
 		SubCmdSvc.buildFn('{|preference|}<=>{|value|}', {
 			desc: locale =>
 				locale.cmdDesc_set_setNonToggleSuggest('String or Number preference: Assign to {preference} the {value}.'),
 			fn: setNonToggleFn,
-		})
-	)
-	.addSubFn(
+		}),
 		SubCmdSvc.buildFn('{|preference|}<:>{|value|}', {
 			desc: locale =>
 				locale.cmdDesc_set_setNonToggleSuggest('String or Number preference: Assign to {preference} the {value}.'),
 			fn: setNonToggleFn,
-		})
-	)
-	.addSubFn(
+		}),
 		SubCmdSvc.buildFn('<all>', {
 			desc: locale => locale.cmdDesc_set_showAll('Show all preferences.'),
 			fn: () => med.dispatch(SCREEN_ACTIONS.openModal, { modal: new Modal.Pref(Modal.PrefType.showAll) }),
-		})
-	)
-	.addSubFn(
+		}),
 		SubCmdSvc.buildFn('<all><&>', {
 			desc: locale => locale.cmdDesc_set_resetAll('Reset all preferences.'),
 			fn: () => med.dispatch(PREFS_ACTIONS.reset, { type: 'all' }),
@@ -182,16 +164,8 @@ const START_CMD = CmdSvc.buildFn('st[art]', {
 			},
 		})
 	)
-	/* .addSubFn(
-		...Difficulty.KINDS.transform(([name, kind]) =>
-			SubCmdSvc.buildFn(`(${name})`, {
-				desc: locale =>
-					locale.cmdDesc_start_difficulty('Start new game with the {|difficulty|} difficulty.', { difficulty: name }),
-				fn: () => med.dispatch(SUDOKU_ACTIONS.start, { difficulty: kind }),
-			})
-		)
-	) */
 	.done()
+
 const PAUSE_CMD = CmdSvc.buildFn('pa[use]', {
 	desc: locale => locale.cmdDesc_pause('Pause current game.'),
 	fn: () => med.dispatch(SCREEN_ACTIONS.openModal, { modal: new Modal.Pause() }),
@@ -242,14 +216,6 @@ const LANGUAGE_CMD = CmdSvc.buildFn('lan[guage]', {
 			},
 		})
 	)
-	/* .addSubFn(
-		...LANGS.transform(([, lang]) =>
-			SubCmdSvc.buildFn(`(${lang})`, {
-				desc: locale => locale.cmdDesc_language_setSuggest('Sets the current language to {|lang|}.', { lang }),
-				fn: () => med.dispatch(I18N_ACTIONS.changeLang, { lang }),
-			})
-		)
-	) */
 	.done()
 
 const HELP_CMD = CmdSvc.buildFn('h[elp]', {
@@ -257,20 +223,27 @@ const HELP_CMD = CmdSvc.buildFn('h[elp]', {
 	// TODO: fn() {},
 })
 	.addSubFn(
-		SubCmdSvc.buildFn('{|subject|}', {
+		SubCmdSvc.buildFn('{subject}', {
 			desc: locale => locale.cmdDesc_help_suggest('Like ":help", additionally jump to the tag {subject}.'),
-			// TODO: fn() {},
+			// fn() {},
+		}),
+		SubCmdSvc.buildFn('<:>{|command|}', {
+			desc: locale => locale.cmdDesc_help_withArg('Show help for selected {|subject|}.', { subject: 'command' }),
+			fn({ command }) {
+				const helpPath = `command/${command}`
+				if (!Route.HELP_SUB.containsValue(helpPath)) return
+				med.dispatch(SCREEN_ACTIONS.goTo, { route: new Route.Help(helpPath) })
+			},
+		}),
+		SubCmdSvc.buildFn("<'>{|preference|}<'>", {
+			desc: locale => locale.cmdDesc_help_withArg('Show help for selected {|subject|}.', { subject: 'preference' }),
+			fn({ preference }) {
+				const helpPath = `preference#${preference}`
+				if (!Route.HELP_SUB.containsValue(helpPath)) return
+				med.dispatch(SCREEN_ACTIONS.goTo, { route: new Route.Help(helpPath) })
+			},
 		})
 	)
-	/* .addSubFn(
-		...['set', 'start', 'pause', 'write', 'resume', 'quit', 'wquit', 'xit', 'exit', 'help', 'language'].map(cmd =>
-			SubCmdSvc.buildFn(`<:>(${cmd})`, {
-				desc: locale =>
-					locale.cmdDesc_help_withArg('Open dialog and display the help of {|subject|}.', { subject: cmd }),
-				// TODO: fn() {},
-			})
-		)
-	) */
 	.done()
 
 export const cmdList = CmdListSvc.buildFn(createHeader)
