@@ -1,11 +1,11 @@
 import { inject } from '~/share/utils'
 
 import type { IExec } from '../models'
-import type { CmdListSvc } from './command.service'
+import type { ShellSvc } from './shell.service'
 import { SuggsObs } from './suggestions-obs.service'
 
 interface ExecutorDeps {
-	cmdList: CmdListSvc<unknown>
+	cmdList: ShellSvc<unknown>
 }
 
 /** Represent a Executor Service. */

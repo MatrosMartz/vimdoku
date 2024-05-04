@@ -1,6 +1,6 @@
 import type { Pos, PosData } from '~/share/domain/entities'
 import type { IPos } from '~/share/domain/models'
-import { BuildMatcher, Case } from '~/share/utils'
+import { BuildMatcher, Assert } from '~/share/utils'
 
 import { ModeKind } from '../const'
 import type { ValidNumbers } from '../entities'
@@ -18,10 +18,10 @@ const pos = Symbol('game-pos')
 
 export abstract class GameSvc implements IGame {
 	static readonly #create = new BuildMatcher<[GameOpts, ModeKind], GameSvc>()
-		.addCase(Case.array([Case.Any, Case.equalTo(ModeKind.N)]), data => new AnnotationGameSvc(data))
-		.addCase(Case.array([Case.Any, Case.equalTo(ModeKind.I)]), data => new InsertGameSvc(data))
-		.addCase(Case.array([Case.Any, Case.equalTo(ModeKind.V)]), data => new VisualGameSvc(data))
-		.addCase(Case.array([Case.Any, Case.equalTo(ModeKind.X)]), data => new NormalGameSvc(data))
+		.addCase(Assert.array([Assert.Any, Assert.equalTo(ModeKind.N)]), data => new AnnotationGameSvc(data))
+		.addCase(Assert.array([Assert.Any, Assert.equalTo(ModeKind.I)]), data => new InsertGameSvc(data))
+		.addCase(Assert.array([Assert.Any, Assert.equalTo(ModeKind.V)]), data => new VisualGameSvc(data))
+		.addCase(Assert.array([Assert.Any, Assert.equalTo(ModeKind.X)]), data => new NormalGameSvc(data))
 		.done()
 
 	protected readonly [board]: IBoard

@@ -1,4 +1,4 @@
-import { CmdTokenGroup, type Desc, type DescFn } from '../entities'
+import { Cmd, type Desc, type DescFn } from '../entities'
 import { type CreateHeader, type SubCmdFn, SubCmdSvc } from './subcommand.service'
 
 export interface CmdBuilderOpts {
@@ -15,7 +15,7 @@ class CmdBuilder {
 
 	constructor(opts: CmdBuilderOpts)
 	constructor({ desc, fn, cmdLike }: CmdBuilderOpts) {
-		this.#cmdTokenList = CmdTokenGroup.fromString(cmdLike)
+		this.#cmdTokenList = Cmd.fromString(cmdLike)
 		this.#subCmdFnList = [SubCmdSvc.buildFn('', { desc, fn })]
 	}
 
@@ -44,12 +44,12 @@ export class CmdSvc<H> {
 		return this.#subCmds
 	}
 
-	static buildFn(cmdLike: string, opts: Omit<CmdBuilderOpts, 'cmdLike'>) {
+	static buildCmdFn(cmdLike: string, opts: Omit<CmdBuilderOpts, 'cmdLike'>) {
 		return new CmdBuilder({ ...opts, cmdLike })
 	}
 }
 
-class CmdListBuilder<H> {
+class ShellBuilder<H> {
 	#cmdFnList: Array<CmdSvc<H>> = []
 	readonly #createHeader
 
@@ -63,11 +63,11 @@ class CmdListBuilder<H> {
 	}
 
 	done() {
-		return new CmdListSvc(this.#cmdFnList)
+		return new ShellSvc(this.#cmdFnList)
 	}
 }
 
-export class CmdListSvc<H> {
+export class ShellSvc<H> {
 	readonly #list
 
 	constructor(initialList: Array<CmdSvc<H>>) {
@@ -83,7 +83,7 @@ export class CmdListSvc<H> {
 	}
 
 	static buildFn<H>(createHeader: CreateHeader<H>) {
-		return new CmdListBuilder(createHeader)
+		return new ShellBuilder(createHeader)
 	}
 
 	exec(input: string) {

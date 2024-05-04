@@ -1,5 +1,5 @@
 export * from './actions.service'
-export * from './command.service'
+export * from './shell.service'
 export * from './executor.service'
 export * from './mediator.service'
 export * from './subcommand.service'

@@ -1,6 +1,6 @@
 import { Collection } from '~/share/domain/entities'
 import type { FormSchema } from '~/share/domain/models'
-import { Case } from '~/share/utils'
+import { Assert } from '~/share/utils'
 
 import { SUDOKU_IDLE_PREFS, sudokuFields, type SudokuPrefs } from './sudoku.model'
 import { USER_IDLE_PREFS, userFields, type UserPrefs } from './user.model'
@@ -45,7 +45,7 @@ export interface IPrefs {
 	setByKey<K extends keyof Prefs>(key: K, value: Prefs[K]): this
 }
 
-export const toggleFieldCase = new Case((field): field is { type: 'toggle' } => {
+export const toggleFieldCase = new Assert((field): field is { type: 'toggle' } => {
 	if (!(typeof field === 'object') || field == null) return false
 	return Reflect.get(field, 'type') === 'toggle'
 })
@@ -55,7 +55,7 @@ export const PREFS_FIELDS = Collection.create()
 	.addSubCollection('SUDOKU', Collection.entriesByObj(sudokuFields))
 	.addSubCollection('USER', Collection.entriesByObj(userFields))
 	.addSubCollection('VIM', Collection.entriesByObj(vimFields))
-	.createConditionalSubCollections('TOGGLE', 'NON_TOGGLE', Case.array([Case.Any, toggleFieldCase]))
+	.createConditionalSubCollections('TOGGLE', 'NON_TOGGLE', Assert.array([Assert.Any, toggleFieldCase]))
 	.done()
 export declare module PREFS_FIELDS {
 	type Entry = typeof PREFS_FIELDS extends Collection.Composite<infer Entry, any> ? Entry : never

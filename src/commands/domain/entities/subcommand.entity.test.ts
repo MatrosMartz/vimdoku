@@ -1,38 +1,19 @@
 import { describe, expect, test } from 'vitest'
 
-import { CmdTokenGroup } from './token.entity'
+import { Cmd } from './command.entity'
+import { SubCmd } from './subcommand.entity'
 
-describe.concurrent('Cmd Group entity', () => {
-	test('Their value should be "help"', () => {
-		const cmd = CmdTokenGroup.fromString('h[elp]')
-
-		expect(cmd.value).toBe('help')
-	})
-
-	test('Their execRgx should be "h(?:e(?:lp?)?)?\\s+"', () => {
-		const cmd = CmdTokenGroup.fromString('h[elp]')
-
-		expect(cmd.getExecRgx()).toBe('h(?:elp)?')
-	})
-
-	test('Their weight should be "h(?:e(?:lp?)?)?\\s+"', () => {
-		const cmd = CmdTokenGroup.fromString('h[elp]')
-
-		expect(cmd.getWeightRgx()).toBe('(h(?:e(?:lp?)?)?)?')
-	})
-})
-
-describe.concurrent('Sub Group entity', () => {
+describe.concurrent('Subcommand', () => {
 	test('Their value should be "help :set"', () => {
-		const cmd = CmdTokenGroup.fromString('h[elp]')
-		const subCmd = cmd.createSub('<:>(set)')
+		const cmd = Cmd.fromString('h[elp]')
+		const subCmd = SubCmd.fromString('<:>(set)', cmd)
 
 		expect(subCmd.value).toBe('help :set')
 	})
 
 	test('Should return an object with the "match" key on true if matched, otherwise on false.', () => {
-		const cmd = CmdTokenGroup.fromString('h[elp]')
-		const subCmd = cmd.createSub('<:>(set)')
+		const cmd = Cmd.fromString('h[elp]')
+		const subCmd = SubCmd.fromString('<:>(set)', cmd)
 
 		expect(subCmd.exec('help :set')).toEqual({ match: true, variables: {} })
 		expect(subCmd.exec('help :set   ')).toEqual({ match: true, variables: {} })
@@ -44,8 +25,8 @@ describe.concurrent('Sub Group entity', () => {
 	})
 
 	test('Should return zero if it does not match or one greater if it does match.', () => {
-		const cmd = CmdTokenGroup.fromString('h[elp]')
-		const subCmd = cmd.createSub('<:>(set)')
+		const cmd = Cmd.fromString('h[elp]')
+		const subCmd = SubCmd.fromString('<:>(set)', cmd)
 
 		expect(subCmd.getWeight('h')).toBe(1)
 		expect(subCmd.getWeight('help')).toBe(4)
@@ -56,8 +37,8 @@ describe.concurrent('Sub Group entity', () => {
 	})
 
 	test('Should return zero if it does not match or one greater if it does match (Empty subcommand).', () => {
-		const cmd = CmdTokenGroup.fromString('h[elp]')
-		const subCmd = cmd.createSub('')
+		const cmd = Cmd.fromString('h[elp]')
+		const subCmd = SubCmd.fromString('', cmd)
 
 		expect(subCmd.getWeight('h')).toBe(1)
 		expect(subCmd.getWeight('help')).toBe(4)
@@ -67,8 +48,8 @@ describe.concurrent('Sub Group entity', () => {
 	})
 
 	test('Should return an object with the prop key containing the input variables if it matches.', () => {
-		const cmd = CmdTokenGroup.fromString('se[t]')
-		const subCmd = cmd.createSub('(history)<=>{|value|}')
+		const cmd = Cmd.fromString('se[t]')
+		const subCmd = SubCmd.fromString('(history)<=>{|value|}', cmd)
 
 		expect(subCmd.exec('se history=100')).toEqual({ match: true, variables: { value: '100' } })
 		expect(subCmd.exec('set history=100')).toEqual({ match: true, variables: { value: '100' } })

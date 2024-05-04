@@ -2,12 +2,12 @@ import { describe, expect, test, vi } from 'vitest'
 
 import { noop } from '~/share/utils'
 
-import { CmdTokenGroup, CmdTokenKind, SubTokenGroup, SubTokenKind } from '../entities'
+import { Cmd, CmdToken, SubCmd, SubCmdToken } from '../entities'
 import { type CreateHeader, SubCmdSvc } from './subcommand.service'
 
 const createHeader: CreateHeader<{ cmd: string; sub: string }> = ([cmdTokens, subTokens]) => {
-	const cmd = cmdTokens.tokens.map(({ value }) => value).join('')
-	const sub = subTokens.tokens.map(({ value }) => value).join('')
+	const cmd = cmdTokens.map(({ value }) => value).join('')
+	const sub = subTokens.map(({ value }) => value).join('')
 	return { cmd, sub }
 }
 
@@ -16,11 +16,8 @@ describe.concurrent('Subcommand Service', () => {
 		const subCmd = new SubCmdSvc({
 			createHeader: noop,
 			desc: () => 'foobar',
-			tokens: new SubTokenGroup({
-				cmdTokenGroup: new CmdTokenGroup([
-					{ kind: CmdTokenKind.REQUIRED, value: 'foo' },
-					{ kind: CmdTokenKind.OPTIONAL, value: 'bar' },
-				]),
+			subCmd: new SubCmd({
+				cmd: new Cmd([new CmdToken.Required('foo'), new CmdToken.Optional('bar')]),
 				defaultVariables: {},
 				tokens: [],
 			}),
@@ -33,11 +30,8 @@ describe.concurrent('Subcommand Service', () => {
 		const subCmd = new SubCmdSvc({
 			createHeader: noop,
 			desc: () => 'foobar',
-			tokens: new SubTokenGroup({
-				cmdTokenGroup: new CmdTokenGroup([
-					{ kind: CmdTokenKind.REQUIRED, value: 'foo' },
-					{ kind: CmdTokenKind.OPTIONAL, value: 'bar' },
-				]),
+			subCmd: new SubCmd({
+				cmd: new Cmd([new CmdToken.Required('foo'), new CmdToken.Optional('bar')]),
 				defaultVariables: {},
 				tokens: [],
 			}),
@@ -50,11 +44,8 @@ describe.concurrent('Subcommand Service', () => {
 		const subCmd = new SubCmdSvc({
 			createHeader: noop,
 			desc: () => 'foobar',
-			tokens: new SubTokenGroup({
-				cmdTokenGroup: new CmdTokenGroup([
-					{ kind: CmdTokenKind.REQUIRED, value: 'foo' },
-					{ kind: CmdTokenKind.OPTIONAL, value: 'bar' },
-				]),
+			subCmd: new SubCmd({
+				cmd: new Cmd([new CmdToken.Required('foo'), new CmdToken.Optional('bar')]),
 				defaultVariables: {},
 				tokens: [],
 			}),
@@ -68,11 +59,8 @@ describe.concurrent('Subcommand Service', () => {
 		const subCmd = new SubCmdSvc({
 			createHeader,
 			desc: () => 'foobar',
-			tokens: new SubTokenGroup({
-				cmdTokenGroup: new CmdTokenGroup([
-					{ kind: CmdTokenKind.REQUIRED, value: 'foo' },
-					{ kind: CmdTokenKind.OPTIONAL, value: 'bar' },
-				]),
+			subCmd: new SubCmd({
+				cmd: new Cmd([new CmdToken.Required('foo'), new CmdToken.Optional('bar')]),
 				defaultVariables: {},
 				tokens: [],
 			}),
@@ -87,11 +75,8 @@ describe.concurrent('Subcommand Service', () => {
 			createHeader: noop,
 			desc: () => 'foobar',
 			fn,
-			tokens: new SubTokenGroup({
-				cmdTokenGroup: new CmdTokenGroup([
-					{ kind: CmdTokenKind.REQUIRED, value: 'foo' },
-					{ kind: CmdTokenKind.OPTIONAL, value: 'bar' },
-				]),
+			subCmd: new SubCmd({
+				cmd: new Cmd([new CmdToken.Required('foo'), new CmdToken.Optional('bar')]),
 				defaultVariables: {},
 				tokens: [],
 			}),
@@ -107,13 +92,10 @@ describe.concurrent('Subcommand Service', () => {
 			createHeader: noop,
 			desc: () => 'foobar',
 			fn,
-			tokens: new SubTokenGroup({
-				cmdTokenGroup: new CmdTokenGroup([
-					{ kind: CmdTokenKind.REQUIRED, value: 'foo' },
-					{ kind: CmdTokenKind.OPTIONAL, value: 'bar' },
-				]),
+			subCmd: new SubCmd({
+				cmd: new Cmd([new CmdToken.Required('foo'), new CmdToken.Optional('bar')]),
 				defaultVariables: { baz: 'baz' },
-				tokens: [{ kind: SubTokenKind.VARIABLE, value: 'baz' }],
+				tokens: [new SubCmdToken.Variable('baz')],
 			}),
 		})
 

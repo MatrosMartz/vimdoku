@@ -1,6 +1,6 @@
 <script context="module" lang="ts">
 	import type { LocaleType, ShareLocale, TextGetter } from '~/locales'
-	import { BuildMatcher, capitalCase, Case } from '~/share/utils'
+	import { Assert, BuildMatcher, capitalCase } from '~/share/utils'
 	import { i18nState } from '$i18n/infra/stores/svelte'
 	import { ACCESSIBILITY_PREFS_NAMES, type Prefs, PREFS_FIELDS } from '$pref/domain/models'
 	import { prefsState } from '$pref/infra/stores/svelte'
@@ -15,14 +15,16 @@
 	 * @returns The translated value of the preference.
 	 */
 	const getPrefText = new BuildMatcher<[key: PREFS_FIELDS.Key, locale: Locale, prefs: Prefs], string>()
-		.addCase(Case.array([new Case(PREFS_FIELDS.subs.TOGGLE.containsKey), Case.Any, Case.Any]), (key, locale, prefs) =>
-			locale[`prefs_toggle_${prefs[key]}`](String(prefs[key]))
+		.addCase(
+			Assert.array([new Assert(PREFS_FIELDS.subs.TOGGLE.containsKey), Assert.Any, Assert.Any]),
+			(key, locale, prefs) => locale[`prefs_toggle_${prefs[key]}`](String(prefs[key]))
 		)
-		.addCase(Case.array([Case.equalTo('colorSchema'), Case.Any, Case.Any]), (key, locale, prefs) =>
+		.addCase(Assert.array([Assert.equalTo('colorSchema'), Assert.Any, Assert.Any]), (key, locale, prefs) =>
 			locale[`prefs_schema_${prefs[key]}`](prefs[key])
 		)
-		.addCase(Case.array([Case.equalTo(...ACCESSIBILITY_PREFS_NAMES), Case.Any, Case.Any]), (key, locale, prefs) =>
-			locale[`prefs_accessibility_${prefs[key]}`](prefs[key])
+		.addCase(
+			Assert.array([Assert.equalTo(...ACCESSIBILITY_PREFS_NAMES), Assert.Any, Assert.Any]),
+			(key, locale, prefs) => locale[`prefs_accessibility_${prefs[key]}`](prefs[key])
 		)
 		.default((key, locale, prefs) => String(prefs[key]))
 		.done()

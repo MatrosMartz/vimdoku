@@ -1,6 +1,6 @@
 import type { PagesKeys } from '~/locales'
 import { Collection } from '~/share/domain/entities'
-import { Case } from '~/share/utils'
+import { Assert } from '~/share/utils'
 import type { Difficulty } from '$sudoku/domain/const'
 
 export enum Kind {
@@ -12,7 +12,7 @@ export enum Kind {
 
 export const KINDS = Collection.create()
 	.addEntries(Collection.entriesByObj(Kind))
-	.createConditionalSubCollections('SIMPLE', 'COMPOUND', Case.array([Case.equalTo('Home', 'NotFound'), Case.Any]))
+	.createConditionalSubCollections('SIMPLE', 'COMPOUND', Assert.array([Assert.equalTo('Home', 'NotFound'), Assert.Any]))
 	.done()
 
 export enum HelpSub {

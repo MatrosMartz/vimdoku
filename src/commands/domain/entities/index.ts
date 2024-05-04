@@ -1,2 +1,5 @@
+export * from './command.entity'
+export * as CmdToken from './command-token.entity'
+export * from './subcommand.entity'
+export * as SubCmdToken from './subcommand-token.entity'
 export * from './suggestion.entity'
-export * from './token.entity'

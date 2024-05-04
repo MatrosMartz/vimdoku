@@ -1,48 +1,45 @@
-import { type Desc, type DescFn, Sugg } from '../entities/suggestion.entity'
-import { type CmdTokenGroup, type SubTokenGroup, type TokenList, type TokenVariables } from '../entities/token.entity'
-
-export type CreateHeader<H> = (tokens: TokenList) => H
+import { type Cmd, type Desc, type DescFn, SubCmd, Sugg, type TokenList, type TokenVariables } from '../entities'
+export type CreateHeader<H> = (tokenList: TokenList) => H
 
 export interface SubCmdSvcOpts<S extends string, H> {
 	fn?(variables: TokenVariables<S>): void
 	createHeader: CreateHeader<H>
 	desc: DescFn | Desc
-	tokens: SubTokenGroup<S>
+	subCmd: SubCmd<S>
 }
 
-export type SubCmdFn = <H>(cmdTokensGroup: CmdTokenGroup, createHeader: CreateHeader<H>) => SubCmdSvc<H>
+export type SubCmdFn = <H>(cmdTokensGroup: Cmd, createHeader: CreateHeader<H>) => SubCmdSvc<H>
 
 export class SubCmdSvc<T> {
 	readonly #desc: Desc
 	readonly #fn
 	readonly #header
 	readonly #id
-	readonly #tokens
+	readonly #subCmd
 
-	constructor({ desc, tokens, fn, createHeader }: SubCmdSvcOpts<string, T>) {
+	constructor({ desc, subCmd, fn, createHeader }: SubCmdSvcOpts<string, T>) {
 		this.#desc = Array.isArray(desc) ? desc : [desc]
-		this.#tokens = tokens
+		this.#subCmd = subCmd
 		this.#fn = fn
-		this.#header = createHeader(this.#tokens.tokens)
-		this.#id = tokens.tokens.flatMap(({ tokens }) => tokens.map(({ kind, value }) => `{${kind}.${value}}`)).join('-')
+		this.#header = createHeader(subCmd.tokenList)
+		this.#id = subCmd.tokenList.flatMap(tokens => tokens.map(({ kind, value }) => `{${kind}.${value}}`)).join('-')
 	}
 
 	get name() {
-		return this.#tokens.value
+		return this.#subCmd.value
 	}
 
 	static buildFn<const S extends string>(
 		subLike: S,
-		opts: Omit<SubCmdSvcOpts<S, unknown>, 'createHeader' | 'tokens'>
+		opts: Omit<SubCmdSvcOpts<S, unknown>, 'createHeader' | 'subCmd'>
 	): SubCmdFn {
-		return (cmdTokenGroup, createHeader) =>
-			new SubCmdSvc({ ...opts, tokens: cmdTokenGroup.createSub(subLike), createHeader })
+		return (cmd, createHeader) => new SubCmdSvc({ ...opts, subCmd: SubCmd.fromString(subLike, cmd), createHeader })
 	}
 
 	execIfMatch(input: string) {
 		if (this.#fn == null) return
 
-		const result = this.#tokens.exec(input)
+		const result = this.#subCmd.exec(input)
 
 		if (!result.match) return
 		this.#fn(result.variables)
@@ -51,8 +48,8 @@ export class SubCmdSvc<T> {
 	getSuggestion(input: string) {
 		return new Sugg({
 			desc: this.#desc,
-			value: this.#tokens.value,
-			weight: this.#tokens.getWeight(input),
+			value: this.#subCmd.value,
+			weight: this.#subCmd.getWeight(input),
 			header: this.#header,
 			id: this.#id,
 		})

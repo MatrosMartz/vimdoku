@@ -1,10 +1,10 @@
 import { vi } from 'vitest'
 
-import { CmdListSvc, CmdSvc, type CreateHeader, SubCmdSvc } from '$cmd/domain/services'
+import { CmdSvc, type CreateHeader, ShellSvc, SubCmdSvc } from '$cmd/domain/services'
 
 export const createHeader: CreateHeader<[string, string]> = ([cmdToken, subTokens]) => [
-	cmdToken.tokens.join(''),
-	subTokens.tokens.join(''),
+	cmdToken.join('/'),
+	subTokens.join('/'),
 ]
 
 /**
@@ -13,7 +13,7 @@ export const createHeader: CreateHeader<[string, string]> = ([cmdToken, subToken
  */
 const descMock = vi.fn(() => '')
 
-const SET_CMD = CmdSvc.buildFn('se[t]', {
+const SET_CMD = CmdSvc.buildCmdFn('se[t]', {
 	desc: descMock,
 	fn: vi.fn(),
 })
@@ -72,7 +72,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	)
 	.done()
 
-const START_CMD = CmdSvc.buildFn('st[art]', {
+const START_CMD = CmdSvc.buildCmdFn('st[art]', {
 	desc: descMock,
 	fn: vi.fn(),
 })
@@ -83,42 +83,42 @@ const START_CMD = CmdSvc.buildFn('st[art]', {
 		})
 	)
 	.done()
-const PAUSE_CMD = CmdSvc.buildFn('pa[use]', {
+const PAUSE_CMD = CmdSvc.buildCmdFn('pa[use]', {
 	desc: descMock,
 	fn: vi.fn(),
 }).done()
 
-const WRITE_CMD = CmdSvc.buildFn('w[rite]', {
+const WRITE_CMD = CmdSvc.buildCmdFn('w[rite]', {
 	desc: descMock,
 	fn: vi.fn(),
 }).done()
 
-const RESUME_CMD = CmdSvc.buildFn('re[sume]', {
+const RESUME_CMD = CmdSvc.buildCmdFn('re[sume]', {
 	desc: [descMock, descMock],
 	fn: vi.fn(),
 }).done()
 
-const QUIT_CMD = CmdSvc.buildFn('q[uit]', {
+const QUIT_CMD = CmdSvc.buildCmdFn('q[uit]', {
 	desc: descMock,
 	fn: vi.fn(),
 }).done()
 
-const WQUIT_CMD = CmdSvc.buildFn('wq[uit]', {
+const WQUIT_CMD = CmdSvc.buildCmdFn('wq[uit]', {
 	desc: descMock,
 	fn: vi.fn(),
 }).done()
 
-const XIT_CMD = CmdSvc.buildFn('x[it]', {
+const XIT_CMD = CmdSvc.buildCmdFn('x[it]', {
 	desc: descMock,
 	fn: vi.fn(),
 }).done()
 
-const EXIT_CMD = CmdSvc.buildFn('exi[t]', {
+const EXIT_CMD = CmdSvc.buildCmdFn('exi[t]', {
 	desc: descMock,
 	fn: vi.fn(),
 }).done()
 
-const HELP_CMD = CmdSvc.buildFn('h[elp]', {
+const HELP_CMD = CmdSvc.buildCmdFn('h[elp]', {
 	desc: descMock,
 	fn: vi.fn(),
 })
@@ -130,7 +130,7 @@ const HELP_CMD = CmdSvc.buildFn('h[elp]', {
 	)
 	.done()
 
-export const cmdListMock = CmdListSvc.buildFn(createHeader)
+export const cmdListMock = ShellSvc.buildFn(createHeader)
 	.addCmdFn(SET_CMD)
 	.addCmdFn(START_CMD)
 	.addCmdFn(PAUSE_CMD)

@@ -1,5 +1,5 @@
 import type { Entry, EntryGetKeyByValue, EntryGetValueByKey, ObjToEntries, ReadonlyRecord } from '~/share/types'
-import { type Case, createArray } from '~/share/utils'
+import { type Assert, createArray } from '~/share/utils'
 
 class HashEntries<E extends Entry = Entry> extends Array<E> {
 	static readonly HashKey = Symbol('hash-key')
@@ -304,7 +304,7 @@ class Create<T extends ReadonlyRecord<string, Entry> = NonNullable<unknown>, A e
 	createConditionalSubCollections<TN extends string, FN extends string, C extends Entry>(
 		trueName: TN,
 		falseName: FN,
-		_case: Case<C>
+		_case: Assert<C>
 	): Create<T & ReadonlyRecord<TN, Extract<A, C>> & ReadonlyRecord<FN, Exclude<A, Extract<A, C>>>, A> {
 		const indexArr = this.#entries.reduce<[number[], number[]]>(
 			([trueI, falseI], curr, i) => (_case.assert(curr) ? [[...trueI, i], falseI] : [trueI, [...falseI, i]]),
@@ -317,7 +317,7 @@ class Create<T extends ReadonlyRecord<string, Entry> = NonNullable<unknown>, A e
 
 	createSubCollection<N extends string, C extends Entry>(
 		name: N,
-		_case: Case<C>
+		_case: Assert<C>
 	): Create<T & ReadonlyRecord<N, Extract<A, C>>, A> {
 		const indexArr = this.#entries.reduce<number[]>((acc, curr, i) => (_case.assert(curr) ? [...acc, i] : acc), [])
 		this.#slices = [...this.#slices, [name, indexArr]]

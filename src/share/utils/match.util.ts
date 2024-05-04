@@ -1,22 +1,20 @@
-import type { StrToType, StrTypes } from '../types'
+import type { Class, StrToType, StrTypes } from '../types'
 import { entriesBy, noop } from './commons.util'
 
-export type CaseAssert<T> = (value: unknown) => value is T
+export type AssertFn<T> = (value: unknown) => value is T
 
-export class Case<T> {
-	static readonly Any = new Case((val): val is unknown => true)
-	static readonly Array = new Case((val): val is readonly unknown[] => Array.isArray(val))
-	static readonly Map = new Case((val): val is ReadonlyMap<unknown, unknown> => val instanceof Map)
-	static readonly Numeric = Case.typeOf('number').union(Case.typeOf('bigint'))
-	static readonly PropertyKey = Case.typeOf('string').union(Case.typeOf('symbol'), Case.typeOf('number'))
-
-	static readonly Set = new Case((val): val is ReadonlySet<unknown> => val instanceof Set)
-
-	static readonly SetLike = Case.Set.union(Case.Map)
+export class Assert<T> {
+	static readonly Any = new Assert((val): val is unknown => true)
+	static readonly Array = new Assert((val): val is readonly unknown[] => Array.isArray(val))
+	static readonly Map = Assert.is(Map)
+	static readonly Numeric = Assert.typeOf('number').union(Assert.typeOf('bigint'))
+	static readonly PropertyKey = Assert.typeOf('string').union(Assert.typeOf('symbol'), Assert.typeOf('number'))
+	static readonly Set = Assert.is(Set)
+	static readonly SetLike = Assert.Set.union(Assert.Map)
 
 	readonly #assert
 
-	constructor(assert: CaseAssert<T>) {
+	constructor(assert: AssertFn<T>) {
 		this.#assert = assert
 	}
 
@@ -24,26 +22,31 @@ export class Case<T> {
 		return this.#assert
 	}
 
-	static array<const Arr extends ReadonlyArray<Case<any>>>(arrCases: Arr) {
-		type Assert = { readonly [K in keyof Arr]: Arr[K] extends Case<infer A> ? A : never }
-		return new Case((val): val is Assert => Case.Array.assert(val) && arrCases.every((c, i) => c.assert(val[i])))
+	static array<const Arr extends ReadonlyArray<Assert<any>>>(arrCases: Arr) {
+		type ArrayType = { readonly [K in keyof Arr]: Arr[K] extends Assert<infer A> ? A : never }
+		return new Assert((val): val is ArrayType => Assert.Array.assert(val) && arrCases.every((c, i) => c.assert(val[i])))
 	}
 
 	static equalTo<const T>(...values: T[]) {
-		return new Case((val): val is T => values.includes(val as never))
+		return new Assert((val): val is T => values.includes(val as never))
 	}
 
 	static fromRegex(rgx: RegExp) {
-		return new Case((val): val is string => typeof val === 'string' && rgx.test(val))
+		return new Assert((val): val is string => typeof val === 'string' && rgx.test(val))
 	}
 
-	static not<const T>(_case: Case<T>) {
-		return new Case((val): val is Exclude<unknown, Extract<unknown, T>> => !_case.assert(val))
+	static is<Classes extends ReadonlyArray<Class<object>>>(...classes: Classes) {
+		type ClassType = Classes[number] extends Class<infer I> ? I : never
+		return new Assert((val): val is ClassType => classes.some(Class => val instanceof Class))
 	}
 
-	static object<Obj extends Record<PropertyKey, Case<unknown>>>(objCases: Obj) {
-		type Assert = { readonly [K in keyof Obj]: Obj[K] extends Case<infer A> ? A : never }
-		return new Case((obj): obj is Assert => {
+	static not<const T>(_case: Assert<T>) {
+		return new Assert((val): val is Exclude<unknown, Extract<unknown, T>> => !_case.assert(val))
+	}
+
+	static object<Obj extends Record<PropertyKey, Assert<unknown>>>(objCases: Obj) {
+		type ObjectType = { readonly [K in keyof Obj]: Obj[K] extends Assert<infer A> ? A : never }
+		return new Assert((obj): obj is ObjectType => {
 			if (typeof obj !== 'object' || obj == null) return false
 			for (const [key, value] of entriesBy(objCases))
 				if (!(key in obj) || !value.assert(Reflect.get(obj, key))) return false
@@ -52,39 +55,39 @@ export class Case<T> {
 	}
 
 	static range({ max, min }: { max: number | bigint; min: number | bigint }) {
-		return new Case((val): val is number | bigint => {
-			if (!Case.Numeric.assert(val)) return false
+		return new Assert((val): val is number | bigint => {
+			if (!Assert.Numeric.assert(val)) return false
 			return min <= val && val <= max
 		})
 	}
 
 	static startWith<Search extends string>(searchString: Search) {
-		return new Case((val): val is `${Search}${string}` => {
+		return new Assert((val): val is `${Search}${string}` => {
 			if (typeof val !== 'string') return false
 			return val.startsWith(searchString)
 		})
 	}
 
 	static typeOf<S extends StrTypes>(type: S) {
-		return new Case((val): val is StrToType<S> => {
+		return new Assert((val): val is StrToType<S> => {
 			const valType = typeof val
 			if (type === 'null') return val == null
 			return valType === type
 		})
 	}
 
-	union<O extends ReadonlyArray<Case<unknown>>>(...others: O) {
-		type OT = O[number] extends Case<infer U> ? U : never
+	union<Others extends ReadonlyArray<Assert<unknown>>>(...others: Others) {
+		type OthersType = Others[number] extends Assert<infer U> ? U : never
 
-		return new Case((val): val is T | OT => this.assert(val) || others.some(({ assert }) => assert(val)))
+		return new Assert((val): val is T | OthersType => this.assert(val) || others.some(({ assert }) => assert(val)))
 	}
 }
 
 export type MatchFunc<T extends readonly any[], R> = (...value: T) => R
-export type MatchCase<T extends readonly any[], R> = [CaseAssert<T>, MatchFunc<T, R>]
+export type MatchCase<T extends readonly any[], R> = [AssertFn<T>, MatchFunc<T, R>]
 
-export type MergeArgs<T extends readonly any[], C extends Case<readonly unknown[]>> =
-	C extends Case<infer U>
+export type MergeArgs<T extends readonly any[], C extends Assert<readonly unknown[]>> =
+	C extends Assert<infer U>
 		? {
 				[K in keyof T]: K extends keyof U
 					? Extract<T[K], U[K]> extends never
@@ -98,7 +101,7 @@ export class BuildMatcher<T extends readonly any[], R> {
 	#defaultFn: (...val: T) => R = noop as never
 	readonly #list: Array<MatchCase<T, R>> = []
 
-	addCase<const C extends Case<readonly unknown[]>>(casesArr: C, fn: MatchFunc<MergeArgs<T, C>, R>) {
+	addCase<const C extends Assert<readonly unknown[]>>(casesArr: C, fn: MatchFunc<MergeArgs<T, C>, R>) {
 		this.#list.push([casesArr.assert, fn] as never)
 		return this
 	}

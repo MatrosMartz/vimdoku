@@ -1,6 +1,6 @@
-import { BuildMatcher, Case } from '~/share/utils'
-import { CmdTokenKind, type SubToken, SubTokenKind } from '$cmd/domain/entities'
-import { CmdListSvc, CmdSvc, type CreateHeader, SubCmdSvc } from '$cmd/domain/services'
+import { Assert, BuildMatcher } from '~/share/utils'
+import { CmdToken, SubCmdToken } from '$cmd/domain/entities'
+import { CmdSvc, type CreateHeader, ShellSvc, SubCmdSvc } from '$cmd/domain/services'
 import { I18N_ACTIONS, PREFS_ACTIONS, SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services/actions.service'
 import { LANGS } from '$i18n/domain/const'
 import { Modal, Route } from '$page/domain/entities'
@@ -10,22 +10,22 @@ import { Difficulty } from '$sudoku/domain/const'
 
 import { med } from './mediator.service'
 
-const firstCase = Case.array([
-	Case.object({
-		preference: Case.equalTo('contrast', 'motionReduce'),
-		value: new Case(ACCESSIBILITIES.containsValue),
+const firstCase = Assert.array([
+	Assert.object({
+		preference: Assert.equalTo('contrast', 'motionReduce'),
+		value: new Assert(ACCESSIBILITIES.containsValue),
 	})
-		.union(Case.object({ preference: Case.equalTo('colorSchema'), value: new Case(COLOR_SCHEMAS.containsValue) }))
-		.union(Case.object({ preference: Case.equalTo('iconTheme'), value: new Case(ICON_THEMES.containsValue) })),
+		.union(Assert.object({ preference: Assert.equalTo('colorSchema'), value: new Assert(COLOR_SCHEMAS.containsValue) }))
+		.union(Assert.object({ preference: Assert.equalTo('iconTheme'), value: new Assert(ICON_THEMES.containsValue) })),
 ])
 
 const setNonToggleFn = new BuildMatcher<[Record<'preference' | 'value', string>], void>()
 	.addCase(firstCase, ({ preference, value }) =>
 		med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: preference, value })
 	)
-	.addCase(Case.array([Case.object({ preference: Case.equalTo('history') })]), ({ preference, value }) => {
+	.addCase(Assert.array([Assert.object({ preference: Assert.equalTo('history') })]), ({ preference, value }) => {
 		const num = Number(value)
-		if (!Number.isNaN(num) && Case.range(vimFields.history).assert(num))
+		if (!Number.isNaN(num) && Assert.range(vimFields.history).assert(num))
 			med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: preference, value })
 	})
 	.done()
@@ -44,17 +44,11 @@ function createSpan(className: string, text?: string) {
 	return span
 }
 
-const subKindCase = <K extends SubTokenKind>(...kinds: K[]) =>
-	new Case((val): val is { kind: K } => {
-		if (typeof val !== 'object' || val == null) return false
-		return kinds.includes(Reflect.get(val, 'kind'))
-	})
-
-const createSubTokenElement = new BuildMatcher<[SubToken], HTMLSpanElement | Text>()
-	.addCase(Case.array([subKindCase(SubTokenKind.HOLDER, SubTokenKind.VARIABLE)]), ({ value }) =>
+const createSubCmdTokenElement = new BuildMatcher<readonly [Token: SubCmdToken.SubCmdToken], HTMLSpanElement | Text>()
+	.addCase(Assert.array([Assert.is(SubCmdToken.Holder, SubCmdToken.Variable)]), ({ value }) =>
 		createSpan('holder', value)
 	)
-	.addCase(Case.array([subKindCase(SubTokenKind.SYMBOL, SubTokenKind.VALUE)]), ({ kind, value }) =>
+	.addCase(Assert.array([Assert.is(SubCmdToken.Symbol, SubCmdToken.Value)]), ({ kind, value }) =>
 		createSpan(kind, value)
 	)
 	.default(({ value }) => document.createTextNode(value))
@@ -65,20 +59,20 @@ export const createHeader: CreateHeader<HTMLHeadingElement> = ([cmdToken, subTok
 	heading.classList.add('monospace', 'highlight')
 
 	const cmdSpan = createSpan('command')
-	for (const { kind, value } of cmdToken.tokens) {
-		const child = kind === CmdTokenKind.OPTIONAL ? createSpan('optional', value) : document.createTextNode(value)
+	for (const { kind, value } of cmdToken) {
+		const child = kind === CmdToken.Kind.OPTIONAL ? createSpan('optional', value) : document.createTextNode(value)
 		cmdSpan.appendChild(child)
 	}
 
 	const fragment = document.createDocumentFragment()
-	for (const tokens of subTokens.tokens) fragment.appendChild(createSubTokenElement(tokens))
+	for (const tokens of subTokens) fragment.appendChild(createSubCmdTokenElement(tokens))
 
 	heading.append(cmdSpan, ' ', fragment)
 
 	return heading
 }
 
-const SET_CMD = CmdSvc.buildFn('se[t]', {
+const SET_CMD = CmdSvc.buildCmdFn('se[t]', {
 	desc: locale => locale.cmdDesc_set_showAll('Show all preferences that differ from their default value.'),
 	fn: () => med.dispatch(SCREEN_ACTIONS.openModal, { modal: new Modal.Pref(Modal.PrefType.showDiffer) }),
 })
@@ -150,7 +144,7 @@ const SET_CMD = CmdSvc.buildFn('se[t]', {
 	)
 	.done()
 
-const START_CMD = CmdSvc.buildFn('st[art]', {
+const START_CMD = CmdSvc.buildCmdFn('st[art]', {
 	desc: locale =>
 		locale.cmdDesc_start_difficulty('Start new game with the {|difficulty|} difficulty.', { difficulty: 'Easy' }),
 	fn: () => med.dispatch(SUDOKU_ACTIONS.start, { difficulty: Difficulty.Kind.easy }),
@@ -166,17 +160,17 @@ const START_CMD = CmdSvc.buildFn('st[art]', {
 	)
 	.done()
 
-const PAUSE_CMD = CmdSvc.buildFn('pa[use]', {
+const PAUSE_CMD = CmdSvc.buildCmdFn('pa[use]', {
 	desc: locale => locale.cmdDesc_pause('Pause current game.'),
 	fn: () => med.dispatch(SCREEN_ACTIONS.openModal, { modal: new Modal.Pause() }),
 }).done()
 
-const WRITE_CMD = CmdSvc.buildFn('w[rite]', {
+const WRITE_CMD = CmdSvc.buildCmdFn('w[rite]', {
 	desc: locale => locale.cmdDesc_write('Save current game.'),
 	fn: () => med.dispatch(SUDOKU_ACTIONS.save),
 }).done()
 
-const RESUME_CMD = CmdSvc.buildFn('re[sume]', {
+const RESUME_CMD = CmdSvc.buildCmdFn('re[sume]', {
 	desc: [
 		locale => locale.cmdDesc_resume1('Resume the current game.'),
 		locale => locale.cmdDesc_resume2('Resume the saved game only if no game active.'),
@@ -184,27 +178,27 @@ const RESUME_CMD = CmdSvc.buildFn('re[sume]', {
 	fn: () => med.dispatch(SUDOKU_ACTIONS.resume),
 }).done()
 
-const QUIT_CMD = CmdSvc.buildFn('q[uit]', {
+const QUIT_CMD = CmdSvc.buildCmdFn('q[uit]', {
 	desc: locale => locale.cmdDesc_quit('Close the current windows.'),
 	fn: () => med.dispatch(SCREEN_ACTIONS.back),
 }).done()
 
-const WQUIT_CMD = CmdSvc.buildFn('wq[uit]', {
+const WQUIT_CMD = CmdSvc.buildCmdFn('wq[uit]', {
 	desc: locale => locale.cmdDesc_write('Save the current game and close the windows.'),
 	fn: () => med.dispatch(SUDOKU_ACTIONS.save).dispatch(SCREEN_ACTIONS.back),
 }).done()
 
-const XIT_CMD = CmdSvc.buildFn('x[it]', {
+const XIT_CMD = CmdSvc.buildCmdFn('x[it]', {
 	desc: locale => locale.cmdDesc_writeLike('Like ":wq", but save only when changes have been made.'),
 	fn: () => med.dispatch(SCREEN_ACTIONS.back),
 }).done()
 
-const EXIT_CMD = CmdSvc.buildFn('exi[t]', {
+const EXIT_CMD = CmdSvc.buildCmdFn('exi[t]', {
 	desc: locale => locale.cmdDesc_writeLike('Like ":wq", but save only when changes have been made.'),
 	fn: () => med.dispatch(SCREEN_ACTIONS.back),
 }).done()
 
-const LANGUAGE_CMD = CmdSvc.buildFn('lan[guage]', {
+const LANGUAGE_CMD = CmdSvc.buildCmdFn('lan[guage]', {
 	desc: locale => locale.cmdDesc_language_show('Show the current value of language.'),
 })
 	.addSubFn(
@@ -218,7 +212,7 @@ const LANGUAGE_CMD = CmdSvc.buildFn('lan[guage]', {
 	)
 	.done()
 
-const HELP_CMD = CmdSvc.buildFn('h[elp]', {
+const HELP_CMD = CmdSvc.buildCmdFn('h[elp]', {
 	desc: locale => locale.cmdDesc_help_main('Open dialog and display the help file in read-only mode.'),
 	// TODO: fn() {},
 })
@@ -246,7 +240,7 @@ const HELP_CMD = CmdSvc.buildFn('h[elp]', {
 	)
 	.done()
 
-export const cmdList = CmdListSvc.buildFn(createHeader)
+export const cmdList = ShellSvc.buildFn(createHeader)
 	.addCmdFn(SET_CMD)
 	.addCmdFn(START_CMD)
 	.addCmdFn(PAUSE_CMD)
