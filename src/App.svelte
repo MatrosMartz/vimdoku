@@ -9,9 +9,9 @@
 	import { med } from '$cmd/infra/services'
 	import { IDLE_LANG } from '$i18n/domain/const'
 	import { i18nState } from '$i18n/infra/stores/svelte'
+	import { Header, Modals, Screen, StatusBar } from '$page/infra/components/svelte'
 	import { Accessibility, ColorSchema } from '$pref/domain/models'
 	import { prefsState } from '$pref/infra/stores/svelte'
-	import { Header, Modals, Screen, StatusBar } from '$page/infra/components/svelte'
 
 	import { keydownHandler } from './keydown-handler'
 	import { toggleClass } from './toggle-class'

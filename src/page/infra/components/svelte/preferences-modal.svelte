@@ -4,9 +4,9 @@
 	import { SCREEN_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
 	import { i18nState } from '$i18n/infra/stores/svelte'
-	import { PreferencesDisplay, PreferencesForm } from '$pref/infra/components/svelte'
 	import { Modal } from '$page/domain/entities'
 	import { pageState } from '$page/infra/stores/svelte'
+	import { PreferencesDisplay, PreferencesForm } from '$pref/infra/components/svelte'
 
 	$: tabState = ((modal): 'edit' | 'show' => {
 		if (Modal.Pref.is(modal)) return Modal.Pref.is(modal, Modal.PrefType.edit) ? 'edit' : 'show'
