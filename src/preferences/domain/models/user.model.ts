@@ -8,7 +8,7 @@ export enum Accessibility {
 	LESS = 'less',
 }
 
-export const ACCESSIBILITIES = Collection.create().addEntries(Collection.entriesByObj(Accessibility)).done()
+export const ACCESSIBILITIES = new Collection.Builder().addEntries(Collection.entriesByObj(Accessibility)).done()
 
 export enum ColorSchema {
 	SYSTEM = 'system',
@@ -16,7 +16,7 @@ export enum ColorSchema {
 	LIGHT_MODE = 'light',
 }
 
-export const COLOR_SCHEMAS = Collection.create().addEntries(Collection.entriesByObj(ColorSchema)).done()
+export const COLOR_SCHEMAS = new Collection.Builder().addEntries(Collection.entriesByObj(ColorSchema)).done()
 
 export enum IconTheme {
 	Heroicons = 'Heroicons',
@@ -25,7 +25,7 @@ export enum IconTheme {
 	Tabler = 'Tabler',
 }
 
-export const ICON_THEMES = Collection.create().addEntries(Collection.entriesByObj(IconTheme)).done()
+export const ICON_THEMES = new Collection.Builder().addEntries(Collection.entriesByObj(IconTheme)).done()
 
 export const userFields = {
 	colorSchema: { type: 'options', opts: COLOR_SCHEMAS, default: ColorSchema.SYSTEM },

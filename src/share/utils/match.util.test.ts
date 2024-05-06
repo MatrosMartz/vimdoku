@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest'
 
-import { Assert, BuildMatcher } from './match.util'
+import { Assert } from './assert.util'
+import { BuildMatchFn } from './match.util'
 
 describe.concurrent('match util', () => {
 	enum EnumTest {
@@ -12,17 +13,17 @@ describe.concurrent('match util', () => {
 	}
 
 	test('Should match with `EnumTest.Foo`', () => {
-		const result = new BuildMatcher<[EnumTest], string>()
-			.addCase(Assert.array([Assert.equalTo(EnumTest.Foo)]), () => 'foo')
-			.default(() => 'not foo')
+		const result = new BuildMatchFn<[EnumTest], string>()
+			.addCase(Assert.tuple([Assert.equalTo(EnumTest.Foo)]), () => 'foo')
+			.default(a => 'not foo')
 			.done()(EnumTest.Foo)
 
 		expect(result).toBe('foo')
 	})
 
 	test('Should match with default case', () => {
-		const result = new BuildMatcher<[EnumTest], string>()
-			.addCase(Assert.array([Assert.equalTo(EnumTest.Foo)]), () => 'foo')
+		const result = new BuildMatchFn<[EnumTest], string>()
+			.addCase(Assert.tuple([Assert.equalTo(EnumTest.Foo)]), () => 'foo')
 			.default(() => 'not foo')
 			.done()(EnumTest.Bar)
 
@@ -30,8 +31,8 @@ describe.concurrent('match util', () => {
 	})
 
 	test('Should match any of the cases in the array.', () => {
-		const result = new BuildMatcher<[EnumTest], string>()
-			.addCase(Assert.array([Assert.equalTo(EnumTest.QUX).union(Assert.equalTo(EnumTest.QUZ))]), () => 'qux or quz')
+		const result = new BuildMatchFn<[EnumTest], string>()
+			.addCase(Assert.tuple([Assert.equalTo(EnumTest.QUX).union(Assert.equalTo(EnumTest.QUZ))]), () => 'qux or quz')
 			.default(() => 'other')
 			.done()(EnumTest.QUZ)
 
@@ -43,8 +44,8 @@ describe.concurrent('regexp match util', () => {
 	test('Should match with foo.', () => {
 		const str = 'foo'
 
-		const result = new BuildMatcher<[string], string>()
-			.addCase(Assert.array([Assert.fromRegex(/foo/i)]), () => 'is foo')
+		const result = new BuildMatchFn<[string], string>()
+			.addCase(Assert.tuple([Assert.fromRegex(/foo/i)]), () => 'is foo')
 			.default(() => 'not is foo')
 			.done()(str)
 
@@ -54,8 +55,8 @@ describe.concurrent('regexp match util', () => {
 	test('Should match if a string contains an "o".', () => {
 		const str = 'foo'
 
-		const result = new BuildMatcher<[string], string>()
-			.addCase(Assert.array([Assert.fromRegex(/o/i)]), () => 'does includes "o" character')
+		const result = new BuildMatchFn<[string], string>()
+			.addCase(Assert.tuple([Assert.fromRegex(/o/i)]), () => 'does includes "o" character')
 			.default(() => 'does not include "o" character')
 			.done()(str)
 
@@ -65,8 +66,8 @@ describe.concurrent('regexp match util', () => {
 	test('Should return the default case if it contains any alphanumeric characters.', () => {
 		const str = 'some text'
 
-		const result = new BuildMatcher<[string], string>()
-			.addCase(Assert.array([Assert.fromRegex(/^[^\w]*$/i)]), () => 'does not include any alphanumeric character')
+		const result = new BuildMatchFn<[string], string>()
+			.addCase(Assert.tuple([Assert.fromRegex(/^[^\w]*$/i)]), () => 'does not include any alphanumeric character')
 			.default(() => 'include some alphanumeric character')
 			.done()(str)
 

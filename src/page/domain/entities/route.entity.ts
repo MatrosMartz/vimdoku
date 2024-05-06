@@ -1,6 +1,6 @@
 import type { PagesKeys } from '~/locales'
 import { Collection } from '~/share/domain/entities'
-import { Assert } from '~/share/utils'
+import { Assert, AssertCommons } from '~/share/utils'
 import type { Difficulty } from '$sudoku/domain/const'
 
 export enum Kind {
@@ -10,16 +10,20 @@ export enum Kind {
 	NotFound = 'not-found',
 }
 
-export const KINDS = Collection.create()
+export const KINDS = new Collection.Builder()
 	.addEntries(Collection.entriesByObj(Kind))
-	.createConditionalSubCollections('SIMPLE', 'COMPOUND', Assert.array([Assert.equalTo('Home', 'NotFound'), Assert.Any]))
+	.createConditionalSubCollections(
+		'SIMPLE',
+		'COMPOUND',
+		Assert.tuple([Assert.equalTo('Home', 'NotFound'), AssertCommons.Any])
+	)
 	.done()
 
 export enum HelpSub {
 	Main = '',
 }
 
-export const HELP_SUB = Collection.create().addEntries(Collection.entriesByObj(HelpSub)).done()
+export const HELP_SUB = new Collection.Builder().addEntries(Collection.entriesByObj(HelpSub)).done()
 
 export abstract class Base {
 	abstract readonly kind: Kind

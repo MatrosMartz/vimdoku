@@ -1,4 +1,4 @@
-import { Assert, BuildMatcher } from '~/share/utils'
+import { Assert, BuildMatchFn } from '~/share/utils'
 import { CmdToken, SubCmdToken } from '$cmd/domain/entities'
 import { CmdSvc, type CreateHeader, ShellSvc, SubCmdSvc } from '$cmd/domain/services'
 import { I18N_ACTIONS, PREFS_ACTIONS, SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services/actions.service'
@@ -10,7 +10,7 @@ import { Difficulty } from '$sudoku/domain/const'
 
 import { med } from './mediator.service'
 
-const firstCase = Assert.array([
+const firstCase = Assert.tuple([
 	Assert.object({
 		preference: Assert.equalTo('contrast', 'motionReduce'),
 		value: new Assert(ACCESSIBILITIES.containsValue),
@@ -19,13 +19,13 @@ const firstCase = Assert.array([
 		.union(Assert.object({ preference: Assert.equalTo('iconTheme'), value: new Assert(ICON_THEMES.containsValue) })),
 ])
 
-const setNonToggleFn = new BuildMatcher<[Record<'preference' | 'value', string>], void>()
+const setNonToggleFn = new BuildMatchFn<[Record<'preference' | 'value', string>], void>()
 	.addCase(firstCase, ({ preference, value }) =>
 		med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: preference, value })
 	)
-	.addCase(Assert.array([Assert.object({ preference: Assert.equalTo('history') })]), ({ preference, value }) => {
+	.addCase(Assert.tuple([Assert.object({ preference: Assert.equalTo('history') })]), ({ preference, value }) => {
 		const num = Number(value)
-		if (!Number.isNaN(num) && Assert.range(vimFields.history).assert(num))
+		if (!Number.isNaN(num) && Assert.range(vimFields.history).fn(num))
 			med.dispatch(PREFS_ACTIONS.set, { type: 'by-key', key: preference, value })
 	})
 	.done()
@@ -44,11 +44,11 @@ function createSpan(className: string, text?: string) {
 	return span
 }
 
-const createSubCmdTokenElement = new BuildMatcher<readonly [Token: SubCmdToken.SubCmdToken], HTMLSpanElement | Text>()
-	.addCase(Assert.array([Assert.is(SubCmdToken.Holder, SubCmdToken.Variable)]), ({ value }) =>
+const createSubCmdTokenElement = new BuildMatchFn<readonly [Token: SubCmdToken.SubCmdToken], HTMLSpanElement | Text>()
+	.addCase(Assert.tuple([Assert.is(SubCmdToken.Holder, SubCmdToken.Variable)]), ({ value }) =>
 		createSpan('holder', value)
 	)
-	.addCase(Assert.array([Assert.is(SubCmdToken.Symbol, SubCmdToken.Value)]), ({ kind, value }) =>
+	.addCase(Assert.tuple([Assert.is(SubCmdToken.Symbol, SubCmdToken.Value)]), ({ kind, value }) =>
 		createSpan(kind, value)
 	)
 	.default(({ value }) => document.createTextNode(value))

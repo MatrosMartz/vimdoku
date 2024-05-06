@@ -283,11 +283,11 @@ export class Composite<const T extends Entry, Subs extends ReadonlyRecord<string
 export const entriesByObj: <Obj extends ReadonlyRecord<PropertyKey, unknown>>(obj: Obj) => ObjToEntries<Obj> =
 	Object.entries
 
-class Create<T extends ReadonlyRecord<string, Entry> = NonNullable<unknown>, A extends Entry = never> {
+export class Builder<T extends ReadonlyRecord<string, Entry> = NonNullable<unknown>, A extends Entry = never> {
 	#entries: A[] = []
 	#slices: Array<readonly [keyof T, readonly number[]]> = []
 
-	addEntries<E extends Entry>(entries: readonly E[]): Create<T, A | E> {
+	addEntries<E extends Entry>(entries: readonly E[]): Builder<T, A | E> {
 		this.#entries = [...this.#entries, ...(entries as never[])]
 		return this
 	}
@@ -295,7 +295,7 @@ class Create<T extends ReadonlyRecord<string, Entry> = NonNullable<unknown>, A e
 	addSubCollection<N extends string, E extends Entry>(
 		name: N,
 		entries: readonly E[]
-	): Create<T & ReadonlyRecord<N, E>, A | E> {
+	): Builder<T & ReadonlyRecord<N, E>, A | E> {
 		this.#slices = [...this.#slices, [name, createArray(entries.length, i => this.#entries.length + i)]]
 		this.#entries = [...this.#entries, ...(entries as never[])]
 		return this as never
@@ -304,10 +304,10 @@ class Create<T extends ReadonlyRecord<string, Entry> = NonNullable<unknown>, A e
 	createConditionalSubCollections<TN extends string, FN extends string, C extends Entry>(
 		trueName: TN,
 		falseName: FN,
-		_case: Assert<C>
-	): Create<T & ReadonlyRecord<TN, Extract<A, C>> & ReadonlyRecord<FN, Exclude<A, Extract<A, C>>>, A> {
+		{ fn }: Assert<C>
+	): Builder<T & ReadonlyRecord<TN, Extract<A, C>> & ReadonlyRecord<FN, Exclude<A, Extract<A, C>>>, A> {
 		const indexArr = this.#entries.reduce<[number[], number[]]>(
-			([trueI, falseI], curr, i) => (_case.assert(curr) ? [[...trueI, i], falseI] : [trueI, [...falseI, i]]),
+			([trueI, falseI], curr, i) => (fn(curr) ? [[...trueI, i], falseI] : [trueI, [...falseI, i]]),
 			[[], []]
 		)
 		this.#slices = [...this.#slices, [trueName, indexArr[0]], [falseName, indexArr[1]]]
@@ -317,9 +317,9 @@ class Create<T extends ReadonlyRecord<string, Entry> = NonNullable<unknown>, A e
 
 	createSubCollection<N extends string, C extends Entry>(
 		name: N,
-		_case: Assert<C>
-	): Create<T & ReadonlyRecord<N, Extract<A, C>>, A> {
-		const indexArr = this.#entries.reduce<number[]>((acc, curr, i) => (_case.assert(curr) ? [...acc, i] : acc), [])
+		{ fn }: Assert<C>
+	): Builder<T & ReadonlyRecord<N, Extract<A, C>>, A> {
+		const indexArr = this.#entries.reduce<number[]>((acc, curr, i) => (fn(curr) ? [...acc, i] : acc), [])
 		this.#slices = [...this.#slices, [name, indexArr]]
 
 		return this as never
@@ -333,11 +333,4 @@ class Create<T extends ReadonlyRecord<string, Entry> = NonNullable<unknown>, A e
 
 		return ALL
 	}
-}
-
-/**
- *
- */
-export function create() {
-	return new Create()
 }

@@ -14,6 +14,6 @@ export const MODE_KEYS: Record<ModeKind, string> = {
 	[ModeKind.X]: 'Esc',
 }
 
-export const MODES = Collection.create().addEntries(Collection.entriesByObj(ModeKind)).done()
+export const MODES = new Collection.Builder().addEntries(Collection.entriesByObj(ModeKind)).done()
 
 export const IDLE_MODE = ModeKind.X

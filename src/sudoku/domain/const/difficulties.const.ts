@@ -11,7 +11,7 @@ export enum Kind {
 }
 
 /* eslint-disable @typescript-eslint/no-redeclare, import/export */
-export const KINDS = Collection.create().addEntries(Collection.entriesByObj(Kind)).done()
+export const KINDS = new Collection.Builder().addEntries(Collection.entriesByObj(Kind)).done()
 export declare module KINDS {
 	type Entry = typeof KINDS extends Collection.Composite<infer Entry, any> ? Entry : never
 	type Key = Entry[0]

@@ -1,5 +1,5 @@
 import { Collection } from '~/share/domain/entities'
-import { Assert } from '~/share/utils'
+import { Assert, AssertCommons } from '~/share/utils'
 
 export enum Kind {
 	Cmd = 'command',
@@ -12,9 +12,13 @@ export enum Kind {
 	Win = 'Win',
 }
 
-export const KINDS = Collection.create()
+export const KINDS = new Collection.Builder()
 	.addEntries(Collection.entriesByObj(Kind))
-	.createConditionalSubCollections('COMPOUND', 'SIMPLE', Assert.array([Assert.equalTo('Pref', 'Warn'), Assert.Any]))
+	.createConditionalSubCollections(
+		'COMPOUND',
+		'SIMPLE',
+		Assert.tuple([Assert.equalTo('Pref', 'Warn'), AssertCommons.Any])
+	)
 	.done()
 
 abstract class Base {
@@ -71,9 +75,9 @@ export enum PrefType {
 	edit = 'edit',
 }
 
-export const PREF_TYPE = Collection.create()
+export const PREF_TYPE = new Collection.Builder()
 	.addEntries(Collection.entriesByObj(PrefType))
-	.createSubCollection('SHOW', Assert.array([Assert.startWith('show'), Assert.Any]))
+	.createSubCollection('SHOW', Assert.tuple([Assert.startWith('show'), AssertCommons.Any]))
 	.done()
 
 export class Pref<Type extends PrefType> extends Base {
@@ -118,7 +122,7 @@ export enum WarnType {
 	unsave = 'unsave',
 }
 
-export const WARN_TYPE = Collection.create().addEntries(Collection.entriesByObj(WarnType)).done()
+export const WARN_TYPE = new Collection.Builder().addEntries(Collection.entriesByObj(WarnType)).done()
 
 export class Warn<Type extends WarnType> extends Base {
 	readonly #type

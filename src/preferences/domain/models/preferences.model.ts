@@ -1,6 +1,6 @@
 import { Collection } from '~/share/domain/entities'
 import type { FormSchema } from '~/share/domain/models'
-import { Assert } from '~/share/utils'
+import { Assert, AssertCommons } from '~/share/utils'
 
 import { SUDOKU_IDLE_PREFS, sudokuFields, type SudokuPrefs } from './sudoku.model'
 import { USER_IDLE_PREFS, userFields, type UserPrefs } from './user.model'
@@ -51,11 +51,11 @@ export const toggleFieldCase = new Assert((field): field is { type: 'toggle' } =
 })
 
 /* eslint-disable @typescript-eslint/no-redeclare, import/export */
-export const PREFS_FIELDS = Collection.create()
+export const PREFS_FIELDS = new Collection.Builder()
 	.addSubCollection('SUDOKU', Collection.entriesByObj(sudokuFields))
 	.addSubCollection('USER', Collection.entriesByObj(userFields))
 	.addSubCollection('VIM', Collection.entriesByObj(vimFields))
-	.createConditionalSubCollections('TOGGLE', 'NON_TOGGLE', Assert.array([Assert.Any, toggleFieldCase]))
+	.createConditionalSubCollections('TOGGLE', 'NON_TOGGLE', Assert.tuple([AssertCommons.Any, toggleFieldCase]))
 	.done()
 export declare module PREFS_FIELDS {
 	type Entry = typeof PREFS_FIELDS extends Collection.Composite<infer Entry, any> ? Entry : never

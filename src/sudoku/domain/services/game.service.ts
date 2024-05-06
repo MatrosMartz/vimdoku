@@ -1,6 +1,6 @@
 import type { Pos, PosData } from '~/share/domain/entities'
 import type { IPos } from '~/share/domain/models'
-import { BuildMatcher, Assert } from '~/share/utils'
+import { Assert, AssertCommons, BuildMatchFn } from '~/share/utils'
 
 import { ModeKind } from '../const'
 import type { ValidNumbers } from '../entities'
@@ -17,11 +17,11 @@ const board = Symbol('game-board')
 const pos = Symbol('game-pos')
 
 export abstract class GameSvc implements IGame {
-	static readonly #create = new BuildMatcher<[GameOpts, ModeKind], GameSvc>()
-		.addCase(Assert.array([Assert.Any, Assert.equalTo(ModeKind.N)]), data => new AnnotationGameSvc(data))
-		.addCase(Assert.array([Assert.Any, Assert.equalTo(ModeKind.I)]), data => new InsertGameSvc(data))
-		.addCase(Assert.array([Assert.Any, Assert.equalTo(ModeKind.V)]), data => new VisualGameSvc(data))
-		.addCase(Assert.array([Assert.Any, Assert.equalTo(ModeKind.X)]), data => new NormalGameSvc(data))
+	static readonly #create = new BuildMatchFn<[GameOpts, ModeKind], GameSvc>()
+		.addCase(Assert.tuple([AssertCommons.Any, Assert.equalTo(ModeKind.N)]), data => new AnnotationGameSvc(data))
+		.addCase(Assert.tuple([AssertCommons.Any, Assert.equalTo(ModeKind.I)]), data => new InsertGameSvc(data))
+		.addCase(Assert.tuple([AssertCommons.Any, Assert.equalTo(ModeKind.V)]), data => new VisualGameSvc(data))
+		.addCase(Assert.tuple([AssertCommons.Any, Assert.equalTo(ModeKind.X)]), data => new NormalGameSvc(data))
 		.done()
 
 	protected readonly [board]: IBoard
