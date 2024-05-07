@@ -1,5 +1,5 @@
 import type { Entry, EntryGetKeyByValue, EntryGetValueByKey, ObjToEntries, ReadonlyRecord } from '~/share/types'
-import { type Assert, createArray } from '~/share/utils'
+import { type Assert, createArray, entriesToObj } from '~/share/utils'
 
 class HashEntries<E extends Entry = Entry> extends Array<E> {
 	static readonly HashKey = Symbol('hash-key')
@@ -327,10 +327,9 @@ export class Builder<T extends ReadonlyRecord<string, Entry> = NonNullable<unkno
 
 	done() {
 		const hashEntries = new HashEntries(this.#entries, HashEntries.hasFn)
-		const SLICES_ENTRIES = this.#slices.map(([key, indexArr]) => [key, new Sub(hashEntries as never, indexArr)])
-		const SLICES = Object.fromEntries(SLICES_ENTRIES) as { [K in keyof T]: Sub<T[K]> }
-		const ALL = new Composite(hashEntries, SLICES)
+		const SUBS_ENTRIES = this.#slices.map(([key, indexArr]) => [key, new Sub(hashEntries, indexArr)] as const)
+		const SUBS = entriesToObj(SUBS_ENTRIES)
 
-		return ALL
+		return new Composite(hashEntries, SUBS)
 	}
 }
