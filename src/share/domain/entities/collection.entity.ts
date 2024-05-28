@@ -1,5 +1,5 @@
 import type { Entry, EntryGetKeyByValue, EntryGetValueByKey, ObjToEntries, ReadonlyRecord } from '~/share/types'
-import { type Assert, createArray, entriesToObj } from '~/share/utils'
+import { A, createArray, entriesToObj } from '~/share/utils'
 
 class HashEntries<E extends Entry = Entry> extends Array<E> {
 	static readonly HashKey = Symbol('hash-key')
@@ -283,11 +283,11 @@ export class Composite<const T extends Entry, Subs extends ReadonlyRecord<string
 export const entriesByObj: <Obj extends ReadonlyRecord<PropertyKey, unknown>>(obj: Obj) => ObjToEntries<Obj> =
 	Object.entries
 
-export class Builder<T extends ReadonlyRecord<string, Entry> = NonNullable<unknown>, A extends Entry = never> {
-	#entries: A[] = []
-	#slices: Array<readonly [keyof T, readonly number[]]> = []
+export class Builder<T extends ReadonlyRecord<string, Entry> = NonNullable<unknown>, AllEntries extends Entry = never> {
+	#entries: AllEntries[] = []
+	#subs: Array<readonly [keyof T, readonly number[]]> = []
 
-	addEntries<E extends Entry>(entries: readonly E[]): Builder<T, A | E> {
+	addEntries<E extends Entry>(entries: readonly E[]): Builder<T, AllEntries | E> {
 		this.#entries = [...this.#entries, ...(entries as never[])]
 		return this
 	}
@@ -295,40 +295,43 @@ export class Builder<T extends ReadonlyRecord<string, Entry> = NonNullable<unkno
 	addSubCollection<N extends string, E extends Entry>(
 		name: N,
 		entries: readonly E[]
-	): Builder<T & ReadonlyRecord<N, E>, A | E> {
-		this.#slices = [...this.#slices, [name, createArray(entries.length, i => this.#entries.length + i)]]
+	): Builder<T & ReadonlyRecord<N, E>, AllEntries | E> {
+		this.#subs = [...this.#subs, [name, createArray(entries.length, i => this.#entries.length + i)]]
 		this.#entries = [...this.#entries, ...(entries as never[])]
 		return this as never
 	}
 
-	createConditionalSubCollections<TN extends string, FN extends string, C extends Entry>(
+	createConditionalSubCollections<TN extends string, FN extends string, C extends A.FnData>(
 		trueName: TN,
 		falseName: FN,
-		{ fn }: Assert<C>
-	): Builder<T & ReadonlyRecord<TN, Extract<A, C>> & ReadonlyRecord<FN, Exclude<A, Extract<A, C>>>, A> {
+		{ fn }: A.Assert<C>
+	): Builder<
+		T & ReadonlyRecord<TN, A.Get<AllEntries, C>> & ReadonlyRecord<FN, A.Get<AllEntries, A.InvertFnData<C>>>,
+		AllEntries
+	> {
 		const indexArr = this.#entries.reduce<[number[], number[]]>(
 			([trueI, falseI], curr, i) => (fn(curr) ? [[...trueI, i], falseI] : [trueI, [...falseI, i]]),
 			[[], []]
 		)
-		this.#slices = [...this.#slices, [trueName, indexArr[0]], [falseName, indexArr[1]]]
+		this.#subs = [...this.#subs, [trueName, indexArr[0]], [falseName, indexArr[1]]]
 
 		return this as never
 	}
 
-	createSubCollection<N extends string, C extends Entry>(
+	createSubCollection<N extends string, C extends A.FnData>(
 		name: N,
-		{ fn }: Assert<C>
-	): Builder<T & ReadonlyRecord<N, Extract<A, C>>, A> {
+		{ fn }: A.Assert<C>
+	): Builder<T & ReadonlyRecord<N, A.Get<AllEntries, C>>, AllEntries> {
 		const indexArr = this.#entries.reduce<number[]>((acc, curr, i) => (fn(curr) ? [...acc, i] : acc), [])
-		this.#slices = [...this.#slices, [name, indexArr]]
+		this.#subs = [...this.#subs, [name, indexArr]]
 
 		return this as never
 	}
 
 	done() {
 		const hashEntries = new HashEntries(this.#entries, HashEntries.hasFn)
-		const SUBS_ENTRIES = this.#slices.map(([key, indexArr]) => [key, new Sub(hashEntries, indexArr)] as const)
-		const SUBS = entriesToObj(SUBS_ENTRIES)
+		const SUBS_ENTRIES = this.#subs.map(([key, indexArr]) => [key, new Sub(hashEntries, indexArr)] as const)
+		const SUBS: { [K in keyof T]: Sub<T[K]> } = entriesToObj(SUBS_ENTRIES)
 
 		return new Composite(hashEntries, SUBS)
 	}

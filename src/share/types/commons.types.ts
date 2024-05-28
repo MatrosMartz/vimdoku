@@ -1,3 +1,5 @@
+import type { ReadonlyRecord } from './object'
+
 export type VariablesFromStr<
 	S extends string,
 	InitialKeys = never,
@@ -34,7 +36,7 @@ export type StrToType<Str extends StrTypes> = Str extends 'string'
 					: Str extends 'undefined'
 						? undefined
 						: Str extends 'object'
-							? object
+							? ReadonlyRecord<PropertyKey, unknown>
 							: Str extends 'function'
 								? (...args: any[]) => any
 								: Str extends 'null'
@@ -42,3 +44,11 @@ export type StrToType<Str extends StrTypes> = Str extends 'string'
 									: never
 
 export type NoInfer<T> = [T][T extends any ? 0 : never]
+
+export type Intersect<T extends any[]> = T extends [infer X, ...infer Rest] ? X & Intersect<Rest> : unknown
+
+export type Primitives = string | number | bigint | boolean | symbol | undefined | null
+
+export type NoNever<T, U> = [T] extends [never] ? U : T
+
+export type NoNeverArray<T extends readonly any[], U extends readonly any[]> = T[number] extends never ? U : T

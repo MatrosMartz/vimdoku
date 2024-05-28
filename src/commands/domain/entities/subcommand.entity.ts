@@ -1,5 +1,5 @@
 import type { VariablesFromStr } from '~/share/types'
-import { Assert, BuildMatchFn } from '~/share/utils'
+import { A, Match } from '~/share/utils'
 
 import { type Cmd, optionally } from './command.entity'
 import type * as CmdToken from './command-token.entity'
@@ -22,12 +22,12 @@ export class SubCmd<S extends string = string> {
 	#execRgx?: string
 	#weightPattern?: string
 
-	static readonly #createSubCmdToken = new BuildMatchFn<readonly [string], SubCmdToken.SubCmdToken>()
-		.addCase(Assert.tuple([Assert.fromRegex(/^\{\|[^{}|]+\|\}$/i)]), t => new SubCmdToken.Variable(t.slice(2, -2)))
-		.addCase(Assert.tuple([Assert.fromRegex(/^{[^{}]+}$/i)]), t => new SubCmdToken.Holder(t.slice(1, -1)))
-		.addCase(Assert.tuple([Assert.fromRegex(/^<[^<>]+>$/i)]), t => new SubCmdToken.Symbol(t.slice(1, -1)))
-		.addCase(Assert.tuple([Assert.fromRegex(/^\([^()]+\)$$/i)]), t => new SubCmdToken.Value(t.slice(1, -1)))
-		.addCase(Assert.tuple([Assert.fromRegex(/[<>(){}]/i)]), () => {
+	static readonly #createSubCmdToken = new Match.Builder<readonly [tokenStr: string], SubCmdToken.SubCmdToken>()
+		.addCase(A.is.Array.with(0, A.match(/^\{\|[^{}|]+\|\}$/i)), t => new SubCmdToken.Variable(t.slice(2, -2)))
+		.addCase(A.is.Array.with(0, A.match(/^{[^{}]+}$/i)), t => new SubCmdToken.Holder(t.slice(1, -1)))
+		.addCase(A.is.Array.with(0, A.match(/^<[^<>]+>$/i)), t => new SubCmdToken.Symbol(t.slice(1, -1)))
+		.addCase(A.is.Array.with(0, A.match(/^\([^()]+\)$$/i)), t => new SubCmdToken.Value(t.slice(1, -1)))
+		.addCase(A.is.Array.with(0, A.match(/[<>(){}]/i)), () => {
 			throw new Error('tokenListLike are invalid')
 		})
 		.default(t => new SubCmdToken.Normal(t))

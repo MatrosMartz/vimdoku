@@ -1,5 +1,7 @@
 import type { IsInteger, IsUnsigned } from './tuple'
 
+export type Numeric = number | bigint
+
 type RangeTo<N extends number, L extends number[] = []> =
 	IsInteger<N> extends false
 		? never

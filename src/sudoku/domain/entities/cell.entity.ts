@@ -1,5 +1,5 @@
 import { Collection, Entity } from '~/share/domain/entities'
-import { Assert, AssertCommons } from '~/share/utils'
+import { A } from '~/share/utils'
 
 import { Notes, type NotesData, type ValidNumbers } from './notes.entity'
 
@@ -14,10 +14,7 @@ export enum Kind {
 
 export const KINDS = new Collection.Builder()
 	.addEntries(Collection.entriesByObj(Kind))
-	.createSubCollection(
-		'INSERT',
-		Assert.tuple([Assert.equalTo('Correct', 'Incorrect', 'Unverified'), AssertCommons.Any])
-	)
+	.createSubCollection('INSERT', A.is.Array.with(0, A.equalTo('Correct', 'Incorrect', 'Unverified')))
 	.done()
 
 export const EMPTY_VALUE = 0

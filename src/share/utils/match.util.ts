@@ -1,39 +1,36 @@
-import type { Assert, AssertFn } from './assert.util'
+import type * as A from './assert.util'
 import { noop } from './commons.util'
 
-export type MatchFunc<T extends readonly any[], R> = (...value: T) => R
-export type MatchCase<T extends readonly any[], R> = [AssertFn<T>, MatchFunc<T, R>]
+export type ArgsType = readonly any[]
 
-type CustomExtract<T, U> =
-	Extract<T, U> extends never ? { [K in keyof T]: K extends keyof U ? Extract<T[K], U[K]> : never } : Extract<T, U>
+export type Case<R> = readonly [A.Predicate, (...args: ArgsType) => R]
 
-export type MergeArgs<T extends readonly any[], C extends Assert<readonly unknown[]>> =
-	C extends Assert<infer U> ? { [K in keyof T]: K extends keyof U ? CustomExtract<T[K], U[K]> : never } : never
+export type GetPosibleArgs<C extends A.FnData, U extends ArgsType> =
+	U extends A.Get<U, C> ? U : Extract<A.Get<U, A.InvertFnData<C>>, U>
 
-type CustomExclude<T, U> = {
-	[K in keyof T]: K extends keyof U ? (T[K] extends U[K] ? T[K] : Exclude<T[K], U[K]>) : never
-}
+export class Builder<Args extends ArgsType, Return, PosibleArgs extends Args = Args> {
+	#default: (...args: ArgsType) => Return = noop
+	readonly #list: Case<Return>[] = []
 
-export class BuildMatchFn<Args extends readonly any[], Return, PosibleArgs extends Args = Args> {
-	#defaultFn: (...args: Args) => Return = noop as never
-	readonly #list: Array<MatchCase<Args, Return>> = []
+	addCase<const C extends A.FnData>(
+		assert: A.Assert<C>,
+		fn: (...args: A.Get<PosibleArgs, C>) => Return
+	): Builder<Args, Return, GetPosibleArgs<C, PosibleArgs>> {
+		this.#list.push([assert.fn, fn])
 
-	addCase<const C extends Assert<readonly unknown[]>>(
-		casesArr: C,
-		fn: MatchFunc<MergeArgs<PosibleArgs, C>, Return>
-	): BuildMatchFn<Args, Return, CustomExclude<PosibleArgs, MergeArgs<PosibleArgs, C>>> {
-		this.#list.push([casesArr.fn, fn] as never)
 		return this as never
 	}
 
-	default(fn: (...args: PosibleArgs) => Return): BuildMatchFn<Args, Return, never> {
-		this.#defaultFn = fn as never
+	default(fn: (...args: PosibleArgs) => Return): Builder<Args, Return, never> {
+		this.#default = fn
+
 		return this as never
 	}
 
 	done() {
-		return (...val: Args) => {
-			return this.#list.find(([assert]) => assert(val))?.[1](...val) ?? this.#defaultFn(...val)
+		return (...args: Args): Return => {
+			const fn = this.#list.find(([assert]) => assert(args))?.[1] ?? this.#default
+			return fn(...args)
 		}
 	}
 }

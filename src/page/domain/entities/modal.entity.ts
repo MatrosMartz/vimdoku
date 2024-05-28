@@ -1,5 +1,5 @@
 import { Collection } from '~/share/domain/entities'
-import { Assert, AssertCommons } from '~/share/utils'
+import { A } from '~/share/utils'
 
 export enum Kind {
 	Cmd = 'command',
@@ -14,11 +14,7 @@ export enum Kind {
 
 export const KINDS = new Collection.Builder()
 	.addEntries(Collection.entriesByObj(Kind))
-	.createConditionalSubCollections(
-		'COMPOUND',
-		'SIMPLE',
-		Assert.tuple([Assert.equalTo('Pref', 'Warn'), AssertCommons.Any])
-	)
+	.createConditionalSubCollections('COMPOUND', 'SIMPLE', A.is.Array.with(0, A.equalTo('Pref', 'Warn')))
 	.done()
 
 abstract class Base {
@@ -77,7 +73,7 @@ export enum PrefType {
 
 export const PREF_TYPE = new Collection.Builder()
 	.addEntries(Collection.entriesByObj(PrefType))
-	.createSubCollection('SHOW', Assert.tuple([Assert.startWith('show'), AssertCommons.Any]))
+	.createSubCollection('SHOW', A.is.Array.with(0, A.startWith('show')))
 	.done()
 
 export class Pref<Type extends PrefType> extends Base {

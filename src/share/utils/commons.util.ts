@@ -1,7 +1,7 @@
 import type { Entries, EntriesToObj, InvertKeyValues, ObjToEntries } from '../types'
 
 /** The no operation function. */
-export function noop() {}
+export function noop(...args: readonly any[]): any {}
 
 /**
  * The xor operator.

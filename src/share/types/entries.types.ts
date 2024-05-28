@@ -34,7 +34,7 @@ export type EntriesToMap<E extends Entries> = E extends Entries<infer Key, infer
 /** Gets the entries for an object. */
 export type ObjToEntries<T> = ReadonlyArray<
 	{
-		[K in keyof T]: [K, T[K]]
+		[K in keyof T]: readonly [K, T[K]]
 	}[keyof T]
 >
 

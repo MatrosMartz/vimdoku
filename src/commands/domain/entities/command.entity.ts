@@ -1,4 +1,4 @@
-import { Assert, BuildMatchFn } from '~/share/utils'
+import { A, Match } from '~/share/utils'
 
 import * as CmdToken from './command-token.entity'
 
@@ -17,8 +17,8 @@ export class Cmd {
 	#value?: string
 	#weightRgx?: string
 
-	static readonly #createCmdToken = new BuildMatchFn<readonly [part: string], CmdToken.CmdToken>()
-		.addCase(Assert.tuple([Assert.fromRegex(/^\[[^[\]]*\]$/i)]), t => new CmdToken.Optional(t.slice(1, -1)))
+	static readonly #createCmdToken = new Match.Builder<readonly [tokenStr: string], CmdToken.CmdToken>()
+		.addCase(A.is.Array.with(0, A.match(/^\[[^[\]]*\]$/i)), t => new CmdToken.Optional(t.slice(1, -1)))
 		.default(t => new CmdToken.Required(t))
 		.done()
 

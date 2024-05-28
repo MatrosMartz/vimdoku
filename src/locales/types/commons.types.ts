@@ -1,3 +1,5 @@
+import type { Intersect } from '~/share/types'
+
 export type LocaleValueBase = object
 
 export interface LocaleValueWithKeywords<Keywords extends string[]> extends LocaleValueBase {
@@ -13,5 +15,3 @@ export type LocaleText<Kw extends string[]> = Intersect<{
 }>
 
 export type LocaleKeywords<K extends string[]> = Record<K[number], string>
-
-type Intersect<T extends any[]> = T extends [infer X, ...infer Rest] ? X & Intersect<Rest> : unknown

@@ -23,3 +23,5 @@ export type InvertKeyValues<T extends Record<string | number | symbol, string | 
 export type ReadonlyRecord<K extends PropertyKey, V> = {
 	readonly [U in K]: V
 }
+
+export type SetLike = ReadonlyMap<unknown, unknown> | ReadonlySet<unknown>
