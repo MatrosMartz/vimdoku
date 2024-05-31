@@ -23,11 +23,11 @@ export class SubCmd<S extends string = string> {
 	#weightPattern?: string
 
 	static readonly #createSubCmdToken = new Match.Builder<readonly [tokenStr: string], SubCmdToken.SubCmdToken>()
-		.addCase(A.is.Array.with(0, A.match(/^\{\|[^{}|]+\|\}$/i)), t => new SubCmdToken.Variable(t.slice(2, -2)))
-		.addCase(A.is.Array.with(0, A.match(/^{[^{}]+}$/i)), t => new SubCmdToken.Holder(t.slice(1, -1)))
-		.addCase(A.is.Array.with(0, A.match(/^<[^<>]+>$/i)), t => new SubCmdToken.Symbol(t.slice(1, -1)))
-		.addCase(A.is.Array.with(0, A.match(/^\([^()]+\)$$/i)), t => new SubCmdToken.Value(t.slice(1, -1)))
-		.addCase(A.is.Array.with(0, A.match(/[<>(){}]/i)), () => {
+		.addCase(A.is.Array.with(0, A.is.String.match(/^\{\|[^{}|]+\|\}$/i)), t => new SubCmdToken.Variable(t.slice(2, -2)))
+		.addCase(A.is.Array.with(0, A.is.String.match(/^{[^{}]+}$/i)), t => new SubCmdToken.Holder(t.slice(1, -1)))
+		.addCase(A.is.Array.with(0, A.is.String.match(/^<[^<>]+>$/i)), t => new SubCmdToken.Symbol(t.slice(1, -1)))
+		.addCase(A.is.Array.with(0, A.is.String.match(/^\([^()]+\)$$/i)), t => new SubCmdToken.Value(t.slice(1, -1)))
+		.addCase(A.is.Array.with(0, A.is.String.match(/[<>(){}]/i)), () => {
 			throw new Error('tokenListLike are invalid')
 		})
 		.default(t => new SubCmdToken.Normal(t))

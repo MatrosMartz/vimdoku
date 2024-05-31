@@ -306,7 +306,7 @@ export class Builder<T extends ReadonlyRecord<string, Entry> = NonNullable<unkno
 		falseName: FN,
 		{ fn }: A.Assert<C>
 	): Builder<
-		T & ReadonlyRecord<TN, A.Get<AllEntries, C>> & ReadonlyRecord<FN, A.Get<AllEntries, A.InvertFnData<C>>>,
+		T & ReadonlyRecord<TN, A.Get<AllEntries, C>> & ReadonlyRecord<FN, A.Get<AllEntries, A.Not<C>>>,
 		AllEntries
 	> {
 		const indexArr = this.#entries.reduce<[number[], number[]]>(

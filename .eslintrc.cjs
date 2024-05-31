@@ -5,7 +5,7 @@ module.exports = {
 		es2021: true,
 		node: true,
 	},
-	extends: ['plugin:jsdoc/recommended-typescript', 'plugin:svelte/recommended', 'standard-with-typescript', 'prettier'],
+	extends: ['plugin:jsdoc/recommended-typescript', 'plugin:svelte/recommended', 'prettier'],
 	plugins: ['simple-import-sort', '@typescript-eslint'],
 	parser: '@typescript-eslint/parser',
 	parserOptions: {

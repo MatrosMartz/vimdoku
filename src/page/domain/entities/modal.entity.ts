@@ -73,7 +73,7 @@ export enum PrefType {
 
 export const PREF_TYPE = new Collection.Builder()
 	.addEntries(Collection.entriesByObj(PrefType))
-	.createSubCollection('SHOW', A.is.Array.with(0, A.startWith('show')))
+	.createSubCollection('SHOW', A.is.Array.with(0, A.is.String.startWith('show')))
 	.done()
 
 export class Pref<Type extends PrefType> extends Base {

@@ -1,4 +1,4 @@
-import type * as A from './assert.util'
+import type * as A from './assert'
 import { noop } from './commons.util'
 
 export type ArgsType = readonly any[]
@@ -6,7 +6,7 @@ export type ArgsType = readonly any[]
 export type Case<R> = readonly [A.Predicate, (...args: ArgsType) => R]
 
 export type GetPosibleArgs<C extends A.FnData, U extends ArgsType> =
-	U extends A.Get<U, C> ? U : Extract<A.Get<U, A.InvertFnData<C>>, U>
+	U extends A.Get<U, C> ? U : Extract<A.Get<U, A.Not<C>>, U>
 
 export class Builder<Args extends ArgsType, Return, PosibleArgs extends Args = Args> {
 	#default: (...args: ArgsType) => Return = noop

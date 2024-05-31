@@ -1,6 +1,5 @@
 import type { Pos, PosData } from '~/share/domain/entities'
 import type { IPos } from '~/share/domain/models'
-import { A, Match } from '~/share/utils'
 
 import { ModeKind } from '../const'
 import type { ValidNumbers } from '../entities'
@@ -11,47 +10,38 @@ interface GameOpts {
 	pos: IPos
 }
 
-/** Simulated key for protected field. */
-const board = Symbol('game-board')
-/** Simulated key for protected field. */
-const pos = Symbol('game-pos')
-
 export abstract class GameSvc implements IGame {
-	static readonly #create = new Match.Builder<readonly [gameOpts: GameOpts, modeKind: ModeKind], GameSvc>()
-		.addCase(A.is.Array.with(1, A.equalTo(ModeKind.N)), data => new AnnotationGameSvc(data))
-		.addCase(A.is.Array.with(1, A.equalTo(ModeKind.I)), data => new InsertGameSvc(data))
-		.addCase(A.is.Array.with(1, A.equalTo(ModeKind.V)), data => new VisualGameSvc(data))
-		.addCase(A.is.Array.with(1, A.equalTo(ModeKind.X)), data => new NormalGameSvc(data))
-		.done()
-
-	protected readonly [board]: IBoard
-	protected readonly [pos]: IPos
+	protected readonly _board: IBoard
+	protected readonly _pos: IPos
 
 	constructor(opts: GameOpts) {
-		this[board] = opts.board
-		this[pos] = opts.pos
+		this._board = opts.board
+		this._pos = opts.pos
 	}
 
 	get errors() {
-		return this[board].errors
+		return this._board.errors
 	}
 
 	get hasWin() {
-		return this[board].hasWin
+		return this._board.hasWin
 	}
 
 	/**
 	 * Create an instance of GameState with options.
-	 * @param data The game data with create instance.
+	 * @param opts The game data with create instance.
 	 * @param mode The value to set.
 	 * @returns A new state.
 	 */
-	static create(data: GameOpts, mode: ModeKind): GameSvc {
-		return GameSvc.#create(data, mode)
+	static create(opts: GameOpts, mode: ModeKind): GameSvc {
+		if (mode === ModeKind.N) return new AnnotationGameSvc(opts)
+		if (mode === ModeKind.X) return new NormalGameSvc(opts)
+		if (mode === ModeKind.I) return new InsertGameSvc(opts)
+		return new VisualGameSvc(opts)
 	}
 
 	changeMode(mode: ModeKind) {
-		return GameSvc.create({ board: this[board], pos: this[pos] }, mode)
+		return GameSvc.create({ board: this._board, pos: this._pos }, mode)
 	}
 
 	clear() {
@@ -59,12 +49,12 @@ export abstract class GameSvc implements IGame {
 	}
 
 	move(dir: 'Down' | 'Left' | 'Right' | 'Up', times: number) {
-		this[pos][`move${dir}`](times)
+		this._pos[`move${dir}`](times)
 		return this
 	}
 
 	moveTo(position: Pos<PosData>) {
-		this[pos].set(position)
+		this._pos.set(position)
 
 		return this
 	}
@@ -74,7 +64,7 @@ export abstract class GameSvc implements IGame {
 	}
 
 	toJSON() {
-		return this[board].toJSON()
+		return this._board.toJSON()
 	}
 
 	undo() {
@@ -86,7 +76,7 @@ export abstract class GameSvc implements IGame {
 	}
 
 	verify() {
-		this[board].validateAllBoard()
+		this._board.validateAllBoard()
 		return this
 	}
 
@@ -97,38 +87,38 @@ export abstract class GameSvc implements IGame {
 
 abstract class EditedGameSvc extends GameSvc {
 	clear() {
-		this[board].clear(this[pos].data)
+		this._board.clear(this._pos.data)
 		return this
 	}
 
 	redo() {
-		this[board].redo()
+		this._board.redo()
 		return this
 	}
 
 	undo() {
-		this[board].undo()
+		this._board.undo()
 		return this
 	}
 }
 
 class AnnotationGameSvc extends EditedGameSvc {
 	write(num: ValidNumbers) {
-		this[board].toggleNotes(this[pos].data, num)
+		this._board.toggleNotes(this._pos.data, num)
 		return this
 	}
 }
 
 class InsertGameSvc extends EditedGameSvc {
 	validateWrite() {
-		this[board].validate(this[pos].data)
+		this._board.validate(this._pos.data)
 		return this
 	}
 
 	write(num: ValidNumbers, { removeNotes, validate }: { removeNotes: boolean; validate: boolean }) {
-		this[board].write(this[pos].data, num)
-		if (removeNotes) this[board].noteDeletion(this[pos].data, num)
-		if (validate) this[board].validate(this[pos].data)
+		this._board.write(this._pos.data, num)
+		if (removeNotes) this._board.noteDeletion(this._pos.data, num)
+		if (validate) this._board.validate(this._pos.data)
 		return this
 	}
 }

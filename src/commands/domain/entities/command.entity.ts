@@ -18,7 +18,7 @@ export class Cmd {
 	#weightRgx?: string
 
 	static readonly #createCmdToken = new Match.Builder<readonly [tokenStr: string], CmdToken.CmdToken>()
-		.addCase(A.is.Array.with(0, A.match(/^\[[^[\]]*\]$/i)), t => new CmdToken.Optional(t.slice(1, -1)))
+		.addCase(A.is.Array.with(0, A.is.String.match(/^\[[^[\]]*\]$/i)), t => new CmdToken.Optional(t.slice(1, -1)))
 		.default(t => new CmdToken.Required(t))
 		.done()
 

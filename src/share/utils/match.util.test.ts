@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 
-import * as A from './assert.util'
+import * as A from './assert'
 import * as Match from './match.util'
 
 describe.concurrent('match util', () => {
@@ -42,34 +42,37 @@ describe.concurrent('match util', () => {
 
 describe.concurrent('regexp match util', () => {
 	test('Should match with foo', () => {
-		const str = 'foo'
+		const input = 'foo'
 
 		const result = new Match.Builder<[string], string>()
-			.addCase(A.is.Array.equalTo([A.match(/foo/i)]), () => 'is foo')
+			.addCase(A.is.Array.equalTo([A.is.String.match(/foo/i)]), () => 'is foo')
 			.default(() => 'not is foo')
-			.done()(str)
+			.done()(input)
 
 		expect(result).toBe('is foo')
 	})
 
 	test('Should match if a string contains an "o"', () => {
-		const str = 'foo'
+		const input = 'foo'
 
 		const result = new Match.Builder<[string], string>()
-			.addCase(A.is.Array.equalTo([A.match(/o/i)]), () => 'does includes "o" character')
+			.addCase(A.is.Array.equalTo([A.is.String.match(/o/i)]), () => 'does includes "o" character')
 			.default(() => 'does not include "o" character')
-			.done()(str)
+			.done()(input)
 
 		expect(result).toBe('does includes "o" character')
 	})
 
 	test('Should return the default case if it contains any alphanumeric characters', () => {
-		const str = 'some text'
+		const input = 'some text'
 
 		const result = new Match.Builder<[string], string>()
-			.addCase(A.is.Array.equalTo([A.match(/^[^\w]*$/i)]), () => 'does not include any alphanumeric character')
+			.addCase(
+				A.is.Array.equalTo([A.is.String.match(/^[^\w]*$/i)]),
+				() => 'does not include any alphanumeric character'
+			)
 			.default(() => 'include some alphanumeric character')
-			.done()(str)
+			.done()(input)
 
 		expect(result).toBe('include some alphanumeric character')
 	})

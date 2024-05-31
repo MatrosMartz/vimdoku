@@ -1,4 +1,4 @@
-export * as A from './assert.util'
+export * as A from './assert'
 export * from './commons.util'
 export * from './create-array.util'
 export * from './errors.util'
