@@ -11,18 +11,19 @@ import { Difficulty } from '$sudoku/domain/const'
 import { med } from './mediator.service'
 
 const firstCase = A.is.Array.equalTo([
-	A.is.Object.equalTo({
-		preference: A.equalTo('contrast', 'motionReduce'),
-		value: A.fromGuard(ACCESSIBILITIES.containsValue),
-	}).or(
-		A.is.Object.equalTo({
+	A.is.Object.equalTo(
+		{
+			preference: A.equalTo('contrast', 'motionReduce'),
+			value: A.fromGuard(ACCESSIBILITIES.containsValue),
+		},
+		{
 			preference: A.equalTo('colorSchema'),
 			value: A.fromGuard(COLOR_SCHEMAS.containsValue),
-		}),
-		A.is.Object.equalTo({
+		},
+		{
 			preference: A.equalTo('iconTheme'),
 			value: A.fromGuard(ICON_THEMES.containsValue),
-		})
+		}
 	),
 ])
 

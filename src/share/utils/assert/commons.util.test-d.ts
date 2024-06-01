@@ -1,4 +1,5 @@
 import { describe, expectTypeOf, test } from 'vitest'
+
 import * as A from './commons.util'
 
 describe('A.typeof', () => {

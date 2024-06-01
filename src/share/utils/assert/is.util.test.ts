@@ -82,6 +82,14 @@ describe.concurrent('A.is.Array.equalTo', () => {
 		expect(is.Array.equalTo([A.typeOf('string')]).fn([120])).toBe(false)
 	})
 
+	test('Should be return true when input matches some array structure', () => {
+		expect(is.Array.equalTo([A.equalTo('foo')], [A.equalTo('bar'), is.Any]).fn(['foo'])).toBe(true)
+		expect(is.Array.equalTo([A.equalTo('foo')], [A.equalTo('bar'), is.Any]).fn(['bar', 'baz'])).toBe(true)
+		expect(is.Array.equalTo([A.equalTo('foo')], [A.equalTo('bar'), is.Any]).fn(['bar'])).toBe(false)
+		expect(is.Array.equalTo([A.equalTo('foo')], [A.equalTo('bar'), is.Any]).fn(['foo', 'bar'])).toBe(false)
+		expect(is.Array.equalTo([A.equalTo('foo')], [A.equalTo('bar'), is.Any]).fn([''])).toBe(false)
+	})
+
 	test('Should be return true when input does not matches the array structure', () => {
 		expect(A.not(is.Array.equalTo([A.typeOf('string')])).fn(['foo'])).toBe(false)
 		expect(A.not(is.Array.equalTo([A.typeOf('string')])).fn(['bar'])).toBe(false)
@@ -268,6 +276,28 @@ describe.concurrent('A.is.Object.equalTo', () => {
 		expect(is.Object.equalTo({ foo: is.Any }).fn({ bar: 'bar' })).toBe(false)
 		expect(is.Object.equalTo({ foo: is.Any }).fn({ bar: 'bar', foo: 'foo' })).toBe(false)
 		expect(is.Object.equalTo({ foo: is.Any }).fn({})).toBe(false)
+	})
+
+	test('Should return true when input matches some object structure', () => {
+		expect(
+			is.Object.equalTo({ foo: A.equalTo('foo') }, { bar: A.equalTo('bar'), baz: is.Any }).fn({ foo: 'foo' })
+		).toBe(true)
+		expect(
+			is.Object.equalTo({ foo: A.equalTo('foo') }, { bar: A.equalTo('bar'), baz: is.Any }).fn({ bar: 'bar', baz: 120 })
+		).toBe(true)
+		expect(
+			is.Object.equalTo({ foo: A.equalTo('foo') }, { bar: A.equalTo('bar'), baz: is.Any }).fn({ bar: 'foo', baz: 120 })
+		).toBe(false)
+		expect(
+			is.Object.equalTo({ foo: A.equalTo('foo') }, { bar: A.equalTo('bar'), baz: is.Any }).fn({
+				foo: 'foo',
+				bar: 'bar',
+				baz: 120,
+			})
+		).toBe(false)
+		expect(is.Object.equalTo({ foo: A.equalTo('foo') }, { bar: A.equalTo('bar'), baz: is.Any }).fn({ foo: '' })).toBe(
+			false
+		)
 	})
 
 	test('Should return true when input does not matches the object structure', () => {

@@ -11,16 +11,23 @@ export type ArrayWith<Length extends number, Data extends FnData, Arr extends un
 			? readonly [...Arr, Data, ...unknown[]]
 			: ArrayWith<Length, Data, [...Arr, unknown]>
 
+type ArrayEqual = ReadonlyArray<Assert<FnData>>
+type ObjectEqual = ReadonlyRecord<PropertyKey, Assert<FnData>>
+
+type UnwrapItems<T extends ObjectEqual | ArrayEqual> = { readonly [L in keyof T]: GetData<T[L]> }
+
 class AssertArray extends Assert<FnData<readonly unknown[]>> {
 	constructor() {
 		super(Array.isArray)
 	}
 
-	equalTo<const Items extends Array<Assert<FnData>>>(items: Items) {
-		return new Assert<FnData<{ readonly [K in keyof Items]: GetData<Items[K]> }>>(val => {
-			if (!Array.isArray(val) || val.length !== items.length) return false
-			return items.every((assert, index) => assert.fn(val[index]))
-		})
+	equalTo<const Option extends ArrayEqual>(...options: Option[]) {
+		return new Assert<FnData<UnwrapItems<Option>>>(val =>
+			options.some(opt => {
+				if (!Array.isArray(val) || val.length !== opt.length) return false
+				return opt.every((assert, index) => assert.fn(val[index]))
+			})
+		)
 	}
 
 	with<const Index extends number, Data extends FnData>(index: Index, item: Assert<Data>) {
@@ -63,13 +70,15 @@ class AssertObject extends Assert<FnData<object>> {
 		super(val => val != null && ['object', 'function'].includes(typeof val))
 	}
 
-	equalTo<const Props extends ReadonlyRecord<PropertyKey, Assert<FnData>>>(properties: Props) {
-		return new Assert<FnData<{ readonly [K in keyof Props]: GetData<Props[K]> }>>(val => {
-			if (val == null || typeof val !== 'object') return false
-			const propEntries = entriesBy(properties)
-			if (propEntries.length !== Object.keys(val).length) return false
-			return propEntries.every(([key, assert]) => key in val && assert.fn(Reflect.get(val, key)))
-		})
+	equalTo<const Option extends ObjectEqual>(...options: Option[]) {
+		return new Assert<FnData<UnwrapItems<Option>>>(val =>
+			options.some(opt => {
+				if (val == null || typeof val !== 'object') return false
+				const propEntries = entriesBy(opt)
+				if (propEntries.length !== Object.keys(val).length) return false
+				return propEntries.every(([key, assert]) => key in val && assert.fn(Reflect.get(val, key)))
+			})
+		)
 	}
 
 	with<Key extends PropertyKey, Data extends FnData>(key: Key, assert: Assert<Data>) {
