@@ -4,9 +4,9 @@ export type IsUnsigned<N extends number> = `${N}` extends `-${number}` ? false :
 
 export type IsNumberType<N extends number> = number extends N ? true : false
 
-export type Digits = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+export type Digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 
-export type IsBigType<N extends number> = `${N}` extends `${Digits | ''}${Digits}` ? false : true
+export type IsBigType<N extends number> = `${N}` extends `${Digit | ''}${Digit}` ? false : true
 
 export type Tuple<T, N extends number, L extends T[] = []> =
 	IsNumberType<N> extends true

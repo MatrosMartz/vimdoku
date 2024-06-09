@@ -1,6 +1,6 @@
 export * from './actions.service'
-export * from './shell.service'
 export * from './executor.service'
 export * from './mediator.service'
+export * from './shell.service'
 export * from './subcommand.service'
 export * from './suggestions-obs.service'

@@ -1,6 +1,9 @@
 import type { Entries, EntriesToObj, InvertKeyValues, ObjToEntries } from '../types'
 
-/** The no operation function. */
+/**
+ * The no operation function.
+ * @param args Arguments.
+ */
 export function noop(...args: readonly any[]): any {}
 
 /**
@@ -138,7 +141,7 @@ export const keysBy: <O>(obj: O) => Array<keyof O> = Object.keys
  * @param search Element to be searched.
  * @returns If element exist in array
  */
-export function inArray<T>(arr: readonly T[], search: any): search is T {
+export function inArray<const T>(arr: readonly T[], search: any): search is T {
 	return arr.includes(search)
 }
 
@@ -171,4 +174,14 @@ export function invertKeyValues<Obj extends Record<string | number | symbol, str
 	obj: Obj
 ): InvertKeyValues<Obj> {
 	return Object.fromEntries(Object.entries(obj).map(([key, value]) => [value, key])) as never
+}
+
+/**
+ * Resolves after waiting the miliseconds.
+ * @param ms Miliseconds.
+ */
+export function sleep(ms: number) {
+	return new Promise<void>(res => {
+		setTimeout(res, ms)
+	})
 }

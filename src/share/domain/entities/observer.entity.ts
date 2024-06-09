@@ -3,6 +3,7 @@ export type Observer<T> = (data: T) => void
 /** Represent a Observable Service */
 export class Observable<T> {
 	#data: T
+	readonly #initial
 	readonly #observers = new Set<Observer<T>>()
 
 	/**
@@ -11,6 +12,7 @@ export class Observable<T> {
 	 */
 	constructor(initialData: T) {
 		this.#data = initialData
+		this.#initial = initialData
 	}
 
 	get data() {
@@ -36,6 +38,10 @@ export class Observable<T> {
 	remove(observer: Observer<T>) {
 		this.#observers.delete(observer)
 		return this
+	}
+
+	reset() {
+		return this.set(this.#initial)
 	}
 
 	/**

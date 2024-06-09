@@ -1,6 +1,6 @@
 import type { Pos } from '~/share/domain/entities'
+import type { Modes } from '$cmd/domain/const'
 
-import type { ModeKind } from '../const'
 import type { ValidNumbers } from '../entities'
 import type { BoardJSON } from './board.model'
 
@@ -12,7 +12,7 @@ export interface IGame {
 	 * @param mode The new mode.
 	 * @returns The updated game.
 	 */
-	changeMode(mode: ModeKind): IGame
+	changeMode(mode: Modes.Kind): IGame
 	/**
 	 * Clear the value and notes at the selected cell on the game.
 	 * @returns The updated game state object.

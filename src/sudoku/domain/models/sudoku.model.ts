@@ -1,6 +1,6 @@
 import type { Pos } from '~/share/domain/entities'
+import type { Modes } from '$cmd/domain/const'
 
-import type { ModeKind } from '../const'
 import type { ValidNumbers } from '../entities'
 import type { BoardJSON } from '.'
 import type { SudokuInfo, SudokuSetts, SudokuSettsJSON } from './sudoku-settings.model'
@@ -14,7 +14,7 @@ export interface ISudoku {
 	 * @param mode The new mode.
 	 * @returns The updated game.
 	 */
-	changeMode(mode: ModeKind): this
+	changeMode(mode: Modes.Kind): this
 	/**
 	 * Clear the value and notes at the current position on the game board.
 	 * @returns The updated game.

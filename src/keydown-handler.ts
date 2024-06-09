@@ -1,8 +1,8 @@
+import { Modes } from '$cmd/domain/const'
 import { SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services'
 import { med } from '$cmd/infra/services'
 import { Modal, type Page, Route } from '$page/domain/entities'
 import { pageState } from '$page/infra/stores/svelte'
-import { ModeKind } from '$sudoku/domain/const'
 import type { ValidNumbers } from '$sudoku/domain/entities'
 import { modeState } from '$sudoku/infra/stores/svelte'
 
@@ -34,11 +34,11 @@ function movePosition(key: string) {
  * @param key The key string value.
  */
 function changeMode(key: string) {
-	if (modeState.data === ModeKind.X) {
-		if (['n', 'N'].includes(key)) med.dispatch(SUDOKU_ACTIONS.changeMode, { mode: ModeKind.N })
-		if (['i', 'I'].includes(key)) med.dispatch(SUDOKU_ACTIONS.changeMode, { mode: ModeKind.I })
-		if (['v', 'V'].includes(key)) med.dispatch(SUDOKU_ACTIONS.changeMode, { mode: ModeKind.V })
-	} else if (key === 'Escape') med.dispatch(SUDOKU_ACTIONS.changeMode, { mode: ModeKind.X })
+	if (modeState.data === Modes.Kind.X) {
+		if (['n', 'N'].includes(key)) med.dispatch(SUDOKU_ACTIONS.changeMode, { mode: Modes.Kind.N })
+		if (['i', 'I'].includes(key)) med.dispatch(SUDOKU_ACTIONS.changeMode, { mode: Modes.Kind.I })
+		if (['v', 'V'].includes(key)) med.dispatch(SUDOKU_ACTIONS.changeMode, { mode: Modes.Kind.V })
+	} else if (key === 'Escape') med.dispatch(SUDOKU_ACTIONS.changeMode, { mode: Modes.Kind.X })
 }
 
 /**
@@ -47,7 +47,7 @@ function changeMode(key: string) {
  */
 function pressNum(value: ValidNumbers) {
 	if (Number.isNaN(value)) moves = 0
-	else if ([ModeKind.N, ModeKind.I].includes(modeState.data)) {
+	else if ([Modes.Kind.N, Modes.Kind.I].includes(modeState.data)) {
 		med.dispatch(SUDOKU_ACTIONS.write, { value })
 		moves = 0
 	} else moves = moves * 10 + value

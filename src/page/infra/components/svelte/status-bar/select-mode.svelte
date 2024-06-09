@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { tooltip, type TooltipProps } from '~/share/infra/components/svelte/tooltip'
+	import { Modes } from '$cmd/domain/const'
 	import { SCREEN_ACTIONS, SUDOKU_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
 	import { i18nState } from '$i18n/infra/stores/svelte'
 	import { Modal, Route } from '$page/domain/entities'
 	import { pageState } from '$page/infra/stores/svelte'
-	import { MODE_KEYS, type ModeKind, MODES } from '$sudoku/domain/const'
 	import { modeState } from '$sudoku/infra/stores/svelte'
 
 	let listbox: HTMLUListElement
-	let index = Math.max(MODES.indexByValue($modeState), 0)
+	let index = Math.max(Modes.ALL.indexByValue($modeState), 0)
 
 	$: disabled = !Route.Game.is($pageState.route)
 	$: expanded = Modal.Modes.is($pageState.modal)
@@ -31,7 +31,7 @@
 
 	/** Set new value. */
 	function setValue() {
-		med.dispatch(SUDOKU_ACTIONS.changeMode, { mode: MODES.entryByIndex(index)![1] })
+		med.dispatch(SUDOKU_ACTIONS.changeMode, { mode: Modes.ALL.entryByIndex(index)![1] })
 	}
 
 	/** Close Listbox and set the selected value for the new value. */
@@ -47,7 +47,7 @@
 
 	/** Generic go to last option. */
 	function goToLast() {
-		index = MODES.size - 1
+		index = Modes.ALL.size - 1
 	}
 
 	const CLOSED_CODE_MAP: Record<string, () => void> = {
@@ -70,7 +70,7 @@
 			index = Math.max(index - 1, 0)
 		},
 		ArrowDown() {
-			index = Math.min(index + 1, MODES.size - 1)
+			index = Math.min(index + 1, Modes.ALL.size - 1)
 		},
 		Home: goToFirst,
 		End: goToLast,
@@ -79,7 +79,7 @@
 			index = Math.max(index - 10, 0)
 		},
 		PageDown() {
-			index = Math.min(index + 10, MODES.size - 1)
+			index = Math.min(index + 10, Modes.ALL.size - 1)
 		},
 	}
 
@@ -106,7 +106,7 @@
 				if (ev.key !== ' ' && ev.key.length === 1) {
 					index = Math.max(
 						0,
-						MODES.findIndex(([, modes]) => modes.startsWith(ev.key))
+						Modes.ALL.findIndex(([, modes]) => modes.startsWith(ev.key))
 					)
 				} else if (ev.altKey) {
 					if (ev.key === 'ArrowUp' || ev.key === 'ArrowDown') closeAndSet()
@@ -121,8 +121,8 @@
 	 */
 	function modeHandler(ev: { currentTarget: HTMLInputElement }): void
 	function modeHandler({ currentTarget }: { currentTarget: HTMLInputElement }) {
-		const mode = currentTarget.value as ModeKind
-		index = Math.max(MODES.indexByValue(mode), 0)
+		const mode = currentTarget.value as Modes.Kind
+		index = Math.max(Modes.ALL.indexByValue(mode), 0)
 
 		med.dispatch(SUDOKU_ACTIONS.changeMode, { mode })
 	}
@@ -154,7 +154,7 @@
 	</button>
 	<div class="mode-selector-container">
 		<ul bind:this={listbox} id="listbox-mode" role="listbox" tabindex="-1" class="listbox">
-			{#each MODES.values() as mode, i (mode)}
+			{#each Modes.ALL.values() as mode, i (mode)}
 				<li class="listbox-item" class:current={i === index}>
 					<label for="opt-mode-{mode}" class="listbox-label">
 						<input
@@ -169,7 +169,7 @@
 							class="listbox-option"
 							on:change={modeHandler}
 							on:click={() => (expanded = false)}
-							use:tooltip={{ id: `mode-${mode}-input-key-describe`, text: `<${MODE_KEYS[mode]}>` }}
+							use:tooltip={{ id: `mode-${mode}-input-key-describe`, text: `<${Modes.KEYS[mode]}>` }}
 						/>
 						<span>{locale[`modes_${mode}`](mode.toUpperCase())}</span>
 					</label>

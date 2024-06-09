@@ -1,7 +1,7 @@
 import type { Pos, PosData } from '~/share/domain/entities'
 import type { IPos } from '~/share/domain/models'
+import { Modes } from '$cmd/domain/const'
 
-import { ModeKind } from '../const'
 import type { ValidNumbers } from '../entities'
 import { type IBoard, type IGame } from '../models'
 
@@ -33,14 +33,14 @@ export abstract class GameSvc implements IGame {
 	 * @param mode The value to set.
 	 * @returns A new state.
 	 */
-	static create(opts: GameOpts, mode: ModeKind): GameSvc {
-		if (mode === ModeKind.N) return new AnnotationGameSvc(opts)
-		if (mode === ModeKind.X) return new NormalGameSvc(opts)
-		if (mode === ModeKind.I) return new InsertGameSvc(opts)
+	static create(opts: GameOpts, mode: Modes.Kind): GameSvc {
+		if (mode === Modes.Kind.N) return new AnnotationGameSvc(opts)
+		if (mode === Modes.Kind.X) return new NormalGameSvc(opts)
+		if (mode === Modes.Kind.I) return new InsertGameSvc(opts)
 		return new VisualGameSvc(opts)
 	}
 
-	changeMode(mode: ModeKind) {
+	changeMode(mode: Modes.Kind) {
 		return GameSvc.create({ board: this._board, pos: this._pos }, mode)
 	}
 

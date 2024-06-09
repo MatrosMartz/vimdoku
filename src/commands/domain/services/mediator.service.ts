@@ -1,3 +1,4 @@
+import { PromiseFnQueue } from '~/share/domain/entities'
 import { IDLE_LANG } from '$i18n/domain/const'
 import type { I18nRepo } from '$i18n/domain/repositories'
 import { I18nSvc } from '$i18n/domain/services'
@@ -24,9 +25,10 @@ export interface Repos {
 /** Represent a Mediator Service. */
 export class MedSvc implements IMed {
 	#internalUnload?: () => Promise<void>
-	#prev: Promise<void> | null = null
+	readonly #queue = new PromiseFnQueue()
 	readonly #repos
 	readonly #state: State
+	#times = 0
 
 	/**
 	 * Creates an instance of the MedSvc class.
@@ -43,12 +45,7 @@ export class MedSvc implements IMed {
 	}
 
 	dispatch<const Data extends DataAction | never>(action: Action<Data>, data?: Data) {
-		const promise = async () => {
-			await action({ ...this.#state }, data!)
-			this.#prev = null
-		}
-
-		this.#prev = this.#prev != null ? this.#prev.then(promise) : promise()
+		this.#queue.add(() => action({ ...this.#state }, data!))
 
 		return this
 	}

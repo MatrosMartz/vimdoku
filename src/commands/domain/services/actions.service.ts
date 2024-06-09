@@ -3,10 +3,11 @@ import type { OptionalKeys } from '~/share/types'
 import type { Lang } from '$i18n/domain/const'
 import { Modal, Route } from '$page/domain/entities'
 import type { Prefs, PREFS_FIELDS } from '$pref/domain/models'
-import { Difficulty, type ModeKind } from '$sudoku/domain/const'
+import { Difficulty } from '$sudoku/domain/const'
 import { Solution, type ValidNumbers } from '$sudoku/domain/entities'
 import { type SudokuSetts } from '$sudoku/domain/models'
 
+import type { Modes } from '../const'
 import type { ActionUnData, ActionWithData, DataAction } from '../models'
 
 // i18n Actions.
@@ -107,7 +108,7 @@ const moveSelection: ActionWithData<MoveSelectionData & DataAction> = async ({ s
 	else sudoku.move(data.type, data.times)
 }
 
-const changeMode: ActionWithData<{ mode: ModeKind }> = async ({ sudoku }, data) => {
+const changeMode: ActionWithData<{ mode: Modes.Kind }> = async ({ sudoku }, data) => {
 	sudoku.changeMode(data.mode)
 }
 

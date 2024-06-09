@@ -1,8 +1,8 @@
 import { IDLE_POS, type Pos, type PosData } from '~/share/domain/entities'
 import { PosSvc } from '~/share/domain/services'
 import { inject } from '~/share/utils'
+import { Modes } from '$cmd/domain/const'
 
-import { ModeKind } from '../const'
 import { type ValidNumbers } from '../entities'
 import type { BoardJSON, IGame, ISudoku, SudokuInfo, SudokuSetts, SudokuSettsJSON } from '../models'
 import type { SudokuRepos } from '../repositories'
@@ -44,7 +44,7 @@ export class SudokuSvc implements ISudoku {
 		return new SudokuSvc(repo.save, repo.clear)
 	}
 
-	changeMode(mode: ModeKind) {
+	changeMode(mode: Modes.Kind) {
 		this.#game = this.#game?.changeMode(mode)
 		this.#modeObs.set(mode)
 		return this
@@ -100,10 +100,10 @@ export class SudokuSvc implements ISudoku {
 
 		this.#game = GameSvc.create(
 			{ board: BoardSvc.fromJSON(board, setts.solution, info.errors), pos: this.#pos },
-			ModeKind.X
+			Modes.Kind.X
 		)
 		if (withTimer) this.#timer.set(info.timer).start()
-		this.#modeObs.set(ModeKind.X)
+		this.#modeObs.set(Modes.Kind.X)
 		this.#pos.set(IDLE_POS)
 		return this
 	}
@@ -134,8 +134,8 @@ export class SudokuSvc implements ISudoku {
 		}
 
 		if (withTimer) this.#timer.reset().start()
-		this.#game = GameSvc.create({ board, pos: this.#pos }, ModeKind.X)
-		this.#modeObs.set(ModeKind.X)
+		this.#game = GameSvc.create({ board, pos: this.#pos }, Modes.Kind.X)
+		this.#modeObs.set(Modes.Kind.X)
 		this.#pos.set(IDLE_POS)
 		return this
 	}

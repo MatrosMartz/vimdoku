@@ -1,14 +1,14 @@
 import { HistoryObservable, Observable } from '~/share/domain/entities'
 import { singleton } from '~/share/utils'
+import { Modes } from '$cmd/domain/const'
 
-import { IDLE_MODE, type ModeKind } from '../const'
 import type { Cell, Grid } from '../entities'
 import { IDLE_TIMER } from '../models'
 
 @singleton
-export class ModeObs extends Observable<ModeKind> {
+export class ModeObs extends Observable<Modes.Kind> {
 	constructor() {
-		super(IDLE_MODE)
+		super(Modes.IDLE)
 	}
 }
 
