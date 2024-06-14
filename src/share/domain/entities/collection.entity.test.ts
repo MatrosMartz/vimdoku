@@ -25,14 +25,14 @@ describe.concurrent('Collection.Builder.addToMain', () => {
 		const collection = new Builder().addToMain.fromEntries(entries).done()
 
 		expect(collection.size).toBe(5)
-		expect(collection.subs).toEqual({})
+		expect(collection.subs).toBeEmpty()
 	})
 
 	test('Should add entries from object directly to the main', () => {
 		const collection = new Builder().addToMain.fromObject(object).done()
 
 		expect(collection.size).toBe(5)
-		expect(collection.subs).toEqual({})
+		expect(collection.subs).toBeEmpty()
 	})
 })
 
@@ -91,7 +91,7 @@ describe.concurrent('Main', () => {
 	test('should contains the random key', () => {
 		const randomKey = validKeys[Math.floor(Math.random() * validKeys.length)]
 
-		expect(collection.containsKey(randomKey)).toBe(true)
+		expect(collection.containsKey(randomKey)).toBeTrue()
 	})
 
 	test('Should get index from value or key', () => {

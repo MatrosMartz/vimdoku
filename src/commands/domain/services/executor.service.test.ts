@@ -29,7 +29,9 @@ describe.concurrent('ExecutorSvc suggestions', () => {
 
 		vi.advanceTimersByTime(500)
 
-		expect(suggsObs.data.every(({ value }) => value.startsWith('help'))).toBe(true)
+		const isHelp = ({ value }: { value: string }) => value.startsWith('help')
+
+		expect(suggsObs.data).toSatisfyAll(isHelp)
 	})
 
 	test('Should be if search empty string suggestions length are zero', () => {

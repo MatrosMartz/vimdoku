@@ -34,8 +34,8 @@ describe.concurrent('Notes', () => {
 	test('Should be true if the note exists and false if it does not.', () => {
 		const notes = Notes.create([1, 2, 3, 4])
 
-		expect(notes.has(1)).toBe(true)
-		expect(notes.has(9)).toBe(false)
+		expect(notes.has(1)).toBeTrue()
+		expect(notes.has(9)).toBeFalse()
 	})
 
 	test('Should remove note "one".', () => {
@@ -63,14 +63,14 @@ describe.concurrent('Notes', () => {
 		const notes = Notes.create([])
 
 		expect(notes.data).toEqual(EMPTY_NOTES)
-		expect(notes.isEmpty).toBe(true)
+		expect(notes.isEmpty).toBeTrue()
 	})
 
 	test('should be false if there is at least a note.', () => {
 		const notes = Notes.create([1])
 
 		expect(notes.data).not.toEqual(EMPTY_NOTES)
-		expect(notes.isEmpty).toBe(false)
+		expect(notes.isEmpty).toBeFalse()
 	})
 
 	test('Should return a new service only when removing the note.', () => {
@@ -96,8 +96,8 @@ describe.concurrent('Notes', () => {
 	test('Should have the notes corresponding to the multiplied primes.', () => {
 		const notes = Notes.fromNumber(2 * 5 * 13)
 
-		expect(notes.has(1)).toBe(true)
-		expect(notes.has(3)).toBe(true)
-		expect(notes.has(6)).toBe(true)
+		expect(notes.has(1)).toBeTrue()
+		expect(notes.has(3)).toBeTrue()
+		expect(notes.has(6)).toBeTrue()
 	})
 })

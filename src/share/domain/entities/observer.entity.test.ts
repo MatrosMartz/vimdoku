@@ -78,7 +78,7 @@ describe.concurrent('History Observable', () => {
 	test('History should be empty.', () => {
 		const obs = new HistoryObservable<number>(EMPTY_STATE, 20, [])
 
-		expect(obs.history).toEqual([])
+		expect(obs.history).toBeEmpty()
 	})
 
 	test('Should be the empty state and add the new data to history.', () => {

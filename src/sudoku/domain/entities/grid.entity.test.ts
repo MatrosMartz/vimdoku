@@ -6,7 +6,7 @@ describe.concurrent('Grid Service', () => {
 	test('The data should be an array.', () => {
 		const initialGrid = Grid.create(pos => pos.y)
 
-		expect(Array.isArray(initialGrid.data)).toBe(true)
+		expect(Array.isArray(initialGrid.data)).toBeTrue()
 	})
 
 	test('Each cell should contain the value of its row.', () => {
