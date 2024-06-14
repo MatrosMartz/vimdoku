@@ -12,9 +12,9 @@ export enum Kind {
 	Annotated = 'notes',
 }
 
-export const KINDS = new Collection.Builder()
-	.addEntries(Collection.entriesByObj(Kind))
-	.createSubCollection('INSERT', A.is.Array.with(0, A.equalTo('Correct', 'Incorrect', 'Unverified')))
+export const KINDS = new Collection.Builder().addToMain
+	.fromObject(Kind)
+	.addNewSub.create('INSERT', A.is.Array.with(0, A.equalTo('Correct', 'Incorrect', 'Unverified')))
 	.done()
 
 export const EMPTY_VALUE = 0

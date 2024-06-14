@@ -2,7 +2,7 @@ import type { Collection } from '../entities'
 
 export interface OptionField<T extends string = string> {
 	default: T
-	opts: Collection.Composite<readonly [string, T], NonNullable<unknown>>
+	opts: Collection.Main<readonly [string, T], NonNullable<unknown>>
 	type: 'options'
 }
 

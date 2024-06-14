@@ -50,20 +50,16 @@ export const toggleFieldCase = new A.Assert<A.FnData<{ type: 'toggle' }>>(field 
 	return Reflect.get(field, 'type') === 'toggle'
 })
 
-/* eslint-disable @typescript-eslint/no-redeclare, import/export */
-export const PREFS_FIELDS = new Collection.Builder()
-	.addSubCollection('SUDOKU', Collection.entriesByObj(sudokuFields))
-	.addSubCollection('USER', Collection.entriesByObj(userFields))
-	.addSubCollection('VIM', Collection.entriesByObj(vimFields))
-	.createConditionalSubCollections(
-		'TOGGLE',
-		'NON_TOGGLE',
-		A.is.Array.with(1, A.is.Object.with('type', A.equalTo('toggle')))
-	)
+/* eslint-disable @typescript-eslint/no-redeclare */
+export const PREFS_FIELDS = new Collection.Builder().addNewSub
+	.fromObject('SUDOKU', sudokuFields)
+	.addNewSub.fromObject('USER', userFields)
+	.addNewSub.fromObject('VIM', vimFields)
+	.addNewSub.conditional('TOGGLE', 'NON_TOGGLE', A.is.Array.with(1, A.is.Object.with('type', A.equalTo('toggle'))))
 	.done()
 
 export declare module PREFS_FIELDS {
-	type Entry = typeof PREFS_FIELDS extends Collection.Composite<infer Entry, any> ? Entry : never
+	type Entry = typeof PREFS_FIELDS extends Collection.Main<infer Entry, any> ? Entry : never
 	type Key = Entry[0]
 	type Value = Entry[1]
 

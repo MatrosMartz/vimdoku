@@ -14,6 +14,6 @@ export const KEYS: Record<Kind, string> = {
 	[Kind.X]: 'Esc',
 }
 
-export const ALL = new Collection.Builder().addEntries(Collection.entriesByObj(Kind)).done()
+export const ALL = new Collection.Builder().addToMain.fromObject(Kind).done()
 
 export const IDLE = Kind.X

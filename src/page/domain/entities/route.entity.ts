@@ -10,16 +10,16 @@ export enum Kind {
 	NotFound = 'not-found',
 }
 
-export const KINDS = new Collection.Builder()
-	.addEntries(Collection.entriesByObj(Kind))
-	.createConditionalSubCollections('SIMPLE', 'COMPOUND', A.is.Array.equalTo([A.equalTo('Home', 'NotFound'), A.is.Any]))
+export const KINDS = new Collection.Builder().addToMain
+	.fromObject(Kind)
+	.addNewSub.conditional('SIMPLE', 'COMPOUND', A.is.Array.equalTo([A.equalTo('Home', 'NotFound'), A.is.Any]))
 	.done()
 
 export enum HelpSub {
 	Main = '',
 }
 
-export const HELP_SUB = new Collection.Builder().addEntries(Collection.entriesByObj(HelpSub)).done()
+export const HELP_SUB = new Collection.Builder().addToMain.fromObject(HelpSub).done()
 
 export abstract class Base {
 	abstract readonly kind: Kind

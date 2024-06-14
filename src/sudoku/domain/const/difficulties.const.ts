@@ -10,10 +10,10 @@ export enum Kind {
 	expert = '1.2',
 }
 
-/* eslint-disable @typescript-eslint/no-redeclare, import/export */
-export const KINDS = new Collection.Builder().addEntries(Collection.entriesByObj(Kind)).done()
+/* eslint-disable @typescript-eslint/no-redeclare */
+export const KINDS = new Collection.Builder().addToMain.fromObject(Kind).done()
 export declare module KINDS {
-	type Entry = typeof KINDS extends Collection.Composite<infer Entry, any> ? Entry : never
+	type Entry = typeof KINDS extends Collection.Main<infer Entry, any> ? Entry : never
 	type Key = Entry[0]
 	type Value = Entry[1]
 }

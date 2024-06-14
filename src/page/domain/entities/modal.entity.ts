@@ -12,9 +12,9 @@ export enum Kind {
 	Win = 'Win',
 }
 
-export const KINDS = new Collection.Builder()
-	.addEntries(Collection.entriesByObj(Kind))
-	.createConditionalSubCollections('COMPOUND', 'SIMPLE', A.is.Array.with(0, A.equalTo('Pref', 'Warn')))
+export const KINDS = new Collection.Builder().addToMain
+	.fromObject(Kind)
+	.addNewSub.conditional('COMPOUND', 'SIMPLE', A.is.Array.with(0, A.equalTo('Pref', 'Warn')))
 	.done()
 
 abstract class Base {
@@ -71,9 +71,9 @@ export enum PrefType {
 	edit = 'edit',
 }
 
-export const PREF_TYPE = new Collection.Builder()
-	.addEntries(Collection.entriesByObj(PrefType))
-	.createSubCollection('SHOW', A.is.Array.with(0, A.is.String.startWith('show')))
+export const PREF_TYPE = new Collection.Builder().addToMain
+	.fromObject(PrefType)
+	.addNewSub.create('SHOW', A.is.Array.with(0, A.is.String.startWith('show')))
 	.done()
 
 export class Pref<Type extends PrefType> extends Base {
@@ -118,7 +118,7 @@ export enum WarnType {
 	unsave = 'unsave',
 }
 
-export const WARN_TYPE = new Collection.Builder().addEntries(Collection.entriesByObj(WarnType)).done()
+export const WARN_TYPE = new Collection.Builder().addToMain.fromObject(WarnType).done()
 
 export class Warn<Type extends WarnType> extends Base {
 	readonly #type

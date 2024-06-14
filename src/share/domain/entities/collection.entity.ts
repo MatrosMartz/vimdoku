@@ -193,7 +193,7 @@ export class Sub<const T extends Entry> extends Base<T> {
 	}
 }
 
-export class Composite<const T extends Entry, Subs extends ReadonlyRecord<string, Sub<Entry>>> extends Base<T> {
+export class Main<const T extends Entry, Subs extends ReadonlyRecord<string, Sub<Entry>>> extends Base<T> {
 	readonly subs
 
 	constructor(hashEntries: HashEntries<T>, Subs: Subs) {
@@ -272,7 +272,7 @@ export class Composite<const T extends Entry, Subs extends ReadonlyRecord<string
 	}
 
 	valueByKey<Key extends T[0]>(key: Key): EntryGetValueByKey<T, Key> {
-		return this._hashEntries[this._hashEntries.indexOfKey(key)] as EntryGetValueByKey<T, Key>
+		return this._hashEntries[this._hashEntries.indexOfKey(key)][1] as EntryGetValueByKey<T, Key>
 	}
 
 	*values(): IterableIterator<T[1]> {
@@ -284,15 +284,35 @@ export const entriesByObj: <Obj extends ReadonlyRecord<PropertyKey, unknown>>(ob
 	Object.entries
 
 export class Builder<T extends ReadonlyRecord<string, Entry> = NonNullable<unknown>, AllEntries extends Entry = never> {
+	readonly addNewSub = {
+		create: this.#createSubCollection.bind(this),
+		conditional: this.#createConditionalSubCollections.bind(this),
+		fromEntries: this.#addSubCollection.bind(this),
+		fromObject: <N extends string, O extends ReadonlyRecord<PropertyKey, unknown>>(name: N, obj: O) =>
+			this.#addSubCollection(name, entriesByObj(obj)),
+	}
+	readonly addToMain = {
+		fromEntries: this.#addEntries.bind(this),
+		fromObject: <O extends ReadonlyRecord<PropertyKey, unknown>>(obj: O) => this.#addEntries(entriesByObj(obj)),
+	}
+
 	#entries: AllEntries[] = []
 	#subs: Array<readonly [keyof T, readonly number[]]> = []
 
-	addEntries<E extends Entry>(entries: readonly E[]): Builder<T, AllEntries | E> {
+	done() {
+		const hashEntries = new HashEntries(this.#entries, HashEntries.hasFn)
+		const SUBS_ENTRIES = this.#subs.map(([key, indexArr]) => [key, new Sub(hashEntries, indexArr)] as const)
+		const SUBS: { readonly [K in keyof T]: Sub<T[K]> } = entriesToObj(SUBS_ENTRIES)
+
+		return new Main(hashEntries, SUBS)
+	}
+
+	#addEntries<E extends Entry>(entries: readonly E[]): Builder<T, AllEntries | E> {
 		this.#entries = [...this.#entries, ...(entries as never[])]
 		return this
 	}
 
-	addSubCollection<N extends string, E extends Entry>(
+	#addSubCollection<N extends string, E extends Entry>(
 		name: N,
 		entries: readonly E[]
 	): Builder<T & ReadonlyRecord<N, E>, AllEntries | E> {
@@ -301,7 +321,7 @@ export class Builder<T extends ReadonlyRecord<string, Entry> = NonNullable<unkno
 		return this as never
 	}
 
-	createConditionalSubCollections<TN extends string, FN extends string, C extends A.FnData>(
+	#createConditionalSubCollections<TN extends string, FN extends string, C extends A.FnData>(
 		trueName: TN,
 		falseName: FN,
 		{ fn }: A.Assert<C>
@@ -309,16 +329,18 @@ export class Builder<T extends ReadonlyRecord<string, Entry> = NonNullable<unkno
 		T & ReadonlyRecord<TN, A.Get<AllEntries, C>> & ReadonlyRecord<FN, A.Get<AllEntries, A.Not<C>>>,
 		AllEntries
 	> {
-		const indexArr = this.#entries.reduce<[number[], number[]]>(
-			([trueI, falseI], curr, i) => (fn(curr) ? [[...trueI, i], falseI] : [trueI, [...falseI, i]]),
-			[[], []]
-		)
-		this.#subs = [...this.#subs, [trueName, indexArr[0]], [falseName, indexArr[1]]]
+		const [trueIndexes, falseIndexes]: number[][] = [[], []]
+
+		for (let i = 0; i < this.#entries.length; i++)
+			if (fn(this.#entries[i])) trueIndexes.push(i)
+			else falseIndexes.push(i)
+
+		this.#subs = [...this.#subs, [trueName, trueIndexes], [falseName, falseIndexes]]
 
 		return this as never
 	}
 
-	createSubCollection<N extends string, C extends A.FnData>(
+	#createSubCollection<N extends string, C extends A.FnData>(
 		name: N,
 		{ fn }: A.Assert<C>
 	): Builder<T & ReadonlyRecord<N, A.Get<AllEntries, C>>, AllEntries> {
@@ -326,13 +348,5 @@ export class Builder<T extends ReadonlyRecord<string, Entry> = NonNullable<unkno
 		this.#subs = [...this.#subs, [name, indexArr]]
 
 		return this as never
-	}
-
-	done() {
-		const hashEntries = new HashEntries(this.#entries, HashEntries.hasFn)
-		const SUBS_ENTRIES = this.#subs.map(([key, indexArr]) => [key, new Sub(hashEntries, indexArr)] as const)
-		const SUBS: { [K in keyof T]: Sub<T[K]> } = entriesToObj(SUBS_ENTRIES)
-
-		return new Composite(hashEntries, SUBS)
 	}
 }

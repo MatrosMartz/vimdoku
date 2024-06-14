@@ -5,5 +5,5 @@ export enum Lang {
 	ES = 'es',
 }
 
-export const LANGS = new Collection.Builder().addEntries(Collection.entriesByObj(Lang)).done()
+export const LANGS = new Collection.Builder().addToMain.fromObject(Lang).done()
 export const IDLE_LANG = Lang.EN
