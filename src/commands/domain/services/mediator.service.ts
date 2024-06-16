@@ -1,4 +1,5 @@
 import { PromiseFnQueue } from '~/share/domain/entities'
+import { Protocol } from '~/share/utils'
 import { IDLE_LANG } from '$i18n/domain/const'
 import type { I18nRepo } from '$i18n/domain/repositories'
 import { I18nSvc } from '$i18n/domain/services'
@@ -81,7 +82,7 @@ export class MedSvc implements IMed {
 			}
 		}
 		this.#internalUnload = this.#repos.page.subscribe(async ({ lang, route }) => {
-			if (!route.equals(this.#state.page.data.route)) this.#state.page.setRoute(route)
+			if (!route[Protocol.equalsTo](this.#state.page.data.route)) this.#state.page.setRoute(route)
 			if (this.#state.page.data.lang !== lang) this.#state.page.setLang(lang)
 			if (this.#state.i18n.data.lang !== lang) await this.#state.i18n.setLang(lang ?? acceptLang!).save()
 		})

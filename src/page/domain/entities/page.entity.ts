@@ -1,45 +1,45 @@
 import type { RequireOne } from '~/share/types'
-import { _throw, capitalCase, InvalidStringPageError } from '~/share/utils'
+import { _throw, capitalCase, InvalidStringPageError, Protocol } from '~/share/utils'
 import { type Lang, LANGS } from '$i18n/domain/const'
 import { Difficulty } from '$sudoku/domain/const'
 
 import * as Modal from './modal.entity'
 import * as Route from './route.entity'
 
-export class Page {
-	readonly #lang
-	readonly #modal
-	readonly #route
+export class Page implements Protocol.IEquals<Page> {
+	readonly lang
+	readonly modal
+	readonly route
 	constructor(modal: Modal.Modal, route: Route.Route, lang?: Lang) {
-		this.#lang = lang
-		this.#modal = modal
-		this.#route = route
+		this.lang = lang
+		this.modal = modal
+		this.route = route
 	}
 
-	get lang() {
-		return this.#lang
-	}
-
-	get modal() {
-		return this.#modal
-	}
-
-	get route() {
-		return this.#route
+	[Protocol.equalsTo](other: Page) {
+		if (this.lang !== other.lang) return false
+		if (!this.modal[Protocol.equalsTo](other.modal)) return false
+		if (!this.route[Protocol.equalsTo](other.route)) return false
+		return true
 	}
 
 	toJSON() {
-		return { lang: this.#lang, modal: this.#modal.toJSON(), route: this.#route.toJSON() }
+		return { lang: this.lang, modal: this.modal.toJSON(), route: this.route.toJSON() }
 	}
 
 	unwrap() {
-		return { lang: this.#lang, modal: this.#modal, route: this.#route }
+		return { lang: this.lang, modal: this.modal, route: this.route }
 	}
 
+	/**
+	 * Create new Page derived of this.
+	 * @param properties Contains lang, modal or route.
+	 * @returns New Page based in this.
+	 */
 	with({
-		lang = this.#lang,
-		modal = this.#modal,
-		route = this.#route,
+		lang = this.lang,
+		modal = this.modal,
+		route = this.route,
 	}: RequireOne<{
 		lang: Lang | undefined
 		modal: Modal.Modal

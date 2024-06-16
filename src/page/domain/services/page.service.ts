@@ -1,4 +1,4 @@
-import { inject } from '~/share/utils'
+import { inject, Protocol } from '~/share/utils'
 import type { Lang } from '$i18n/domain/const'
 
 import { Modal, type Page, type Route } from '../entities'
@@ -33,7 +33,11 @@ export class PageSvc implements IPage {
 
 	async save() {
 		const page = this.data
-		if (this.#savedPage != null && this.#savedPage.route.equals(page.route) && this.#savedPage.lang === page.lang)
+		if (
+			this.#savedPage != null &&
+			this.#savedPage.route[Protocol.equalsTo](page.route) &&
+			this.#savedPage.lang === page.lang
+		)
 			return
 
 		await this.#save(page)

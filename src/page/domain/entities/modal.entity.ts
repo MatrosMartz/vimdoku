@@ -1,5 +1,5 @@
 import { Collection } from '~/share/domain/entities'
-import { A } from '~/share/utils'
+import { A, Protocol } from '~/share/utils'
 
 export enum Kind {
 	Cmd = 'command',
@@ -17,51 +17,61 @@ export const KINDS = new Collection.Builder().addToMain
 	.addNewSub.conditional('COMPOUND', 'SIMPLE', A.is.Array.with(0, A.equalTo('Pref', 'Warn')))
 	.done()
 
-abstract class Base {
+abstract class Base implements Protocol.IEquals<Modal> {
 	abstract readonly kind: Kind
 
 	toJSON() {
 		return { kind: this.kind }
 	}
+
+	abstract [Protocol.equalsTo](other: Modal): boolean
 }
 
 export class Cmd extends Base {
-	get kind() {
-		return Kind.Cmd as const
-	}
+	readonly kind = Kind.Cmd
 
 	static is(modal: unknown): modal is Cmd {
 		return modal instanceof Cmd
 	}
+
+	[Protocol.equalsTo](other: Modal) {
+		return other.kind === Kind.Cmd
+	}
 }
 
 export class Modes extends Base {
-	get kind() {
-		return Kind.Modes as const
-	}
+	readonly kind = Kind.Modes
 
 	static is(modal: unknown): modal is Modes {
 		return modal instanceof Modes
 	}
+
+	[Protocol.equalsTo](other: Modal) {
+		return other.kind === Kind.Modes
+	}
 }
 
 export class None extends Base {
-	get kind() {
-		return Kind.None as const
-	}
+	readonly kind = Kind.None
 
 	static is(modal: unknown): modal is None {
 		return modal instanceof None
 	}
+
+	[Protocol.equalsTo](other: Modal) {
+		return other.kind === Kind.None
+	}
 }
 
 export class Pause extends Base {
-	get kind() {
-		return Kind.Pause as const
-	}
+	readonly kind = Kind.Pause
 
 	static is(modal: unknown): modal is Pause {
 		return modal instanceof Pause
+	}
+
+	[Protocol.equalsTo](other: Modal) {
+		return other.kind === Kind.Pause
 	}
 }
 
@@ -77,19 +87,12 @@ export const PREF_TYPE = new Collection.Builder().addToMain
 	.done()
 
 export class Pref<Type extends PrefType> extends Base {
-	readonly #type
+	readonly kind = Kind.Pref
+	readonly type
 
 	constructor(type: Type) {
 		super()
-		this.#type = type
-	}
-
-	get kind() {
-		return Kind.Pref as const
-	}
-
-	get type() {
-		return this.#type
+		this.type = type
 	}
 
 	static is<Type extends PrefType | undefined>(
@@ -99,18 +102,24 @@ export class Pref<Type extends PrefType> extends Base {
 		return modal instanceof Pref && (type == null || modal.type === type)
 	}
 
+	[Protocol.equalsTo](other: Modal) {
+		return other.kind === Kind.Pref && other.type === this.type
+	}
+
 	toJSON() {
 		return { kind: this.kind, type: this.type }
 	}
 }
 
 export class SelGame extends Base {
-	get kind() {
-		return Kind.SelGame as const
-	}
+	readonly kind = Kind.SelGame
 
 	static is(modal: unknown): modal is SelGame {
 		return modal instanceof SelGame
+	}
+
+	[Protocol.equalsTo](other: Modal) {
+		return other.kind === Kind.SelGame
 	}
 }
 
@@ -121,19 +130,12 @@ export enum WarnType {
 export const WARN_TYPE = new Collection.Builder().addToMain.fromObject(WarnType).done()
 
 export class Warn<Type extends WarnType> extends Base {
-	readonly #type
+	readonly kind = Kind.Warn
+	readonly type
 
 	constructor(type: Type) {
 		super()
-		this.#type = type
-	}
-
-	get kind() {
-		return Kind.Warn as const
-	}
-
-	get type() {
-		return this.#type
+		this.type = type
 	}
 
 	static is<Type extends WarnType | undefined>(
@@ -143,18 +145,24 @@ export class Warn<Type extends WarnType> extends Base {
 		return modal instanceof Warn && (type == null || modal.type === type)
 	}
 
+	[Protocol.equalsTo](other: Modal) {
+		return other.kind === Kind.Warn && other.type === this.type
+	}
+
 	toJSON() {
 		return { kind: this.kind, type: this.type }
 	}
 }
 
 export class Win extends Base {
-	get kind() {
-		return Kind.Win as const
-	}
+	readonly kind = Kind.Win
 
 	static is(modal: unknown): modal is Win {
 		return modal instanceof Win
+	}
+
+	[Protocol.equalsTo](other: Modal) {
+		return other.kind === Kind.Win
 	}
 }
 

@@ -1,6 +1,6 @@
 import type { PagesKeys } from '~/locales'
 import { Collection } from '~/share/domain/entities'
-import { A } from '~/share/utils'
+import { A, Protocol } from '~/share/utils'
 import type { Difficulty } from '$sudoku/domain/const'
 
 export enum Kind {
@@ -21,7 +21,7 @@ export enum HelpSub {
 
 export const HELP_SUB = new Collection.Builder().addToMain.fromObject(HelpSub).done()
 
-export abstract class Base {
+export abstract class Base implements Protocol.IEquals<Route> {
 	abstract readonly kind: Kind
 
 	abstract readonly path: string
@@ -38,79 +38,60 @@ export abstract class Base {
 		return this.path
 	}
 
-	abstract equals(other: Route): boolean
+	abstract [Protocol.equalsTo](other: Route): boolean
 }
 
 export class Home extends Base {
-	get kind() {
-		return Kind.Home as const
-	}
+	readonly kind = Kind.Home
 
-	get path() {
-		return '' as const
-	}
+	readonly path = ''
 
 	static is(route: unknown): route is Home {
 		return route instanceof Home
 	}
 
-	equals(other: Route) {
-		return Home.is(other)
+	[Protocol.equalsTo](other: Route) {
+		return other.kind === Kind.Home
 	}
 }
 
 export type GameSub = keyof typeof Difficulty.Kind
 
 export class Game<SubRoute extends GameSub> extends Base {
-	readonly #subRoute
+	readonly kind = Kind.Game
+	readonly path
+	readonly subRoute
 
 	constructor(subRoute: SubRoute) {
 		super()
-		this.#subRoute = subRoute
-	}
-
-	get kind() {
-		return Kind.Game as const
-	}
-
-	get path() {
-		return `${this.kind}/${this.#subRoute}` as const
-	}
-
-	get subRoute() {
-		return this.#subRoute
+		this.subRoute = subRoute
+		this.path = `${this.kind}/${this.subRoute}`
 	}
 
 	static is<Sub extends GameSub | undefined>(
 		route: unknown,
 		sub?: Sub
 	): route is Game<Sub extends undefined ? GameSub : Sub> {
-		return route instanceof Game && (sub == null || route.#subRoute === sub)
+		return route instanceof Game && (sub == null || route.subRoute === sub)
 	}
 
-	equals(other: Route) {
-		return Game.is(other) && this.subRoute === other.subRoute
+	[Protocol.equalsTo](other: Route) {
+		return other.kind === Kind.Game && other.subRoute === this.subRoute
 	}
 }
 
 export class Help<SubRoute extends HelpSub> extends Base {
-	readonly #subRoute
+	readonly kind = Kind.Help
+	readonly path
+	readonly subRoute
+
 	constructor(subRoute: SubRoute) {
 		super()
-		this.#subRoute = subRoute
-	}
-
-	get kind() {
-		return Kind.Help as const
-	}
-
-	get path() {
-		if (this.#subRoute === HelpSub.Main) return `${this.kind}` as const
-		return `${this.kind}/${this.subRoute}` as `${Kind.Help}/${Exclude<HelpSub, HelpSub.Main>}`
-	}
-
-	get subRoute() {
-		return this.#subRoute
+		this.subRoute = subRoute
+		this.path =
+			subRoute === HelpSub.Main
+				? (`${this.kind}` as const)
+				: (`${this.kind}/${this.subRoute}` as `${Kind.Help}/${Exclude<HelpSub, HelpSub.Main>}`)
 	}
 
 	static is<Sub extends HelpSub | undefined>(
@@ -120,33 +101,26 @@ export class Help<SubRoute extends HelpSub> extends Base {
 		return route instanceof Help && (sub == null || route.subRoute === sub)
 	}
 
-	equals(other: Route) {
-		return Help.is(other) && this.subRoute === other.subRoute
+	[Protocol.equalsTo](other: Route) {
+		return other.kind === Kind.Help && this.subRoute === other.subRoute
 	}
 }
 
 export class NotFound extends Base {
-	readonly #path
+	readonly kind = Kind.NotFound
+	readonly path
 
 	constructor(path: string) {
 		super()
-		this.#path = path
-	}
-
-	get kind() {
-		return Kind.NotFound
-	}
-
-	get path() {
-		return this.#path
+		this.path = path
 	}
 
 	static is(route: unknown): route is NotFound {
 		return route instanceof NotFound
 	}
 
-	equals(other: Route) {
-		return NotFound.is(other) && this.path === other.path
+	[Protocol.equalsTo](other: Route) {
+		return other.kind === Kind.NotFound && this.path === other.path
 	}
 }
 

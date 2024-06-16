@@ -141,16 +141,15 @@ describe.concurrent('History Observable', () => {
 		expect(obs.history).toEqual([3, 4, 5])
 	})
 
-	test('Should be called when a data is added.', () => {
+	test('Should be not called when a data is added.', () => {
 		const obs = new HistoryObservable<number>(EMPTY_STATE, 20, [])
 
 		const observer = vi.fn(noop)
 
 		obs.add(observer).push(1)
 
-		expect(observer).toBeCalledTimes(2)
+		expect(observer).toBeCalledTimes(1)
 		expect(observer).toHaveBeenNthCalledWith(1, EMPTY_STATE)
-		expect(observer).toHaveBeenNthCalledWith(2, EMPTY_STATE)
 	})
 
 	test('Should call after undoing the history.', () => {

@@ -3,26 +3,31 @@ export type Observer<T> = (data: T) => void
 /** Represent a Observable Service */
 export class Observable<T> {
 	#data: T
+	#equals
 	readonly #initial
 	readonly #observers = new Set<Observer<T>>()
 
 	/**
 	 * Creates an instance of the ObservableSvc class.
 	 * @param initialData The value with which the observable is to be created.
+	 * @param [equals] Comparate the new and old data.
 	 */
-	constructor(initialData: T) {
+	constructor(initialData: T, equals: (a: T, b: T) => boolean = Observable.DefaultEqual) {
 		this.#data = initialData
 		this.#initial = initialData
+		this.#equals = equals
 	}
 
 	get data() {
 		return this.#data
 	}
 
+	static DefaultEqual = <T>(a: T, b: T) => a === b
+
 	/**
 	 * Subscribe a new observer.
 	 * @param observer The observer to be added.
-	 * @returns The updated Observable
+	 * @returns The updated Observable.
 	 */
 	add(observer: Observer<T>) {
 		this.#observers.add(observer)
@@ -33,23 +38,29 @@ export class Observable<T> {
 	/**
 	 * Unsubscribe an observer.
 	 * @param observer The observer to be removed.
-	 * @returns The updated Observable
+	 * @returns The updated Observable.
 	 */
 	remove(observer: Observer<T>) {
 		this.#observers.delete(observer)
 		return this
 	}
 
+	/**
+	 * Set all observers with initial data.
+	 * @returns The updated Observable.
+	 */
 	reset() {
 		return this.set(this.#initial)
 	}
 
 	/**
-	 * Set all observer with the new data.
+	 * Set all observers with the new data.
 	 * @param data The new value of data.
-	 * @returns The updated Observable
+	 * @returns The updated Observable.
 	 */
 	set(data: T) {
+		if (this.#equals(this.data, data)) return this
+
 		this.#data = data
 		for (const sub of this.#observers) sub(data)
 		return this
@@ -58,7 +69,7 @@ export class Observable<T> {
 	/**
 	 * Transforms and updates the previous data
 	 * @param updater The function that updates the data.
-	 * @returns The updated Observable
+	 * @returns The updated Observable.
 	 */
 	update(updater: (data: T) => T) {
 		return this.set(updater(this.#data))
@@ -69,7 +80,7 @@ export class Observable<T> {
 export class HistoryObservable<T> extends Observable<T> {
 	#cursor: number
 	readonly #emptyState: T
-	readonly #history: T[]
+	#history: readonly T[]
 	#length: number
 
 	/**
@@ -77,9 +88,10 @@ export class HistoryObservable<T> extends Observable<T> {
 	 * @param emptyState The value that will represent empty state.
 	 * @param length The initial maximum length of the history.
 	 * @param history Optional history with which the context is to be created.
+	 * @param [equals] Compare the new and old data.
 	 */
-	constructor(emptyState: T, length: number, history: T[]) {
-		super(emptyState)
+	constructor(emptyState: T, length: number, history: T[], equals?: (a: T, b: T) => boolean) {
+		super(emptyState, equals)
 		this.#emptyState = emptyState
 		this.#length = length
 		this.#history = history
@@ -95,9 +107,9 @@ export class HistoryObservable<T> extends Observable<T> {
 		return this.#length
 	}
 
-	set length(length: number) {
-		this.#length = length
-		if (this.#history.length > length) this.#history.length = length
+	set length(length) {
+		this.#length = this.#length
+		if (this.#history.length > length) this.#history = this.#history.slice(0, length)
 	}
 
 	/**
@@ -115,11 +127,10 @@ export class HistoryObservable<T> extends Observable<T> {
 	 * @returns The updated History Observable
 	 */
 	push(data: T) {
-		const hasExceed = this.#length - this.#history.length <= 0
+		this.#history = [...this.#history, data]
+		const exceed = this.#length < this.#history.length ? this.#history.length - this.#length : 0
 
-		if (hasExceed) this.#history.shift()
-
-		this.#history.push(data)
+		this.#history = this.#history.slice(exceed)
 		super.set(this.#emptyState)
 
 		this.#cursor = this.#history.length
@@ -144,7 +155,7 @@ export class HistoryObservable<T> extends Observable<T> {
 	 * @returns The updated History Observable
 	 */
 	trunc() {
-		if (this.#history.length > this.#cursor) this.#history.length = this.#cursor
+		if (this.#history.length > this.#cursor) this.#history = this.history.slice(0, this.#cursor)
 
 		return this
 	}
