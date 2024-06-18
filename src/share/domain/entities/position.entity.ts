@@ -1,141 +1,110 @@
 import type { RequireOne } from '~/share/types'
-import { clamp, createArray } from '~/share/utils'
+import { clamp as clampUtil, createArray, Prtcl } from '~/share/utils'
 
-export interface PosData {
-	x: number
-	y: number
+export interface Data {
+	readonly col: number
+	readonly row: number
 }
 
-/** Represent a Position. */
-export class Pos<const P extends PosData = PosData> {
-	readonly #x: P['y']
-	readonly #y: P['x']
+type Y<P extends Data, N1 extends number, N2 extends number, N3 extends number> = P['row'] extends 0 | 1 | 2
+	? N1
+	: P['row'] extends 3 | 4 | 5
+		? N2
+		: P['row'] extends 6 | 7 | 8
+			? N3
+			: number
+type X<P extends Data, N1 extends number, N2 extends number, N3 extends number> = P['col'] extends 0 | 1 | 2
+	? N1
+	: P['col'] extends 3 | 4 | 5
+		? N2
+		: P['col'] extends 6 | 7 | 8
+			? N3
+			: number
+
+export type GetReg<P extends Data> = Y<P, X<P, 0, 1, 2>, X<P, 3, 4, 5>, X<P, 6, 7, 8>>
+
+export class Pos<const P extends Data = Data> implements Prtcl.IEquals<Pos>, Prtcl.IRelated<Pos> {
+	readonly col: P['col']
+	readonly reg
+	readonly row: P['row']
 
 	constructor(data: P) {
-		this.#x = data.x
-		this.#y = data.y
+		if (MIN_RANGE > data.row || data.row > MAX_RANGE) throw new Error(`Invalid row: ${data.row}, out of range`)
+		if (MIN_RANGE > data.col || data.col > MAX_RANGE) throw new Error(`Invalid col: ${data.col}, out of range`)
+
+		this.col = data.col
+		this.reg = (Math.floor(data.row / 3) * 3 + Math.floor(data.col / 3) * 3 * 3) as GetReg<P>
+		this.row = data.row
 	}
 
-	/**
-	 * Get the initial position of the region that contains a cell.
-	 * @returns The initial position of the region.
-	 */
-	get initReg() {
-		return new Pos({ y: Math.floor(this.#y / 3) * 3, x: Math.floor(this.#x / 3) * 3 })
+	[Prtcl.equalsTo](other: Pos) {
+		return this.col === other.col && this.row === other.row
 	}
 
-	get reg() {
-		return this.#y + (this.#x + 3)
-	}
-
-	get x() {
-		return this.#x
-	}
-
-	get y() {
-		return this.#y
-	}
-
-	/**
-	 * Create a bidimensional array with the length selected.
-	 * @param length The matrix length in both directions.
-	 * @param mapFn The mapping function.
-	 * @returns The new matrix with the length defined.
-	 */
-	static createMatrix<const L extends number, MapFn extends (pos: Pos) => any>(length: L, mapFn: MapFn) {
-		return createArray(length, y => createArray(length, (x): ReturnType<MapFn> => mapFn(new Pos({ y, x }))))
-	}
-
-	/**
-	 * Get the position from a region index.
-	 * @param index The box index of the cell.
-	 * @returns The initial position of the region.
-	 */
-	static fromReg(index: number) {
-		return new Pos({ y: index % 3, x: Math.floor(index / 3) })
-	}
-
-	/**
-	 * Creates an iterator in two dimensions.
-	 * @param length To where it will iterate in both directions.
-	 * @yields The current position.
-	 */
-	static *iterateMatrix(length: number) {
-		for (let y = 0; y < length; y++) for (let x = 0; x < length; x++) yield new Pos({ y, x })
-	}
-
-	/**
-	 * Check if other pos are related.
-	 * @param pos The other position.
-	 * @returns True if the other position belongs to the same col, region or row.
-	 */
-	areRelated(pos: Pos) {
-		return this.equalsCol(pos) || this.equalsRow(pos) || this.equalsReg(pos)
-	}
-
-	/**
-	 * Check if other position are in the same column.
-	 * @param pos The other position.
-	 * @returns True if the other position belongs to the same col.
-	 */
-	equalsCol(pos: Pos) {
-		return this.#x === pos.#x
-	}
-
-	/**
-	 * Check if other position are the same.
-	 * @param pos The other position.
-	 * @returns True if the other position is the same.
-	 */
-	equalsPos(pos: Pos) {
-		return this.#y === pos.#y && this.#x === pos.#x
-	}
-
-	/**
-	 * Check if other position are in the same region.
-	 * @param pos The other position.
-	 * @returns True if the other position belongs to the same region.
-	 */
-	equalsReg(pos: Pos) {
-		return this.initReg.equalsPos(pos.initReg)
-	}
-
-	/**
-	 * Check if other position are in the same row.
-	 * @param pos The other position.
-	 * @returns True if the other position belongs to the same row.
-	 */
-	equalsRow(pos: Pos) {
-		return this.#y === pos.#y
+	[Prtcl.relatedTo](other: Pos) {
+		return this.col === other.col || this.reg === other.reg || this.row === other.row
 	}
 
 	/**
 	 * Sum with other position.
-	 * @param pos The other position.
+	 * @param sumPos The other position.
 	 */
-	sum(pos: RequireOne<PosData>): Pos
-	sum({ y = POS_MIN_RANGE, x = POS_MIN_RANGE }: RequireOne<PosData>) {
-		return new Pos({ y: this.#clamp(this.#y + y), x: this.#clamp(this.#x + x) })
+	sum(sumPos: RequireOne<Data>): Pos
+	sum({ row = MIN_RANGE, col = MIN_RANGE }: RequireOne<Data>) {
+		return clamp({ col: this.col + col, row: this.row + row })
+	}
+
+	toJSON() {
+		return { col: this.col, row: this.row }
 	}
 
 	toString() {
-		return `${this.#y}-${this.#x}` as const
-	}
-
-	/**
-	 * Abstraction to avoid overhanging from the board,
-	 * @param value The original value.
-	 * @returns The original position if it does not exceed the limits, otherwise the limit will be returned.
-	 */
-	#clamp(value: number) {
-		return clamp(POS_MIN_RANGE, POS_MAX_RANGE, value)
+		return `${this.col}-${this.row}` as const
 	}
 }
+/**
+ * Abstraction to avoid overhanging from the board.
+ * @param pos The position Data.
+ * @returns The original position if it does not exceed the limits, otherwise the limit will be returned.
+ */
+export function clamp(pos: Data) {
+	return new Pos({
+		row: clampUtil(MIN_RANGE, MAX_RANGE, pos.row),
+		col: clampUtil(MIN_RANGE, MAX_RANGE, pos.col),
+	})
+}
 
+/**
+ * Create a bidimensional array with the length selected.
+ * @param length The matrix length in both directions.
+ * @param mapFn The mapping function.
+ * @returns The new matrix with the length defined.
+ */
+export function createMatrix<const L extends number, MapFn extends (pos: Pos) => any>(length: L, mapFn: MapFn) {
+	return createArray(length, row => createArray(length, (col): ReturnType<MapFn> => mapFn(new Pos({ row, col }))))
+}
+
+/**
+ * Get the position from a region index.
+ * @param index The box index of the cell.
+ * @returns The initial position of the region.
+ */
+export function fromReg(index: number) {
+	return new Pos({ row: index % 3, col: Math.floor(index / 3) })
+}
+
+/**
+ * Creates an iterator in two dimensions.
+ * @param length To where it will iterate in both directions.
+ * @yields The current position.
+ */
+export function* iterateMatrix(length: number) {
+	for (let row = 0; row < length; row++) for (let col = 0; col < length; col++) yield new Pos({ row, col })
+}
 /** The maximum range for row and column coordinates. */
-export const POS_MAX_RANGE = 8
+export const MAX_RANGE = 8
 /** The minimum range for row and column coordinates. */
-export const POS_MIN_RANGE = 0
+export const MIN_RANGE = 0
 
 /** The initial position. */
-export const IDLE_POS = new Pos({ y: POS_MIN_RANGE, x: POS_MIN_RANGE })
+export const IDLE = new Pos({ row: MIN_RANGE, col: MIN_RANGE })

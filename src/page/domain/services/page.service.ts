@@ -1,4 +1,4 @@
-import { inject, Protocol } from '~/share/utils'
+import { inject, Prtcl } from '~/share/utils'
 import type { Lang } from '$i18n/domain/const'
 
 import { Modal, type Page, type Route } from '../entities'
@@ -35,7 +35,7 @@ export class PageSvc implements IPage {
 		const page = this.data
 		if (
 			this.#savedPage != null &&
-			this.#savedPage.route[Protocol.equalsTo](page.route) &&
+			this.#savedPage.route[Prtcl.equalsTo](page.route) &&
 			this.#savedPage.lang === page.lang
 		)
 			return

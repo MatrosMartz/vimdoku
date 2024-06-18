@@ -1,3 +1,5 @@
+import { Prtcl } from '~/share/utils'
+
 export type Observer<T> = (data: T) => void
 
 /** Represent a Observable Service */
@@ -12,7 +14,7 @@ export class Observable<T> {
 	 * @param initialData The value with which the observable is to be created.
 	 * @param [equals] Comparate the new and old data.
 	 */
-	constructor(initialData: T, equals: (a: T, b: T) => boolean = Observable.DefaultEqual) {
+	constructor(initialData: T, equals: (a: T, b: T) => boolean = Prtcl.equals) {
 		this.#data = initialData
 		this.#initial = initialData
 		this.#equals = equals
@@ -21,8 +23,6 @@ export class Observable<T> {
 	get data() {
 		return this.#data
 	}
-
-	static DefaultEqual = <T>(a: T, b: T) => a === b
 
 	/**
 	 * Subscribe a new observer.

@@ -1,6 +1,6 @@
-import { IDLE_POS, Pos, type PosData } from '~/share/domain/entities'
+import { Pos } from '~/share/domain/entities'
 import type { Tuple } from '~/share/types'
-import { iterateArray, keysBy, noop } from '~/share/utils'
+import { iterateArray, keysBy, noop, Prtcl } from '~/share/utils'
 
 export type GridData<T> = Tuple<Tuple<T, 9>, 9>
 
@@ -16,7 +16,7 @@ export interface MapperMove<T> {
 	 * @param pos Cell position.
 	 * @returns The new cell.
 	 */
-	fn(cell: T, pos: Pos): T
+	fn(cell: T, pos: Pos.Pos): T
 }
 
 class GridEvery<T> {
@@ -32,8 +32,8 @@ class GridEvery<T> {
 	 * @param fn The function to check against each cell in the col.
 	 * @returns True if the function returns true for all cells in the specified column, false otherwise.
 	 */
-	col(col: number, fn: (cell: T, pos: Pos) => boolean) {
-		for (const y of iterateArray(9)) if (!fn(this.#data[y][col], new Pos({ y, x: col }))) return false
+	col(col: number, fn: (cell: T, pos: Pos.Pos) => boolean) {
+		for (const row of iterateArray(9)) if (!fn(this.#data[row][col], new Pos.Pos({ row, col }))) return false
 		return true
 	}
 
@@ -42,8 +42,8 @@ class GridEvery<T> {
 	 * @param fn The function to check against each cell in the grid.
 	 * @returns True if the function returns true for all cells in the grid, false otherwise.
 	 */
-	grid(fn: (cell: T, pos: Pos) => boolean) {
-		return this.#data.every((row, y) => row.every((cell, x) => fn(cell, new Pos({ y, x }))))
+	grid(fn: (cell: T, pos: Pos.Pos) => boolean) {
+		return this.#data.every((c, row) => c.every((cell, col) => fn(cell, new Pos.Pos({ row, col }))))
 	}
 
 	/**
@@ -52,11 +52,11 @@ class GridEvery<T> {
 	 * @param fn The function to check against each cell in the box.
 	 * @returns True if the function returns true for all cells in the specified box, false otherwise.
 	 */
-	reg(reg: number, fn: (cell: T, pos: Pos) => boolean): boolean {
+	reg(reg: number, fn: (cell: T, pos: Pos.Pos) => boolean): boolean {
 		const boxPos = Pos.fromReg(reg)
 		for (const pos of Pos.iterateMatrix(3)) {
-			const currPos = boxPos.sum(pos)
-			if (!fn(this.#data[currPos.y][currPos.x], currPos)) return false
+			const currPos = boxPos.sum(pos.toJSON())
+			if (!fn(this.#data[currPos.row][currPos.row], currPos)) return false
 		}
 
 		return true
@@ -68,8 +68,8 @@ class GridEvery<T> {
 	 * @param fn The function to check against each cell in the row.
 	 * @returns True if the function returns true for all cells in the specified row, false otherwise.
 	 */
-	row(row: number, fn: (cell: T, pos: Pos) => boolean) {
-		return this.#data[row].every((cell, x) => fn(cell, new Pos({ y: row, x })))
+	row(row: number, fn: (cell: T, pos: Pos.Pos) => boolean) {
+		return this.#data[row].every((cell, col) => fn(cell, new Pos.Pos({ row, col })))
 	}
 }
 
@@ -77,7 +77,7 @@ class GridComparer<T> {
 	readonly #data
 	readonly #origin
 
-	constructor(data: GridData<T>, origin: Pos) {
+	constructor(data: GridData<T>, origin: Pos.Pos) {
 		this.#data = data
 		this.#origin = origin
 	}
@@ -87,11 +87,11 @@ class GridComparer<T> {
 	 * @param fn The comparison function.
 	 * @returns True if the comparison function returns true for all cells in the same column, false otherwise.
 	 */
-	withCol(fn: (origin: T, curr: T, currPos: Pos) => boolean) {
-		const { x } = this.#origin
-		for (const y of iterateArray(9)) {
-			const pos = new Pos({ x, y })
-			if (!pos.equalsRow(this.#origin) && !fn(this.#cellBy(this.#origin), this.#cellBy(pos), pos)) return false
+	withCol(fn: (origin: T, curr: T, currPos: Pos.Pos) => boolean) {
+		const { row } = this.#origin
+		for (const col of iterateArray(9)) {
+			const pos = new Pos.Pos({ col, row })
+			if (!(pos.row === this.#origin.row) && !fn(this.#cellBy(this.#origin), this.#cellBy(pos), pos)) return false
 		}
 		return true
 	}
@@ -102,7 +102,7 @@ class GridComparer<T> {
 	 * @param fn The comparison function.
 	 * @returns True if the comparison function returns true for all cells in the same column, false otherwise.
 	 */
-	withOther(otherPos: Pos, fn: (origin: T, other: T) => boolean) {
+	withOther(otherPos: Pos.Pos, fn: (origin: T, other: T) => boolean) {
 		return fn(this.#cellBy(this.#origin), this.#cellBy(otherPos))
 	}
 
@@ -111,11 +111,11 @@ class GridComparer<T> {
 	 * @param fn The comparison function.
 	 * @returns True if the comparison function returns true for all cells in the same box, false otherwise.
 	 */
-	withReg(fn: (origin: T, curr: T, currPos: Pos) => boolean) {
-		const reg = this.#origin.initReg
+	withReg(fn: (origin: T, curr: T, currPos: Pos.Pos) => boolean) {
+		const reg = Pos.fromReg(this.#origin.reg)
 		for (const pos of Pos.iterateMatrix(3)) {
-			const currPos = pos.sum(reg)
-			if (!currPos.equalsPos(this.#origin) && !fn(this.#cellBy(this.#origin), this.#cellBy(currPos), currPos))
+			const currPos = pos.sum(reg.toJSON())
+			if (!Prtcl.equals(currPos, this.#origin) && !fn(this.#cellBy(this.#origin), this.#cellBy(currPos), currPos))
 				return false
 		}
 
@@ -127,11 +127,11 @@ class GridComparer<T> {
 	 * @param fn The comparison function.
 	 * @returns True if the comparison function returns true for all related cells, false otherwise.
 	 */
-	withRelated(fn: (origin: T, curr: T, currPos: Pos) => boolean) {
+	withRelated(fn: (origin: T, curr: T, currPos: Pos.Pos) => boolean) {
 		for (const currPos of Pos.iterateMatrix(9)) {
 			if (
-				!currPos.equalsPos(this.#origin) &&
-				currPos.areRelated(this.#origin) &&
+				!Prtcl.equals(currPos, this.#origin) &&
+				Prtcl.related(currPos, this.#origin) &&
 				!fn(this.#cellBy(this.#origin), this.#cellBy(currPos), currPos)
 			)
 				return false
@@ -145,17 +145,17 @@ class GridComparer<T> {
 	 * @param fn The comparison function.
 	 * @returns True if the comparison function returns true for all cells in the same row, false otherwise.
 	 */
-	withRow(fn: (origin: T, curr: T, currPos: Pos) => boolean) {
-		const { y } = this.#origin
-		for (const x of iterateArray(9)) {
-			const pos = new Pos({ y, x })
-			if (!pos.equalsCol(this.#origin) && !fn(this.#cellBy(this.#origin), this.#cellBy(pos), pos)) return false
+	withRow(fn: (origin: T, curr: T, currPos: Pos.Pos) => boolean) {
+		const { row } = this.#origin
+		for (const col of iterateArray(9)) {
+			const pos = new Pos.Pos({ row, col })
+			if (!Prtcl.equals(pos.col, this.#origin) && !fn(this.#cellBy(this.#origin), this.#cellBy(pos), pos)) return false
 		}
 		return true
 	}
 
-	#cellBy(pos: Pos) {
-		return this.#data[pos.y][pos.x]
+	#cellBy(pos: Pos.Pos) {
+		return this.#data[pos.row][pos.col]
 	}
 }
 
@@ -165,14 +165,14 @@ export interface MapperProp<T> {
 	 * @param fn The mapping function that the move will have.
 	 * @returns New `GridMapper` with the move.
 	 */
-	<U>(fn: (cell: T, pos: Pos) => T | U): GridMapper<T | U>
+	<U>(fn: (cell: T, pos: Pos.Pos) => T | U): GridMapper<T | U>
 	/**
 	 * Add a move if the condition is true.
 	 * @param condition The condition
 	 * @param fn The mapping function that the move will have.
 	 * @returns New `GridMapper` with the move if condition is true.
 	 */
-	onlyIf<U>(condition: boolean, fn: (cell: T, pos: Pos) => T | U): GridMapper<T | U>
+	onlyIf<U>(condition: boolean, fn: (cell: T, pos: Pos.Pos) => T | U): GridMapper<T | U>
 }
 
 export interface MapperPropWithoutOrigin<T> extends MapperProp<T> {
@@ -188,10 +188,10 @@ export interface MapperPropWithoutOrigin<T> extends MapperProp<T> {
  * @returns The GridMapper property.
  */
 function createMapperProp<T>(mapper: GridMapper<T>, type: MapperMoveType, withOrigin: boolean) {
-	const prop: MapperProp<T> = <U>(fn: (cell: T, pos: Pos) => T | U) =>
+	const prop: MapperProp<T> = <U>(fn: (cell: T, pos: Pos.Pos) => T | U) =>
 		GridMapper.addMove(mapper, { fn, type, withOrigin })
 
-	prop.onlyIf = <U>(condition: boolean, fn: (cell: T, pos: Pos) => T | U) => (condition ? prop(fn) : mapper)
+	prop.onlyIf = <U>(condition: boolean, fn: (cell: T, pos: Pos.Pos) => T | U) => (condition ? prop(fn) : mapper)
 
 	return prop
 }
@@ -232,7 +232,7 @@ class GridMapper<T> {
 	 * @param origin The origin of the changes.
 	 * @param gridMoves The initials grid moves.
 	 */
-	constructor(data: GridData<T>, origin: Pos, gridMoves: Array<MapperMove<T>> = []) {
+	constructor(data: GridData<T>, origin: Pos.Pos, gridMoves: Array<MapperMove<T>> = []) {
 		this.#data = data
 		this.#origin = origin
 		this.#gridMoves = gridMoves
@@ -247,16 +247,16 @@ class GridMapper<T> {
 	 * @param effect Function to be executed for each move.
 	 * @returns The updated Grid.
 	 */
-	apply(effect: (cell: { next: T; prev: T }, pos: Pos) => void = noop) {
+	apply(effect: (cell: { next: T; prev: T }, pos: Pos.Pos) => void = noop) {
 		const data = Pos.createMatrix(9, (pos): T => {
 			let cell = this.#cellBy(pos)
 			for (const { type, fn, withOrigin } of this.#gridMoves) {
-				const isOrigin = pos.equalsPos(this.#origin)
+				const isOrigin = pos[Prtcl.equalsTo](this.#origin)
 				const equalPos = type === 'cell' && isOrigin
-				const equalCol = type === 'col' && pos.equalsCol(this.#origin)
-				const equalRow = type === 'row' && pos.equalsRow(this.#origin)
-				const equalReg = type === 'reg' && pos.equalsReg(this.#origin)
-				const areRelated = type === 'related' && pos.areRelated(this.#origin)
+				const equalCol = type === 'col' && pos.col === this.#origin.col
+				const equalRow = type === 'row' && pos.row === this.#origin.row
+				const equalReg = type === 'reg' && pos.reg === this.#origin.reg
+				const areRelated = type === 'related' && Prtcl.related(pos, this.#origin)
 
 				if ((withOrigin || !isOrigin) && (equalPos || equalReg || equalCol || equalRow || areRelated)) {
 					const next = fn(cell, pos)
@@ -270,8 +270,8 @@ class GridMapper<T> {
 		return new Grid(data)
 	}
 
-	#cellBy(pos: Pos) {
-		return this.#data[pos.y][pos.x]
+	#cellBy(pos: Pos.Pos) {
+		return this.#data[pos.row][pos.col]
 	}
 }
 
@@ -289,7 +289,7 @@ class GridJoiner<T> {
 	 */
 	all(separators: { col?: string | undefined; row?: string | undefined }): string
 	all({ col = ',', row = '\n' }: { col?: string | undefined; row?: string | undefined }) {
-		return this.#data.map(Row => Row.join(col)).join(row)
+		return this.#data.map(c => c.join(col)).join(row)
 	}
 
 	/**
@@ -314,15 +314,14 @@ class GridJoiner<T> {
 	 * @param separators Separators for columns and rows in the box.
 	 * @returns A string representation of the box with the specified separators.
 	 */
-	reg(reg: number, separators: { col?: string | undefined; row?: string | undefined }): string
-	reg(reg: number, { col = ',', row = '\n' }: { col?: string | undefined; row?: string | undefined }) {
+	reg(reg: number, separators: { col?: string | undefined; row?: string | undefined }) {
 		let str = ''
 		const regPos = Pos.fromReg(reg)
 		for (const pos of Pos.iterateMatrix(3)) {
-			const { y, x } = pos.sum(regPos)
-			if (pos.equalsPos(IDLE_POS)) str += this.#data[y][x]
-			else if (pos.equalsCol(IDLE_POS)) str += col + this.#data[y][x]
-			else str += row + this.#data[y][x]
+			const { col, row } = pos.sum(regPos.toJSON())
+			if (pos[Prtcl.equalsTo](Pos.IDLE)) str += this.#data[row][col]
+			else if (pos[Prtcl.equalsTo](Pos.IDLE)) str += separators.col ?? ',' + this.#data[row][col]
+			else str += separators.row ?? '\n' + this.#data[row][col]
 		}
 
 		return str
@@ -352,8 +351,8 @@ class GridSome<T> {
 	 * @param fn The function to check against each cell in the column.
 	 * @returns True if the function returns true for at least one cell in the specified column, false otherwise.
 	 */
-	col(col: number, fn: (cell: T, pos: Pos) => boolean) {
-		for (const y of iterateArray(9)) if (fn(this.#data[y][col], new Pos({ y, x: col }))) return true
+	col(col: number, fn: (cell: T, pos: Pos.Pos) => boolean) {
+		for (const row of iterateArray(9)) if (fn(this.#data[row][col], new Pos.Pos({ row, col }))) return true
 		return false
 	}
 
@@ -362,8 +361,8 @@ class GridSome<T> {
 	 * @param fn The function to check against each cell in the grid.
 	 * @returns True if the function returns true for at least one cell in the entire grid, false otherwise.
 	 */
-	grid(fn: (cell: T, pos: Pos) => boolean) {
-		return this.#data.some((row, y) => row.some((cell, x) => fn(cell, new Pos({ y, x }))))
+	grid(fn: (cell: T, pos: Pos.Pos) => boolean) {
+		return this.#data.some((c, row) => c.some((cell, col) => fn(cell, new Pos.Pos({ row, col }))))
 	}
 
 	/**
@@ -372,11 +371,11 @@ class GridSome<T> {
 	 * @param fn The function to check against each cell in the box.
 	 * @returns True if the function returns true for at least one cell in the specified box, false otherwise.
 	 */
-	reg(reg: number, fn: (cell: T, pos: Pos) => boolean) {
+	reg(reg: number, fn: (cell: T, pos: Pos.Pos) => boolean) {
 		const boxPos = Pos.fromReg(reg)
 		for (const pos of Pos.iterateMatrix(3)) {
-			const currPos = pos.sum(boxPos)
-			if (fn(this.#data[currPos.y][currPos.x], currPos)) return true
+			const currPos = pos.sum(boxPos.toJSON())
+			if (fn(this.#data[currPos.row][currPos.col], currPos)) return true
 		}
 
 		return false
@@ -388,8 +387,8 @@ class GridSome<T> {
 	 * @param fn The function to check against each cell in the row.
 	 * @returns True if the function returns true for at least one cell in the specified row, false otherwise.
 	 */
-	row(row: number, fn: (cell: T, pos: Pos) => boolean) {
-		return this.#data[row].some((cell, x) => fn(cell, new Pos({ y: row, x })))
+	row(row: number, fn: (cell: T, pos: Pos.Pos) => boolean) {
+		return this.#data[row].some((cell, col) => fn(cell, new Pos.Pos({ row, col })))
 	}
 }
 
@@ -399,13 +398,13 @@ interface GridSubgrids<T> {
 	 * @param fn The transformation function to apply to subgrids.
 	 * @returns An object containing subgrids with the transformed values.
 	 */
-	<U extends Record<string, unknown>>(fn: (cell: T, pos: Pos) => U): { [K in keyof U]: Grid<U[K]> }
+	<U extends Record<string, unknown>>(fn: (cell: T, pos: Pos.Pos) => U): { [K in keyof U]: Grid<U[K]> }
 	/**
 	 * Group and transform subgrids using the provided function without wrapping.
 	 * @param fn The transformation function to apply to subgrids.
 	 * @returns An object containing subgrids with the transformed values.
 	 */
-	unwrapped<U extends Record<string, unknown>>(fn: (cell: T, pos: Pos) => U): { [K in keyof U]: GridData<U[K]> }
+	unwrapped<U extends Record<string, unknown>>(fn: (cell: T, pos: Pos.Pos) => U): { [K in keyof U]: GridData<U[K]> }
 }
 
 /**
@@ -416,15 +415,15 @@ interface GridSubgrids<T> {
  */
 function createGridSubgrids<T>(
 	data: GridData<T>,
-	mutateCell: (grid: Grid<unknown>, pos: Pos, newValue: unknown) => void
+	mutateCell: (grid: Grid<unknown>, pos: Pos.Pos, newValue: unknown) => void
 ) {
-	const gridSubgrids: GridSubgrids<T> = <U extends Record<string, unknown>>(fn: (cell: T, pos: Pos) => U) => {
+	const gridSubgrids: GridSubgrids<T> = <U extends Record<string, unknown>>(fn: (cell: T, pos: Pos.Pos) => U) => {
 		const subGrids = {} as {
 			[K in keyof U]: Grid<U[K]>
 		}
 
 		for (const pos of Pos.iterateMatrix(9)) {
-			const result = fn(data[pos.y][pos.x], pos)
+			const result = fn(data[pos.row][pos.col], pos)
 			for (const key of keysBy(result)) {
 				if (!(key in subGrids)) subGrids[key] = new Grid(Pos.createMatrix(9, () => null as U[keyof U]))
 				mutateCell(subGrids[key], pos, result[key])
@@ -433,16 +432,16 @@ function createGridSubgrids<T>(
 		return subGrids
 	}
 
-	gridSubgrids.unwrapped = <U extends Record<string, unknown>>(fn: (cell: T, pos: Pos) => U) => {
+	gridSubgrids.unwrapped = <U extends Record<string, unknown>>(fn: (cell: T, pos: Pos.Pos) => U) => {
 		const subGridsData = {} as {
 			[K in keyof U]: GridData<U[K]>
 		}
 
 		for (const pos of Pos.iterateMatrix(9)) {
-			const result = fn(data[pos.y][pos.x], pos)
+			const result = fn(data[pos.row][pos.col], pos)
 			for (const key of keysBy(result)) {
 				if (!(key in subGridsData)) subGridsData[key] = Pos.createMatrix(9, () => null as U[keyof U])
-				subGridsData[key][pos.y][pos.x] = result[key]
+				subGridsData[key][pos.row][pos.col] = result[key]
 			}
 		}
 		return subGridsData
@@ -483,12 +482,12 @@ export class Grid<T> {
 	 * @param fn A mapping function to call on every element of the array.
 	 * @returns A new Grid.
 	 */
-	static create<T>(fn: (pos: Pos) => T) {
+	static create<T>(fn: (pos: Pos.Pos) => T) {
 		return new Grid(Pos.createMatrix(9, fn))
 	}
 
-	static #mutateCell(grid: Grid<unknown>, pos: Pos, newValue: unknown) {
-		grid.#data[pos.y][pos.x] = newValue
+	static #mutateCell(grid: Grid<unknown>, pos: Pos.Pos, newValue: unknown) {
+		grid.#data[pos.row][pos.col] = newValue
 	}
 
 	/**
@@ -496,8 +495,8 @@ export class Grid<T> {
 	 * @param position The position of the cell to retrieve.
 	 * @returns The value of the cell.
 	 */
-	cellBy(position: PosData) {
-		return this.#data[position.y][position.x]
+	cellBy(position: Pos.Pos) {
+		return this.#data[position.row][position.col]
 	}
 
 	/**
@@ -505,7 +504,7 @@ export class Grid<T> {
 	 * @param origin The position of origin.
 	 * @returns The `GridComparer` created.
 	 */
-	compare(origin: Pos) {
+	compare(origin: Pos.Pos) {
 		return new GridComparer(this.#data, origin)
 	}
 
@@ -522,7 +521,7 @@ export class Grid<T> {
 	 * @param fn The function that holds the condition.
 	 * @returns The number of cells that meet the condition.
 	 */
-	count(fn: (cell: T, pos: Pos) => boolean) {
+	count(fn: (cell: T, pos: Pos.Pos) => boolean) {
 		let asserts = 0
 		for (const pos of Pos.iterateMatrix(9)) if (fn(this.cellBy(pos), pos)) asserts++
 
@@ -534,7 +533,7 @@ export class Grid<T> {
 	 * @param fn The mapping function.
 	 * @returns A new grid with the mapped values in the entire grid.
 	 */
-	mapAll<U>(fn: (cell: T, pos: Pos) => U) {
+	mapAll<U>(fn: (cell: T, pos: Pos.Pos) => U) {
 		return new Grid(this.#internalMap(this.#data, fn))
 	}
 
@@ -543,11 +542,11 @@ export class Grid<T> {
 	 * @param origin The position of origin.
 	 * @returns The `GridMapper` created.
 	 */
-	mapBy(origin: PosData) {
-		return new GridMapper(this.data, new Pos(origin))
+	mapBy(origin: Pos.Pos) {
+		return new GridMapper(this.data, origin)
 	}
 
-	#internalMap<I, U>(data: GridData<I>, fn: (cell: I, pos: Pos) => U) {
-		return data.map((row, y) => row.map((cell, x) => fn(cell, new Pos({ y, x })))) as GridData<U>
+	#internalMap<I, U>(data: GridData<I>, fn: (cell: I, pos: Pos.Pos) => U) {
+		return data.map((c, row) => c.map((cell, col) => fn(cell, new Pos.Pos({ row, col })))) as GridData<U>
 	}
 }

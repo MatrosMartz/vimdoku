@@ -1,23 +1,24 @@
 <script lang="ts">
 	import type { Pos } from '~/share/domain/entities'
 	import { posState } from '~/share/infra/stores/svelte'
+	import { Prtcl } from '~/share/utils'
 	import { SUDOKU_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
 	import type { Cell } from '$sudoku/domain/entities'
 
 	export let data: Cell.Cell
-	export let pos: Pos
+	export let pos: Pos.Pos
 
 	let btn: HTMLElement
 
 	$: value = data.value > 0 ? String(data.value) : ''
-	$: selected = pos.equalsPos($posState)
+	$: selected = Prtcl.equals(pos, $posState)
 
 	$: if (selected) btn?.focus()
 
 	/** Change position after focus cell, focus handler. */
 	function focusHandler() {
-		if (pos.equalsPos($posState)) return
+		if (selected) return
 		med.dispatch(SUDOKU_ACTIONS.move, { type: 'set', pos })
 	}
 </script>

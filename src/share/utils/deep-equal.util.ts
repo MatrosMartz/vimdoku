@@ -1,5 +1,5 @@
 import { keysBy } from './commons.util'
-import * as Protocol from './protocols.util'
+import * as Prtcl from './protocols.util'
 
 /**
  * Checks if value is function or object.
@@ -24,8 +24,8 @@ export function deepEquals(a: unknown, b: unknown) {
 
 		if (Number.isNaN(currA) && Number.isNaN(currB)) return true
 		if (!isFuncOrObjType(currA) || !isFuncOrObjType(currB)) return currA === currB
-		if (Protocol.implementsEquals(currA)) return currA[Protocol.equalsTo](currB)
-		if (Protocol.implementsEquals(currB)) return currB[Protocol.equalsTo](currA)
+		if (Prtcl.impl('equals', currA)) return currA[Prtcl.equalsTo](currB)
+		if (Prtcl.impl('equals', currB)) return currB[Prtcl.equalsTo](currA)
 
 		const [keysA, keysB] = [keysBy(currA), keysBy(currB)]
 		if (keysA.length !== keysB.length) return false

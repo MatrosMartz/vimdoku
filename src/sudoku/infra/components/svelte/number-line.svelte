@@ -7,7 +7,7 @@
 
 	export let direction: 'horizontal' | 'vertical'
 
-	$: dirCoord = direction === 'horizontal' ? $posState.x : $posState.y
+	$: dirCoord = direction === 'horizontal' ? $posState.col : $posState.row
 
 	const flyParams = direction === 'horizontal' ? { y: '100%' } : { x: '100%' }
 

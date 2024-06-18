@@ -1,12 +1,12 @@
 import type { RequireOne } from '~/share/types'
-import { _throw, capitalCase, InvalidStringPageError, Protocol } from '~/share/utils'
+import { _throw, capitalCase, InvalidStringPageError, Prtcl } from '~/share/utils'
 import { type Lang, LANGS } from '$i18n/domain/const'
 import { Difficulty } from '$sudoku/domain/const'
 
 import * as Modal from './modal.entity'
 import * as Route from './route.entity'
 
-export class Page implements Protocol.IEquals<Page> {
+export class Page implements Prtcl.IEquals<Page> {
 	readonly lang
 	readonly modal
 	readonly route
@@ -16,10 +16,10 @@ export class Page implements Protocol.IEquals<Page> {
 		this.route = route
 	}
 
-	[Protocol.equalsTo](other: Page) {
+	[Prtcl.equalsTo](other: Page) {
 		if (this.lang !== other.lang) return false
-		if (!this.modal[Protocol.equalsTo](other.modal)) return false
-		if (!this.route[Protocol.equalsTo](other.route)) return false
+		if (!this.modal[Prtcl.equalsTo](other.modal)) return false
+		if (!this.route[Prtcl.equalsTo](other.route)) return false
 		return true
 	}
 

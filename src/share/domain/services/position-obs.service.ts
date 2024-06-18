@@ -1,10 +1,10 @@
-import { singleton } from '~/share/utils'
+import { Prtcl, singleton } from '~/share/utils'
 
-import { IDLE_POS, Observable, type Pos } from '../entities'
+import { Observable, Pos } from '../entities'
 
 @singleton
-export class PosObs extends Observable<Pos> {
+export class PosObs extends Observable<Pos.Pos> {
 	constructor() {
-		super(IDLE_POS, (a, b) => a.equalsPos(b))
+		super(Pos.IDLE)
 	}
 }

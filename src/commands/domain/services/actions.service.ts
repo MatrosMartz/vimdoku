@@ -1,4 +1,4 @@
-import { type Pos } from '~/share/domain/entities'
+import type { Pos } from '~/share/domain/entities'
 import type { OptionalKeys } from '~/share/types'
 import type { Lang } from '$i18n/domain/const'
 import { Modal, Route } from '$page/domain/entities'
@@ -97,7 +97,7 @@ interface MoveDir {
 	type: 'Down' | 'Left' | 'Right' | 'Up'
 }
 interface MoveSet {
-	pos: Pos
+	pos: Pos.Pos
 	type: 'set'
 }
 

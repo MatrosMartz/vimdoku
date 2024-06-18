@@ -1,4 +1,4 @@
-import { type Pos } from '~/share/domain/entities'
+import type { Pos } from '~/share/domain/entities'
 import { inject, InvalidBoardError } from '~/share/utils'
 
 import { Cell, Grid, type SolutionJSON, type ValidNumbers } from '../entities'
@@ -62,8 +62,8 @@ export class BoardSvc implements IBoard {
 	static fromJSON(boardLike: BoardJSON, solution: SolutionJSON, errors: number) {
 		try {
 			if (Array.isArray(boardLike)) {
-				const data = new Grid(boardLike).mapAll<Cell.Cell>((json, { y, x }) =>
-					Cell.fromJSON({ cellLike: json, solution: solution[y][x] })
+				const data = new Grid(boardLike).mapAll<Cell.Cell>((json, { col, row }) =>
+					Cell.fromJSON({ cellLike: json, solution: solution[row][col] })
 				)
 				return new BoardSvc(data, errors)
 			} else throw new InvalidBoardError(boardLike)
@@ -90,7 +90,7 @@ export class BoardSvc implements IBoard {
 		}
 	}
 
-	clear(cellPos: Pos) {
+	clear(cellPos: Pos.Pos) {
 		const moveMap: Cell.MoveMap = new Map()
 
 		this.#obs.update(grid =>
@@ -107,7 +107,7 @@ export class BoardSvc implements IBoard {
 		return this
 	}
 
-	noteDeletion(cellPos: Pos, num: ValidNumbers) {
+	noteDeletion(cellPos: Pos.Pos, num: ValidNumbers) {
 		const moveMap: Cell.MoveMap = new Map()
 
 		this.#obs.update(board =>
@@ -146,7 +146,7 @@ export class BoardSvc implements IBoard {
 		return JSON.stringify(this.toJSON())
 	}
 
-	toggleNotes(cellPos: Pos, num: ValidNumbers) {
+	toggleNotes(cellPos: Pos.Pos, num: ValidNumbers) {
 		const moveMap: Cell.MoveMap = new Map()
 
 		this.#obs.update(board =>
@@ -179,7 +179,7 @@ export class BoardSvc implements IBoard {
 		return this
 	}
 
-	validate(cellPos: Pos) {
+	validate(cellPos: Pos.Pos) {
 		this.#obs.update(board =>
 			board!
 				.mapBy(cellPos)
@@ -194,7 +194,7 @@ export class BoardSvc implements IBoard {
 		return this
 	}
 
-	write(cellPos: Pos, num: ValidNumbers) {
+	write(cellPos: Pos.Pos, num: ValidNumbers) {
 		const moveMap: Cell.MoveMap = new Map()
 
 		this.#obs.update(board =>
@@ -212,14 +212,14 @@ export class BoardSvc implements IBoard {
 		return this
 	}
 
-	#createMoveMapEntries({ next, prev }: { next: Cell.Cell; prev: Cell.Cell }, pos: Pos) {
+	#createMoveMapEntries({ next, prev }: { next: Cell.Cell; prev: Cell.Cell }, pos: Pos.Pos) {
 		return [
-			`${pos.y}-${pos.x}`,
+			pos.toString(),
 			{ next: { notes: next.notes, pos, value: next.value }, prev: { notes: prev.notes, pos, value: prev.value } },
 		] as const
 	}
 
-	#notIsInitial(pos: Pos) {
+	#notIsInitial(pos: Pos.Pos) {
 		return this.#obs.data!.cellBy(pos).kind !== Cell.Kind.Initial
 	}
 

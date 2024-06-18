@@ -1,6 +1,6 @@
 import type { PagesKeys } from '~/locales'
 import { Collection } from '~/share/domain/entities'
-import { A, Protocol } from '~/share/utils'
+import { A, Prtcl } from '~/share/utils'
 import type { Difficulty } from '$sudoku/domain/const'
 
 export enum Kind {
@@ -21,7 +21,7 @@ export enum HelpSub {
 
 export const HELP_SUB = new Collection.Builder().addToMain.fromObject(HelpSub).done()
 
-export abstract class Base implements Protocol.IEquals<Route> {
+export abstract class Base implements Prtcl.IEquals<Route> {
 	abstract readonly kind: Kind
 
 	abstract readonly path: string
@@ -38,7 +38,7 @@ export abstract class Base implements Protocol.IEquals<Route> {
 		return this.path
 	}
 
-	abstract [Protocol.equalsTo](other: Route): boolean
+	abstract [Prtcl.equalsTo](other: Route): boolean
 }
 
 export class Home extends Base {
@@ -50,7 +50,7 @@ export class Home extends Base {
 		return route instanceof Home
 	}
 
-	[Protocol.equalsTo](other: Route) {
+	[Prtcl.equalsTo](other: Route) {
 		return other.kind === Kind.Home
 	}
 }
@@ -75,7 +75,7 @@ export class Game<SubRoute extends GameSub> extends Base {
 		return route instanceof Game && (sub == null || route.subRoute === sub)
 	}
 
-	[Protocol.equalsTo](other: Route) {
+	[Prtcl.equalsTo](other: Route) {
 		return other.kind === Kind.Game && other.subRoute === this.subRoute
 	}
 }
@@ -101,7 +101,7 @@ export class Help<SubRoute extends HelpSub> extends Base {
 		return route instanceof Help && (sub == null || route.subRoute === sub)
 	}
 
-	[Protocol.equalsTo](other: Route) {
+	[Prtcl.equalsTo](other: Route) {
 		return other.kind === Kind.Help && this.subRoute === other.subRoute
 	}
 }
@@ -119,7 +119,7 @@ export class NotFound extends Base {
 		return route instanceof NotFound
 	}
 
-	[Protocol.equalsTo](other: Route) {
+	[Prtcl.equalsTo](other: Route) {
 		return other.kind === Kind.NotFound && this.path === other.path
 	}
 }

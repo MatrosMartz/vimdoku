@@ -6,9 +6,9 @@ export type KeysByType<O, T> = {
 
 export type RequireOne<T> = {
 	[K in keyof T]: {
-		[O in keyof T]?: T[O]
+		readonly [O in keyof T]?: T[O]
 	} & {
-		[P in K]: T[P]
+		readonly [P in K]: T[P]
 	}
 }[keyof T]
 

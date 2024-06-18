@@ -1,5 +1,5 @@
 import { Collection } from '~/share/domain/entities'
-import { A, Protocol } from '~/share/utils'
+import { A, Prtcl } from '~/share/utils'
 
 export enum Kind {
 	Cmd = 'command',
@@ -17,14 +17,14 @@ export const KINDS = new Collection.Builder().addToMain
 	.addNewSub.conditional('COMPOUND', 'SIMPLE', A.is.Array.with(0, A.equalTo('Pref', 'Warn')))
 	.done()
 
-abstract class Base implements Protocol.IEquals<Modal> {
+abstract class Base implements Prtcl.IEquals<Modal> {
 	abstract readonly kind: Kind
 
 	toJSON() {
 		return { kind: this.kind }
 	}
 
-	abstract [Protocol.equalsTo](other: Modal): boolean
+	abstract [Prtcl.equalsTo](other: Modal): boolean
 }
 
 export class Cmd extends Base {
@@ -34,7 +34,7 @@ export class Cmd extends Base {
 		return modal instanceof Cmd
 	}
 
-	[Protocol.equalsTo](other: Modal) {
+	[Prtcl.equalsTo](other: Modal) {
 		return other.kind === Kind.Cmd
 	}
 }
@@ -46,7 +46,7 @@ export class Modes extends Base {
 		return modal instanceof Modes
 	}
 
-	[Protocol.equalsTo](other: Modal) {
+	[Prtcl.equalsTo](other: Modal) {
 		return other.kind === Kind.Modes
 	}
 }
@@ -58,7 +58,7 @@ export class None extends Base {
 		return modal instanceof None
 	}
 
-	[Protocol.equalsTo](other: Modal) {
+	[Prtcl.equalsTo](other: Modal) {
 		return other.kind === Kind.None
 	}
 }
@@ -70,7 +70,7 @@ export class Pause extends Base {
 		return modal instanceof Pause
 	}
 
-	[Protocol.equalsTo](other: Modal) {
+	[Prtcl.equalsTo](other: Modal) {
 		return other.kind === Kind.Pause
 	}
 }
@@ -102,7 +102,7 @@ export class Pref<Type extends PrefType> extends Base {
 		return modal instanceof Pref && (type == null || modal.type === type)
 	}
 
-	[Protocol.equalsTo](other: Modal) {
+	[Prtcl.equalsTo](other: Modal) {
 		return other.kind === Kind.Pref && other.type === this.type
 	}
 
@@ -118,7 +118,7 @@ export class SelGame extends Base {
 		return modal instanceof SelGame
 	}
 
-	[Protocol.equalsTo](other: Modal) {
+	[Prtcl.equalsTo](other: Modal) {
 		return other.kind === Kind.SelGame
 	}
 }
@@ -145,7 +145,7 @@ export class Warn<Type extends WarnType> extends Base {
 		return modal instanceof Warn && (type == null || modal.type === type)
 	}
 
-	[Protocol.equalsTo](other: Modal) {
+	[Prtcl.equalsTo](other: Modal) {
 		return other.kind === Kind.Warn && other.type === this.type
 	}
 
@@ -161,7 +161,7 @@ export class Win extends Base {
 		return modal instanceof Win
 	}
 
-	[Protocol.equalsTo](other: Modal) {
+	[Prtcl.equalsTo](other: Modal) {
 		return other.kind === Kind.Win
 	}
 }

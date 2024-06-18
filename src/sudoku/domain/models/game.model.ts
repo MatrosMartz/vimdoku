@@ -30,7 +30,7 @@ export interface IGame {
 	 * @param position The new position.
 	 * @returns The updated game.
 	 */
-	moveTo(position: Pos): this
+	moveTo(position: Pos.Pos): this
 	/**
 	 * Redo the next game action.
 	 * @returns The updated game.

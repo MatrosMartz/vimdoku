@@ -23,7 +23,7 @@ export const browserSudokuBoardRepo: SudokuRepos.Board = {
 
 		if (board == null || notes == null) return null
 
-		return Pos.createMatrix(9, ({ y, x }): Cell.JSON => ({ ...board[y][x], notes: notes[y][x] }))
+		return Pos.createMatrix(9, ({ col, row }): Cell.JSON => ({ ...board[row][col], notes: notes[row][col] }))
 	},
 	has: async () => (boardStorage.get() ?? notesStorage.get()) != null,
 	async save(board: BoardJSON) {

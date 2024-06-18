@@ -11,10 +11,10 @@
 <table class="board monospace" class:numbers={$prefsState.numbers || $prefsState.relativeNumbers}>
 	<SudokuDivisions />
 	{#if $boardState != null}
-		{#each $boardState as row, y (y)}
-			<tr class="row-{y}">
-				{#each row as data, x (`${y},${x}`)}
-					<SudokuCell {data} pos={new Pos({ y, x })} />
+		{#each $boardState as c, row (row)}
+			<tr class="row-{row}">
+				{#each c as data, col (`${row},${col}`)}
+					<SudokuCell {data} pos={new Pos.Pos({ row, col })} />
 				{/each}
 			</tr>
 		{/each}

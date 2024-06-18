@@ -4,7 +4,7 @@ import type { Pos } from '../entities'
 
 export interface IPos {
 	/** Get the current data of position. */
-	readonly data: Pos
+	readonly data: Pos.Pos
 	/**
 	 * Move the position down by a specified number of times within the valid range.
 	 * @param times The number of times to move down.
@@ -34,5 +34,5 @@ export interface IPos {
 	 * @param pos An object containing row and/or col properties to update the position.
 	 * @returns The updated Service.
 	 */
-	set(pos: RequireOne<Pos>): this
+	set(pos: RequireOne<Pos.Pos>): this
 }

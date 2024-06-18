@@ -1,4 +1,4 @@
-import { IDLE_POS, type Pos, type PosData } from '~/share/domain/entities'
+import { Pos } from '~/share/domain/entities'
 import { PosSvc } from '~/share/domain/services'
 import { inject } from '~/share/utils'
 import { Modes } from '$cmd/domain/const'
@@ -66,7 +66,7 @@ export class SudokuSvc implements ISudoku {
 		await this.#clear()
 		this.#game = null
 		this.#timer.pause().reset()
-		this.#pos.set(IDLE_POS)
+		this.#pos.set(Pos.IDLE)
 		this.#savedObs.set(false)
 	}
 
@@ -75,7 +75,7 @@ export class SudokuSvc implements ISudoku {
 		return this
 	}
 
-	moveTo(position: Pos<PosData>) {
+	moveTo(position: Pos.Pos) {
 		this.#game?.moveTo(position)
 		return this
 	}
@@ -104,7 +104,7 @@ export class SudokuSvc implements ISudoku {
 		)
 		if (withTimer) this.#timer.set(info.timer).start()
 		this.#modeObs.set(Modes.Kind.X)
-		this.#pos.set(IDLE_POS)
+		this.#pos.set(Pos.IDLE)
 		return this
 	}
 
@@ -136,7 +136,7 @@ export class SudokuSvc implements ISudoku {
 		if (withTimer) this.#timer.reset().start()
 		this.#game = GameSvc.create({ board, pos: this.#pos }, Modes.Kind.X)
 		this.#modeObs.set(Modes.Kind.X)
-		this.#pos.set(IDLE_POS)
+		this.#pos.set(Pos.IDLE)
 		return this
 	}
 

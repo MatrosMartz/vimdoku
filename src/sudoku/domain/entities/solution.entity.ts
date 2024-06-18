@@ -1,4 +1,4 @@
-import { Pos, type PosData } from '~/share/domain/entities'
+import { Pos } from '~/share/domain/entities'
 import type { Tuple } from '~/share/types'
 import { InvalidSolutionError, randomNumbers, REG } from '~/share/utils'
 
@@ -83,14 +83,14 @@ export class Solution {
 	 * @param position The position of the cell to check.
 	 * @returns True if the cell value is safe with related cells.
 	 */
-	static #cellIsSafe(value: number[][], num: number, position: PosData): boolean
-	static #cellIsSafe(value: number[][], num: number, { y, x }: PosData) {
-		if (value[y][x] !== 0) return false
+	static #cellIsSafe(value: number[][], num: number, position: Pos.Data): boolean
+	static #cellIsSafe(value: number[][], num: number, { row, col }: Pos.Data) {
+		if (value[row][col] !== 0) return false
 
 		for (let i = 0; i < 9; i++) {
-			if (value[y][i] === num) return false
-			if (value[i][x] === num) return false
-			if (value[REG.Y(i, y)][REG.X(i, x)] === num) return false
+			if (value[row][i] === num) return false
+			if (value[i][col] === num) return false
+			if (value[REG.Y(i, row)][REG.X(i, col)] === num) return false
 		}
 
 		return true
@@ -109,9 +109,10 @@ export class Solution {
 			}
 			for (let j = i; j < 9; j++) {
 				const numbers = randomNumbers()
-				for (const num of numbers) if (this.#cellIsSafe(value, num, { y: i, x: j })) value[i][j] = num
+				for (const num of numbers) if (this.#cellIsSafe(value, num, { row: i, col: j })) value[i][j] = num
 
-				for (const num of [...numbers].reverse()) if (this.#cellIsSafe(value, num, { y: j, x: i })) value[j][i] = num
+				for (const num of [...numbers].reverse())
+					if (this.#cellIsSafe(value, num, { row: j, col: i })) value[j][i] = num
 
 				if (value[i][j] === 0 || value[j][i] === 0) {
 					retry()

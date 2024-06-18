@@ -42,7 +42,7 @@ export interface ISudoku {
 	 * @param position The new position.
 	 * @returns The updated game.
 	 */
-	moveTo(position: Pos): this
+	moveTo(position: Pos.Pos): this
 	/**
 	 * Pause the current game.
 	 * @returns The updated game.

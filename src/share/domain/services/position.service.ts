@@ -1,7 +1,7 @@
 import type { RequireOne } from '~/share/types'
 import { inject } from '~/share/utils'
 
-import { Pos, POS_MAX_RANGE, POS_MIN_RANGE } from '../entities'
+import { Pos } from '../entities'
 import type { IPos } from '../models/position.model'
 import { PosObs } from './position-obs.service'
 
@@ -9,40 +9,32 @@ import { PosObs } from './position-obs.service'
 export class PosSvc implements IPos {
 	readonly #obs = inject(PosObs)
 
-	get data(): Pos {
+	get data(): Pos.Pos {
 		return this.#obs.data
 	}
 
 	moveDown(times: number) {
-		this.#obs.update(
-			({ y, x }) => new Pos({ y: Math.min(POS_MAX_RANGE, y + times), x: y === POS_MAX_RANGE ? POS_MAX_RANGE : x })
-		)
+		this.#obs.update(pos => pos.sum({ row: times }))
 		return this
 	}
 
 	moveLeft(times: number) {
-		this.#obs.update(({ y, x }) => new Pos({ y, x: Math.max(POS_MIN_RANGE, x - times) }))
+		this.#obs.update(pos => pos.sum({ col: -times }))
 		return this
 	}
 
 	moveRight(times: number) {
-		this.#obs.update(({ y, x }) => new Pos({ y, x: Math.min(POS_MAX_RANGE, x + times) }))
+		this.#obs.update(pos => pos.sum({ col: times }))
 		return this
 	}
 
 	moveUp(times: number) {
-		this.#obs.update(
-			({ y, x }) =>
-				new Pos({
-					y: Math.max(POS_MIN_RANGE, y - times),
-					x: y === POS_MIN_RANGE ? POS_MIN_RANGE : x,
-				})
-		)
+		this.#obs.update(pos => pos.sum({ row: -times }))
 		return this
 	}
 
-	set({ y, x }: RequireOne<Pos>) {
-		this.#obs.update(pos => new Pos({ y: y ?? pos.y, x: x ?? pos.x }))
+	set({ col, row }: RequireOne<Pos.Pos>) {
+		this.#obs.update(pos => new Pos.Pos({ col: col ?? pos.col, row: row ?? pos.row }))
 		return this
 	}
 }

@@ -15,8 +15,9 @@
 	 * @returns The translated value of the preference.
 	 */
 	const getPrefText = new Match.Builder<[key: PREFS_FIELDS.Key, locale: Locale, prefs: Prefs], string>()
-		.addCase(A.is.Array.with(0, A.fromGuard(PREFS_FIELDS.subs.TOGGLE.containsKey)), (key, locale, prefs) =>
-			locale[`prefs_toggle_${prefs[key]}`](String(prefs[key]))
+		.addCase(
+			A.is.Array.with(0, A.fromGuard(PREFS_FIELDS.subs.TOGGLE.containsKey.bind(PREFS_FIELDS.subs.TOGGLE))),
+			(key, locale, prefs) => locale[`prefs_toggle_${prefs[key]}`](String(prefs[key]))
 		)
 		.addCase(A.is.Array.with(0, A.equalTo('colorSchema')), (key, locale, prefs) =>
 			locale[`prefs_schema_${prefs[key]}`](prefs[key])

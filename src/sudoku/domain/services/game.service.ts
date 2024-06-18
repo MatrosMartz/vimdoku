@@ -1,4 +1,4 @@
-import type { Pos, PosData } from '~/share/domain/entities'
+import type { Pos } from '~/share/domain/entities'
 import type { IPos } from '~/share/domain/models'
 import { Modes } from '$cmd/domain/const'
 
@@ -53,7 +53,7 @@ export abstract class GameSvc implements IGame {
 		return this
 	}
 
-	moveTo(position: Pos<PosData>) {
+	moveTo(position: Pos.Pos) {
 		this._pos.set(position)
 
 		return this

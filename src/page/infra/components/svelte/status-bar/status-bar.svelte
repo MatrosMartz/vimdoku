@@ -15,8 +15,8 @@
 	$: tooltipProps = {
 		id: 'describe-pos',
 		text: $i18nState.ns('share').statusBar_posDesc('Row {|row|}, Col {|col|}.', {
-			row: String($posState.y + 1),
-			col: String($posState.x + 1),
+			row: String($posState.row + 1),
+			col: String($posState.col + 1),
 		}),
 	}
 
@@ -48,7 +48,7 @@
 	<section class="item-separation">
 		<div class="position tooltip-overflow">
 			<p use:tooltip={tooltipProps}>
-				{$posState.y + 1},{$posState.x + 1}
+				{$posState.row + 1},{$posState.col + 1}
 			</p>
 		</div>
 		<p class="timer">{$timerState}</p>
