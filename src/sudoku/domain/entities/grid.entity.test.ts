@@ -4,7 +4,7 @@ import { Pos } from '~/share/domain/entities'
 
 import { Grid } from './grid.entity'
 
-describe.concurrent('Grid Service', () => {
+describe.concurrent('Grid entity', () => {
 	test('The data should be an array.', () => {
 		const initialGrid = Grid.create(pos => pos.col)
 

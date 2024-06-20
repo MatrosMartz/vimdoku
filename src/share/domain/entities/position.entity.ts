@@ -1,39 +1,55 @@
 import type { RequireOne } from '~/share/types'
 import { clamp as clampUtil, createArray, Prtcl } from '~/share/utils'
 
+export type Coords1 = 0 | 1 | 2
+export type Coords2 = 3 | 4 | 5
+export type Coords3 = 6 | 7 | 8
+export type Coords = Coords1 | Coords2 | Coords3
+
+type Y<P extends Data, N1 extends number, N2 extends number, N3 extends number> = P['row'] extends Coords1
+	? N1
+	: P['row'] extends Coords2
+		? N2
+		: P['row'] extends Coords3
+			? N3
+			: never
+
+type X<P extends Data, N1 extends number, N2 extends number, N3 extends number> = P['col'] extends Coords1
+	? N1
+	: P['col'] extends Coords2
+		? N2
+		: P['col'] extends Coords3
+			? N3
+			: never
+
+export type GetReg<P extends Data> = number extends P['row']
+	? number extends P['col']
+		? number
+		: P['col'] extends Coords
+			? number
+			: never
+	: P['row'] extends Coords
+		? number extends P['col']
+			? number
+			: Y<P, X<P, 0, 1, 2>, X<P, 3, 4, 5>, X<P, 6, 7, 8>>
+		: never
+
 export interface Data {
 	readonly col: number
 	readonly row: number
 }
 
-type Y<P extends Data, N1 extends number, N2 extends number, N3 extends number> = P['row'] extends 0 | 1 | 2
-	? N1
-	: P['row'] extends 3 | 4 | 5
-		? N2
-		: P['row'] extends 6 | 7 | 8
-			? N3
-			: number
-type X<P extends Data, N1 extends number, N2 extends number, N3 extends number> = P['col'] extends 0 | 1 | 2
-	? N1
-	: P['col'] extends 3 | 4 | 5
-		? N2
-		: P['col'] extends 6 | 7 | 8
-			? N3
-			: number
-
-export type GetReg<P extends Data> = Y<P, X<P, 0, 1, 2>, X<P, 3, 4, 5>, X<P, 6, 7, 8>>
-
-export class Pos<const P extends Data = Data> implements Prtcl.IEquals<Pos>, Prtcl.IRelated<Pos> {
-	readonly col: P['col']
+export class Pos implements Prtcl.IEquals<Pos>, Prtcl.IRelated<Pos> {
+	readonly col
 	readonly reg
-	readonly row: P['row']
+	readonly row
 
-	constructor(data: P) {
+	constructor(data: Data) {
 		if (MIN_RANGE > data.row || data.row > MAX_RANGE) throw new Error(`Invalid row: ${data.row}, out of range`)
 		if (MIN_RANGE > data.col || data.col > MAX_RANGE) throw new Error(`Invalid col: ${data.col}, out of range`)
 
 		this.col = data.col
-		this.reg = (Math.floor(data.row / 3) * 3 + Math.floor(data.col / 3) * 3 * 3) as GetReg<P>
+		this.reg = Math.floor(data.row / 3) * 3 + Math.floor(data.col / 3)
 		this.row = data.row
 	}
 
@@ -59,7 +75,7 @@ export class Pos<const P extends Data = Data> implements Prtcl.IEquals<Pos>, Prt
 	}
 
 	toString() {
-		return `${this.col}-${this.row}` as const
+		return `${this.row}-${this.col}` as const
 	}
 }
 /**
