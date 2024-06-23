@@ -1,6 +1,6 @@
 import { Pos } from '~/share/domain/entities'
 import type { Tuple } from '~/share/types'
-import { iterateArray, keysBy, noop, Prtcl } from '~/share/utils'
+import { Comparation, iterateArray, keysBy, noop } from '~/share/utils'
 
 export type GridData<T> = Tuple<Tuple<T, 9>, 9>
 
@@ -115,7 +115,7 @@ class GridComparer<T> {
 		const reg = Pos.fromReg(this.#origin.reg)
 		for (const pos of Pos.iterateMatrix(3)) {
 			const currPos = pos.sum(reg.toJSON())
-			if (!Prtcl.equals(currPos, this.#origin) && !fn(this.#cellBy(this.#origin), this.#cellBy(currPos), currPos))
+			if (!Comparation.equals(currPos, this.#origin) && !fn(this.#cellBy(this.#origin), this.#cellBy(currPos), currPos))
 				return false
 		}
 
@@ -130,8 +130,8 @@ class GridComparer<T> {
 	withRelated(fn: (origin: T, curr: T, currPos: Pos.Pos) => boolean) {
 		for (const currPos of Pos.iterateMatrix(9)) {
 			if (
-				!Prtcl.equals(currPos, this.#origin) &&
-				Prtcl.related(currPos, this.#origin) &&
+				!Comparation.equals(currPos, this.#origin) &&
+				Comparation.related(currPos, this.#origin) &&
 				!fn(this.#cellBy(this.#origin), this.#cellBy(currPos), currPos)
 			)
 				return false
@@ -149,7 +149,8 @@ class GridComparer<T> {
 		const { row } = this.#origin
 		for (const col of iterateArray(9)) {
 			const pos = new Pos.Pos({ row, col })
-			if (!Prtcl.equals(pos.col, this.#origin) && !fn(this.#cellBy(this.#origin), this.#cellBy(pos), pos)) return false
+			if (!Comparation.equals(pos.col, this.#origin) && !fn(this.#cellBy(this.#origin), this.#cellBy(pos), pos))
+				return false
 		}
 		return true
 	}
@@ -251,12 +252,12 @@ class GridMapper<T> {
 		const data = Pos.createMatrix(9, (pos): T => {
 			let cell = this.#cellBy(pos)
 			for (const { type, fn, withOrigin } of this.#gridMoves) {
-				const isOrigin = pos[Prtcl.equalsTo](this.#origin)
+				const isOrigin = Comparation.equals(pos, this.#origin)
 				const equalPos = type === 'cell' && isOrigin
-				const equalCol = type === 'col' && pos.col === this.#origin.col
-				const equalRow = type === 'row' && pos.row === this.#origin.row
-				const equalReg = type === 'reg' && pos.reg === this.#origin.reg
-				const areRelated = type === 'related' && Prtcl.related(pos, this.#origin)
+				const equalCol = type === 'col' && Comparation.equals(pos, this.#origin, 'col')
+				const equalRow = type === 'row' && Comparation.equals(pos, this.#origin, 'row')
+				const equalReg = type === 'reg' && Comparation.equals(pos, this.#origin, 'reg')
+				const areRelated = type === 'related' && Comparation.related(pos, this.#origin)
 
 				if ((withOrigin || !isOrigin) && (equalPos || equalReg || equalCol || equalRow || areRelated)) {
 					const next = fn(cell, pos)
@@ -319,8 +320,8 @@ class GridJoiner<T> {
 		const regPos = Pos.fromReg(reg)
 		for (const pos of Pos.iterateMatrix(3)) {
 			const { col, row } = pos.sum(regPos.toJSON())
-			if (pos[Prtcl.equalsTo](Pos.IDLE)) str += this.#data[row][col]
-			else if (pos[Prtcl.equalsTo](Pos.IDLE)) str += separators.col ?? ',' + this.#data[row][col]
+			if (Comparation.equals(pos, Pos.IDLE)) str += this.#data[row][col]
+			else if (Comparation.equals(pos, Pos.IDLE)) str += separators.col ?? ',' + this.#data[row][col]
 			else str += separators.row ?? '\n' + this.#data[row][col]
 		}
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Pos } from '~/share/domain/entities'
 	import { posState } from '~/share/infra/stores/svelte'
-	import { Prtcl } from '~/share/utils'
+	import { Comparation } from '~/share/utils'
 	import { SUDOKU_ACTIONS } from '$cmd/domain/services'
 	import { med } from '$cmd/infra/services'
 	import type { Cell } from '$sudoku/domain/entities'
@@ -12,7 +12,7 @@
 	let btn: HTMLElement
 
 	$: value = data.value > 0 ? String(data.value) : ''
-	$: selected = Prtcl.equals(pos, $posState)
+	$: selected = Comparation.equals(pos, $posState)
 
 	$: if (selected) btn?.focus()
 

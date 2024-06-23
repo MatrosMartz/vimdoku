@@ -1,4 +1,4 @@
-import { Prtcl } from '~/share/utils'
+import { Comparation } from '~/share/utils'
 
 export type Observer<T> = (data: T) => void
 
@@ -14,7 +14,7 @@ export class Observable<T> {
 	 * @param initialData The value with which the observable is to be created.
 	 * @param [equals] Comparate the new and old data.
 	 */
-	constructor(initialData: T, equals: (a: T, b: T) => boolean = Prtcl.equals) {
+	constructor(initialData: T, equals: (a: T, b: T) => boolean = Comparation.equals) {
 		this.#data = initialData
 		this.#initial = initialData
 		this.#equals = equals

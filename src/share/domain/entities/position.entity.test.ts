@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 
-import { Prtcl } from '~/share/utils'
+import { Comparation } from '~/share/utils'
 
 import * as Pos from './position.entity'
 
@@ -29,21 +29,21 @@ describe.concurrent('Position entity', () => {
 	test('Should comparate if two positions are equals', () => {
 		const pos1 = new Pos.Pos({ row: 0, col: 0 })
 
-		expect(Prtcl.equals(pos1, new Pos.Pos({ row: 1, col: 0 }))).toBeFalse()
-		expect(Prtcl.equals(pos1, new Pos.Pos({ row: 0, col: 1 }))).toBeFalse()
-		expect(Prtcl.equals(pos1, new Pos.Pos({ row: 1, col: 1 }))).toBeFalse()
-		expect(Prtcl.equals(pos1, new Pos.Pos({ row: 0, col: 0 }))).toBeTrue()
+		expect(Comparation.equals(pos1, new Pos.Pos({ row: 1, col: 0 }))).toBeFalse()
+		expect(Comparation.equals(pos1, new Pos.Pos({ row: 0, col: 1 }))).toBeFalse()
+		expect(Comparation.equals(pos1, new Pos.Pos({ row: 1, col: 1 }))).toBeFalse()
+		expect(Comparation.equals(pos1, new Pos.Pos({ row: 0, col: 0 }))).toBeTrue()
 	})
 
 	test('Should comparate if two positions are related', () => {
 		const pos1 = new Pos.Pos({ row: 0, col: 0 })
 
-		expect(Prtcl.related(pos1, new Pos.Pos({ row: 2, col: 1 }))).toBeTrue()
-		expect(Prtcl.related(pos1, new Pos.Pos({ row: 1, col: 2 }))).toBeTrue()
-		expect(Prtcl.related(pos1, new Pos.Pos({ row: 0, col: 8 }))).toBeTrue()
-		expect(Prtcl.related(pos1, new Pos.Pos({ row: 8, col: 0 }))).toBeTrue()
-		expect(Prtcl.related(pos1, new Pos.Pos({ row: 0, col: 0 }))).toBeTrue()
-		expect(Prtcl.related(pos1, new Pos.Pos({ row: 5, col: 5 }))).toBeFalse()
+		expect(Comparation.related(pos1, new Pos.Pos({ row: 2, col: 1 }))).toBeTrue()
+		expect(Comparation.related(pos1, new Pos.Pos({ row: 1, col: 2 }))).toBeTrue()
+		expect(Comparation.related(pos1, new Pos.Pos({ row: 0, col: 8 }))).toBeTrue()
+		expect(Comparation.related(pos1, new Pos.Pos({ row: 8, col: 0 }))).toBeTrue()
+		expect(Comparation.related(pos1, new Pos.Pos({ row: 0, col: 0 }))).toBeTrue()
+		expect(Comparation.related(pos1, new Pos.Pos({ row: 5, col: 5 }))).toBeFalse()
 	})
 
 	test('Should return a new position with the summed columns or rows', () => {

@@ -39,7 +39,9 @@ export interface Data {
 	readonly row: number
 }
 
-export class Pos implements Prtcl.IEquals<Pos>, Prtcl.IRelated<Pos> {
+export class Pos implements Prtcl.IEquals<Pos>, Prtcl.IRelated<readonly ['col', 'reg', 'row']> {
+	[Prtcl.relatedProps] = ['col', 'reg', 'row'] as const
+
 	readonly col
 	readonly reg
 	readonly row
@@ -55,10 +57,6 @@ export class Pos implements Prtcl.IEquals<Pos>, Prtcl.IRelated<Pos> {
 
 	[Prtcl.equalsTo](other: Pos) {
 		return this.col === other.col && this.row === other.row
-	}
-
-	[Prtcl.relatedTo](other: Pos) {
-		return this.col === other.col || this.reg === other.reg || this.row === other.row
 	}
 
 	/**
